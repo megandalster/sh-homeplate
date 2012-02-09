@@ -12,6 +12,7 @@ class testStop extends UnitTestCase {
     	$this->assertTrue($stop->get_items() == "Bread : 50 lbs.");
     	$this->assertTrue($stop->get_notes() == "Only Bread");
     	
+    	//echoing
 		echo ("testStop complete\n");
     }
 }
