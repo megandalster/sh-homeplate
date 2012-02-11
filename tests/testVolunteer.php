@@ -5,7 +5,7 @@ class testVolunteer extends UnitTestCase {
              
         //fake person to test
         $volunteer = new Volunteer("Smith", "John", "1 Scarborough Head Rd","Hilton Head", "SC", "29928", "(843)111-2345", "", 
-    				"jsmith@aol.com", "driver", "active", "HHI", "123456789","SC", "14-01-29", "", "", "Wed3,Fri4","",
+    				"jsmith@aol.com", "driver", "active", "HHI", "123456789","SC", "14-01-29", "", "", "Wed:3,Fri:4","",
     				"", "59-01-01","98-01-01", "", "");
                  
         //testing getter functions
@@ -19,9 +19,12 @@ class testVolunteer extends UnitTestCase {
         $this->assertTrue($volunteer->get_phone2() == "");
         $this->assertTrue($volunteer->get_email() == "jsmith@aol.com");
                  
-        //tests the 'is_type' function
+        // tests if the volunteer is a driver (may or may not be a team leader)
         $this->assertTrue($volunteer->is_type("driver"));
-      
+        // tests if available on the 4th Friday of the month
+        $this->assertTrue($volunteer->is_available("Fri", 4));
+        // tests of the volunteer has any prior convictions
+        $this->assertEqual(sizeof($volunteer->get_convictions()), 0);
                  
         echo ("testVolunteer complete\n");
     }
