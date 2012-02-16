@@ -1,11 +1,24 @@
 <?php
+/*
+ * Copyright 2012 by Hartley Brody, Richardo Hopkins, Nicholas Wetzel, and Allen 
+ * Tucker.  This program is part of Homeplate, which is free software.  It comes 
+ * with absolutely no warranty.  You can redistribute and/or modify it under the 
+ * terms of the GNU Public License as published by the Free Software Foundation 
+ * (see <http://www.gnu.org/licenses/).
+*/
+
+/*
+ * Client class for Homeplate
+ * @author Hartley Brody
+ * @version February 16, 2012
+ */
 class Client {
 	private $id;     		// uniquely identifies the donor or recipient
 							// e.g. ÒFood Lion LauÓ 
 	private $name;			// e.g. ÒFood Lion #1698 Laurel BayÓ
 	private $chain_name;	// e.g., ÒFood LionÓ (usually blank)
-	private $area;			// ÒHHIÓ, ÒSUNÓ, or ÒBFTÓ
-	private $type;			// ÒdonorÓ or ÒrecipientÓ
+	private $area;			// "HHI", "SUN", or "BFT"
+	private $type;			// "donor" or "recipient"
 	private $address;       // street address Ð string
 	private $city;			// city
 	private $state;			// 2-letter abbrev - usually ÒSCÓ
@@ -32,12 +45,19 @@ class Client {
         $this->state 		= $state;      
         $this->zip 			= $zip;
 
-        
-        $this->geocoordinates = $geocoordinates;
         $this->phone1 		= $phone1;
         $this->phone2 		= $phone2;
+
+        if ($geocoordinates == "")
+		   $this->geocoordinates = array();
+		else
+		   $this->geocoordinates = explode(',',$geocoordinates);
         
-        $this->days 		= $days;
+        if ($days == "")
+		   $this->days = array();
+		else
+		   $this->days = explode(',',$days);
+		   
         $this->feed_america	= $feed_america;
         $this->notes 		= $notes;
         
