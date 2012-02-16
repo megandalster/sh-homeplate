@@ -5,12 +5,12 @@ class testStop extends UnitTestCase {
 
     	//create a test stop/client
     	$stop = new Stop("North Route . Food Lion", 
-    					"Bread : 50 lbs.", "Only Bread");
+    					"", "");
     	
     	//testing getter functions
     	$this->assertTrue($stop->get_id() == "North Route . Food Lion");
-    	$this->assertTrue($stop->get_items() == "Bread : 50 lbs.");
-    	$this->assertTrue($stop->get_notes() == "Only Bread");
+    	$this->assertTrue($stop->get_items() == array());
+    	$this->assertTrue($stop->get_notes() == array());
     	
     	//echoing
 		echo ("testStop complete\n");
