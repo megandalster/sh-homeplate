@@ -3,6 +3,8 @@ include_once(dirname(__FILE__).'/../domain/Volunteer.php');
 class testVolunteer extends UnitTestCase {
     function testVolunteerModule() {
              
+    	echo ("starting testVolunteer\n");
+    	
         //fake person to test
         $volunteer = new Volunteer("Smith", "John", "1 Scarborough Head Rd","Hilton Head", "SC", "29928", "(843)111-2345", "", 
     				"jsmith@aol.com", "driver", "active", "HHI", "123456789","SC", "14-01-29", "", "", "Wed:3,Fri:4","",

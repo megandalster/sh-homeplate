@@ -28,7 +28,7 @@ class testClient extends UnitTestCase {
         $this->assertTrue($client->is_feed_america() == True);
       
                  
-        echo ("testVolunteer complete\n");
+        echo ("testClient complete\n");
     				
     }
 }
