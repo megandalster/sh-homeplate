@@ -1,4 +1,17 @@
 <?php 
+/*
+ * Copyright 2012 by Hartley Brody, Richardo Hopkins, Nicholas Wetzel, and Allen 
+ * Tucker.  This program is part of Homeplate, which is free software.  It comes 
+ * with absolutely no warranty.  You can redistribute and/or modify it under the 
+ * terms of the GNU Public License as published by the Free Software Foundation 
+ * (see <http://www.gnu.org/licenses/).
+*/
+
+/*
+ * Route class for Homeplate
+ * @author Richardo Hopkins
+ * @version February 8, 2012
+ */
 class Route {
 	private $id;			// String: "yy-mm-dd-area" serves as a unique id 
 							// for the route.  e.g. 11-12-29-HHI
@@ -13,10 +26,21 @@ class Route {
          * constructor for a Route
          */
     function __construct($id, $drivers, $teamcaptain_id, $stops, $day, $notes){
+    	
     	$this->id = $id;
-    	$this->drivers = explode(',', $drivers);
+    	
+    	if ($drivers == "") 
+        	$this->drivers = array();
+        else 
+        	$this->drivers = explode(',', $drivers);
+        	
     	$this->teamcaptain_id = $teamcaptain_id;
-    	$this->stops = explode(',', $stops);
+    	
+    	if ($stops = "")
+    		$this->stops = array();
+    	else
+    		$this->stops = explode(',', $stops);
+    		
     	$this->day = $day;
     	$this->notes = $notes;
     }
