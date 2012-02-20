@@ -12,7 +12,7 @@ class testScheduleEntry extends UnitTestCase {
         
         $this->assertTrue($scheduleEntry->get_area() == "HHI");
         $this->assertTrue($scheduleEntry->get_id() == "Mon:1");
-        //$this->assertTrue($scheduleEntry->get_drivers() == "");
+        $this->assertTrue($scheduleEntry->get_drivers() == array());
         $this->assertTrue($scheduleEntry->get_notes() == "This is a test Schedule Entry");
         
         $this->assertTrue(1 == 1);
