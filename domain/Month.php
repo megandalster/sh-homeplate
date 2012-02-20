@@ -21,18 +21,15 @@ class Month {
 	
 
 	//Constructor for each Month
-	function __construct($id, $status, $first_day, $routes, $notes){
+	function __construct($id, $status, $routes, $notes){
 		$this->id = $id;
 		$this->status = $status;
-		$this->first_day = $first_day;
+		$this->first_day = date('w', mktime(0,0,0,substr($id,3,2),1,substr($id,0,2)));
 		 if ($routes == "") 
         	$this->routes = array(); 
         else 
         	$this->routes = explode(',',$routes);
-         if ($notes == "") 
-        	$this->notes = array(); 
-        else 
-        	$this->notes = explode(',',$notes);
+        $this->notes = $notes;
 	}
 	
 	//Getter functions for the Month

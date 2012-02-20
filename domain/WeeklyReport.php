@@ -8,7 +8,7 @@
 */
 
 /*
- * Route class for Homeplate
+ * WeeklyReport class for Homeplate
  * @author Richardo Hopkins
  * @version February 15, 2012
  */
