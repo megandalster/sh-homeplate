@@ -3,8 +3,6 @@ include_once(dirname(__FILE__).'/../domain/ScheduleEntry.php');
 class testScheduleEntry extends UnitTestCase {
     function testScheduleEntryModule() {  
 
-    	echo ("starting testScheduleEntry \n");
-    	
     	//fake Schedule Entry to test
         $scheduleEntry = new ScheduleEntry("HHI", "Mon:1", "", "This is a test Schedule Entry");
         

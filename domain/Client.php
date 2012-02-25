@@ -27,7 +27,7 @@ class Client {
 	private $phone1;		// primary phone
 	private $phone2;		// secondary phone
 	private $days;			// array of days for pick-up or delivery
-							// e.g. [“Monday”, “Wednesday”]
+							// e.g. [“Mon”, “Wed”]
 	private $feed_america;	// “yes” or “no”
 	private $notes; 		// notes written by the team captain or coordinator
 	

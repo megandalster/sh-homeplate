@@ -9,25 +9,29 @@
 
 /*
  * Stop class for Homeplate
- * @author Nicholas Wetzel
+ * @author Nicholas Wetzel and Allen Tucker
  * @version February 15, 2012
  */
 class Stop {
-	private $id;		// String $route_id . $Client_id
-	private $items;		// array of foodtype=>weight pairs for this stop
+	private $id;		// String $route_id . $Client_id 
+	private $type;		// "donor" or "recipient"
+	private $items;		// array of foodtype:weight pairs for this stop
+	private $total_weight; // total weight for this stop
 	private $notes;		// notes written by the driver 
 
 	//Constructor for an indvidual Stop/Client
-	function __construct($id, $items, $notes){
-		$this->id = $id;
-		 if ($items == "") 
-        	$this->items = array(); 
-        else 
+	function __construct($route_id, $client_id, $type, $items, $notes){
+		$this->id = $route_id . $client_id;
+		$this->type = $type;
+		if ($items == "") { 
+        	$this->items = array();
+        	$this->total_weight = 0;
+		} 
+        else {
         	$this->items = explode(',',$items);
-         if ($notes == "") 
-        	$this->notes = array(); 
-        else 
-        	$this->notes = explode(',',$notes);
+        	$this->set_total_weight();
+        }
+        $this->notes = $notes;
 	}
 	
 	//Getter functions for the Stop/Client
@@ -35,12 +39,40 @@ class Stop {
 		return $this->id;
 	}
 	
+	function get_type(){
+		return $this->type;
+	}
 	function get_items(){
 		return $this->items;
 	}
 	
 	function get_notes(){
 		return $this->notes;
+	}
+	function get_total_weight() {
+		return $this->total_weight;
+	}
+	
+	//setters
+	function set_total_weight() {
+		$this->total_weight = 0;
+		foreach ($this->items as $item) {
+			$w = substr($item, strpos($item,":")+1);
+		    $this->total_weight += 	$w;
+		}
+	}
+	function add_item ($new_item) {
+		$this->items[] = $new_item;
+		$this->set_total_weight();
+	}
+	function remove_item ($item_type) {
+		for ($i=0; $i<sizeof($this->items);$i++) {
+			if (strpos($this->items[$i],$item_type)==0) {
+			    array_splice($this->items,$i,1);
+			    break;
+			}
+		}
+		$this->set_total_weight();
 	}
 }
 ?>

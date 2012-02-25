@@ -19,13 +19,12 @@ class Route {
 							// e.g. ["malcom1234567890", Òsandi8437891234Ó]
 	private $teamcaptain_id;
 	private $stops;			// array of stops for this Route
-    private $day;	      	// string name of this day "Monday"...
-    private $notes;			// notes written by the team captain 
+    private $notes;			// notes written by the team captain or driver 
 
 		/**
          * constructor for a Route
          */
-    function __construct($id, $drivers, $teamcaptain_id, $stops, $day, $notes){
+    function __construct($id, $drivers, $teamcaptain_id, $stops, $notes){
     	
     	$this->id = $id;
     	
@@ -41,7 +40,6 @@ class Route {
     	else
     		$this->stops = explode(',', $stops);
     		
-    	$this->day = $day;
     	$this->notes = $notes;
     }
     
@@ -59,7 +57,12 @@ class Route {
     	return $this->stops;
     }
     function get_day() {
-    	return $this->day;
+    	$timestamp = mktime(0,0,0,substr($this->id,3,2),substr($this->id,6,2),substr($this->id,0,2)); 	
+    	return date('l F j, Y', $timestamp);
+    }
+    function get_area() {
+    	$areas = array("HHI"=>"Hilton Head Island", "SUN"=> "Sun City", "BFT" => "Beaufort");
+    	return $areas[substr($this->get_id(),9)];
     }
     function get_notes() {
     	return $this->notes;
