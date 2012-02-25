@@ -6,11 +6,9 @@ class testClient extends UnitTestCase {
     	//fake client to test
         $client = new Client("some-id-01", "Whole Foods", "Whole Foods USA", "Bowdoin", "restaurant", 
         					"123 Maine St", "Brunswick", "ME", "04011", "000-000-000",
-	                        "(207)725-3500", "", "", True, "This is a test case");
+	                        "(207)725-3500", "", "Mon,Wed", True, "This is a test case");
         
-        echo("got here 1");
-        
-        //testing getter functions
+         //testing getter functions
         
         $this->assertTrue($client->get_name() == "Whole Foods");
         $this->assertTrue($client->get_chain_name() == "Whole Foods USA");
@@ -20,6 +18,7 @@ class testClient extends UnitTestCase {
         $this->assertTrue($client->get_zip() == "04011");
         $this->assertTrue($client->get_phone1() == "(207)725-3500");
         $this->assertTrue($client->get_phone2() == "");
+        $this->assertTrue(sizeof($client->get_days()) == 2);
         $this->assertTrue($client->get_notes() == "This is a test case");
         
         //$this->assertTrue(1 == 1);

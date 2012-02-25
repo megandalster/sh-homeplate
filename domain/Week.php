@@ -8,13 +8,13 @@
 */
 
 /*
- * WeeklyReport class for Homeplate
+ * Week class for Homeplate
  * @author Richardo Hopkins
  * @version February 15, 2012
  */
-class WeeklyReport {
+class Week {
 	private $id;			// Unique identifier: yy-mm-dd-area where dd is is 
-								// the day of the month for Monday of the week.
+							// the day of the month for Monday of the week.
  	private $routes;		// array of Route ids for this week 
 
 		/**
