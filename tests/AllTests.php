@@ -12,6 +12,7 @@ class AllTests extends GroupTest {
         $this->addTestFile(dirname(__FILE__).'/testWeek.php');
         $this->addTestFile(dirname(__FILE__).'/testScheduleEntry.php');
         $this->addTestFile(dirname(__FILE__).'/testMonth.php');
+        $this->addTestFile(dirname(__FILE__).'/testdbVolunteers.php');
         echo ("All tests complete");
  	  }
  }

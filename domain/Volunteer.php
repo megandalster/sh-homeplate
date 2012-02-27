@@ -14,9 +14,9 @@
  */
 
 class Volunteer {
-	private $person_id; 	// id (unique key) = first_name . phone1
-	private $first_name; 	// first name as a string
+	private $id; 	// id (unique key) = first_name . phone1
 	private $last_name; 	// last name as a string
+	private $first_name; 	// first name as a string
 	private $address; 		// local address - string
 	private $city; 	     	// city - string
 	private $state; 		// state - string
@@ -132,11 +132,14 @@ class Volunteer {
     function get_status() {
         return $this->status;
     }
+    function get_area() {
+        return $this->area;
+    }
     function get_license_no() {
         return $this->license_no;
     }
     function get_license_state() {
-        return $this->license_status;
+        return $this->license_state;
     }
     function get_license_expdate() {
         return $this->license_expdate;
@@ -161,6 +164,9 @@ class Volunteer {
     }
     function get_start_date(){
     	return $this->start_date;
+    }
+	function get_notes(){
+    	return $this->notes;
     }
 	function get_password () {
         return $this->password;
