@@ -18,7 +18,7 @@ class Route {
  	private $drivers;       // array of driver id's scheduled for this route,
 							// e.g. ["malcom1234567890", Òsandi8437891234Ó]
 	private $teamcaptain_id;
-	private $stops;			// array of stops for this Route
+	private $stops;			// array of stop id's for this Route
     private $notes;			// notes written by the team captain or driver 
 
 		/**

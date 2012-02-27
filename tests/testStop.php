@@ -4,10 +4,10 @@ class testStop extends UnitTestCase {
     function testStopModule() {     
 
     	//create a test stop/client
-    	$stop = new Stop("11-12-29-HHI","Food Lion", "donor","", "");
+    	$stop = new Stop("11-12-29-HHI","Food Lion - Palmetto Bay", "donor","", "");
     	$stop2 = new Stop("11-12-29-HHI","Piggly Wiggly","donor", "meat:100,produce:50,misc:75","");
     	//testing getter functions
-    	$this->assertTrue($stop->get_id() == "11-12-29-HHIFood Lion");
+    	$this->assertTrue($stop->get_id() == "11-12-29-HHIFood Lion - Palmetto Bay");
     	$this->assertTrue($stop->get_items() == array());
     	$this->assertTrue($stop->get_total_weight() == 0);
     	$this->assertTrue($stop->get_notes() == "");
