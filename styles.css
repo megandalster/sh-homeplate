@@ -1,4 +1,4 @@
-/* 	RMH HOMEROOM CSS GENERAL STYLES */
+/* 	Homeplate CSS GENERAL STYLES */
 body{
 	/* background:#001460; */
 	background:#FFFFDD;
@@ -109,14 +109,14 @@ p.error {color: #FF0000;}
 }
 
 #header{
-	height: 155px;
+	height: 129px;
 	border-left:2px solid #264576;
 	border-top:2px solid #264576;
 	border-right:2px solid #264576;
-	padding: 10px;
-	background:url("images/rmhHeader.gif") #ffffff;
+	padding: 0px;
+	background:url("images/Header2.gif") #ffffff;
 	background-repeat:no-repeat;
-	background-position:top center;
+	background-position:top left;
 	overflow:hidden;
 }
 
@@ -124,6 +124,7 @@ p.error {color: #FF0000;}
 	font-size:11pt;
 	border-left:2px solid #264576;
 	border-right:2px solid #264576;
+	padding-left : 25px;
 	background:#ffffff;
 }
 

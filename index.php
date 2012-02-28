@@ -1,7 +1,7 @@
 <?PHP
 /*
- * Copyright 2011 by Alex Lucyk, Jesus Navarro, and Allen Tucker.
- * This program is part of RMH Homeroom, which is free software.
+ * Copyright 2012 by Hartley Brody, Richardo Hopkins, Nicholas Wetzel, and 
+ * Allen Tucker. This program is part of RMH Homeroom, which is free software.
  * It comes with absolutely no warranty.  You can redistribute and/or
  * modify it under the terms of the GNU Public License as published
  * by the Free Software Foundation (see <http://www.gnu.org/licenses/).
@@ -12,7 +12,7 @@
 <html>
 	<head>
 		<title>
-			RMH Homeroom
+			Homeplate
 		</title>
 		<link rel="stylesheet" href="styles.css" type="text/css" />
 	</head>
@@ -21,38 +21,35 @@
 			<?PHP include('header.php');?>
 			<div id="content">
 				<?PHP
-					include_once('database/dbPersons.php');
-     				include_once('domain/Person.php');
-     				include_once('database/dbBookings.php');
-     				include_once('domain/Booking.php');
-     				include_once('database/dbLog.php');
+					include_once('database/dbVolunteers.php');
+     				include_once('domain/Volunteer.php');
+     		//		include_once('database/dbLog.php');
      				if($_SESSION['_id']!="guest"){
-     				    $person = retrieve_dbPersons($_SESSION['_id']);
+     				    $person = retrieve_dbVolunteers($_SESSION['_id']);
      					$first_name = $person->get_first_name();
-     					echo "<p>Welcome, ".$first_name.", to RMH Homeroom!";
+     					echo "<p>Welcome, ".$first_name.", to <i>Homeplate</i>! ";
      				}
      				else
-     				    echo "<p>Welcome to RMH Homeroom!";
-
-     			?>
-				<p>
-			    <?PHP
+     				    echo "<p>Welcome to <i>Homeplate</i>! ";
+     				$today = time();
+					echo "Today is ".date('l F j, Y', $today).".<p>";
+     		
 					if($_SESSION['access_level']==0) 
-					    echo('<p> To request a room at the Ronald McDonald House, go <a href="'.$path.
-					         'newBooking.php?id='.'new'.'">here</a>.');
+					    echo('<p> To apply to become a driver with Second Helpings, select <a href="'.$path.
+					         'editVolunteer.php?id='.'new'.'">apply</a>.');
 				?>
 
-				<br>If you want to learn about this software, select <a href="<?php echo($path);?>about.php">about</a>.
-				<p>	When you are finished, please remember to <a href="<?php echo($path);?>logout.php">logout</a>.</p>
+				To learn more about this software, select <a href="<?php echo($path);?>about.php">about</a>. 
+				When you are finished, please remember to <a href="<?php echo($path);?>logout.php">logout</a>.</p>
 
 				<?PHP
 				if ($person){
 					/*
 					 * Check type of person, and display home page based on that.
-					 * level 0: General public, clients: login screen only
-					 * level 1: Volunteers: view roomlogs, edit room status and check clients in and out
-					 * level 2: Social Workers: view and edit referral forms, view persons and roomlogs
-					 * level 3: Managers: view and edit bookings (referral forms), persons, roomlogs, and rooms, view occupancy statistics
+					 * level 0: General public, driver applications: login screen and on-line application
+					 * level 1: Volunteers: view route, select stops and enter pickup or delivery amounts
+					 * level 2: Team Captains: view and edit volunteer and route data, generate weekly and monthly reports
+					 * level 3: Officers: view weekly and monthly reports, export data
 					*/
                     echo ('<p>If you want help using this software, select <a href="'.$path.'help.php">help</a> at any time.');
 					//DEFAULT PASSWORD CHECK
@@ -62,42 +59,51 @@
 						 else{
 						 	//they've submitted
 						 	if(($_POST['_rp_newa']!=$_POST['_rp_newb']) || (!$_POST['_rp_newa']))
-						 		echo('<div class="warning"><form method="post"><p>Error with new password. Ensure passwords match.</p><br /><table class="warningTable"><tr><td class="warningTable">Old Password:</td><td class="warningTable"><input type="password" name="_rp_old"></td></tr><tr><td class="warningTable">New password</td><td class="warningTable"><input type="password" name="_rp_newa"></td></tr><tr><td class="warningTable">New password<br />(confirm)</td><td class="warningTable"><input type="password" name="_rp_newb"></td></tr><tr><td colspan="2" align="center" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></form></td></tr></table></div>');
+						 		echo('<div class="warning"><form method="post">'.
+						 		'<p>Error with new password. Ensure passwords match.</p><br />'.
+						 		'<table class="warningTable">'.
+						 		'<tr><td class="warningTable">Old Password:</td>'.
+						 		'<td class="warningTable"><input type="password" name="_rp_old"></td></tr>'.
+						 		'<tr><td class="warningTable">New password</td><td class="warningTable"><input type="password" name="_rp_newa"></td></tr>'.
+						 		'<tr><td class="warningTable">New password<br />(confirm)</td><td class="warningTable"><input type="password" name="_rp_newb"></td></tr>'.
+						 		'<tr><td colspan="2" align="center" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></form></td></tr>'.
+						 		'</table></div>');
 						 	else if(md5($_POST['_rp_old'])!=$person->get_password())
-						 		echo('<div class="warning"><form method="post"><p>Error with old password.</p><br /><table class="warningTable"><tr><td class="warningTable">Old Password:</td><td class="warningTable"><input type="password" name="_rp_old"></td></tr><tr><td class="warningTable">New password</td><td class="warningTable"><input type="password" name="_rp_newa"></td></tr><tr><td class="warningTable">New password<br />(confirm)</td><td class="warningTable"><input type="password" name="_rp_newb"></td></tr><tr><td colspan="2" align="center" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></form></td></tr></table></div>');
+						 		echo('<div class="warning"><form method="post"><p>Error with old password.</p><br /><table class="warningTable">'.
+						 		'<tr><td class="warningTable">Old Password:</td><td class="warningTable"><input type="password" name="_rp_old"></td></tr>'.
+						 		'<tr><td class="warningTable">New password</td><td class="warningTable"><input type="password" name="_rp_newa"></td></tr>'.
+						 		'<tr><td class="warningTable">New password<br />(confirm)</td><td class="warningTable"><input type="password" name="_rp_newb"></td></tr>'.
+						 		'<tr><td colspan="2" align="center" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></form></td></tr>'.
+						 		'</table></div>');
 						 	else if((md5($_POST['_rp_old'])==$person->get_password()) && ($_POST['_rp_newa']==$_POST['_rp_newb'])){
 						 		$newPass = md5($_POST['_rp_newa']);
 						 		$person->set_password($newPass); 
-						 		update_dbPersons($person);
+						 		update_dbVolunteers($person);
 						 	}
 						 }
 						 echo('<br clear="all">');
 					}
 
 			    //NOTES OUTPUT
-				echo('<div class="infobox"><p class="notes"><strong>Notes to/from the manager:</strong><br />');
-				echo($person->get_mgr_notes().'</div></p>');
+				echo('<div class="infobox"><p class="notes"><strong>Notes to/from the team captain:</strong><br />');
+				echo($person->get_notes().'</div>');
 
 				// we have a guest authenticated
 				if($_SESSION['access_level']==0) {
-						 	//SHOW STATUS
-					echo('<div class="infobox"><p><strong>Your request has been submitted.</strong><br></p></div><br>');
+					echo('<div class="infobox"><p><strong>Your application has been submitted.  Thank you!</strong><br></p></div>)');
 				}
-
-				//We have a manager authenticated	 
+				// We have a driver authenticated -- show them today's route
+				if ($_SESSION['access_level']==1) {
+					echo "<p>(Here we need to show the driver today's route for his/her area.)";
+				}
+				//We have a team captain authenticated	 
+				if($_SESSION['access_level']==2) {
+					echo "<p>(Here we need to show the team captain today's system status: routes completed this week, notes from drivers, etc.)";
+				}
+				//We have a program officer authenticated	 
 				if($_SESSION['access_level']==3) {
-					$two_weeks = $today + 14*86400; 
-				    echo('<div class="logBox"><p><strong>Recent bookings, referrals, and room log changes:</strong><br />');
-					echo('<table class="searchResults">');
-					echo('<tr><td class="searchResults"><u>Time</u></td><td class="searchResults"><u>Message</u></td></tr>');
-						 	$log=get_last_log_entries(5);
-						 	for($i=0;$i<5;++$i) 
-						 		echo('<tr><td class="searchResults">'.$log[$i][1].'</td>' .
-						 				'<td class="searchResults">'.$log[$i][2].'</td></tr>');
-						 	echo ('</table><br><a href="'.$path.'log.php">View full log</a></p></div><br>');
-				    
+					echo "<p>(Here we need to show the program officer today's system status: weekly report, monthly report, notes from team captains, etc.)";
 				}
-
 				}
 				?>
 				<br clear="all">

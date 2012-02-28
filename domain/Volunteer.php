@@ -186,6 +186,9 @@ class Volunteer {
             return false;
     }
     //setter functions ... can be added later as needed
+    function set_password ($new_password) {
+        $this->password = $new_password;
+    }
         
 }
 ?>
