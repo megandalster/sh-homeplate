@@ -38,7 +38,6 @@
 					$person = retrieve_dbVolunteers($db_id);	
 					//	echo $person->get_id() . " = retrieved person_id<br>";
 					if($person){ //avoids null results
-						echo "we've retrieved a person<br>";
 						if($person->get_password()==$db_pass) { //if the passwords match, login
 							$_SESSION['logged_in']=1;
 							if (in_array('officer', $person->get_type()))

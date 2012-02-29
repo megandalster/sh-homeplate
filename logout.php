@@ -24,7 +24,7 @@
 					session_unset();
 					session_write_close();
 				?>
-				<p>You are now logged out of RMH Homeroom.</p>
+				<p>You are now logged out of Homeplate.</p>
 				<?PHP include('footer.inc');?>
 			</div>
 		</div>
