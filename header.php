@@ -40,8 +40,8 @@ h1 {padding-left: 0px; padding-right:165px;}
 		//pages volunteers can view
 		$permission_array['viewRoute.php']=1;
 		//additional pages team captains can view
-		$permission_array['editVolunteers.php']=2;
-		$permission_array['editParticipants.php']=2;
+		$permission_array['editVolunteer.php']=2;
+		$permission_array['editParticipant.php']=2;
 		$permission_array['editSchedule.php']=2;
 		$permission_array['searchVolunteers.php']=2;
 		$permission_array['searchParticipants.php']=2;
