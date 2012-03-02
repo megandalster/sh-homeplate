@@ -22,6 +22,8 @@ class Stop {
 	//Constructor for an indvidual Stop/Client
 	function __construct($route_id, $client_id, $type, $items, $notes){
 		$this->id = $route_id . $client_id;
+		$this->route_id = $route_id;
+		$this->client_id = $client_id;
 		$this->type = $type;
 		if ($items == "") { 
         	$this->items = array();
@@ -29,23 +31,28 @@ class Stop {
 		} 
         else {
         	$this->items = explode(',',$items);
+        	
         	$this->set_total_weight();
         }
         $this->notes = $notes;
 	}
 	
-	//Getter functions for the Stop/Client
+	//Getter functions for the Stop
 	function get_id(){
 		return $this->id;
 	}
-	
+	function get_route_id(){
+		return $this->route_id;
+	}
+	function get_client_id(){
+		return $this->client_id;
+	}
 	function get_type(){
 		return $this->type;
 	}
 	function get_items(){
 		return $this->items;
 	}
-	
 	function get_notes(){
 		return $this->notes;
 	}
@@ -61,9 +68,15 @@ class Stop {
 		    $this->total_weight += 	$w;
 		}
 	}
+	function set_id($new_id){
+		$this->id = $new_id;
+	}
 	function add_item ($new_item) {
-		$this->items[] = $new_item;
-		$this->set_total_weight();
+        $this->items[] = $new_item;
+        $this->set_total_weight();
+    }
+	function set_notes($new_notes){
+		$this->notes = $new_notes;
 	}
 	function remove_item ($item_type) {
 		for ($i=0; $i<sizeof($this->items);$i++) {

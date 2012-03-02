@@ -14,8 +14,7 @@
  */
 class Client {
 	private $id;     		// uniquely identifies the donor or recipient
-							// e.g. ÒFood Lion LauÓ 
-	private $name;			// e.g. ÒFood Lion #1698 Laurel BayÓ
+							// e.g. ÒFood Lion #1698 Laurel BayÓ
 	private $chain_name;	// e.g., ÒFood LionÓ (usually blank)
 	private $area;			// "HHI", "SUN", or "BFT"
 	private $type;			// "donor" or "recipient"
@@ -33,10 +32,9 @@ class Client {
 	
 	//copied from volunteer class. question about use of "explode" with arrays
 	
-	function __construct($id, $name, $chain_name, $area, $type, $address, $city, $state, $zip, $geocoordinates,
+	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $geocoordinates,
 	                        $phone1, $phone2, $days, $feed_america, $notes){                
         $this->id       	= $id;      
-        $this->name 		= $name;      
         $this->chain_name 	= $chain_name;      
         $this->area 		= $area;      
         $this->type 		= $type;      
@@ -66,9 +64,6 @@ class Client {
     //getter functions
     function get_id() {
         return $this->id;
-    }
-    function get_name() {
-        return $this->name;
     }
     function get_chain_name() {
         return $this->chain_name;

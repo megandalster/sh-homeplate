@@ -1,10 +1,9 @@
 <?php
 /*
- * Copyright 2008 by Oliver Radwan, Maxwell Palmer, Nolan McNair,
- * Taylor Talmage, and Allen Tucker.  This program is part of RMH Homebase.
- * RMH Homebase is free software.  It comes with absolutely no warranty.
- * You can redistribute it and/or modify it under the terms of the GNU
- * General Public License as published by the Free Software Foundation
+ * Copyright 2012 by Hartley Brody, Richardo Hopkins, Nicholas Wetzel, and Allen 
+ * Tucker.  This program is part of Homeplate, which is free software.  It comes 
+ * with absolutely no warranty. You can redistribute it and/or modify it under the 
+ * terms of the GNU General Public License published by the Free Software Foundation
  * (see <http://www.gnu.org/licenses/ for more information).
 */
 
@@ -13,15 +12,20 @@
  * @author Oliver Radwan and Allen Tucker and Richardo Hopkins
  */
 
-include_once('dbinfo.php');
-include_once('Route.php');
+include_once(dirname(__FILE__).'/../domain/Route.php');
+include_once(dirname(__FILE__).'/dbinfo.php');
 
-function setup_dbRoutes() {
+function create_dbRoutes() {
 		connect();
 		mysql_query("DROP TABLE IF EXISTS dbRoutes");
-		mysql_query("CREATE TABLE dbRoutes(id TEXT NOT NULL, drivers TEXT NOT NULL, teamcaptain_id TEXT NOT NULL, " .
-				"    stops TEXT NOT NULL, notes TEXT)");
+		$result = mysql_query("CREATE TABLE dbRoutes(id TEXT NOT NULL, drivers TEXT, teamcaptain_id TEXT, " .
+				"stops TEXT, notes TEXT)");
         mysql_close();
+        if(!$result){
+			echo (mysql_error()."Error creating database table dbRoutes. \n");
+			return false;
+		}
+		return true;
 }
 /*
  * add a route to dbRoutes table: if already there, return false
@@ -32,7 +36,7 @@ function setup_dbRoutes() {
 		$query = "SELECT * FROM dbRoutes WHERE id = '".$route->get_id()."'";
 		$result = mysql_query($query);
 		//if there's no entry for this id, add it
-		if ($result==null || mysql_num_rows($result) == 0) {
+		if ($result == null || mysql_num_rows($result) == 0) {
    			mysql_query('INSERT INTO dbRoutes VALUES("'.
 		             $route->get_id().'","'.
 		             implode(',', $route->get_drivers()).'","'.
