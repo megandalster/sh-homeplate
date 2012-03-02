@@ -48,4 +48,9 @@ class Month {
 	function get_notes(){
 		return $this->notes;
 	}
+	
+	//setter functions
+	function set_notes($new_notes){
+		$this->notes = $new_notes;
+	}
 }

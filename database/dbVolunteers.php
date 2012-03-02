@@ -13,7 +13,7 @@
 * @version February 27, 2012
 */
 
-include_once(dirname(__FILE__).'/../domain/Vounteer.php');
+// include_once(dirname(__FILE__).'/../domain/Vounteer.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
 
 function create_dbVolunteers(){

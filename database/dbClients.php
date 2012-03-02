@@ -19,11 +19,11 @@ include_once(dirname(__FILE__).'/dbinfo.php');
 function create_dbClients(){
 	connect();
 	mysql_query("DROP TABLE IF EXISTS dbClients");
-	$result = mysql_query("CREATE TABLE dbClients (id TEXT NOT NULL, name TEXT, chain_name TEXT, area TEXT, type TEXT, address TEXT, city TEXT, state TEXT,
-                            zip TEXT, phone1 VARCHAR(12) NOT NULL, phone2 VARCHAR(12), coordinates TEXT, days TEXT, feed_america TEXT, notes TEXT)");
+	$result = mysql_query("CREATE TABLE dbClients (id TEXT NOT NULL, chain_name TEXT, area TEXT, type TEXT, address TEXT, city TEXT, state TEXT,
+                            zip TEXT, geocoordinates TEXT, phone1 VARCHAR(12) NOT NULL, phone2 VARCHAR(12), days TEXT, feed_america TEXT, notes TEXT)");
 	mysql_close();
 	if(!$result){
-			echo (mysql_error()."Error creating database dbClients. \n");
+			echo (mysql_error()."Error creating database table dbClients. \n");
 			return false;
 	}
 	return true;
@@ -37,7 +37,7 @@ function retrieve_dbClients($id){
 			return false;
 	}
 	$result_row = mysql_fetch_assoc($result);
-	$theClient = new Client($result_row['id'], $result_row['name'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
+	$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
                             $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], $result_row['phone2'],
 							$result_row['days'], $result_row['feed_america'], $result_row['notes']);
 	mysql_close();
@@ -50,7 +50,7 @@ function getall_dbClients(){
 	$result = mysql_query("SELECT * FROM dbClients ORDER BY last_name");
 	$theClients = array();
 	while($result_row = mysql_fetch_assoc($result)){
-		$theClient = new Client($result_row['id'], $result_row['name'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
+		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
                             $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], $result_row['phone2'],
 							$result_row['days'], $result_row['feed_america'], $result_row['notes']);
 		$theClients[] = $theClient;
@@ -72,7 +72,6 @@ function insert_dbClients($client){
 	}
 	$query = "INSERT INTO dbClients VALUES ('".
 				$client->get_id()."','" .
-				$client->get_name()."','".
 				$client->get_chain_name()."','".
 				$client->get_area()."','".
 				$client->get_type()."','".
