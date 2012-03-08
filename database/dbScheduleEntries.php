@@ -10,7 +10,7 @@
 /*
 * dbScheduleEntries class for Homeplate
 * @author Hartley Brody
-* @version March 1, 2012
+* @version March 7, 2012
 */
 
 include_once(dirname(__FILE__).'/../domain/ScheduleEntry.php');
