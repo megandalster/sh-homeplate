@@ -63,7 +63,8 @@ h1 {padding-left: 0px; padding-right:165px;}
 
 		//This line gives us the path to the html pages in question, useful if the server isn't installed @ root.
 		$path = strrev(substr(strrev($_SERVER['SCRIPT_NAME']),strpos(strrev($_SERVER['SCRIPT_NAME']),'/')));
-
+		
+		$today=date("y-m-d");
 		//they're logged in and session variables are set.
 		echo('<a href="'.$path.'index.php">home</a>');
 		if ($_SESSION['access_level']==0) // guests
@@ -71,14 +72,14 @@ h1 {padding-left: 0px; padding-right:165px;}
 		
 		if($_SESSION['access_level']>=1) // drivers, team captains, and officers 
 		{
-		    echo('<a href="'.$path.'viewRoute.php?id='.$_SESSION['_area'].'"> | routes</a>');
+		    echo('<a href="'.$path.'viewRoute.php?area='.$_SESSION['_area'].'&date='.$today.'"> | routes</a>');
 		    echo('<a href="'.$path.'help.php?helpPage='.$current_page.'" target="_BLANK"> | help</a>');
 		}
 	    if($_SESSION['access_level']>=2) { // team captains and officers
 	    	echo '<a href="'.$path.'log.php"> | log</a>';
-	    	echo('<a href="'.$path.'viewVolunteers.php"> | volunteers</a>');
-	    	echo('<a href="'.$path.'viewClients.php"> | donors and recipients</a>');
-	    	echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.date('y-m-d').'&enddate='.date('y-m-d').'"> | reports</a>';	    
+	    	echo('<a href="'.$path.'searchVolunteers.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
+	    	echo('<a href="'.$path.'searchClients.php?area='.$_SESSION['_area'].'"> | donors and recipients</a>');
+	    	echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$today.'"> | reports</a>';	    
 	    }
 		echo('<a href="'.$path.'about.php"> | about</a>');
 		echo('<a href="'.$path.'logout.php"> | logout</a>');
