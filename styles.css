@@ -14,14 +14,17 @@ h1 {padding-left: 20px; padding-right: 20px;}
 
 
 /* TABLE STYLES */
-table { border-collapse:collapse; font-family:verdana, arial, sans-serif;}
-td {border: solid 1px #264576; font-size:12px; padding:3px; }
+table {border: none;  border-collapse:collapse; font-family:verdana, arial, sans-serif;}
+td {border: none; font-size:12px; padding:3px; }
 
 table.searchResults{ border-collapse:collapse;vertical-align:middle; font-family:verdana, arial, sans-serif; padding-left:15px;}
 td.searchResults {border: none; font-size:12px; padding-top:3px; padding-bottom:3px; padding-left:6px; padding-right:6px;}
 
 table.warningTable{border-collapse:collapse; font-family:verdana, arial, sans-serif; padding-left:0px;}
 td.warningTable{border: none; font-size:12px; padding-top:3px; padding-bottom:3px; padding-left:6px; padding-right:6px;}
+
+/* FIELDSET STYLES */
+fieldset {width: 75%}
 
 /* LINK STYLES */
 A			{ color: #001460; text-decoration: none; img-decoration: none; font-weight:bold;}

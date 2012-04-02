@@ -64,6 +64,29 @@ function getall_dbVolunteers(){
 	return $theVols;
 }
 
+// retrieve only those volunteers that match the criteria given in the arguments
+function getonlythose_dbVolunteers($area, $type, $status, $name, $availability) {
+	connect();
+	$query = "SELECT * FROM dbVolunteers WHERE area like '%".$area. "%'" .  
+	       " AND type LIKE '%".$type."%'" . 
+			 " AND status LIKE '%".$status."%'" . 
+			 " AND (first_name LIKE '%".$name."%' OR last_name LIKE'%".$name."%')" .
+			 " AND availability LIKE '%".implode(',',$availability)."%' ORDER BY last_name";
+	$result = mysql_query($query);
+	$theVols = array();
+		
+	while($result_row = mysql_fetch_assoc($result)){
+		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
+							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
+							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'], $result_row['convictions'], 
+							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
+							$result_row['start_date'], $result_row['notes'], $result_row['password']);
+		$theVols[] = $theVol;
+	}
+	mysql_close();
+	return $theVols;
+}
+
 function insert_dbVolunteers($volunteer){
 	if(! $volunteer instanceof Volunteer){
 		return false;
@@ -135,5 +158,8 @@ function delete_dbVolunteers($id){
 		return false;
 	}
 	return true;
+}
+function phone_edit($phone) {
+	return substr($phone,0,3)."-".substr($phone,3,3)."-".substr($phone,6);
 }
 ?>

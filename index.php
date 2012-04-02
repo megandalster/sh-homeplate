@@ -36,13 +36,10 @@
      		
 					if($_SESSION['access_level']==0) 
 					    echo('<p> To apply to become a driver with Second Helpings, select <a href="'.$path.
-					         'editVolunteer.php?id='.'new'.'">apply</a>.');
+					         'volunteerEdit.php?id='.'new'.'">apply</a>.');
 				?>
 
-				To learn more about this software, select <a href="<?php echo($path);?>about.php">about</a>. 
-				When you are finished, please remember to <a href="<?php echo($path);?>logout.php">logout</a>.</p>
-
-				<?PHP
+			<?PHP
 				if ($person){
 					/*
 					 * Check type of person, and display home page based on that.
@@ -51,8 +48,7 @@
 					 * level 2: Team Captains: view and edit volunteer and route data, generate weekly and monthly reports
 					 * level 3: Officers: view weekly and monthly reports, export data
 					*/
-                    echo ('<p>If you want help using this software, select <a href="'.$path.'help.php">help</a> at any time.');
-					//DEFAULT PASSWORD CHECK
+                    //DEFAULT PASSWORD CHECK
 					if (md5($person->get_id())==$person->get_password()){
 						 if(!isset($_POST['_rp_submitted']))
 						 	echo('<div class="warning"><form method="post"><p><strong>We recommend that you change your password, which is currently default.</strong><table class="warningTable"><tr><td class="warningTable">Old Password:</td><td class="warningTable"><input type="password" name="_rp_old"></td></tr><tr><td class="warningTable">New password</td><td class="warningTable"><input type="password" name="_rp_newa"></td></tr><tr><td class="warningTable">New password<br />(confirm)</td><td class="warningTable"><input type="password" name="_rp_newb"></td></tr><tr><td colspan="2" align="right" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></td></tr></table></p></form></div>');
