@@ -40,11 +40,11 @@ h1 {padding-left: 0px; padding-right:165px;}
 		//pages volunteers can view
 		$permission_array['viewRoute.php']=1;
 		//additional pages team captains can view
-		$permission_array['editVolunteer.php']=2;
-		$permission_array['editParticipant.php']=2;
+		$permission_array['volunteerEdit.php']=2;
+		$permission_array['clientEdit.php']=2;
 		$permission_array['editSchedule.php']=2;
-		$permission_array['searchVolunteers.php']=2;
-		$permission_array['searchParticipants.php']=2;
+		$permission_array['volunteerSearch.php']=2;
+		$permission_array['clientSearch.php']=2;
 		$permission_array['generateReports.php']=2;
 		//additional pages program coordinators can view
 		$permission_array['viewReports.php']=3;
@@ -68,7 +68,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 		//they're logged in and session variables are set.
 		echo('<a href="'.$path.'index.php">home</a>');
 		if ($_SESSION['access_level']==0) // guests
-		    echo('<a href="editVolunteer.php?id=new'.'"> | apply </a>');
+		    echo('<a href="volunteerEdit.php?id=new'.'"> | apply </a>');
 		
 		if($_SESSION['access_level']>=1) // drivers, team captains, and officers 
 		{
@@ -77,7 +77,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 		}
 	    if($_SESSION['access_level']>=2) { // team captains and officers
 	    	echo '<a href="'.$path.'log.php"> | log</a>';
-	    	echo('<a href="'.$path.'searchVolunteers.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
+	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
 	    	echo('<a href="'.$path.'searchClients.php?area='.$_SESSION['_area'].'"> | donors and recipients</a>');
 	    	echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$today.'"> | reports</a>';	    
 	    }
