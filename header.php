@@ -78,7 +78,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 	    if($_SESSION['access_level']>=2) { // team captains and officers
 	    	echo '<a href="'.$path.'log.php"> | log</a>';
 	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
-	    	echo('<a href="'.$path.'searchClients.php?area='.$_SESSION['_area'].'"> | donors and recipients</a>');
+	    	echo('<a href="'.$path.'clientSearch.php?area='.$_SESSION['_area'].'"> | donors and recipients</a>');
 	    	echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$today.'"> | reports</a>';	    
 	    }
 		echo('<a href="'.$path.'about.php"> | about</a>');
