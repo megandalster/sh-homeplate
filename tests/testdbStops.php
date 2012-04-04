@@ -23,8 +23,8 @@ class testdbStops extends UnitTestCase {
         
         // creates some stops to add to the database
        	$stop = new Stop("11-12-29-HHI","Food Lion - Palmetto Bay","donor","","");
-    	$stop2 = new Stop("11-12-29-HHI","Piggly Wiggly","donor","meat:100,produce:50,misc:75","");
-    	$stop3 = new Stop("11-12-29-HHI","Walmart","donor","meat:75,produce:20","Completed");
+    	$stop2 = new Stop("11-12-29-HHI","Piggly Wiggly","donor","meat:100:50:50:40:20","");
+    	$stop3 = new Stop("11-12-29-HHI","Walmart","donor","meat:75:20:20:50:60","Completed");
         
         // tests the insert function
         $this->assertTrue(insert_dbStops($stop));
@@ -34,8 +34,8 @@ class testdbStops extends UnitTestCase {
         //tests the retrieve function
         $this->assertEqual(retrieve_dbStops($stop3->get_id())->get_id (), "11-12-29-HHIWalmart");
         $this->assertEqual(retrieve_dbStops($stop3->get_id())->get_type (), "donor");
-        $this->assertEqual(retrieve_dbStops($stop3->get_id())->get_items (), array("meat:75","produce:20"));
-        $this->assertEqual(retrieve_dbStops($stop3->get_id())->get_total_weight (), "95");
+        $this->assertEqual(retrieve_dbStops($stop3->get_id())->get_items (), array("meat:75:20:20:50:60"));
+        $this->assertEqual(retrieve_dbStops($stop3->get_id())->get_total_weight (), "75");
         $this->assertEqual(retrieve_dbStops($stop3->get_id())->get_notes (), "Completed");    
                  
         //tests the update function
