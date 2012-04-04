@@ -15,8 +15,12 @@
 class Stop {
 	private $id;		// String $route_id . $Client_id 
 	private $type;		// "donor" or "recipient"
-	private $items;		// array of foodtype:weight pairs for this stop
+	private $items;		// array of foodtype:weight:lboxes:sboxes:trays:bags pairs for this stop
 	private $total_weight; // total weight for this stop
+	private $total_lboxes; // total number of large boxes for this stop
+	private $total_sboxes; // total number of small boxes for this stop
+	private $total_trays; // total number of trays for this stop
+	private $total_bags; // total number of bags for this stop
 	private $notes;		// notes written by the driver 
 
 	//Constructor for an indvidual Stop/Client
@@ -32,8 +36,8 @@ class Stop {
         else {
         	$this->items = explode(',',$items);
         	
-        	$this->set_total_weight();
-        }
+        	$this->set_all_totals();
+	}
         $this->notes = $notes;
 	}
 	
@@ -59,21 +63,50 @@ class Stop {
 	function get_total_weight() {
 		return $this->total_weight;
 	}
+	function get_total_lboxes() {
+		return $this->total_lboxes;
+	}
+	function get_total_sboxes() {
+		return $this->total_sboxes;
+	}
+	function get_total_trays() {
+		return $this->total_trays;
+	}
+	function get_total_bags() {
+		return $this->total_bags;
+	}
 	
 	//setters
-	function set_total_weight() {
+	function set_all_totals(){
+		
 		$this->total_weight = 0;
-		foreach ($this->items as $item) {
-			$w = substr($item, strpos($item,":")+1);
-		    $this->total_weight += 	$w;
-		}
+		$this->total_lboxes = 0;
+		$this->total_sboxes = 0;
+		$this->total_trays = 0;
+		$this->total_bags = 0;
+		
+		foreach($this->items as $item){
+        		$i = explode(':',$item);
+        		
+        		$this->total_weight += $i[1];
+        		
+        		$this->total_lboxes += $i[2];
+        		
+        		$this->total_sboxes += $i[3];
+        		
+        		$this->total_trays += $i[4];
+        		
+     			$this->total_bags += $i[5];
+	}
+	
 	}
 	function set_id($new_id){
 		$this->id = $new_id;
 	}
 	function add_item ($new_item) {
         $this->items[] = $new_item;
-        $this->set_total_weight();
+        $this->set_all_totals();
+        
     }
 	function set_notes($new_notes){
 		$this->notes = $new_notes;
@@ -85,7 +118,8 @@ class Stop {
 			    break;
 			}
 		}
-		$this->set_total_weight();
+		$this->set_all_totals();
+		
 	}
 }
 ?>
