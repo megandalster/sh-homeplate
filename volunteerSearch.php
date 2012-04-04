@@ -66,11 +66,11 @@
 						$status = $_POST['s_status'];
                         $name = trim(str_replace('\'','&#39;',htmlentities($_POST['s_name'])));
                         $availability = array();
-       /*                 if (!$_POST['s_day'])      // allow "any" day if none checked
+                        if (!$_POST['s_day'])      // allow "any" day if none checked
                         	$_POST['s_day'][] = "";
                         if (!$_POST['s_week'])	   // allow "any" week if none checked
                         	$_POST['s_week'][] = "";
-       */                 foreach ($_POST['s_day'] as $day) 
+                        foreach ($_POST['s_day'] as $day) 
                         	foreach($_POST['s_week'] as $week)
                         		$availability[] = $day . ":" . $week;
                         // now go after the volunteers that fit the search criteria
