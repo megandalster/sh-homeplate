@@ -25,7 +25,12 @@ Database Initialization
 <?php
 	echo("Installing Tables...<br />");
 	include_once('dbinfo.php');
+	include_once('dbClients.php');
 	include_once('dbRoutes.php');
+	include_once('dbScheduleEntries.php');
+	include_once('dbStops.php');
+	include_once('dbVolunteers.php');
+	include_once('dbWeeks.php');
 
 	// connect
 	$connected=connect();
@@ -34,8 +39,28 @@ Database Initialization
    echo("database selected...<br />");
 
 	// Routes
-	setup_dbRoutes();
+	create_dbClients();
+	echo("dbClients added...<br />");
+    
+	// Routes
+	create_dbRoutes();
 	echo("dbRoutes added...<br />");
+    
+	// Routes
+	create_dbScheduleEntries();
+	echo("dbScheduleEntries added...<br />");
+    
+	// Routes
+	create_dbStops();
+	echo("dbStops added...<br />");
+    
+	// Routes
+	create_dbVolunteers();
+	echo("dbVolunteers added...<br />");
+    
+	// Routes
+	create_dbWeeks();
+	echo("dbWeeks added...<br />");
 
 	echo("Installation of mysql tables complete.");
 	echo(" To prevent data loss, run this program only if you want to clear all the tables.</p>");
