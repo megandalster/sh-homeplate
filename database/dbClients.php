@@ -59,6 +59,21 @@ function getall_dbClients(){
 	return $theClients;
 }
 
+function get_clients($area, $day) {
+	connect();
+    $query = "SELECT * FROM dbClients WHERE area = ". $area . " AND days LIKE %".$day."% ORDER BY type,id";
+    $result = mysql_query ($query);
+    $theClients = array();
+    while ($result_row = mysql_fetch_assoc($result)) {
+        $theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], $result_row['phone2'],
+							$result_row['days'], $result_row['feed_america'], $result_row['notes']);
+		$theClients[] = $theClient;
+    }
+	mysql_close();
+    return $theClients; 
+}
+
 function insert_dbClients($client){
 	if(! $client instanceof Client){
 		return false;

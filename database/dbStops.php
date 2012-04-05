@@ -73,6 +73,7 @@ function retrieve_dbStops ($id) {
 	mysql_close(); 
     return $theStop;   
 }
+
 function getall_dbStops () {
     connect();
     $query = "SELECT * FROM dbStops ORDER BY id";
