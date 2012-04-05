@@ -106,4 +106,15 @@ function delete_dbScheduleEntries($id){
 	}
 	return true;
 }
+
+function get_driver_ids($area, $week, $day) {
+	connect();
+	$result = mysql_query("SELECT * FROM dbScheduleEntries WHERE id=" .
+		$day.":".$week." AND area=".$area." ORDER BY last_name");
+	if ($result_row = mysql_fetch_assoc($result))
+		$theDrivers = explode(',',retrieve_dbVolunteers($result_row['drivers']));
+	else $theDrivers = null;
+	mysql_close();
+	return $theDrivers;
+}
 ?>

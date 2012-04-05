@@ -13,7 +13,7 @@
 * @version February 27, 2012
 */
 
-// include_once(dirname(__FILE__).'/../domain/Vounteer.php');
+include_once(dirname(__FILE__).'/../domain/Volunteer.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
 
 function create_dbVolunteers(){
@@ -75,6 +75,23 @@ function getonlythose_dbVolunteers($area, $type, $status, $name, $availability) 
 	$result = mysql_query($query);
 	$theVols = array();
 		
+	while($result_row = mysql_fetch_assoc($result)){
+		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
+							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
+							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'], $result_row['convictions'], 
+							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
+							$result_row['start_date'], $result_row['notes'], $result_row['password']);
+		$theVols[] = $theVol;
+	}
+	mysql_close();
+	return $theVols;
+}
+
+function get_team_captains ($area) {
+	connect();
+	$result=mysql_query("SELECT * FROM dbVolunteers WHERE type LIKE %teamcaptain% AND area  = '".$area."'");
+	
+	$theVols = array();	
 	while($result_row = mysql_fetch_assoc($result)){
 		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
 							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
