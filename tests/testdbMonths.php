@@ -18,9 +18,6 @@ include_once(dirname(__FILE__).'/../database/dbMonths.php');
 class testdbMonths extends UnitTestCase {
     function testdbMonthsModule() {
     	
-        // creates an empty dbMonths table
-        $this->assertTrue(create_dbMonths());
-        
         // creates some Months to add to the database
        	$month = new Month("12-01","published", "12-01-01-HHI","");
     	$month2 = new Month("12-02","published","12-02-05-HHI","");

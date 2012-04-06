@@ -9,7 +9,7 @@ class testdbWeeks extends UnitTestCase {
       function testdbWeeksModule() {
       	
  			//Test table creation
-			$this->assertTrue(create_dbWeeks()); 	  	
+			// $this->assertTrue(create_dbWeeks()); 	  	
 			$w1 = new Week("1st week of January", "Route 1, Route 2, Route 66");
 			$this->assertTrue(add_week($w1));
 

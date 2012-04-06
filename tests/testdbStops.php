@@ -19,7 +19,7 @@ class testdbStops extends UnitTestCase {
     function testdbStopsModule() {
     	
         // creates an empty dbStops table
-        $this->assertTrue(create_dbStops());
+        // $this->assertTrue(create_dbStops());
         
         // creates some stops to add to the database
        	$stop = new Stop("11-12-29-HHI","Food Lion - Palmetto Bay","donor","","");

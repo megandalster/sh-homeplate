@@ -18,28 +18,30 @@ class Route {
  	private $drivers;       // array of driver id's scheduled for this route,
 							// e.g. ["malcom1234567890", Òsandi8437891234Ó]
 	private $teamcaptain_id;
-	private $stops;			// array of stop id's for this Route
+	private $pickup_stops;	// array of stop id's for donors
+    private $dropoff_stops;	// array of stop id's for recipients
+    private $status;		// "created", "published", or "completed"
     private $notes;			// notes written by the team captain or driver 
 
 		/**
          * constructor for a Route
          */
-    function __construct($id, $drivers, $teamcaptain_id, $stops, $notes){
+    function __construct($id, $drivers, $teamcaptain_id, $pickup_stops, $dropoff_stops, $status, $notes){
     	
-    	$this->id = $id;
-    	
+    	$this->id = $id;  	
     	if ($drivers == "") 
         	$this->drivers = array();
-        else 
-        	$this->drivers = explode(',', $drivers);
-        	
-    	$this->teamcaptain_id = $teamcaptain_id;
-    	
-    	if ($stops = "")
-    		$this->stops = array();
-    	else
-    		$this->stops = explode(',', $stops);
-    		
+        else $this->drivers = explode(',', $drivers);
+    	$this->teamcaptain_id = $teamcaptain_id;   	
+    	if ($pickup_stops == "")
+    		$this->pickup_stops = array();
+    	else $this->pickup_stops = explode(',', $pickup_stops);
+    	if ($dropoff_stops == "") 
+    		$this->dropoff_stops = array();
+    	else $this->dropoff_stops = explode(',', $dropoff_stops);
+    	if ($status == "") 
+    		$this->status = "created";
+    	else $this->status = $status;	
     	$this->notes = $notes;
     }
     
@@ -53,8 +55,14 @@ class Route {
     function get_teamcaptain_id() {
     	return $this->teamcaptain_id;
     }
-    function get_stops() {
-    	return $this->stops;
+    function get_pickup_stops() {
+    	return $this->pickup_stops;
+    }
+    function get_dropoff_stops() {
+    	return $this->dropoff_stops;
+    }
+    function get_status() {
+    	return $this->status;
     }
     function get_day() {
     	$timestamp = mktime(0,0,0,substr($this->id,3,2),substr($this->id,6,2),substr($this->id,0,2)); 	

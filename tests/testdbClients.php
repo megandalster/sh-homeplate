@@ -4,7 +4,7 @@ include_once(dirname(__FILE__).'/../database/dbClients.php');
 class testdbClients extends UnitTestCase {
 	function testdbClientsModule() {
 		//Test table creation
-			$this->assertTrue(create_dbClients());
+		//	$this->assertTrue(create_dbClients());
 	
 		//Test Clients
 		$client1 = new Client("Whole Foods Brunswick", "Whole Foods USA", "Bowdoin", "grocery store", "123 Maine St", "Brunswick", 

@@ -8,12 +8,12 @@ include_once(dirname(__FILE__).'/../database/dbRoutes.php');
 class testdbRoutes extends UnitTestCase {
       function testdbRoutesModule() {
  			//Test table creation
-			$this->assertTrue(create_dbRoutes()); 	  	
+			// $this->assertTrue(create_dbRoutes()); 	  	
 			$r1 = new Route("11-12-28-HHI", "malcom1234567890,sandi8437891234", "Jon1112345678",
-    			"Food Lion - Palmetto Bay,Piggly Wiggly", "Note.");
+    			"Food Lion - Palmetto Bay,Piggly Wiggly","","", "Note.");
 			$this->assertTrue(add_route($r1));
 
-			$r2 = new Route("Route 2", "Driver, Backseat Driver", "Captain America","", "Note - boxes are heavy.");
+			$r2 = new Route("Route 2", "Driver, Backseat Driver", "Captain America","","","", "Note - boxes are heavy.");
 			$this->assertTrue(add_route($r2));
 			// should return false for a duplicate entry
 			$this->assertFalse(add_route($r2));
