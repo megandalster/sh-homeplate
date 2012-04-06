@@ -9,7 +9,7 @@
 
 /**
  * @version Feb 23, 2013
- * @author Oliver Radwan and Allen Tucker and Richardo Hopkins
+ * @author Allen Tucker and Richardo Hopkins
  */
 
 include_once(dirname(__FILE__).'/../domain/Route.php');
@@ -22,7 +22,7 @@ function create_dbRoutes() {
 		connect();
 		mysql_query("DROP TABLE IF EXISTS dbRoutes");
 		$result = mysql_query("CREATE TABLE dbRoutes(id TEXT NOT NULL, drivers TEXT, teamcaptain_id TEXT, " .
-				"stops TEXT, notes TEXT)");
+				"pickup_stops TEXT, dropoff_stops TEXT, status TEXT, notes TEXT)");
         mysql_close();
         if(!$result){
 			echo (mysql_error()."Error creating database table dbRoutes. \n");
@@ -44,7 +44,9 @@ function create_dbRoutes() {
 		             $route->get_id().'","'.
 		             implode(',', $route->get_drivers()).'","'.
 		             $route->get_teamcaptain_id().'","'.
-		             implode(',', $route->get_stops()).'","'.
+		             implode(',', $route->get_pickup_stops()).'","'.
+		             implode(',', $route->get_dropoff_stops()).'","'.
+		             $route->get_status().
 		             $route->get_notes().
                      '");');
             mysql_close();
@@ -102,23 +104,36 @@ function update_dbRoutes($r) {
  * and add its stops to the dbStops table
  */
 function make_new_route ($date, $area) {
+  // be sure route doesn't already exist.
+  if (!get_route($date."-".$area)) {
 	$week_no = floor(substr($date,6,2)-1 / 7) + 1;
 	$day = date("D",mktime(substr($date,3,2),substr($date,6,2), substr($date(0,2))));
-	// find drivers for this date and area from dbScheduleEntries table
+	// find drivers for this date and area from the dbSchedules table
 		$drivers = get_driver_ids($area, $week_no, $day);
-	// find clients for this date and area from dbClients
-		$stops = getall_clients($area, $day);
-	// find team captain for this area
+	// find pickups and dropoffs for this date and area from the dbClients table
+		$pickup_stops = getall_clients($area, $day, "donor");
+		$dropoff_stops = getall_clients($area, $day, "recipient");
+	// find the team captain for this area
 	    $teamcaptains = get_team_captains($area);
 	// build route and add its stops to dbStops table
-		$stop_ids = array();
-		foreach ($stops as $stop) {
-			$stop_ids[] = $stop->get_id();
+		$pickup_ids = array();
+		foreach ($pickup_stops as $stop) {
+			$pickup_ids[] = $stop->get_id();
 			insert_dbStops($stop);
 		}
-		$new_route = new Route ($date."-".$area, $drivers, $teamcaptains[0]->get_id(), $stop_ids, "");
-	// add route to the dbRoutes table
+		$dropoff_ids = array();
+		foreach ($dropoff_stops as $stop) {
+			$dropoff_ids[] = $stop->get_id();
+			insert_dbStops($stop);
+		}
+		$new_route = new Route ($date."-".$area, $drivers, $teamcaptains[0]->get_id(), 
+			$pickup_ids, $dropoff_ids, "", "");
+	// try to add route to the dbRoutes table
 		add_route($new_route);
-	return new_Route;
+		return $new_Route;
+  }
+  else 
+	return false;	//route already exists, 
+	//so it must be removed from the database before this function is called again.
 }
 ?>

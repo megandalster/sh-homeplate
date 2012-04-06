@@ -4,7 +4,7 @@ include_once(dirname(__FILE__).'/../database/dbVolunteers.php');
 class testdbVolunteers extends UnitTestCase {
 	function testdbVolunteersModule() {
 		//Test table creation
-			$this->assertTrue(create_dbVolunteers());
+		//	$this->assertTrue(create_dbVolunteers());
 	
 		//Test volunteers
 		$vol1 = new Volunteer("Brody", "Hartley", "1 Scarborough Head Rd","Hilton Head", "SC", "29928", "1112345678", "", 

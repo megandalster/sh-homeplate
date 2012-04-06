@@ -59,9 +59,9 @@ function getall_dbClients(){
 	return $theClients;
 }
 
-function get_clients($area, $day) {
+function getall_clients($area, $day, $type) {
 	connect();
-    $query = "SELECT * FROM dbClients WHERE area = ". $area . " AND days LIKE %".$day."% ORDER BY type,id";
+    $query = "SELECT * FROM dbClients WHERE area = ". $area . "AND type = ". $type . " AND days LIKE %".$day."% ORDER BY id";
     $result = mysql_query ($query);
     $theClients = array();
     while ($result_row = mysql_fetch_assoc($result)) {
