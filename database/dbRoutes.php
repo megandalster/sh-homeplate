@@ -83,8 +83,16 @@ function create_dbRoutes() {
 		   mysql_close();
 		   return false;
 		}
+		$result_row = mysql_fetch_assoc($result);
+		$theRoute = new Route($result_row['id'],
+								$result_row['drivers'],
+								$result_row['teamcaptain_id'],
+								$result_row['pickup_stops'],
+								$result_row['dropoff_stops'],
+								$result_row['status'],
+								$result_row['notes']);
 		mysql_close();
-   		return $result;
+   		return $theRoute;
 	}
 
 
