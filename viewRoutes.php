@@ -46,14 +46,13 @@ padding:10px 10px 10px 10px;
 	<tr>
 		<th></th>
 		<td> <b> Status </b> </td>
-		<td> <b> View </b> </td>
-		<td> <b> Driver </b> </td>
-		<td> <b> Helper </b> </td>
+		<td> <b> <i> View </i> </b> </td>
+		<td> <b> Driver(s) </b> </td>
 		<td> <b> Pickups </b> </td>
 		<td> <b> Dropoffs </b> </td>
 	</tr>
 	
-	<?php 
+	<?php
 	
 	$weekday = array("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday");
 	
@@ -61,21 +60,21 @@ padding:10px 10px 10px 10px;
 	foreach($weekday as $value)
 	{
 		$routeDay = strtotime($value." this week");
-		$routeID = date('y\-m\-d', $routeDay).'-'.$_GET['area'];
+		$routeID = date('y\-m\-d', $routeDay).'-'.$_GET[area];
 		$route = get_route($routeID);
-
+		
 		// start row
 		echo "<tr>" ;
 		
 		// col 1 : day of week
 		echo "<td><b>".$value."</b></td>" ;
-			
+		
 		// if route exists, generate this set of cols
 		if($route != NULL)
 		{
 			// col 2 : status
 			echo "<td>".$route->get_status()."</td>";
-			
+
 			// col 3 : view/edit
 			echo "<td><input type='radio' name='routeWeek' value='".$routeID."'></td>";
 			
@@ -83,17 +82,20 @@ padding:10px 10px 10px 10px;
 			$volunteers = $route->get_drivers();
 			
 			//col 4 : driver
-			echo "<td>".current($volunteers)."</td>";
-			next($volunteers);
+			echo "<td>";
+			foreach($volunteers as $driverID)
+			{
+				$driver = retrieve_dbVolunteers($driverID);
+				echo $driver->get_first_name()." ".$driver->get_last_name()."<br>";
+			}
+			echo "</td>";
 			
-			//col 5 : helper [ only first helper is listed ]
-			echo "<td>".current($volunteers)."</td>";
+			//col 5 : pickups
+			echo "<td>".$route->get_num_pickups()."</td>";
 			
-			//col 6 : pickups
-			echo "<td>".$route->get_num_pickups."</td>";
-			
-			//col 7 : dropoffs
-			echo "<td>".$route->get_num_dropoffs."</td>";
+			//col 6 : dropoffs
+			echo "<td>".$route->get_num_dropoffs()."</td>";
+
 		}
 		
 		// else, use defaults
@@ -108,13 +110,10 @@ padding:10px 10px 10px 10px;
 			// col 4 : driver (blank)
 			echo "<td>--</td>";
 			
-			// col 5 : helper (blank)
+			// col 5 : pickups (blank)
 			echo "<td>--</td>";
 			
-			// col 6 : pickups (blank)
-			echo "<td>--</td>";
-			
-			// col 7 : dropoffs (blank)
+			// col 6 : dropoffs (blank)
 			echo "<td>--</td>";
 		}
 		

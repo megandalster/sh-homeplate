@@ -59,7 +59,7 @@ class Route {
     	return $this->pickup_stops;
     }
     function get_num_pickups() {
-    	return sizeof($this->dropoff_stops);
+    	return sizeof($this->pickup_stops);
     }
     function get_dropoff_stops() {
     	return $this->dropoff_stops;
