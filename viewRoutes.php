@@ -77,7 +77,7 @@ padding:10px 10px 10px 10px;
 			echo "<td>".$route->get_status()."</td>";
 			
 			// col 3 : view/edit
-			echo "<td><input type='radio' value='".$routeID."'></td>";
+			echo "<td><input type='radio' name='routeWeek' value='".$routeID."'></td>";
 			
 			// *note : this design requires driver in position 0 of array
 			$volunteers = $route->get_drivers();
@@ -103,7 +103,7 @@ padding:10px 10px 10px 10px;
 			echo "<td>not yet created</td>";
 			
 			// col 3 : view/edit
-			echo "<td><input type='radio' value='".$routeID."'></td>";
+			echo "<td><input type='radio' name='routeWeek' value='".$routeID."'></td>";
 			
 			// col 4 : driver (blank)
 			echo "<td>--</td>";
