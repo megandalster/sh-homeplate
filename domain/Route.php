@@ -27,18 +27,23 @@ class Route {
          * constructor for a Route
          */
     function __construct($id, $drivers, $teamcaptain_id, $pickup_stops, $dropoff_stops, $status, $notes){
-    	
+    // echo "new Route parameters = ".$id.$drivers.$teamcaptain_id.$pickup_stops.$dropoff_stops.$status.$notes;
     	$this->id = $id;  	
+    	
     	if ($drivers == "") 
         	$this->drivers = array();
         else $this->drivers = explode(',', $drivers);
-    	$this->teamcaptain_id = $teamcaptain_id;   	
+    	
+        $this->teamcaptain_id = $teamcaptain_id;   	
+    	
     	if ($pickup_stops == "")
     		$this->pickup_stops = array();
     	else $this->pickup_stops = explode(',', $pickup_stops);
+    	
     	if ($dropoff_stops == "") 
     		$this->dropoff_stops = array();
     	else $this->dropoff_stops = explode(',', $dropoff_stops);
+    	
     	if ($status == "") 
     		$this->status = "created";
     	else $this->status = $status;	
@@ -80,6 +85,10 @@ class Route {
     }
     function get_notes() {
     	return $this->notes;
+    }
+    // setter functions
+    function change_status($new_status) {
+    	$this->status = $new_status;
     }
 }
 ?>

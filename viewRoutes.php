@@ -35,7 +35,7 @@
 				echo "<h5>Week of ".date('l F j, Y', $time)."</h5>"
 				?>
 
-<form action="editRoute.php" method="POST">				
+<form action="editRoute.php?routeID=12-04-18-HHI" method="POST">				
 <table cellspacing="10">
 <style type="text/css">
 td
@@ -105,7 +105,7 @@ padding:10px 10px 10px 10px;
 			echo "<td>not yet created</td>";
 			
 			// col 3 : view/edit
-			echo "<td><input type='radio' name='routeWeek' value='".$routeID."'></td>";
+			echo "<td><input type='radio' value='".$routeID."'></td>";
 			
 			// col 4 : driver (blank)
 			echo "<td>--</td>";
