@@ -70,7 +70,7 @@ function getonlythose_dbVolunteers($area, $type, $status, $name, $availability) 
 	$query = "SELECT * FROM dbVolunteers WHERE area like '%".$area. "%'" .  
 	       " AND type LIKE '%".$type."%'" . 
 			 " AND status LIKE '%".$status."%'" . 
-			 " AND (first_name LIKE '%".$name."%' OR last_name LIKE'%".$name."%')" .
+			 " AND (first_name LIKE '%".$name."%' OR last_name LIKE '%".$name."%')" .
 			 " AND availability LIKE '%".implode(',',$availability)."%' ORDER BY last_name";
 	$result = mysql_query($query);
 	$theVols = array();
@@ -102,6 +102,20 @@ function get_team_captains ($area) {
 	}
 	mysql_close();
 	return $theVols;
+}
+
+function get_driver_ids ($area, $week_no, $day) {
+	connect();
+	$av = $day.":".$week_no;
+	echo "availability = ".$av;
+	$result=mysql_query("SELECT * FROM dbVolunteers WHERE type LIKE '%driver%' AND availability LIKE '%".$av."%' AND area  = '".$area."'");
+	
+	$theIds = "";	
+	while($result_row = mysql_fetch_assoc($result)){
+		$theIds .= ','.$result_row['id'];
+	}
+	mysql_close();
+	return substr($theIds,1);
 }
 
 function insert_dbVolunteers($volunteer){

@@ -47,7 +47,7 @@ function retrieve_dbClients($id){
 
 function getall_dbClients(){
 	connect();
-	$result = mysql_query("SELECT * FROM dbClients ORDER BY last_name");
+	$result = mysql_query("SELECT * FROM dbClients ORDER BY id");
 	$theClients = array();
 	while($result_row = mysql_fetch_assoc($result)){
 		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
@@ -61,7 +61,8 @@ function getall_dbClients(){
 
 function getall_clients($area, $day, $type) {
 	connect();
-    $query = "SELECT * FROM dbClients WHERE area = ". $area . "AND type = ". $type . " AND days LIKE %".$day."% ORDER BY id";
+	//echo "area, day, type = ".$area.$day.$type;
+    $query = "SELECT * FROM dbClients WHERE area = '". $area . "' AND type = '". $type . "' AND days LIKE '%".$day."%' ORDER BY id";
     $result = mysql_query ($query);
     $theClients = array();
     while ($result_row = mysql_fetch_assoc($result)) {
