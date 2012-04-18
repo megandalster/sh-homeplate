@@ -71,7 +71,7 @@ function getonlythose_dbVolunteers($area, $type, $status, $name, $availability) 
 	       " AND type LIKE '%".$type."%'" . 
 			 " AND status LIKE '%".$status."%'" . 
 			 " AND (first_name LIKE '%".$name."%' OR last_name LIKE '%".$name."%')" .
-			 " AND availability LIKE '%".implode(',',$availability)."%' ORDER BY last_name";
+			 " AND availability LIKE '%".$availability."%' ORDER BY last_name";
 	$result = mysql_query($query);
 	$theVols = array();
 		

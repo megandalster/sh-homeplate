@@ -73,7 +73,7 @@ echo "</td><td>";
 	echo "<input type='submit' name='remove_dropoff' value='Remove checked' />";
 echo "</td><tr><td>";
 	echo "Add Driver:<br>";
-	$drivers = getonlythose_dbVolunteers(substr($route,9,3), "driver", "active", "", "");
+	$drivers = getonlythose_dbVolunteers(substr($route->get_id(),9,3), "driver", "active", "", "");
 	echo('<select name="add_driver">');
     echo ('<option value=""></option>');
     foreach ($drivers as $driver) {
