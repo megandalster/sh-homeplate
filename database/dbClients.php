@@ -66,10 +66,12 @@ function getall_clients($area, $type, $status, $name, $availability) {
             if($type)           $query .= "AND type = '". $type . "' ";
             if($status)         $query .= "AND feed_america = '" . $status . "' ";
             if($name)           $query .= "AND id LIKE '" . $name ."' ";
-            if($availability)   $query .= "AND ";
-            foreach ($availability as $day)
-                $query .= "days LIKE '%".$day."%' OR ";
-            if($availability)   $query = substr($query, 0, strlen( $query ) - 3);
+            if($availability)  { 
+            	$query .= "AND ";
+            	foreach ($availability as $day)
+                	$query .= "days LIKE '%".$day."%' OR ";
+            	$query = substr($query, 0, strlen( $query ) - 3);
+            }
             $query .= "ORDER BY id";
     //print $query;
     $result = mysql_query ($query);
