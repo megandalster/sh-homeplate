@@ -107,7 +107,6 @@ function get_team_captains ($area) {
 function get_driver_ids ($area, $week_no, $day) {
 	connect();
 	$av = $day.":".$week_no;
-	echo "availability = ".$av;
 	$result=mysql_query("SELECT * FROM dbVolunteers WHERE type LIKE '%driver%' AND availability LIKE '%".$av."%' AND area  = '".$area."'");
 	
 	$theIds = "";	

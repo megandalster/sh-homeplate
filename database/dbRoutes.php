@@ -116,13 +116,11 @@ function make_new_route ($routeID, $teamcaptain_id) {
 	$date = substr($routeID,0,8); 
 	$week_no = floor((substr($date,6,2)-1) / 7) + 1;
 	$day = date('D',mktime(0,0,0,substr($date,3,2),substr($date,6,2),substr($date,0,2)));
-//  	echo "date and area and weekno and day and team captain id = ".$date.$area.$week_no.$day.$teamcaptain_id;
 	
 	// find drivers for this date and area from the dbSchedules table
 		$driver_ids = get_driver_ids($area, $week_no, $day);
-//		echo "driver_ids = ".$driver_ids;
 	// store pickup and dropoff stops for this date and area using the dbClients table
-		$pickup_clients = getall_clients($area, $day, "donor");
+		$pickup_clients = getall_clients($area, "donor", "", "", array($day));
 		$pickup_ids = "";
 		foreach ($pickup_clients as $client) {
 			$pickup_stop = new Stop ($routeID, $client->get_id(), "pickup", "", "");
@@ -130,8 +128,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 			insert_dbStops($pickup_stop);
 		}
 		$pickup_ids = substr($pickup_ids,1);
-//		echo "pickup_ids = ".$pickup_ids;
-		$dropoff_clients = getall_clients($area, $day, "recipient");
+		$dropoff_clients = getall_clients($area, "recipient", "", "", array($day));
   		$dropoff_ids = "";
 		foreach ($dropoff_clients as $client) {
 			$dropoff_stop = new Stop ($routeID, $client->get_id(), "dropoff", "", "");
@@ -139,17 +136,16 @@ function make_new_route ($routeID, $teamcaptain_id) {
 			insert_dbStops($dropoff_stop);
 		}
 		$dropoff_ids = substr($dropoff_ids,1);
-//		echo "dropoff_ids = ".$dropoff_ids;
 	// build route for this date and area
 		$new_route = new Route ($routeID, $driver_ids, $teamcaptain_id, 
 			$pickup_ids, $dropoff_ids, "", "");
-		if (!$new_route) echo ("route wasnt created".$routeID);
+		if (!$new_route) echo ("route wasnt created ".$routeID);
 	// add route to the dbRoutes table
-		else if (add_route($new_route)) echo "route added to the database";
-			else echo "route not added to the database";
+		else if (!add_route($new_route)) 
+			echo "route not added to the database";
 		return $new_Route;
   }
   else 
-	return false;	//route already exists, can't add a duplicate for this day and area
+	return false;	//route already exists, can't add a duplicate for same day and area
 }
 ?>
