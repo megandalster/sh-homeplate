@@ -20,7 +20,7 @@
 //    include_once('database/dbLog.php');
 	$id = $_GET["id"];
 	if ($id=='new') {
-	 	$client = new Client(null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+	 	$client = new Client(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 	}
 	else {
 		$client = retrieve_dbClients($id);
@@ -44,7 +44,7 @@
 <?PHP
 
     include('clientValidate.php');
-	if($_POST['_form_submit']!=1)
+	if( !array_key_exists('_form_submit', $_POST) )
 	//in this case, the form has not been submitted, so show it
 		include('clientForm.php');
 	else {
