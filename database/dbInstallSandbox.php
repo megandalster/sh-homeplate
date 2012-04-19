@@ -38,19 +38,19 @@ Database Initialization
     echo("database selected...<br />");
 
 	// Clients
-	create_dbClients(); echo("dbClients added...<br />");	  
+	create_dbClients(); //echo("dbClients added...<br />");	  
 	// Months
-	create_dbMonths(); echo("dbRoutes added...<br />");   
+	create_dbMonths(); //echo("dbRoutes added...<br />");   
 	// Routes
-	create_dbRoutes(); echo("dbRoutes added...<br />");  
+	create_dbRoutes(); //echo("dbRoutes added...<br />");  
 	// Driver Master Schedules
-	create_dbSchedules(); echo("dbSchedules added...<br />");  
+	create_dbSchedules(); //echo("dbSchedules added...<br />");  
 	// Stops
-	create_dbStops(); echo("dbStops added...<br />");   
+	create_dbStops(); //echo("dbStops added...<br />");   
 	// Volunteers
-	create_dbVolunteers(); echo("dbVolunteers added...<br />");
+	create_dbVolunteers(); //echo("dbVolunteers added...<br />");
 	// Weeks
-	create_dbWeeks(); echo("dbWeeks added...<br />");
+	create_dbWeeks(); //echo("dbWeeks added...<br />");
 	
 	// now add some data to the volunteers and clients tables
 	fill_the_sandbox();
@@ -84,35 +84,35 @@ function fill_the_sandbox() {
 		
 	// add some client data
 	    $client1 = new Client("Atlanta Bread", "", "HHI", "donor", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client1);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client1);
 		$client2 = new Client("Bi-Lo North", "", "HHI", "donor", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client2);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client2);
 		$client3 = new Client("Bi-Lo South", "", "HHI", "donor", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client3);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client3);
 		$client4 = new Client("Food Lion", "", "HHI", "donor", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client4);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client4);
 		$client5 = new Client("Wal-Mart HHI", "Wal-Mart", "HHI", "donor", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client5);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client5);
 		$client6 = new Client("Fresh Market", "", "HHI", "donor", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client6);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client6);
 		$client7 = new Client("Pepperidge Farm", "", "HHI", "donor", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client7);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client7);
 		$client8 = new Client("Publix North", "Publix", "HHI", "donor", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client1);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client1);
 		$client1 = new Client("Bluffton Self Help", "", "HHI", "recipient", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client1);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client1);
 		$client2 = new Client("Boys and Girls Club", "", "HHI", "recipient", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client2);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client2);
 		$client3 = new Client("Church of the Cross", "", "HHI", "recipient", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client3);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client3);
 		$client4 = new Client("Deep Well", "", "HHI", "recipient", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client4);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client4);
 		$client5 = new Client("First African Baptist", "", "HHI", "recipient", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client5);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client5);
 		$client6 = new Client("Island House", "", "HHI", "recipient", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client6);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client6);
 		$client7 = new Client("Memory Matters", "", "HHI", "recipient", "123 Maine St", "Hilton Head Island", 
-                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "");insert_dbClients($client7);
+                                "SC", "29926", "","2077253500", "", "Mon,Wed", "no", "", "");insert_dbClients($client7);
 	
 }
 
