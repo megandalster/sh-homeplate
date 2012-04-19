@@ -65,7 +65,7 @@
 						$type = $_POST['s_type'];
 						$status = $_POST['s_status'];
                         $name = trim(str_replace('\'','&#39;',htmlentities($_POST['s_name'])));
-                        $availability = array();
+                        $availability = array("");
                         if (!$_POST['s_day'])      // allow "any" day if none checked
                         	$_POST['s_day'][] = "";
                         if (!$_POST['s_week'])	   // allow "any" week if none checked
@@ -77,7 +77,7 @@
                         include_once('database/dbVolunteers.php');
      					include_once('domain/Volunteer.php');
      					//echo "search criteria: ", $area.$type.$status.$name.$availability[0];
-						$result = getonlythose_dbVolunteers($area, $type, $status, $name, $availability);
+						$result = getonlythose_dbVolunteers($area, $type, $status, $name, $availability[0]);
 
 						echo '<p><strong>Search Results:</strong> <p>Found '.sizeof($result).' '.$status.' '.
 							$type.'s';
