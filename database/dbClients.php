@@ -24,7 +24,7 @@ function create_dbClients(){
                             weight_type TEXT, notes TEXT)");
 	mysql_close();
 	if(!$result){
-			echo (mysql_error()."Error creating database table dbClients. \n");
+			echo (mysql_error()."Error creating database table dbClients. <br>");
 			return false;
 	}
 	return true;
@@ -60,10 +60,18 @@ function getall_dbClients(){
 	return $theClients;
 }
 
-function getall_clients($area, $day, $type) {
+function getall_clients($area, $type, $status, $name, $availability) {
 	connect();
-	//echo "area, day, type = ".$area.$day.$type;
-    $query = "SELECT * FROM dbClients WHERE area = '". $area . "' AND type = '". $type . "' AND days LIKE '%".$day."%' ORDER BY id";
+    $query = "SELECT * FROM dbClients WHERE area = '". $area . "' ";
+            if($type)           $query .= "AND type = '". $type . "' ";
+            if($status)         $query .= "AND feed_america = '" . $status . "' ";
+            if($name)           $query .= "AND id LIKE '" . $name ."' ";
+            if($availability)   $query .= "AND ";
+            foreach ($availability as $day)
+                $query .= "days LIKE '%".$day."%' OR ";
+            if($availability)   $query = substr($query, 0, strlen( $query ) - 3);
+            $query .= "ORDER BY id";
+    //print $query;
     $result = mysql_query ($query);
     $theClients = array();
     while ($result_row = mysql_fetch_assoc($result)) {
