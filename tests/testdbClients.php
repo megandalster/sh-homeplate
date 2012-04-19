@@ -8,11 +8,11 @@ class testdbClients extends UnitTestCase {
 	
 		//Test Clients
 		$client1 = new Client("Whole Foods Brunswick", "Whole Foods USA", "Bowdoin", "grocery store", "123 Maine St", "Brunswick", 
-                                "ME", "04011", "","2077253500", "", "Mon,Wed", True, "This is a test case");
+                                "ME", "04011", "","2077253500", "", "Mon,Wed", True, "pounds", "This is a test case");
         $client2 = new Client("Hannafords Brunswick", "Hannafords", "Bowdoin", "grocery store", "456 Maine St", "Brunswick", 
-                                "ME", "04011",  "","2077253600", "", "Tue,Thu", False, "This is a test case #2");
+                                "ME", "04011",  "","2077253600", "", "Tue,Thu", False, "foodtype", "This is a test case #2");
         $client3 = new Client("Flipside Pizza", "", "Bowdoin", "restaurant", "789 Maine St", "Brunswick", 
-                                "ME", "04011",  "","2077253700", "", "Wed,Fri", True, "This is a test case #3");
+                                "ME", "04011",  "","2077253700", "", "Wed,Fri", True, "foodtypeboxes", "This is a test case #3");
 
 		//Test inserts
 		$this->assertTrue(insert_dbClients($client1));
@@ -32,11 +32,12 @@ class testdbClients extends UnitTestCase {
 		$this->assertEqual(retrieve_dbClients($client1->get_id())->get_phone2(), null);
 		$this->assertEqual(retrieve_dbClients($client1->get_id())->get_days(), array("Mon","Wed"));
 		$this->assertEqual(retrieve_dbClients($client1->get_id())->is_feed_america(), True);
+		$this->assertEqual(retrieve_dbClients($client1->get_id())->get_weight_type(), "pounds");
 		$this->assertEqual(retrieve_dbClients($client1->get_id())->get_notes(), "This is a test case");
 		
 		//Test Update with a change of chain name & comment
 		$client2 = new Client("Hannafords Brunswick", "Hannaford\'s Family Stores", "Bowdoin", "grocery store", "456 Maine St", "Brunswick", 
-                                "ME", "04011", "", "2077253600", "", "Tue,Thu", False, "This is a test case #2 updated");
+                                "ME", "04011", "", "2077253600", "", "Tue,Thu", False, "foodtype", "This is a test case #2 updated");
 		$this->assertTrue(update_dbClients($client2));
 		$this->assertEqual(retrieve_dbClients($client2->get_id())->get_chain_name(), "Hannaford's Family Stores");
 		

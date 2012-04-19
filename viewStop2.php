@@ -30,14 +30,45 @@
 	$client_type = "Donor";
 	$client_items = "";
 	
-	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : "0";
+	$meat_percent = 0.25;
+	$dairy_percent = 0.03;
+	$bakery_percent = 0.31;
+	$produce_percent = 0.18;
+	$dry_goods_percent = 0.23;
+	$pounds_per_carton = 32;
+	
+	/*if($_GET["area"]=="SUN"){
+		$pounds_per_carton = 32;
+	}
+	if($_GET["area"]=="BFT"){
+		$pounds_per_carton = 44;
+	}
+	*/
+	
+	$total_cartons = isset($_POST["total_cartons"]) ? $_POST["total_cartons"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
+	
 	
 	// $stop1 = retrieve_dbStops($id);
 	$stop1 = new Stop($ndate."-".$area, $client_id, $client_type, $client_items, $driver_notes);
 	insert_dbStops($stop1);
 		
-	$stop1->set_total_weight($total_weight);
+	$total_weight = $total_cartons * $pounds_per_carton;
+		
+	$item1 = "Meat:" . $total_weight * $meat_percent;
+	$stop1->add_item($item1);
+			
+	$item2 = "Bakery:" . $total_weight * $bakery_percent;
+	$stop1->add_item($item2);
+				
+	$item3 = "Dairy:" . $total_weight * $dairy_percent;
+	$stop1->add_item($item3);
+		
+	$item4 = "Produce:" . $total_weight * $produce_percent;
+	$stop1->add_item($item4);
+		
+	$item5 = "Dry Goods:" . $total_weight * $dry_goods_percent;
+	$stop1->add_item($item5);
 		
 	$stop1->set_notes($driver_notes);
 		
@@ -63,24 +94,23 @@
 			   Date: <?php echo($date)?></p>
 			   
 			<p>Instructions:<br /><br />
-			   1. To insert the total weight, tap the corresponding text box.<br />
-			   2. Insert additional notes into the text box below the table if necessary.<br />
+			   1. To insert the total number of cartons, tap the corresponding text box below.<br />
+			   2. Insert additional notes into the text box below if necessary.<br />
 			   3. When the values are entered, tap the "Submit" button at the bottom.<br />
 			   4. After all values are submitted, tap the "Return to Route" button at the bottom.
 			</p>
 			
-			<form method = "post"?>
-				Total Weight: <input type = "text" name = "total_weight" value = <?php echo $total_weight ?> />
+			<form method="post"?>
+				Total Cartons: <input type = "text" name = "total_cartons" value = <?php echo $total_cartons?> />
 				<br />
-				
 			<p>Enter any additional notes by tapping the text box below:</p>
+			
 			<textarea rows="10" cols="50" name="driver_notes"></textarea>
 				<br />
 				<br />
-			<input type="submit" value="Submit"/>
+			<input type="submit" value="Submit" />
 			</form>
-				<br/>
-				<br/>
+				<br />
 			<button type="submit" onclick="">Return to Route</button>
 			
 			</div>

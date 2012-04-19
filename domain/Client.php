@@ -28,12 +28,14 @@ class Client {
 	private $days;			// array of days for pick-up or delivery
 							// e.g. [ÒMonÓ, ÒWedÓ]
 	private $feed_america;	// ÒyesÓ or ÒnoÓ
+	private $weight_type;	// variable for how items are recorded: 
+							// ("pounds", "foodtype" or "foodtypeboxes")
 	private $notes; 		// notes written by the team captain or coordinator
 	
 	//copied from volunteer class. question about use of "explode" with arrays
 	
 	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $geocoordinates,
-	                        $phone1, $phone2, $days, $feed_america, $notes){                
+	                        $phone1, $phone2, $days, $feed_america, $weight_type, $notes){                
         $this->id       	= $id;      
         $this->chain_name 	= $chain_name;      
         $this->area 		= $area;      
@@ -42,7 +44,7 @@ class Client {
         $this->city 		= $city;      
         $this->state 		= $state;      
         $this->zip 			= $zip;
-
+		$this->weight_type	= $weight_type;
         $this->phone1 		= $phone1;
         $this->phone2 		= $phone2;
 
@@ -100,6 +102,9 @@ class Client {
     }
     function is_feed_america(){
         return $this->feed_america;
+    }
+    function get_weight_type(){
+    	return $this->weight_type;
     }
     function get_notes(){
         return $this->notes;
