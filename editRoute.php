@@ -10,7 +10,7 @@
 /*
  *	editRoute.php
  *  oversees the editing of a route to be added, changed, or deleted from the database
- *	@author Allen Tucker
+ *	@author Allen Tucker and Nick Wetzel
  *	@version April 15, 2012
  */
 	session_start();
@@ -62,27 +62,27 @@ function process_form($route)	{
 		}
 		// remove a driver from the route
 		else if($_POST['remove_driver']){
-				
+			$route->remove_driver($theDriver);	
 		}
 		// add a new driver to the route
 		else if ($_POST['add_driver']) {
-			 
+			$route->add_driver($theDriver);
 		}
-		// remove a driver from the route
-		else if($_POST['remove_driver']){
-				
+		// remove a pick up from the route
+		else if($_POST['remove_pickup']){
+			$route->remove_pick_up($pick_up);
 		}
-		// add a new driver to the route
-		else if ($_POST['add_driver']) {
-			 
+		// add a new pick up to the route
+		else if ($_POST['add_pickup']) {
+			$route->add_pick_up($pick_up);
 		}
-		// remove a driver from the route
-		else if($_POST['remove_driver']){
-				
+		// remove a drop off from the route
+		else if($_POST['remove_dropoff']){
+			$route->remove_drop_off($drop_off);
 		}
-		// add a new driver to the route
-		else if ($_POST['add_driver']) {
-			 
+		// add a new drop off to the route
+		else if ($_POST['add_dropoff']) {
+			$route->add_drop_off($drop_off);	 
 		}
 }
 ?>

@@ -90,5 +90,41 @@ class Route {
     function change_status($new_status) {
     	$this->status = $new_status;
     }
+    function remove_driver($theDriver){
+    	$size = count($this->drivers);
+    	for ($i=0; $i<$size; $i++){
+    		if ($this->drivers[$i] == $theDriver){
+    			unset($this->drivers[$i]);
+    			break;
+    		}
+    	}
+    }
+    function add_driver($theDriver){
+    	$this->drivers[]= $theDriver;
+    }
+    function remove_pick_up($pick_up){
+    	$size = count($this->pickup_stops);
+    	for ($i=0; $i<$size; $i++){
+    		if ($this->pickup_stops[$i] == $pick_up){
+    			unset($this->pickup_stops[$i]);
+    			break;
+    		}
+    	}
+    }
+    function add_pick_up($pick_up){
+    	$this->pickup_stops[]= $pick_up;
+    }
+    function remove_drop_off($drop_off){
+    	$size = count($this->dropoff_stops);
+    	for ($i=0; $i<$size; $i++){
+    		if ($this->dropoff_stops[$i] == $drop_off){
+    			unset($this->dropoff_stops[$i]);
+    			break;
+    		}
+    	}
+    }
+    function add_drop_off($drop_off){
+    	$this->dropoff_stops[]= $drop_off;
+    }
 }
 ?>
