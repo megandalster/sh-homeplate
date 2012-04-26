@@ -10,7 +10,7 @@
 <html>
 	<head>
 		<title>
-			Route View
+			Weekly Route View
 		</title>
 		<link rel="stylesheet" href="styles.css" type="text/css" />
 	</head>
@@ -25,7 +25,10 @@
 				<h4> <i>
 				<?php
 				$areas = array("HHI"=>"Hilton Head Island", "SUN"=> "Sun City", "BFT" => "Beaufort");
-				$thisArea = $_SESSION[_area];
+				$thisArea = $_GET['area'];
+				if ($_POST['_form_submit']==1)
+					$thisDay = $_POST['routeWeek'];
+				else $thisDay = "12-04-25";
 				echo "$areas[$thisArea]"
 				?>
 				</i> weekly route status summary</h4>
@@ -35,9 +38,9 @@
 				echo "<h5>Week of ".date('l F j, Y', $time)."</h5>"
 				?>
 
-<form action="editRoute.php?routeID=12-04-18-HHI" method="POST">				
-<table cellspacing="10">
-<style type="text/css">
+<?php echo '<form  action="editRoute.php?routeID='.$thisDay.'-'.$thisArea.'" method="POST">' ?>
+	<table cellspacing="10">
+	<style type="text/css">
 td
 {
 padding:10px 10px 10px 10px;
@@ -62,7 +65,6 @@ padding:10px 10px 10px 10px;
 		$routeDay = strtotime($value." this week");
 		$routeID = date('y\-m\-d', $routeDay).'-'.$_GET[area];
 		$route = get_route($routeID);
-		
 		// start row
 		echo "<tr>" ;
 		
@@ -76,7 +78,7 @@ padding:10px 10px 10px 10px;
 			echo "<td>".$route->get_status()."</td>";
 
 			// col 3 : view/edit
-			echo "<td><input type='radio' name='routeWeek' value='".$routeID."'></td>";
+			echo "<td><input type='radio' name='routeWeek' value='".$routeDay."'></td>";
 			
 			// *note : this design requires driver in position 0 of array
 			$volunteers = $route->get_drivers();
@@ -105,7 +107,7 @@ padding:10px 10px 10px 10px;
 			echo "<td>not yet created</td>";
 			
 			// col 3 : view/edit
-			echo "<td><input type='radio' value='".$routeID."'></td>";
+			echo "<td><input type='radio' name='routeWeek' value='".$routeDay."'></td>";
 			
 			// col 4 : driver (blank)
 			echo "<td>--</td>";
@@ -124,6 +126,7 @@ padding:10px 10px 10px 10px;
 </table>
 
 <br>
+<input type="hidden" name="_form_submit" value="1">				
 <input type="submit" name="Submit" value="View selected route"/>
 </form>
 				
