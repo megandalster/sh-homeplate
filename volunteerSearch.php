@@ -26,7 +26,7 @@
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Sun City","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
 					$weeks = array("1"=>"1st","2"=>"2nd","3"=>"3rd","4"=>"4th","5"=>"5th");
-					echo('<p><a href="'.$path.'volunteerSchedule.php">View volunteer schedule</a>');
+					echo('<p><a href="'.$path.'volunteerSchedule.php?area='.$area.'">View driver schedule</a>');
 					echo('<a href="'.$path.'volunteerEdit.php?id=new"> | Add new volunteer</a>');	
 					echo('<form method="post">');
 						echo('<p><strong>Search for volunteers:</strong>');
