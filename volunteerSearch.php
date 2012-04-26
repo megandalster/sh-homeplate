@@ -57,7 +57,7 @@
 							  echo '<input type="checkbox" name="s_day[]" value='.$day.' />'.$day;
 						echo '</fieldset>';
 						echo('<p><input type="hidden" name="s_submitted" value="1"><input type="submit" name="Search" value="Search">');
-						echo('</form></p>');
+						echo('<ca></p>');
 					
 				// if user hit "Search"  button, query the database and display the results
 					if($_POST['s_submitted']){

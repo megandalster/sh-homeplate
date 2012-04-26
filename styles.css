@@ -90,6 +90,11 @@ A:hover		{ color: #BE0000;  }
 	margin-right:15px;
 }
 
+.border-bottom {
+  border-bottom: solid 1px black;
+}
+
+
 /*WARNINGS AND ERRORS*/
 .warning{
 	border:1px solid #264576;
