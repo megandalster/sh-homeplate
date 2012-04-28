@@ -13,31 +13,30 @@
  * @author Nicholas Wetzel
  * @version April 4, 2012
  */
-
+	session_start();
+	session_cache_expire(30);
+	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
+	$routeID = substr($_GET['stop_id'],0,12);
+	$client_id = substr($_GET['stop_id'],12);
+	$client_type = $_GET['client_type'];
+	$area = substr($_GET['stop_id'],9,3);
+	$ndate = substr($_GET['stop_id'],0,8);
 	
-	//$area = $_GET["area"];
-	$area = "Hilton Head";
-	//$date = $_GET["date"];
-	$date = date('l, F j, Y');
+	$date = date('l, F j, Y', mktime(0,0,0,substr($ndate,3,2),substr($ndate,6,2),substr($ndate,0,2)));
 	//$id = $date."-".$area.".".$client_id;
-	$ndate = date('y-m-d');
-	$client_id = "Bi-Lo - HHI North";
-	$client_type = "Donor";
+	//$client_id = "Bi-Lo - HHI North";
 	$client_items = "";
 	
 	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
 	
-	//$stop1 = retrieve_dbStops($id);
-	$stop1 = new Stop($ndate."-".$area, $client_id, $client_type, $client_items, $driver_notes);
+	$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
 	insert_dbStops($stop1);
 		
-	$stop1->set_total_weight($total_weight);
-		
-	$stop1->set_notes($driver_notes);
-		
+	$stop1->set_total_weight($total_weight);	
+	$stop1->set_notes($driver_notes);	
 	update_dbStops($stop1);
 	
 ?>
@@ -97,16 +96,11 @@
 				</div>
 				');
 			}
+			
+			echo '<a href="editRoute.php?routeID='.$routeID.'"><strong>Return to Route</strong></a>';
+			include('footer.inc');
 			?>
-			
-			<br/>
-			<br/>
-			<br/>
-				
-			<a href="<?php echo $path?>editRoute.php"><big>Return to Route</big></a>
-			
 			</div>
-			<?PHP include('footer.inc');?>
 		</div>
 	</body>
 </html>

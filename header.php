@@ -79,10 +79,10 @@ h1 {padding-left: 0px; padding-right:165px;}
 	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
 	    	echo('<a href="'.$path.'clientSearch.php?area='.$_SESSION['_area'].'"> | donors and recipients</a>');
 	    	echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$week_later.'"> | reports</a>';	    
-	    	echo '<a href="'.$path.'log.php"> | log</a>';
+	    //	echo '<a href="'.$path.'log.php"> | log</a>';
 	    }
-	    echo('<a href="'.$path.'help.php?helpPage='.$current_page.'" target="_BLANK"> | help</a>');
-		echo('<a href="'.$path.'about.php"> | about</a>');
+	 //   echo('<a href="'.$path.'help.php?helpPage='.$current_page.'" target="_BLANK"> | help</a>');
+	//	echo('<a href="'.$path.'about.php"> | about</a>');
 		echo('<a href="'.$path.'logout.php"> | logout</a>');
 	}
 ?>

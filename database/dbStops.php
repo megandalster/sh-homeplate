@@ -20,7 +20,7 @@ function create_dbStops() {
     connect();
     mysql_query("DROP TABLE IF EXISTS dbStops");
     $result = mysql_query("CREATE TABLE dbStops (id TEXT NOT NULL, route TEXT NOT NULL, client TEXT NOT NULL,
-     											 type TEXT NOT NULL, items TEXT, weight TEXT, notes TEXT)");
+     											 type TEXT NOT NULL, items TEXT, weight TEXT, date TEXT, notes TEXT)");
     mysql_close();
     if (!$result) {
         echo mysql_error() . "Error creating dbStops table. <br>";
@@ -49,6 +49,7 @@ function insert_dbStops ($stop){
                 $stop->get_type()."','".
                 implode(',',$stop->get_items())."','".
                 $stop->get_total_weight()."','".
+                $stop->get_date()."','".
                 $stop->get_notes()."');";
     $result = mysql_query($query);
     if (!$result) {
@@ -77,6 +78,19 @@ function retrieve_dbStops ($id) {
 function getall_dbStops () {
     connect();
     $query = "SELECT * FROM dbStops ORDER BY id";
+    $result = mysql_query ($query);
+    $theStops = array();
+    while ($result_row = mysql_fetch_assoc($result)) {
+        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['items'], $result_row['notes']);
+        $theStops[] = $theStop;
+    }
+	mysql_close();
+    return $theStops; 
+}
+
+function getall_dbStops_between_dates ($start_date, $end_date) {
+	connect();
+    $query = "SELECT * FROM dbStops where date >= '". $start_date . "' AND date <= '". $end_date . "' ORDER BY type, client";
     $result = mysql_query ($query);
     $theStops = array();
     while ($result_row = mysql_fetch_assoc($result)) {

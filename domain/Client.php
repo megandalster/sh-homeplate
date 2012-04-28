@@ -44,7 +44,10 @@ class Client {
         $this->city 		= $city;      
         $this->state 		= $state;      
         $this->zip 			= $zip;
-		$this->weight_type	= $weight_type;
+        if ($weight_type=="")
+        	$this->weight_type = "pounds";
+        else
+			$this->weight_type	= $weight_type;
         $this->phone1 		= $phone1;
         $this->phone2 		= $phone2;
 

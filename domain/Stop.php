@@ -10,7 +10,7 @@
 /*
  * Stop class for Homeplate
  * @author Nicholas Wetzel and Allen Tucker
- * @version February 15, 2012
+ * @version April 27, 2012
  */
 class Stop {
 	private $id;		// String $route_id . $Client_id 
@@ -59,24 +59,22 @@ class Stop {
 	function get_total_weight() {
 		return $this->total_weight;
 	}
+	function get_date() {
+		return substr($this->id,0,8);
+	}
 	
 	//setters
 	function set_all_totals(){
-		
 		$this->total_weight = 0;
-		
 		foreach($this->items as $item){
         		$i = explode(':',$item);
-        		
-        		$this->total_weight += $i[1];
-        		
+        		$this->total_weight += $i[1]; 		
 		}
 	}
 	
 	
 	// used to directly set the total weight
 	function set_total_weight($weight){
-		
 		$this->total_weight = $weight;
 	}
 	

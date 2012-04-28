@@ -13,18 +13,17 @@
  * @author Nicholas Wetzel
  * @version April 4, 2012
  */
+	session_start();
+	session_cache_expire(30);
 	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
-	
-	//$area = $_GET["area"];
-	$area = "Hilton Head";
-	//$date = $_GET["date"];
-	$date = date('l, F j, Y');
-	//$id = $date."-".$area.".".$client_id;
-	$ndate = date('y-m-d');
-	$client_id = "Bi-Lo - HHI North";
-	$client_type = "Donor";
+	$routeID = substr($_GET['stop_id'],0,12);
+	$area = substr($_GET['stop_id'],9,3);
+	$ndate = substr($_GET['stop_id'],0,8);
+	$date = date('l, F j, Y', mktime(0,0,0,substr($ndate,3,2),substr($ndate,6,2),substr($ndate,0,2)));
+	$client_id = substr($_GET['stop_id'],12);
+	$client_type = $_GET['client_type'];
 	$client_items = "";
 	
 	$meat_weight = isset($_POST["meat_weight"]) ? $_POST["meat_weight"] : "0";
@@ -151,16 +150,11 @@
 				</div>
 				');
 			}
+			echo '<a href="editRoute.php?routeID='.$routeID.'"><strong>Return to Route</strong></a>';
+			include('footer.inc');
 			?>
-			
-				<br/>
-				<br/>
-				<br/>
-			
-			<a href="<?php echo $path?>editRoute.php"><big>Return to Route</big></a>
-			
 			</div>
-			<?PHP include('footer.inc');?>
+			
 		</div>
 	</body>
 </html>

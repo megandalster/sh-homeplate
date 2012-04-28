@@ -53,7 +53,7 @@
 						echo '&nbsp;&nbsp;Name: ' ;
 						echo '<input type="text" name="s_name">';
 						echo '<fieldset>';
-						echo '<legend>Availability:</legend>';
+						echo '<legend>Pickup/Dropoff:</legend>';
 						echo '<p id="s_day">Day:&nbsp;&nbsp;&nbsp;&nbsp;';
 							foreach($days as $day=>$dayname)
 							  echo '<label><input type="checkbox" name="s_day[]" value='.$day.' />'.$day.'</label>';
@@ -90,9 +90,10 @@
                             else echo $type.'s';
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
 						if ($name!="") echo ' with name like "'.$name.'"';
+						if ($availability[0]!="") echo ' with pickup/dropoff day '. $availability[0];
 						if (sizeof($result)>0) {
 							echo ' (select one for more info).';
-							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>Area</strong></td><td><strong>Availability</strong></td></tr>';
+							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>Area</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
 							foreach ($result as $client) {
 								echo ("<tr><td><a href='clientEdit.php?id=" . $client->get_id() ."'>" .
 									$client->get_id() . "</td><td>" . 

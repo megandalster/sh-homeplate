@@ -13,18 +13,16 @@
  * @author Nicholas Wetzel
  * @version April 4, 2012
  */
-	
+	session_start();
+	session_cache_expire(30);
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
-	
-	//$area = $_GET["area"];
-	$area = "Hilton Head";
-	//$date = $_GET["date"];
-	$date = date('l, F j, Y');
-	//$id = $date."-".$area.".".$client_id;
-	$ndate = date('y-m-d');
-	$client_id = "Bi-Lo - HHI North";
-	$client_type = "Donor";
+	$routeID = substr($_GET['stop_id'],0,12);
+	$area = substr($_GET['stop_id'],9,3);
+	$ndate = substr($_GET['stop_id'],0,8);
+	$date = date('l, F j, Y', mktime(0,0,0,substr($ndate,3,2),substr($ndate,6,2),substr($ndate,0,2)));
+	$client_id = substr($_GET['stop_id'],12);
+	$client_type = $_GET['client_type'];
 	$client_items = "";
 	
 	$meat_percent = 0.25;
@@ -34,18 +32,9 @@
 	$dry_goods_percent = 0.23;
 	$pounds_per_carton = 32;
 	
-	/*if($_GET["area"]=="SUN"){
-		$pounds_per_carton = 32;
-	}
-	if($_GET["area"]=="BFT"){
-		$pounds_per_carton = 44;
-	}
-	*/
-	
 	$total_cartons = isset($_POST["total_cartons"]) ? $_POST["total_cartons"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
-	
-	
+		
 	//$stop1 = retrieve_dbStops($id);
 	$stop1 = new Stop($ndate."-".$area, $client_id, $client_type, $client_items, $driver_notes);
 	insert_dbStops($stop1);
@@ -128,16 +117,11 @@
 				</div>
 				');
 			}
+			
+			echo '<a href="editRoute.php?routeID='.$routeID.'"><strong>Return to Route</strong></a>';
+			include('footer.inc');
 			?>
-			
-			<br />
-			<br />
-			<br />
-			
-			<a href="<?php echo $path?>editRoute.php"><big>Return to Route</big></a>
-			
 			</div>
-			<?PHP include('footer.inc');?>
 		</div>
 	</body>
 </html>

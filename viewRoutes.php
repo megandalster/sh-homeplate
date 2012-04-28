@@ -26,30 +26,34 @@
 				<?php
 				$areas = array("HHI"=>"Hilton Head Island", "SUN"=> "Sun City", "BFT" => "Beaufort");
 				$thisArea = $_GET['area'];
-				if ($_POST['_form_submit']==1)
-					$thisDay = $_POST['routeWeek'];
-				else $thisDay = "12-04-25";
+				$thisDay = $_GET['date'];
+				$thisUTC = mktime(0,0,0,substr($thisDay,3,2),substr($thisDay,6,2),substr($thisDay,0,2));
+				$nextweekUTC = $thisUTC + 604800;
+				$prevweekUTC = $thisUTC - 604800;
 				echo "$areas[$thisArea]"
 				?>
 				</i> weekly route status summary</h4>
 				
-				<?php
-				$time = strtotime('monday this week');
-				echo "<h5>Week of ".date('l F j, Y', $time)."</h5>"
-				?>
+				
 
-<?php echo '<form  action="editRoute.php?routeID='.$thisDay.'-'.$thisArea.'" method="POST">' ?>
-	<table cellspacing="10">
+<table cellspacing="10">
 	<style type="text/css">
 td
 {
 padding:10px 10px 10px 10px;
 }
 </style>
+<tr>
+<?php
+				echo "<td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$prevweekUTC)."><< Previous</a></td>";
+				$mondaythisweek = strtotime('monday this week',$thisUTC);
+				echo "<td colspan='2'><strong>Week of ".date('l F j, Y', $mondaythisweek)."</strong></td>";
+				echo "<td></td><td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">Next >></a></td>";
+				?>
+</tr>
 	<tr>
 		<th></th>
 		<td> <b> Status </b> </td>
-		<td> <b> <i> View </i> </b> </td>
 		<td> <b> Driver(s) </b> </td>
 		<td> <b> Pickups </b> </td>
 		<td> <b> Dropoffs </b> </td>
@@ -57,19 +61,19 @@ padding:10px 10px 10px 10px;
 	
 	<?php
 	
-	$weekday = array("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday");
+	$weekdays = array("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday");
 	
 	// each iteration generates a row in the table
-	foreach($weekday as $value)
+	$dayUTC = $mondaythisweek;
+	foreach ($weekdays as $weekday)
 	{
-		$routeDay = strtotime($value." this week");
-		$routeID = date('y\-m\-d', $routeDay).'-'.$_GET[area];
+		$routeID = date('y-m-d', $dayUTC).'-'.$_GET[area];
 		$route = get_route($routeID);
 		// start row
 		echo "<tr>" ;
 		
 		// col 1 : day of week
-		echo "<td><b>".$value."</b></td>" ;
+		echo "<td><b>"."<a href=editRoute.php?routeID=".$routeID.">".$weekday." ". date('F j', $dayUTC)."</a></b></td>" ;
 		
 		// if route exists, generate this set of cols
 		if($route != NULL)
@@ -77,13 +81,10 @@ padding:10px 10px 10px 10px;
 			// col 2 : status
 			echo "<td>".$route->get_status()."</td>";
 
-			// col 3 : view/edit
-			echo "<td><input type='radio' name='routeWeek' value='".$routeDay."'></td>";
-			
 			// *note : this design requires driver in position 0 of array
 			$volunteers = $route->get_drivers();
 			
-			//col 4 : driver
+			//col 3 : driver
 			echo "<td>";
 			foreach($volunteers as $driverID)
 			{
@@ -92,11 +93,11 @@ padding:10px 10px 10px 10px;
 			}
 			echo "</td>";
 			
-			//col 5 : pickups
-			echo "<td>".$route->get_num_pickups()."</td>";
+			//col 4 : pickups
+			echo "<td align='center'>".$route->get_num_pickups()."</td>";
 			
-			//col 6 : dropoffs
-			echo "<td>".$route->get_num_dropoffs()."</td>";
+			//col 5 : dropoffs
+			echo "<td align='center'>".$route->get_num_dropoffs()."</td>";
 
 		}
 		
@@ -106,30 +107,22 @@ padding:10px 10px 10px 10px;
 			// col 2 : status (blank)
 			echo "<td>not yet created</td>";
 			
-			// col 3 : view/edit
-			echo "<td><input type='radio' name='routeWeek' value='".$routeDay."'></td>";
+			// col 3 : driver (blank)
+			echo "<td></td>";
 			
-			// col 4 : driver (blank)
-			echo "<td>--</td>";
+			// col 4 : pickups (blank)
+			echo "<td></td>";
 			
-			// col 5 : pickups (blank)
-			echo "<td>--</td>";
-			
-			// col 6 : dropoffs (blank)
-			echo "<td>--</td>";
+			// col 5 : dropoffs (blank)
+			echo "<td></td>";
 		}
 		
 		// end row
 		echo "</tr>";
+		$dayUTC += 86400;
 	}
 	?>
-</table>
-
-<br>
-<input type="hidden" name="_form_submit" value="1">				
-<input type="submit" name="Submit" value="View selected route"/>
-</form>
-				
+</table>	
 			</div>
 			<?php include('footer.inc');?>
 		</div>
