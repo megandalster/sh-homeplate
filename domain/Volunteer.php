@@ -24,7 +24,7 @@ class Volunteer {
 	private $phone1; 		// primary phone (may be a cell)
 	private $phone2; 		// alternate phone (may be a cell)
     private $email; 		// email address as a string
-	private $type;   		// array of "driver", "helper", “teamcaptain”, “coordinator”
+	private $type;   		// array of "driver", "helper", “teamcaptain”, “coordinator”, "associate"
     private $status;   		// "applicant", "active", "on-leave", or "former"
     private $area;			// "HHI", "SUN", or "BFT"
 	private $license_no;  		// drivers license no.

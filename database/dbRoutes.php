@@ -31,10 +31,11 @@ function create_dbRoutes() {
 		return true;
 }
 /*
- * add a route to dbRoutes table: if already there, return false
+ * insert a route to dbRoutes table and its stops to the dbStops table: 
+ * if already there, return false
  */
-	function add_route($route){
-		if(! $route instanceof Route) die("Error: add_route type mismatch");
+	function insert_dbRoutes($route){
+		if(! $route instanceof Route) die("Error: insert_dbRoutes type mismatch");
 		connect();
 		$query = "SELECT * FROM dbRoutes WHERE id = '".$route->get_id()."'";
 		$result = mysql_query($query);
@@ -50,25 +51,38 @@ function create_dbRoutes() {
 		             $route->get_notes().
                      '");');
             mysql_close();
+            foreach ($route->get_pickup_stops() as $pickup_id) {
+            	$pickup_stop = new Stop ($route->get_id(), substr($pickup_id,12), "pickup", "", "");
+				insert_dbStops($pickup_stop);
+            }
+			foreach ($route->get_dropoff_stops() as $dropoff_id) { 
+				$dropoff_stop = new Stop ($route->get_id(), substr($dropoff_id,12), "dropoff", "", "");
+				insert_dbStops($dropoff_stop);
+			}
             return true;
    		}
    		mysql_close();
    		return false;
    	}
 /*
- * remove a route from dbRoutes table.  If not there, return false
+ * remove a route from dbRoutes table and all its stops from the dbStops table.  
+ * If not there, return false
  */
-	function remove_route($id) {
+	function delete_dbRoutes($r) {
 		connect();
-   		$query = 'SELECT * FROM dbRoutes WHERE id = "'. $id . '"';
+   		$query = 'SELECT * FROM dbRoutes WHERE id = "'. $r->get_id() . '"';
 		$result = mysql_query($query);
 		if ($result==null || mysql_num_rows($result) == 0) {
 		   mysql_close();
 		   return false;
 		}
-		$query='DELETE FROM dbRoutes WHERE id = "'.$id.'"';
+		$query='DELETE FROM dbRoutes WHERE id = "'.$r->get_id().'"';
 		$result=mysql_query($query);
 		mysql_close();
+		foreach ($r->get_pickup_stops() as $pickup_id) 
+			delete_dbStops($pickup_id);
+		foreach ($r->get_dropoff_stops() as $dropoff_id) 
+			delete_dbStops($dropoff_id);
 		return true;
 	}
 /*
@@ -99,7 +113,7 @@ function create_dbRoutes() {
  */
 function update_dbRoutes($r) {
 	if (! $r instanceof Route)
-		die ("Invalid argument for dbRoutes");
+		die ("Invalid argument for update_dbRoutes");
 	if (delete_dbRoutes($r))
 	   return insert_dbRoutes($r);
 	else return false;
@@ -114,11 +128,11 @@ function make_new_route ($routeID, $teamcaptain_id) {
   if (!get_route($routeID)) {
   	$area = substr($routeID,9);
 	$date = substr($routeID,0,8); 
-	$week_no = floor((substr($date,6,2)-1) / 7) + 1;
+//	$week_no = floor((substr($date,6,2)-1) / 7) + 1;
 	$day = date('D',mktime(0,0,0,substr($date,3,2),substr($date,6,2),substr($date,0,2)));
 	
 	// find drivers for this date and area from the dbSchedules table
-		$driver_ids = get_driver_ids($area, $week_no, $day);
+		$driver_ids = get_driver_ids($area, $day);
 	// store pickup and dropoff stops for this date and area using the dbClients table
 		$pickup_clients = getall_clients($area, "donor", "", "", array($day));
 		$pickup_ids = "";
@@ -141,7 +155,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 			$pickup_ids, $dropoff_ids, "", "");
 		if (!$new_route) echo ("route wasnt created ".$routeID);
 	// add route to the dbRoutes table
-		else if (!add_route($new_route)) 
+		else if (!insert_dbRoutes($new_route)) 
 			echo "route not added to the database";
 		return $new_Route;
   }

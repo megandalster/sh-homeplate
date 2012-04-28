@@ -121,7 +121,7 @@ else {
 	
 	$st = implode(',',$person->get_type());
     $types = array('driver'=>'Driver', 'helper'=>'Helper', 'teamcaptain'=>'Team Captain',
-                   'coordinator'=>'Staff/Board');
+                   'coordinator'=>'Coordinator', 'associate'=>"Associate");
 	echo('<p>Type: ');
 	echo('<span style="font-size:x-small;color:FF0000">*</span>&nbsp;&nbsp;');
 
@@ -134,21 +134,21 @@ else {
 ?>
 </p>
 <fieldset id="availability">
-<legend>Monthly Availability:</strong><span style="font-size:x-small;color:FF0000">*</span> </legend>
+<legend>Availability:</strong><span style="font-size:x-small;color:FF0000">*</span> </legend>
 	<table>
 	<tr>
-		<td>Week&nbsp;&nbsp;</td><td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>
+		<td> &nbsp;&nbsp;</td><td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>
 		<td>Thu&nbsp;&nbsp;</td><td>Fri&nbsp;&nbsp;</td><td>Sat&nbsp;&nbsp;</td><td>Sun</td></tr>
 <?PHP
-    $weeks = array('1'=>'1st', '2'=>'2nd', '3'=>'3rd', '4'=>'4th', '5'=>'5th');
+    $weeks = array('1'=>'1st' /*, '2'=>'2nd', '3'=>'3rd', '4'=>'4th', '5'=>'5th' */);
     $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
     $person_availability = implode(',',$person->get_availability());
     foreach ($weeks as $weekno => $weekvalue) {
-       echo ('<tr><td>'. $weekvalue .'</td>');
+       echo ('<tr><td>'. /*$weekvalue .*/ '</td>');
        foreach ($days as $day) {
-       	  $realkey = $day . ":". $weekno;
+       	  $realkey = $day /*. ":". $weekno*/;
        	  echo ('<td><input type="checkbox" name="availability[]" value=' . $realkey);
-    	  if (in_array($day.":".$weekno, $person->get_availability())) echo(' CHECKED');
+    	  if (in_array($day/*.":".$weekno*/, $person->get_availability())) echo(' CHECKED');
     	  echo ('></td>');
        }
        echo ('</tr>');

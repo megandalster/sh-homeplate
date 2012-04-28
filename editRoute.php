@@ -17,6 +17,9 @@
 	session_cache_expire(30);
     include_once('database/dbRoutes.php');
     include_once('domain/Route.php');
+    include_once('domain/Client.php');
+    include_once('database/dbClients.php');
+	
 //    include_once('database/dbLog.php');
 	$routeID = $_GET['routeID'];
 	$route = get_route($routeID);
@@ -36,15 +39,12 @@
     <?PHP include('header.php');?>
 	<div id="content">
 <?PHP
-	if($_POST['_form_submit']!=1)
-	//in this case, the form has not been submitted, so show it
-		include('routeForm.inc');
-	else {
-		$message = process_form($route);
-		echo "<p>".$message;
-		include('routeForm.inc');		
-		die();
+	if($_POST['_form_submit']==1)
+	{
+		$message = process_form($_POST, $route);
+		echo "<p>".$message;	
 	}
+	include('routeForm.inc');
 	include('footer.inc');
 	echo('</div></div></body></html>');
 
@@ -53,20 +53,28 @@
 * adds and removes drivers, pick-ups, and drop-offs and 
 * returns a message reporting the result
 */
-function process_form($route)	{
+function process_form($post, $route)	{
 	// respond to the POST
-		if($_POST['change_status']){
-			$route->change_status($_POST['change_status']);
+		if($post['change_status']){
+			$route->change_status($post['change_status']);
 			update_dbRoutes($route);
-			return ("status changed to ". $_POST['change_status']);
+			return ("(Status just changed to ". $_POST['change_status'].".)");
 		}
 		// remove a driver from the route
-		else if($_POST['remove_driver']){
-			$route->remove_driver($theDriver);	
+		else if($post['s_driver']){
+			echo "trying to remove driver<br>";
+			$selected = "";
+			foreach($post['s_driver'] as $theDriver) {
+				$selected .= " ". $theDriver;
+				$route->remove_driver($theDriver);	
+			}
+			return ("Drivers removed: ". $selected .".)");
 		}
 		// add a new driver to the route
-		else if ($_POST['add_driver']) {
-			$route->add_driver($theDriver);
+		else if ($post['add_driver']) {
+			$route->add_driver($_POST['add_driver']);
+			update_dbRoutes($route);
+			return ("(New driver just added: ". $_POST['add_driver'].".)");
 		}
 		// remove a pick up from the route
 		else if($_POST['remove_pickup']){
@@ -84,6 +92,7 @@ function process_form($route)	{
 		else if ($_POST['add_dropoff']) {
 			$route->add_drop_off($drop_off);	 
 		}
+		return "nothing happened";
 }
 ?>
     </div>
