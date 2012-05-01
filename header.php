@@ -47,8 +47,8 @@ h1 {padding-left: 0px; padding-right:165px;}
 		$permission_array['clientSearch.php']=2;
 		$permission_array['generateReports.php']=2;
 		//additional pages program coordinators can view
-		$permission_array['viewReports.php']=3;
-		$permission_array['exportData.php']=3;
+		$permission_array['viewReports.php']=2;
+		$permission_array['exportData.php']=2;
 
 		//Check if they're at a valid page for their access level.
 		$current_page = substr($_SERVER['PHP_SELF'],1);

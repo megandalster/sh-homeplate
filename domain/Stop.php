@@ -28,12 +28,14 @@ class Stop {
 		if ($items == "") { 
         	$this->items = array();
         	$this->total_weight = 0;
+		}
+		else if (strpos($items,":")>0) {
+			$this->items = explode(',',$items);  	
+        	$this->set_all_totals();
 		} 
         else {
-        	$this->items = explode(',',$items);
-        	
-        	$this->set_all_totals();
-	}
+        	$this->total_weight = $items;
+        }
         $this->notes = $notes;
 	}
 	

@@ -41,7 +41,7 @@ else {
 
 if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 	echo('<select name="change_status">');
-    echo ('<option value=""></option>');
+    echo ('<option value="" SELECTED></option>');
     echo ('<option value="created"');if ($route->get_status()=='created') echo (' SELECTED'); echo('>created</option>');
     echo ('<option value="published"');if ($route->get_status()=='published') echo (' SELECTED'); echo('>published</option>');
 	echo ('<option value="completed"');if ($route->get_status()=='completed') echo (' SELECTED'); echo('>completed</option>');
