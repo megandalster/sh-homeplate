@@ -41,7 +41,6 @@ function insert_dbStops ($stop){
         delete_dbStops ($stop->get_id());
         connect();
     }
-
     $query = "INSERT INTO dbStops VALUES ('".
                 $stop->get_id()."','" .
                 $stop->get_route_id()."','".

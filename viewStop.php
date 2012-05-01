@@ -24,7 +24,7 @@
 	
 	//$client1 = retrieve_dbClients($client_id);
 	//$client_type = $client1->get_weight_type();
-	$client_type = 'foodtype';
+	$client_type = 'foodtypeboxes';
 	
 	switch ($client_type)
 	{

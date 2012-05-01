@@ -13,8 +13,8 @@
  * @author Nicholas Wetzel
  * @version April 4, 2012
  */
-	session_start();
-	session_cache_expire(30);
+	//session_start();
+	//session_cache_expire(30);
 	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
@@ -23,21 +23,31 @@
 	$client_type = $_GET['client_type'];
 	$area = substr($_GET['stop_id'],9,3);
 	$ndate = substr($_GET['stop_id'],0,8);
+	$client_items = "";
 	
 	$date = date('l, F j, Y', mktime(0,0,0,substr($ndate,3,2),substr($ndate,6,2),substr($ndate,0,2)));
 	//$id = $date."-".$area.".".$client_id;
 	//$client_id = "Bi-Lo - HHI North";
-	$client_items = "";
 	
 	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
 	
-	$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
-	insert_dbStops($stop1);
-		
-	$stop1->set_total_weight($total_weight);	
-	$stop1->set_notes($driver_notes);	
-	update_dbStops($stop1);
+	if (!retrieve_dbStops($routeID.$client_id)){
+		$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
+		insert_dbStops($stop1);
+	}
+	else{
+		$stop1 = retrieve_dbStops($routeID.$client_id);
+	}
+	
+	if (isset($_POST['submitted'])){
+				
+				$stop1->set_total_weight($total_weight);
+				
+				$stop1->set_notes($driver_notes);
+				
+				update_dbStops($stop1);
+	}
 	
 ?>
 <html>
@@ -71,7 +81,7 @@
 			<form method = "post">
 			<fieldset>
 				<legend><b>Data Entry:</b></legend><br />
-				<b>Total Weight:</b> <input type = "text" name = "total_weight" value = <?php echo $total_weight?> /> lbs.
+				<b>Total Weight:</b> <input type = "text" name = "total_weight" value = <?php echo $stop1->get_total_weight()?> /> lbs.
 				<br />
 				
 			<p>Enter any additional notes by tapping the text box below:</p>
@@ -88,12 +98,13 @@
 			
 			<?php 
 			if (isset($_POST['submitted'])){
+				
 				echo('
 				<div class = "warning">
-					<b>Submitted Values:</b><br/><br/>
+					<b>Check that the values below are correct before "Returning to Route":</b><br/><br/>
 					Total Weight: <b>'.$total_weight.'</b> lbs.<br/><br/>
 					Notes:'.$driver_notes.'
-				</div>
+				</div><br/><br/>
 				');
 			}
 			

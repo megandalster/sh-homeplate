@@ -53,6 +53,14 @@ class Stop {
 	function get_items(){
 		return $this->items;
 	}
+	function get_item_weight($index){
+		$item_weights = array();
+		foreach($this->items as $item){
+        	$i = explode(':',$item);
+        	$item_weights[] = $i[1];
+		}
+        return $item_weights[$index];
+	}
 	function get_notes(){
 		return $this->notes;
 	}
@@ -86,8 +94,16 @@ class Stop {
         $this->set_all_totals();
         
     }
+    function set_item($index, $new_item){
+    	$this->items[$index] = $new_item;
+    	$this->set_all_totals();
+    }
 	function set_notes($new_notes){
 		$this->notes = $new_notes;
+	}
+	function remove_all_items(){
+		$this->items = array();
+		$this->set_all_totals();
 	}
 	function remove_item ($item_type) {
 		for ($i=0; $i<sizeof($this->items);$i++) {
