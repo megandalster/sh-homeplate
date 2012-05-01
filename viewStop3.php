@@ -13,10 +13,12 @@
  * @author Nicholas Wetzel
  * @version April 4, 2012
  */
-	session_start();
-	session_cache_expire(30);
+	//session_start();
+	//session_cache_expire(30);
+	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
+	
 	$routeID = substr($_GET['stop_id'],0,12);
 	$area = substr($_GET['stop_id'],9,3);
 	$ndate = substr($_GET['stop_id'],0,8);
@@ -35,30 +37,42 @@
 	$total_cartons = isset($_POST["total_cartons"]) ? $_POST["total_cartons"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
 		
-	//$stop1 = retrieve_dbStops($id);
-	$stop1 = new Stop($ndate."-".$area, $client_id, $client_type, $client_items, $driver_notes);
+	if (!retrieve_dbStops($routeID.$client_id)){
+	$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
 	insert_dbStops($stop1);
+	}
+	else{
+		$stop1 = retrieve_dbStops($routeID.$client_id);
+	}
 		
-	$total_weight = $total_cartons * $pounds_per_carton;
+	if (isset($_POST['submitted'])){
 		
-	$item1 = "Meat:" . $total_weight * $meat_percent;
-	$stop1->add_item($item1);
-			
-	$item2 = "Bakery:" . $total_weight * $bakery_percent;
-	$stop1->add_item($item2);
+		$total_weight = $total_cartons * $pounds_per_carton;
+		
+		$stop1->remove_all_items();
 				
-	$item3 = "Dairy:" . $total_weight * $dairy_percent;
-	$stop1->add_item($item3);
+		$item1 = "Meat:" . $total_weight * $meat_percent;
+		$stop1->set_item(0, $item1);
+
+		$item2 = "Bakery:" . $total_weight * $bakery_percent;
+		$stop1->set_item(1, $item2);
+				
+		$item3 = "Dairy:" . $total_weight * $dairy_percent;
+		$stop1->set_item(2, $item3);
 		
-	$item4 = "Produce:" . $total_weight * $produce_percent;
-	$stop1->add_item($item4);
+		$item4 = "Produce:" . $total_weight * $produce_percent;
+		$stop1->set_item(3, $item4);
 		
-	$item5 = "Dry Goods:" . $total_weight * $dry_goods_percent;
-	$stop1->add_item($item5);
+		$item5 = "Dry Goods:" . $total_weight * $dry_goods_percent;
+		$stop1->set_item(4, $item5);
 		
-	$stop1->set_notes($driver_notes);
+		echo($item5);
 		
-	update_dbStops($stop1);
+		$stop1->set_notes($driver_notes);
+		
+		update_dbStops($stop1);
+		
+	}
 	
 ?>
 <html>
@@ -92,7 +106,7 @@
 			<form method="post"?>
 			<fieldset>
 				<legend><b>Data Entry:</b></legend><br />
-				<b>Total Cartons:</b> <input type = "text" name = "total_cartons" value = <?php echo $total_cartons?> />
+				<b>Total Cartons:</b> <input type = "text" name = "total_cartons" value = <?php echo ($stop1->get_total_weight()/$pounds_per_carton)?> />
 				<br />
 			<p>Enter any additional notes by tapping the text box below:</p>
 			
@@ -109,12 +123,13 @@
 				
 			<?php 
 			if (isset($_POST['submitted'])){
+				
 				echo('
 				<div class = "warning">
-					<b>Submitted Values:</b><br/><br/>
+					<b>Check that the values below are correct before "Returning to Route":</b><br/><br/>
 					Total Cartons: <b>'.$total_cartons.'</b><br/><br/>
 					Notes:'.$driver_notes.'
-				</div>
+				</div><br/><br/>
 				');
 			}
 			

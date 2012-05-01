@@ -13,8 +13,8 @@
  * @author Nicholas Wetzel
  * @version April 4, 2012
  */
-	session_start();
-	session_cache_expire(30);
+	//session_start();
+	//session_cache_expire(30);
 	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
@@ -33,28 +33,37 @@
 	$grocery_weight = isset($_POST["grocery_weight"]) ? $_POST["grocery_weight"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
 	
-	// $stop1 = retrieve_dbStops($id); 
-	$stop1 = new Stop($ndate."-".$area, $client_id, $client_type, $client_items, $driver_notes);
+	if (!retrieve_dbStops($routeID.$client_id)){
+	$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
 	insert_dbStops($stop1);
+	}
+	else{
+		$stop1 = retrieve_dbStops($routeID.$client_id);
+	}
+	
+	if (isset($_POST['submitted'])){
+
+		$stop1->remove_all_items();
 		
-	$item1 = "Meat:" . $meat_weight;
-	$stop1->add_item($item1);
+		$item1 = "Meat:" . $meat_weight;
+		$stop1->set_item(0, $item1);
 				
-	$item2 = "Bakery:" . $bakery_weight;
-	$stop1->add_item($item2);
+		$item2 = "Bakery:" . $bakery_weight;
+		$stop1->set_item(1, $item2);
 				
-	$item3 = "Dairy:" . $dairy_weight;
-	$stop1->add_item($item3);
+		$item3 = "Dairy:" . $dairy_weight;
+		$stop1->set_item(2, $item3);
 		
-	$item4 = "Produce:" . $produce_weight;
-	$stop1->add_item($item4);
+		$item4 = "Produce:" . $produce_weight;
+		$stop1->set_item(3, $item4);
 		
-	$item5 = "Grocery:" . $grocery_weight;
-	$stop1->add_item($item5);
-		
-	$stop1->set_notes($driver_notes);
-		
-	update_dbStops($stop1);
+		$item5 = "Grocery:" . $grocery_weight;
+		$stop1->set_item(4, $item5);
+				
+		$stop1->set_notes($driver_notes);
+				
+		update_dbStops($stop1);
+	}
 	
 ?>
 <html>
@@ -96,27 +105,27 @@
 				</tr>
 				<tr>
 					<td>Meat:</td>
-					<td><input type="text" name="meat_weight" value = <?php echo $meat_weight?> /></td>
+					<td><input type="text" name="meat_weight" value = <?php echo $stop1->get_item_weight(0)?> /></td>
 					
 				</tr>
 				<tr>
 					<td>Bakery:</td>
-					<td><input type="text" name="bakery_weight" value = <?php echo $bakery_weight?> /></td>
+					<td><input type="text" name="bakery_weight" value = <?php echo $stop1->get_item_weight(1)?> /></td>
 					
 				</tr>
 				<tr>
 					<td>Dairy:</td>
-					<td><input type="text" name="dairy_weight" value = <?php echo $dairy_weight?> /></td>
+					<td><input type="text" name="dairy_weight" value = <?php echo $stop1->get_item_weight(2)?> /></td>
 					
 				</tr>
 				<tr>
 					<td>Produce:</td>
-					<td><input type="text" name="produce_weight" value = <?php echo $produce_weight?> /></td>
+					<td><input type="text" name="produce_weight" value = <?php echo $stop1->get_item_weight(3)?> /></td>
 					
 				</tr>
 				<tr>
 					<td>Grocery:</td>
-					<td><input type="text" name="grocery_weight" value = <?php echo $grocery_weight?> /></td>
+					<td><input type="text" name="grocery_weight" value = <?php echo $stop1->get_item_weight(4)?> /></td>
 					
 					
 				</tr>
@@ -136,9 +145,10 @@
 			
 			<?php 
 			if (isset($_POST['submitted'])){
+				
 				echo('
 				<div class = "warning">
-				<b>Submitted Values:</b><br/><br/>
+				<b>Check that the values below are correct before "Returning to Route":</b><br/><br/>
 				Meat: <b>'.$meat_weight.'</b> lbs. <br/><br/>
 				Bakery: <b>'.$bakery_weight.'</b> lbs. <br/><br/>
 				Dairy: <b>'.$dairy_weight.'</b> lbs. <br/><br/>
@@ -147,7 +157,7 @@
 				Total Weight: <b>'.($meat_weight + $bakery_weight + $dairy_weight + 
 								$produce_weight + $grocery_weight).'</b> lbs.<br/><br/>
 				Notes: '.$driver_notes.'
-				</div>
+				</div><br/><br/>
 				');
 			}
 			echo '<a href="editRoute.php?routeID='.$routeID.'"><strong>Return to Route</strong></a>';
