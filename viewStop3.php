@@ -13,8 +13,8 @@
  * @author Nicholas Wetzel
  * @version April 4, 2012
  */
-	//session_start();
-	//session_cache_expire(30);
+	session_start();
+	session_cache_expire(30);
 	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
@@ -32,7 +32,8 @@
 	$bakery_percent = 0.31;
 	$produce_percent = 0.18;
 	$dry_goods_percent = 0.23;
-	$pounds_per_carton = 32;
+	
+	$pounds_per_carton = 33;
 	
 	$total_cartons = isset($_POST["total_cartons"]) ? $_POST["total_cartons"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
