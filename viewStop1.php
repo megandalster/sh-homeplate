@@ -13,8 +13,8 @@
  * @author Nicholas Wetzel
  * @version April 4, 2012
  */
-	//session_start();
-	//session_cache_expire(30);
+	session_start();
+	session_cache_expire(30);
 	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
@@ -23,11 +23,8 @@
 	$client_type = $_GET['client_type'];
 	$area = substr($_GET['stop_id'],9,3);
 	$ndate = substr($_GET['stop_id'],0,8);
-	$client_items = "";
-	
 	$date = date('l, F j, Y', mktime(0,0,0,substr($ndate,3,2),substr($ndate,6,2),substr($ndate,0,2)));
-	//$id = $date."-".$area.".".$client_id;
-	//$client_id = "Bi-Lo - HHI North";
+	$client_items = "";
 	
 	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
