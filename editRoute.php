@@ -55,41 +55,42 @@
 */
 function process_form($post, $route)	{
 	// respond to the POST
-		if($post['change_status']){
+		if($post['change_status']!=$route_){
 			$route->change_status($post['change_status']);
 			update_dbRoutes($route);
 			return ("(Status just changed to ". $_POST['change_status'].".)");
 		}
 		// remove a driver from the route
-		else if($post['s_driver']){
+		if($post['remove_driver']){
 			echo "trying to remove driver<br>";
 			$selected = "";
-			foreach($post['s_driver'] as $theDriver) {
+			foreach($post['remove_driver'] as $theDriver) {
 				$selected .= " ". $theDriver;
 				$route->remove_driver($theDriver);	
 			}
+			update_dbRoutes($route);
 			return ("Drivers removed: ". $selected .".)");
 		}
 		// add a new driver to the route
-		else if ($post['add_driver']) {
+		if ($post['add_driver']) {
 			$route->add_driver($_POST['add_driver']);
 			update_dbRoutes($route);
-			return ("(New driver just added: ". $_POST['add_driver'].".)");
+			return ("(New driver added: ". $_POST['add_driver'].".)");
 		}
 		// remove a pick up from the route
-		else if($_POST['remove_pickup']){
+		if($_POST['remove_pickup']){
 			$route->remove_pick_up($pick_up);
 		}
 		// add a new pick up to the route
-		else if ($_POST['add_pickup']) {
+		if ($_POST['add_pickup']) {
 			$route->add_pick_up($pick_up);
 		}
 		// remove a drop off from the route
-		else if($_POST['remove_dropoff']){
+		if($_POST['remove_dropoff']){
 			$route->remove_drop_off($drop_off);
 		}
 		// add a new drop off to the route
-		else if ($_POST['add_dropoff']) {
+		if ($_POST['add_dropoff']) {
 			$route->add_drop_off($drop_off);	 
 		}
 		return "nothing happened";
