@@ -93,7 +93,7 @@ function getall_dbStops_between_dates ($start_date, $end_date) {
     $result = mysql_query ($query);
     $theStops = array();
     while ($result_row = mysql_fetch_assoc($result)) {
-        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['items'], $result_row['notes']);
+        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['weight'], $result_row['notes']);
         $theStops[] = $theStop;
     }
 	mysql_close();
