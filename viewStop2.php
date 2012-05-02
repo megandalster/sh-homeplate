@@ -41,29 +41,15 @@
 		$stop1 = retrieve_dbStops($routeID.$client_id);
 	}
 	
-	if (isset($_POST['submitted'])){
-
-		$stop1->remove_all_items();
-		
-		$item1 = "Meat:" . $meat_weight;
-		$stop1->set_item(0, $item1);
-				
-		$item2 = "Bakery:" . $bakery_weight;
-		$stop1->set_item(1, $item2);
-				
-		$item3 = "Dairy:" . $dairy_weight;
-		$stop1->set_item(2, $item3);
-		
-		$item4 = "Produce:" . $produce_weight;
-		$stop1->set_item(3, $item4);
-		
-		$item5 = "Grocery:" . $grocery_weight;
-		$stop1->set_item(4, $item5);
-				
-		$stop1->set_notes($driver_notes);
-				
-		update_dbStops($stop1);
+	function return_item_value($stop, $index){
+		if(sizeof($stop->get_items()) < 4){
+			echo (0);
+		}
+		else{
+			echo ($stop->get_item_weight($index));
+		}	
 	}
+	
 	
 ?>
 <html>
@@ -92,7 +78,7 @@
 			   <b>3.</b> When the values are entered, tap the "Submit" button at the bottom.<br /><br />
 			   <b>4.</b> Check that the submitted values in the red box at the bottom of the screen are correct. If not, re-enter them.<br /><br /> 
 			   <b>5.</b> After all values are submitted, tap the "Return to Route" button at the bottom.<br />
-			</fieldset>
+			</fieldset><br/><br/>
 			
 			<form method="post"?>
 			<fieldset>
@@ -105,27 +91,27 @@
 				</tr>
 				<tr>
 					<td>Meat:</td>
-					<td><input type="text" name="meat_weight" value = <?php echo $stop1->get_item_weight(0)?> /></td>
+					<td><input type="text" name="meat_weight" value = 0 /></td>
 					
 				</tr>
 				<tr>
 					<td>Bakery:</td>
-					<td><input type="text" name="bakery_weight" value = <?php echo $stop1->get_item_weight(1)?> /></td>
+					<td><input type="text" name="bakery_weight" value = 0 /></td>
 					
 				</tr>
 				<tr>
 					<td>Dairy:</td>
-					<td><input type="text" name="dairy_weight" value = <?php echo $stop1->get_item_weight(2)?> /></td>
+					<td><input type="text" name="dairy_weight" value = 0 /></td>
 					
 				</tr>
 				<tr>
 					<td>Produce:</td>
-					<td><input type="text" name="produce_weight" value = <?php echo $stop1->get_item_weight(3)?> /></td>
+					<td><input type="text" name="produce_weight" value = 0 /></td>
 					
 				</tr>
 				<tr>
 					<td>Grocery:</td>
-					<td><input type="text" name="grocery_weight" value = <?php echo $stop1->get_item_weight(4)?> /></td>
+					<td><input type="text" name="grocery_weight" value = 0 /></td>
 					
 					
 				</tr>
@@ -145,6 +131,27 @@
 			
 			<?php 
 			if (isset($_POST['submitted'])){
+				
+				$stop1->remove_all_items();
+		
+				$item1 = "Meat:" . $meat_weight;
+				$stop1->set_item(0, $item1);
+				
+				$item2 = "Bakery:" . $bakery_weight;
+				$stop1->set_item(1, $item2);
+				
+				$item3 = "Dairy:" . $dairy_weight;
+				$stop1->set_item(2, $item3);
+		
+				$item4 = "Produce:" . $produce_weight;
+				$stop1->set_item(3, $item4);
+		
+				$item5 = "Grocery:" . $grocery_weight;
+				$stop1->set_item(4, $item5);
+				
+				$stop1->set_notes($driver_notes);
+				
+				update_dbStops($stop1);
 				
 				echo('
 				<div class = "warning">
