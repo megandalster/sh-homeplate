@@ -37,15 +37,6 @@
 		$stop1 = retrieve_dbStops($routeID.$client_id);
 	}
 	
-	if (isset($_POST['submitted'])){
-				
-				$stop1->set_total_weight($total_weight);
-				
-				$stop1->set_notes($driver_notes);
-				
-				update_dbStops($stop1);
-	}
-	
 ?>
 <html>
 	<head>
@@ -73,12 +64,12 @@
 			   <b>3.</b> When the values are entered, tap the "Submit" button at the bottom.<br /><br />
 			   <b>4.</b> Check that the submitted values in the red box at the bottom of the screen are correct. If not, re-enter them.<br /><br />
 			   <b>5.</b> After all values are correct, tap the "Return to Route" button at the bottom.<br />
-			</fieldset>
+			</fieldset><br/><br/>
 			
 			<form method = "post">
 			<fieldset>
 				<legend><b>Data Entry:</b></legend><br />
-				<b>Total Weight:</b> <input type = "text" name = "total_weight" value = <?php echo $stop1->get_total_weight()?> /> lbs.
+				<b>Enter Total Weight:</b> <input type = "text" name = "total_weight" value = 0 /> lbs.
 				<br />
 				
 			<p>Enter any additional notes by tapping the text box below:</p>
@@ -95,6 +86,12 @@
 			
 			<?php 
 			if (isset($_POST['submitted'])){
+				
+				$stop1->set_total_weight($total_weight);
+				
+				$stop1->set_notes($driver_notes);
+				
+				update_dbStops($stop1);
 				
 				echo('
 				<div class = "warning">

@@ -45,35 +45,6 @@
 	else{
 		$stop1 = retrieve_dbStops($routeID.$client_id);
 	}
-		
-	if (isset($_POST['submitted'])){
-		
-		$total_weight = $total_cartons * $pounds_per_carton;
-		
-		$stop1->remove_all_items();
-				
-		$item1 = "Meat:" . $total_weight * $meat_percent;
-		$stop1->set_item(0, $item1);
-
-		$item2 = "Bakery:" . $total_weight * $bakery_percent;
-		$stop1->set_item(1, $item2);
-				
-		$item3 = "Dairy:" . $total_weight * $dairy_percent;
-		$stop1->set_item(2, $item3);
-		
-		$item4 = "Produce:" . $total_weight * $produce_percent;
-		$stop1->set_item(3, $item4);
-		
-		$item5 = "Dry Goods:" . $total_weight * $dry_goods_percent;
-		$stop1->set_item(4, $item5);
-		
-		echo($item5);
-		
-		$stop1->set_notes($driver_notes);
-		
-		update_dbStops($stop1);
-		
-	}
 	
 ?>
 <html>
@@ -102,12 +73,12 @@
 			   <b>3.</b> When the values are entered, tap the "Submit" button at the bottom.<br /><br />
 			   <b>4.</b> Check that the submitted values in the red box at the bottom of the screen are correct. If not, re-enter them.<br /><br /> 
 			   <b>5.</b> After all values are submitted, tap the "Return to Route" button at the bottom.<br />
-			</fieldset>
+			</fieldset><br/><br/>
 			
 			<form method="post"?>
 			<fieldset>
 				<legend><b>Data Entry:</b></legend><br />
-				<b>Total Cartons:</b> <input type = "text" name = "total_cartons" value = <?php echo ($stop1->get_total_weight()/$pounds_per_carton)?> />
+				<b>Enter Total Cartons:</b> <input type = "text" name = "total_cartons" value = 0 />
 				<br />
 			<p>Enter any additional notes by tapping the text box below:</p>
 			
@@ -124,6 +95,29 @@
 				
 			<?php 
 			if (isset($_POST['submitted'])){
+				
+				$total_weight = $total_cartons * $pounds_per_carton;
+		
+				$stop1->remove_all_items();
+				
+				$item1 = "Meat:" . $total_weight * $meat_percent;
+				$stop1->set_item(0, $item1);
+
+				$item2 = "Bakery:" . $total_weight * $bakery_percent;
+				$stop1->set_item(1, $item2);
+				
+				$item3 = "Dairy:" . $total_weight * $dairy_percent;
+				$stop1->set_item(2, $item3);
+		
+				$item4 = "Produce:" . $total_weight * $produce_percent;
+				$stop1->set_item(3, $item4);
+		
+				$item5 = "Dry Goods:" . $total_weight * $dry_goods_percent;
+				$stop1->set_item(4, $item5);
+		
+				$stop1->set_notes($driver_notes);
+		
+				update_dbStops($stop1);
 				
 				echo('
 				<div class = "warning">
