@@ -55,7 +55,7 @@ foreach ($route->get_drivers() as $driver_id) {
 	$driver = retrieve_dbVolunteers($driver_id);
 	$name = $driver->get_first_name() . ' ' . $driver->get_last_name();
 	if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today)
-		echo "<input type='checkbox' name='s_driver[]' value='".$driver_id."' />".$name."<br>";
+		echo "<input type='checkbox' name='s_driver[]' value='".$driver_id."'>".$name."<br>";
 	else echo $name;
 }
 echo "</td><td valign='top'>";
@@ -84,21 +84,25 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 }
 if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 echo "</td><tr><td>";
+  if (sizeof($route->get_drivers())>0)
 	echo "<input type='submit' name='remove_driver' value='Remove checked' />";
 echo "</td><td>";
+  if ($route->get_num_pickups()>0)
 	echo "<input type='submit' name='remove_pickup' value='Remove checked' />";
 echo "</td><td>";
+  if ($route->get_num_dropoffs()>0)
 	echo "<input type='submit' name='remove_dropoff' value='Remove checked' />";
 echo "</td><tr><td>";
 	echo "Add Driver:<br>";
 	$drivers = getonlythose_dbVolunteers(substr($route->get_id(),9,3), "driver", "active", "", "");
 	echo('<select name="add_driver">');
     echo ('<option value=""></option>');
-    foreach ($drivers as $driver) {
-    	$name = $driver->get_first_name().' '.$driver->get_last_name();
-    	echo ('<option value="'.$driver->get_id().'"');
-    	echo('>'.$name.'</option>');
-    }
+    foreach ($drivers as $driver) 
+    	if (!in_array($driver->get_id(),$route->get_drivers())) {
+    		$name = $driver->get_first_name().' '.$driver->get_last_name();
+    		echo ('<option value="'.$driver->get_id().'"');
+    		echo('>'.$name.'</option>');
+    	}
     echo('</select>');
 	
 echo "</td><td>";
@@ -107,9 +111,11 @@ echo "</td><td>";
 	echo('<select name="add_pickup">');
     echo ('<option value=""></option>');
     foreach ($pickups as $pickup) {
-    	$name = $pickup->get_id();
-    	echo ('<option value="s_pickup[]"');
-    	echo('>'.$name.'</option>');
+    	if (!in_array($route->get_id().$pickup->get_id(),$route->get_pickup_stops())) {
+    		$name = $pickup->get_id();
+    		echo ('<option value="'.$route->get_id().$pickup->get_id().'"');
+    		echo('>'.$name.'</option>');
+    	}
     }
     echo('</select>');
 	
@@ -119,9 +125,11 @@ echo "</td><td>";
 	echo('<select name="add_dropoff">');
     echo ('<option value=""></option>');
     foreach ($dropoffs as $dropoff) {
-    	$name = $dropoff->get_id();
-    	echo ('<option value="s_dropoff[]"');
-    	echo('>'.$name.'</option>');
+    	if (!in_array($route->get_id().$dropoff->get_id(),$route->get_dropoff_stops())) {
+    		$name = $dropoff->get_id();
+    		echo ('<option value="'.$route->get_id().$dropoff->get_id().'"');
+    		echo('>'.$name.'</option>');
+    	}
     }
     echo('</select>');
 }	

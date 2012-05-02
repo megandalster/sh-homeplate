@@ -55,43 +55,64 @@
 */
 function process_form($post, $route)	{
 	// respond to the POST
-		if($post['change_status']!=$route_){
+		if($post['change_status']!=$route->get_status() && $post['change_status']!=""){
 			$route->change_status($post['change_status']);
 			update_dbRoutes($route);
-			return ("(Status just changed to ". $_POST['change_status'].".)");
+			return ("Status changed to ". $_POST['change_status'].".");
 		}
 		// remove a driver from the route
 		if($post['remove_driver']){
-			echo "trying to remove driver<br>";
 			$selected = "";
-			foreach($post['remove_driver'] as $theDriver) {
-				$selected .= " ". $theDriver;
-				$route->remove_driver($theDriver);	
+			foreach($post['s_driver'] as $driver_id) {
+				$driver = retrieve_dbVolunteers($driver_id);
+				$selected .= ", ".$driver->get_first_name() . " " . $driver->get_last_name();
+				$route->remove_driver($driver_id);	
 			}
 			update_dbRoutes($route);
-			return ("Drivers removed: ". $selected .".)");
+			return ("Drivers removed: ". substr($selected, 2));
+		}
+		// remove a pick up from the route
+		if($_POST['remove_pickup']){
+			$selected = "";
+			delete_dbRoutes($route);
+			foreach($post['s_pickup'] as $pickup_id) {
+				$selected .= ", ".substr($pickup_id,12);
+				$route->remove_pick_up($pickup_id);	
+			}
+			insert_dbRoutes($route);
+			return ("Pickups removed: ". substr($selected, 2));
+		}
+		// remove a drop off from the route
+		if($_POST['remove_dropoff']){
+			$selected = "";
+			delete_dbRoutes($route);
+			foreach($post['s_dropoff'] as $dropoff_id) {
+				$selected .= ", ".substr($dropoff_id,12);
+				$route->remove_drop_off($dropoff_id);	
+			}
+			insert_dbRoutes($route);
+			return ("Dropoffs removed: ". substr($selected, 2));
 		}
 		// add a new driver to the route
 		if ($post['add_driver']) {
 			$route->add_driver($_POST['add_driver']);
 			update_dbRoutes($route);
-			return ("(New driver added: ". $_POST['add_driver'].".)");
-		}
-		// remove a pick up from the route
-		if($_POST['remove_pickup']){
-			$route->remove_pick_up($pick_up);
+			$driver = retrieve_dbVolunteers($_POST['add_driver']);
+			return ("New driver added: ". $driver->get_first_name() . " " . $driver->get_last_name());
 		}
 		// add a new pick up to the route
 		if ($_POST['add_pickup']) {
-			$route->add_pick_up($pick_up);
-		}
-		// remove a drop off from the route
-		if($_POST['remove_dropoff']){
-			$route->remove_drop_off($drop_off);
+			delete_dbRoutes($route);
+			$route->add_pick_up($_POST['add_pickup']);
+			insert_dbRoutes($route);
+			return ("New pickup added: ". substr($_POST['add_pickup'],12));
 		}
 		// add a new drop off to the route
 		if ($_POST['add_dropoff']) {
-			$route->add_drop_off($drop_off);	 
+			delete_dbRoutes($route);
+			$route->add_drop_off($_POST['add_dropoff']);
+			insert_dbRoutes($route);
+			return ("New dropoff added: ". substr($_POST['add_dropoff'],12));	 
 		}
 		return "nothing happened";
 }
