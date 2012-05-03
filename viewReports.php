@@ -25,21 +25,20 @@ echo "<h4>Today is ".date('l F j, Y', $time)."</h4>";
 <form method="post" action="">
 <p>Area : <select name="report_area">
 	<option value="HHI"
-		<?php if ($_GET['id']=="HHI") echo 'selected="selected"';?>>Hilton
+	<?php if ($_GET['id']=="HHI") echo 'selected="selected"';?>>Hilton
 	Head</option>
 	<option value="SUN"
-		<?php if ($_GET['id']=="SUN") echo 'selected="selected"';?>>Sun
-	City</option>
+	<?php if ($_GET['id']=="SUN") echo 'selected="selected"';?>>Sun City</option>
 	<option value="BFT"
-		<?php if ($_GET['id']=="BFT") echo 'selected="selected"';?>>Beaufort</option>
+	<?php if ($_GET['id']=="BFT") echo 'selected="selected"';?>>Beaufort</option>
 </select> &nbsp;&nbsp;Report Type : <select name="report_type">
 	<option value="all">All Stops</option>
 	<option value="don">Donors Only</option>
 	<option value="rec">Recepients Only</option>
 </select> <br>
 
-<fieldset><legend>Report Span</legend> <input type="radio"
-	name="report_span" value="weekly" /> Weekly <br>
+<fieldset><legend>Choose report dates</legend>
+<p><input type="radio" name="report_span" value="weekly" /> Weekly <br>
 <input type="radio" name="report_span" value="monthly" />
 Monthly&nbsp;&nbsp; <?php 
 
@@ -63,8 +62,7 @@ for($i = $current_time[year]; $i >= 1990; $i--)
 	echo '<option value="'.$i.'">'.$i.'</option>';
 }
 echo '</select>';
-?>
-<br>
+?> <br>
 <input type="radio" name="report_span" value="range" /> Date
 Range&nbsp;&nbsp; <?php 
 
@@ -120,12 +118,14 @@ for($i = $current_time[year]; $i >= 1990; $i--)
 	echo '<option value="'.$i.'">'.$i.'</option>';
 }
 echo '</select>';
-?></fieldset>
+?>
+
+</fieldset>
 </p>
 
 <!-- submit button --> <br>
-<input type="hidden" name="submitted" value="1"><input
-	type="submit" name="Generate " value="Generate Report"></form>
+<input type="hidden" name="submitted" value="1"><input type="submit"
+	name="Generate " value="Generate Report"></form>
 
 <?php
 if($_POST['submitted'])
@@ -150,7 +150,7 @@ if($_POST['submitted'])
 		$month = $_POST['monthly_month'];
 		$year = $_POST['monthly_year'];
 
-		$time = strtotime("first day of ".$month.' '.$year);
+		$time = strtotime($month.' 01, '.$year);
 		$endTime = strtotime("last day of ".$month.' '.$year);
 
 		$start_date = date('y-m-d', $time);
@@ -229,7 +229,7 @@ if($_POST['submitted'])
 
 		// start row
 		echo "<tr>" ;
-			
+
 		// cols 1 & 2 : donor name and weight
 		if($pickups[$i] != null)
 		{
@@ -270,8 +270,7 @@ if($_POST['submitted'])
 	echo "</table>";
 }
 
-?>
-<?php include('footer.inc');?>
+?> <?php include('footer.inc');?>
 <table></table>
 </div>
 </div>
