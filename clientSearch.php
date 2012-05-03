@@ -25,13 +25,14 @@
 					$area = $_GET['area'];
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Sun City","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
-					$weeks = array("1"=>"1st","2"=>"2nd","3"=>"3rd","4"=>"4th","5"=>"5th");
 					echo('<p><a href="'.$path.'clientSchedule.php">View client schedule</a>');
 					echo('<a href="'.$path.'clientEdit.php?id=new"> | Add new client</a>');	
 					echo('<form method="post">');
 						echo('<p><strong>Search for clients:</strong>');
+                        
+                        if( array_key_exists('s_area', $_POST) ) $area = $_POST['s_area']; //override the GET variable if we just conducted a search
 						echo '<p>Area: <select name="s_area">' .
-							'<option value=""></option>'; 
+							'<option value="">--all--</option>'; 
                             echo '<option value="HHI"'; if ($area=="HHI") echo " SELECTED"; echo '>Hilton Head</option>' ;
                             echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Sun City</option>' ;
                             echo '<option value="BFT"'; if ($area=="BFT") echo " SELECTED"; echo '>Beaufort</option>';
@@ -39,27 +40,41 @@
                         
                         if( !array_key_exists('s_type', $_POST) ) $type = ""; else $type = $_POST['s_type'];
 						echo '&nbsp;&nbsp;Type:<select name="s_type">';
-                            echo '<option value=""'; if ($type=="") echo " SELECTED"; echo '></option>'; 
-                            echo '<option value="donor"'; if ($type=="donor") echo " SELECTED"; echo '>Donor</option>'; 
-                            echo '<option value="recipient"'; if ($type=="recipient") echo " SELECTED"; echo '>Recipient</option>'; 
+                            echo '<option value=""';            if ($type=="")          echo " SELECTED"; echo '>--either--</option>'; 
+                            echo '<option value="donor"';       if ($type=="donor")     echo " SELECTED"; echo '>Donor</option>'; 
+                            echo '<option value="recipient"';   if ($type=="recipient") echo " SELECTED"; echo '>Recipient</option>'; 
                         echo '</select>';
                         
                         if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
 						echo '&nbsp;&nbsp;Feed America:<select name="s_status">';
-                                echo '<option value=""'; if ($status=="") echo " SELECTED"; echo '></option>';
-                                echo '<option value="yes"'; if ($status=="yes") echo " SELECTED"; echo '>Yes</option>';
-                                echo '<option value="no"'; if ($status=="no") echo " SELECTED"; echo '>No</option>';
+                            echo '<option value=""';    if ($status=="")    echo " SELECTED"; echo '>--either--</option>';
+                            echo '<option value="yes"'; if ($status=="yes") echo " SELECTED"; echo '>Yes</option>';
+                            echo '<option value="no"';  if ($status=="no")  echo " SELECTED"; echo '>No</option>';
                         echo '</select>';
+                        
+                        if( !array_key_exists('s_name', $_POST) ) $name = ""; else $name = $_POST['s_name'];
 						echo '&nbsp;&nbsp;Name: ' ;
-						echo '<input type="text" name="s_name">';
+						echo '<input type="text" name="s_name" value="' . $name . '">';
+                        
 						echo '<fieldset>';
 						echo '<legend>Pickup/Dropoff:</legend>';
 						echo '<p id="s_day">Day:&nbsp;&nbsp;&nbsp;&nbsp;';
-							foreach($days as $day=>$dayname)
-							  echo '<label><input type="checkbox" name="s_day[]" value='.$day.' />'.$day.'</label>';
+                            if( array_key_exists('s_day', $_POST) ){
+                                foreach($days as $day=>$dayname){
+                                  echo '<label><input type="checkbox" name="s_day[]" value="'.$day.'"'; 
+                                  if (in_array($day, $_POST['s_day'])) 
+                                    echo " CHECKED"; echo' />'.$day.'</label>&nbsp;&nbsp;';
+                                }
+                            }
+                            else{
+                                foreach($days as $day=>$dayname){
+                                  echo '<label><input type="checkbox" name="s_day[]" value="'.$day.'" />'.$day.'</label>&nbsp;&nbsp;';
+                                }
+                            }
 						echo '</fieldset>';
 						echo('<p><input type="hidden" name="s_submitted" value="1"><input type="submit" name="Search" value="Search">');
 						echo('</form></p>');
+                        
 					
 				// if user hit "Search"  button, query the database and display the results
 					if( array_key_exists('s_submitted', $_POST) ){
@@ -72,18 +87,15 @@
                         if ( !array_key_exists('s_day', $_POST) ) 
                             $_POST['s_day'][] = ""; // allow "any" day if none checked
                         foreach ($_POST['s_day'] as $day) 
-                        		$availability[] = $day;
+                            $availability[] = $day;
                         
-                        //print_r( $availability );
      					//echo "search criteria: ", $area.$type.$status.$name.$availability[0];
-     					//echo "type: ", $type;
                         
                         // now go after the volunteers that fit the search criteria
                         include_once('database/dbClients.php');
      					include_once('domain/Client.php');
 						
                         $result = getall_clients($area, $type, $status, $name, $availability);
-                        //print_r( $result );
 						
                         echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
                             if (!$type) echo "client(s)"; 
