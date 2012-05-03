@@ -25,82 +25,107 @@
 					$area = $_GET['area'];
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Sun City","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
-					$weeks = array("odd"=>"odd","even"=>"even","any"=>"any","1"=>"1st","2"=>"2nd","3"=>"3rd","4"=>"4th","5"=>"5th");
 					echo('<p><a href="'.$path.'volunteerSchedule.php?area='.$area.'">View driver schedule</a>');
 					echo('<a href="'.$path.'volunteerEdit.php?id=new"> | Add new volunteer</a>');	
 					echo('<form method="post">');
 						echo('<p><strong>Search for volunteers:</strong>');
+                        
+                        if( array_key_exists('s_area', $_POST) ) $area = $_POST['s_area']; //override the GET variable if we just conducted a search
 						echo '<p>Area: <select name="s_area">' .
 							'<option value="">--all--</option>'; 
-						echo '<option value="HHI"'; if ($area=="HHI") echo " SELECTED"; echo '>Hilton Head</option>' ;
-						echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Sun City</option>' ;
-						echo '<option value="BFT"'; if ($area=="BFT") echo " SELECTED"; echo '>Beaufort</option>';
+                            echo '<option value="HHI"'; if ($area=="HHI") echo " SELECTED"; echo '>Hilton Head</option>' ;
+                            echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Sun City</option>' ;
+                            echo '<option value="BFT"'; if ($area=="BFT") echo " SELECTED"; echo '>Beaufort</option>';
 						echo '</select>';
-						echo('&nbsp;&nbsp;Type:<select name="s_type">' .
-							'<option value="">--all--</option>' . 
-							'<option value="driver" SELECTED>Driver</option>' . '<option value="helper">Helper</option>' .
-							'<option value="teamcaptain">Team Captain</option>' . '<option value="coordinator">Coordinator</option>' .
-							'<option value="associate">Associate</option>' .
-							'</select>');
-						echo('&nbsp;&nbsp;Status:<select name="s_status">' .
-							'<option value="">--all--</option>' . '<option value="applicant">Applicant</option>' . '<option value="active" SELECTED>Active</option>' .
-							'<option value="on-leave">On Leave</option>' . '<option value="former">Former</option>' .
-							'</select>');
-						echo '<p>Name: ' ;
-						echo '<input type="text" name="s_name">';
-						
-					//	echo '<p id="s_week"><label>Week:&nbsp;&nbsp;</label>';
-					//		foreach($weeks as $week=>$weekname)
-					//		  echo '<input type="checkbox" name="s_week[]" value='.$week.' />'.$weekname;
-						echo '<p id="s_day"><label>Availability:&nbsp;&nbsp;&nbsp;&nbsp;</label>';
-							foreach($days as $day=>$dayname)
-							  echo '<input type="checkbox" name="s_day[]" value='.$day.' />'.$day;
-						
+                        
+                        if( !array_key_exists('s_type', $_POST) ) $type = ""; else $type = $_POST['s_type'];
+						echo '&nbsp;&nbsp;Type:<select name="s_type">';
+							echo '<option value=""'; if ($type=="") echo " SELECTED"; echo '>--all--</option>'; 
+							echo '<option value="driver"'; if ($type=="driver") echo " SELECTED"; echo '>Driver</option>' . '<option value="helper">Helper</option>'; 
+							echo '<option value="teamcaptain"'; if ($type=="teamcaptain") echo " SELECTED"; echo '>Team Captain</option>' . '<option value="coordinator">Coordinator</option>'; 
+							echo '<option value="associate"'; if ($type=="associate") echo " SELECTED"; echo '>Associate</option>';
+                        echo '</select>';
+                        
+                        if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
+						echo '&nbsp;&nbsp;Status:<select name="s_status">';
+							echo '<option value=""';            if ($status=="")            echo " SELECTED"; echo '>--all--</option>';
+                            echo '<option value="applicant"';   if ($status=="applicant")   echo " SELECTED"; echo '>Applicant</option>';
+                            echo '<option value="active"';      if ($status=="active")      echo " SELECTED"; echo '>Active</option>';
+							echo '<option value="on-leave"';    if ($status=="on-leave")    echo " SELECTED"; echo '>On Leave</option>';
+                            echo '<option value="former"';      if ($status=="former")      echo " SELECTED"; echo '>Former</option>';
+                        echo '</select>';
+                        
+						if( !array_key_exists('s_name', $_POST) ) $name = ""; else $name = $_POST['s_name'];
+						echo '&nbsp;&nbsp;Name: ' ;
+						echo '<input type="text" name="s_name" value="' . $name . '">';
+					
+						echo '<fieldset>';
+						echo '<legend>Availability:</legend>';
+                        echo '<p id="s_day">Day:&nbsp;&nbsp;&nbsp;&nbsp;';
+                            if( array_key_exists('s_day', $_POST) ){
+                                foreach($days as $day=>$dayname){
+                                  echo '<label><input type="checkbox" name="s_day[]" value="'.$day.'"'; 
+                                  if (in_array($day, $_POST['s_day'])) 
+                                    echo " CHECKED"; echo' />'.$day.'</label>&nbsp;&nbsp;';
+                                }
+                            }
+                            else{
+                                foreach($days as $day=>$dayname){
+                                  echo '<label><input type="checkbox" name="s_day[]" value="'.$day.'" />'.$day.'</label>&nbsp;&nbsp;';
+                                }
+                            }
+						echo '</fieldset>';
 						echo('<p><input type="hidden" name="s_submitted" value="1"><input type="submit" name="Search" value="Search">');
-						echo('<ca></p>');
+						echo('</form></p>');
+                        
+                        //print_r( $_POST );
 					
 				// if user hit "Search"  button, query the database and display the results
-					if($_POST['s_submitted']){
+					if( array_key_exists('s_submitted', $_POST) ){
 						$area = $_POST['s_area'];
 						$type = $_POST['s_type'];
 						$status = $_POST['s_status'];
                         $name = trim(str_replace('\'','&#39;',htmlentities($_POST['s_name'])));
+                        
                         $availability = array();
-                        if (!$_POST['s_day'])      // allow "any" day if none checked
-                                $_POST['s_day'][] = "";
-                        if (!$_POST['s_week'])     // allow "any" week if none checked
-                                $_POST['s_week'][] = "";
+                        if ( !array_key_exists('s_day', $_POST) ) 
+                            $_POST['s_day'][] = ""; // allow "any" day if none checked
                         foreach ($_POST['s_day'] as $day) 
-                            $availability[] = $day;
-                 //               foreach($_POST['s_week'] as $week)
-                 //                       $availability[] = $day . ":" . $week;
-                        $availability[] = "";
+                        	$availability[] = $day;
+                        
+                        //echo "search criteria: ", $area.$type.$status.$name.$availability[0];
+                        
                         // now go after the volunteers that fit the search criteria
                         include_once('database/dbVolunteers.php');
                         include_once('domain/Volunteer.php');
-                        //echo "search criteria: ", $area.$type.$status.$name.$availability[0];
+                        
                         $result = getonlythose_dbVolunteers($area, $type, $status, $name, $availability[0]);  
 
-						echo '<p><strong>Search Results:</strong> <p>Found '.sizeof($result).' '.$status.' '.
-							$type;
-						if ($type!="") echo "s";
+						echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
+                            if (!$type) echo "volunteer(s)"; 
+                            else echo $type.'s';
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
 						if ($name!="") echo ' with name like "'.$name.'"';
 						if ($availability[0]!="") echo ' with availability '. $availability[0];
 						if (sizeof($result)>0) {
 							echo ' (select one for more info).';
-							echo '<p><table> <tr><td>Name</td><td>Phone</td><td>E-mail</td><td>Availability</td></tr>';
-							foreach ($result as $vol) {
+							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Availability</strong></td></tr>';
+                            $allEmails = array(); // for printing all emails
+                            foreach ($result as $vol) {
 								echo "<tr><td><a href=volunteerEdit.php?id=".$vol->get_id().">" . 
 									$vol->get_first_name() .  " " . $vol->get_last_name() . "</td><td>" . 
 									phone_edit($vol->get_phone1()) . "</td><td>" . 
-									$vol->get_email() . "</td><td>";
+									$vol->get_email() . "</td><td>"; $allEmails[] = $vol->get_email();
 								foreach($vol->get_availability() as $availableon)
-									echo ($weeks[substr($availableon,4,1)] . " " . $days[substr($availableon,0,3)] . ", ") ;
+									echo ($availableon . ", ") ;
 								echo "</td></a></tr>";
 							}
 						}
 						echo '</table>';
+                        
+                        echo "<br/><strong>email these people:</strong> <br/>";
+                        foreach($allEmails as $email)
+                            echo $email . "; ";
 						
 					}
 					
