@@ -89,11 +89,11 @@ function getall_dbStops () {
 
 function getall_dbStops_between_dates ($start_date, $end_date) {
 	connect();
-    $query = "SELECT * FROM dbStops where date >= '". $start_date . "' AND date <= '". $end_date . "' ORDER BY type, client";
+	$query = "SELECT route, client, type, SUM(weight), notes FROM dbStops where date >= '". $start_date . "' AND date <= '". $end_date . "' GROUP BY client";
     $result = mysql_query ($query);
     $theStops = array();
     while ($result_row = mysql_fetch_assoc($result)) {
-        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['weight'], $result_row['notes']);
+        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['SUM(weight)'], $result_row['notes']);
         $theStops[] = $theStop;
     }
 	mysql_close();
