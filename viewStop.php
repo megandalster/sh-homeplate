@@ -10,8 +10,10 @@
 /*
  * viewStop GUI for Homeplate
  * @author Nicholas Wetzel
- * @version April 25, 2012
+ * @version May 8, 2012
  */
+
+// This file is currently not being used!
 
 	session_start();
 	session_cache_expire(30);

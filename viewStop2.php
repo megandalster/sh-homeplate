@@ -11,13 +11,22 @@
 /*
  * viewStop GUI for Homeplate
  * @author Nicholas Wetzel
- * @version April 4, 2012
+ * @version May 8, 2012
+ */
+
+/*
+ * This file creates the data entry page for stops that record separate weights for
+ * different food types.
  */
 	session_start();
 	session_cache_expire(30);
 	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
+	include_once('database/dbVolunteers.php');
+    include_once('domain/Volunteer.php');
+	
+    // Set necessary values using the GET routine
 	$routeID = substr($_GET['stop_id'],0,12);
 	$area = substr($_GET['stop_id'],9,3);
 	$ndate = substr($_GET['stop_id'],0,8);
@@ -26,6 +35,7 @@
 	$client_type = $_GET['client_type'];
 	$client_items = "";
 	
+	// Weight variables for different food types and driver notes are initialized if they have not already been set.
 	$meat_weight = isset($_POST["meat_weight"]) ? $_POST["meat_weight"] : "0";
 	$bakery_weight = isset($_POST["bakery_weight"]) ? $_POST["bakery_weight"] : "0";
 	$dairy_weight = isset($_POST["dairy_weight"]) ? $_POST["dairy_weight"] : "0";
@@ -33,25 +43,22 @@
 	$grocery_weight = isset($_POST["grocery_weight"]) ? $_POST["grocery_weight"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
 	
+	// Retrieve the first and last name of the current driver from the database.
+	$person = retrieve_dbVolunteers($_SESSION['_id']);
+    $first_name = $person->get_first_name();
+    $last_name = $person->get_last_name();
+	
+    // If the current stop has not been created then create it and add it to the database.
+    // Otherwise, retrieve it from the database.
 	if (!retrieve_dbStops($routeID.$client_id)){
 	$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
 	insert_dbStops($stop1);
 	}
 	else{
 		$stop1 = retrieve_dbStops($routeID.$client_id);
-	}
-	
-	function return_item_value($stop, $index){
-		if(sizeof($stop->get_items()) < 4){
-			echo (0);
-		}
-		else{
-			echo ($stop->get_item_weight($index));
-		}	
-	}
-	
-	
+	}	
 ?>
+
 <html>
 	<head>
 		<title>
@@ -63,75 +70,40 @@
 		<div id="container">
 			<?php include('header.php');?>
 			<div id="content">
-  
+  			
+  			<!-- Display the name of the current stop -->
 			<p><big><b><?php echo($client_id)?></b></big></p>
 			
+			<!-- Display the associated route, driver and date of the stop -->
 			<p>Route: <?php echo($area)?><br />
-			   Driver: <?php // echo($volunteer->get_first_name()." ".$volunteer->get_last_name())?>
-			   			Nick Wetzel<br />
+			   Driver: <?php echo($first_name." ".$last_name)?><br />
 			   Date: <?php echo($date)?></p>
-			   
-			<fieldset>
-				<legend><b>Instructions:</b></legend><br />
-			   <b>1.</b> To insert a value, tap the corresponding cell in the table below.<br /><br />
-			   <b>2.</b> Insert additional notes into the text box below the table if necessary.<br /><br />
-			   <b>3.</b> When the values are entered, tap the "Submit" button at the bottom.<br /><br />
-			   <b>4.</b> Check that the submitted values in the red box at the bottom of the screen are correct. If not, re-enter them.<br /><br /> 
-			   <b>5.</b> After all values are submitted, tap the "Return to Route" button at the bottom.<br />
-			</fieldset><br/><br/>
 			
+			<!-- The data entry field for weight types and driver notes -->
 			<form method="post"?>
 			<fieldset>
-			<legend><b>Data Entry:</b></legend><br />
-			<table border = "1" cellpadding = "5">
-				<tr>
-					<td><b>Type</b></td>
-					<td><b>Weight (lbs.)</b></td>
-					
-				</tr>
-				<tr>
-					<td>Meat:</td>
-					<td><input type="text" name="meat_weight" value = 0 /></td>
-					
-				</tr>
-				<tr>
-					<td>Bakery:</td>
-					<td><input type="text" name="bakery_weight" value = 0 /></td>
-					
-				</tr>
-				<tr>
-					<td>Dairy:</td>
-					<td><input type="text" name="dairy_weight" value = 0 /></td>
-					
-				</tr>
-				<tr>
-					<td>Produce:</td>
-					<td><input type="text" name="produce_weight" value = 0 /></td>
-					
-				</tr>
-				<tr>
-					<td>Grocery:</td>
-					<td><input type="text" name="grocery_weight" value = 0 /></td>
-					
-					
-				</tr>
-			</table>	
-				<br />
-			<p>Enter any additional notes by tapping the text box below:</p>
-			<textarea rows="10" cols="50" name="driver_notes" ></textarea>
+				<legend><b>Data Entry:</b></legend><br />
+				<p><b>Enter Meat Weight:</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="meat_weight" value = 0 /> lbs.<br /><br />
+				<b>Enter Bakery Weight:</b>&nbsp;&nbsp;<input type="text" name="bakery_weight" value = 0 /> lbs.<br /><br />
+				<b>Enter Dairy Weight:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="dairy_weight" value = 0 /> lbs.<br /><br />
+				<b>Enter Produce Weight:</b> <input type="text" name="produce_weight" value = 0 /> lbs.<br /><br />
+				<b>Enter Grocery Weight:</b> <input type="text" name="grocery_weight" value = 0 /> lbs.</p>	
+			
+			<p><i>Enter any additional notes by tapping the text box below:</i><br /><br />
+			<textarea rows="5" cols="50" name="driver_notes" ></textarea></p>
+			
+			<!-- A hidden variable that, when submitted, is used to display submitted values and update the databases -->	
+			<p><input type = "hidden" name = "submitted" value = "true"/></p>
 				
-			<input type = "hidden" name = "submitted" value = "true"/>
-				
-				<br />
-				<br />
-				
-			<input type="submit" value="Submit" />
+			<p><input type="submit" value="Submit"/>&nbsp;&nbsp;<i>Click the Submit button to submit the values and notes.</i></p>
 			</fieldset>
 			</form><br />
 			
 			<?php 
+			// If values have been submitted, then update the database and display the submitted values to the driver.
 			if (isset($_POST['submitted'])){
 				
+				// Any pre-existing items are removed to prevent overlap.
 				$stop1->remove_all_items();
 		
 				$item1 = "Meat:" . $meat_weight;
@@ -167,11 +139,13 @@
 				</div><br/><br/>
 				');
 			}
-			echo '<a href="editRoute.php?routeID='.$routeID.'"><strong>Return to Route</strong></a>';
+			
+			// The link to return to the current route.
+			echo '<a href="editRoute.php?routeID='.$routeID.'"><big>Return to Route</big></a><br />';
 			include('footer.inc');
 			?>
-			</div>
 			
+			</div>
 		</div>
 	</body>
 </html>

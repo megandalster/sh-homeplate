@@ -11,14 +11,24 @@
 /*
  * viewStop GUI for Homeplate
  * @author Nicholas Wetzel
- * @version April 4, 2012
+ * @version May 8, 2012
+ */
+
+/*
+ * This file creates the data entry page for stops that record only the total amount of
+ * cartons/boxes. This number is recorded and broken down into weights for different
+ * foodtypes. The number of pounds per carton and the total weight breakdown percentages
+ * are given by the client.
  */
 	session_start();
 	session_cache_expire(30);
 	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
+	include_once('database/dbVolunteers.php');
+    include_once('domain/Volunteer.php');
 	
+    // Set necessary values using the GET routine
 	$routeID = substr($_GET['stop_id'],0,12);
 	$area = substr($_GET['stop_id'],9,3);
 	$ndate = substr($_GET['stop_id'],0,8);
@@ -27,26 +37,36 @@
 	$client_type = $_GET['client_type'];
 	$client_items = "";
 	
+	// The total weight breakdown percentages given by the client.
 	$meat_percent = 0.25;
 	$dairy_percent = 0.03;
 	$bakery_percent = 0.31;
 	$produce_percent = 0.18;
 	$dry_goods_percent = 0.23;
 	
+	// The average number of pounds per carton given by the client.
 	$pounds_per_carton = 33;
 	
+	// Total weight variable and driver notes are initialized if they have not already been set.
 	$total_cartons = isset($_POST["total_cartons"]) ? $_POST["total_cartons"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
-		
+	
+	// Retrieve the first and last name of the current driver from the database.
+	$person = retrieve_dbVolunteers($_SESSION['_id']);
+    $first_name = $person->get_first_name();
+    $last_name = $person->get_last_name();
+
+    // If the current stop has not been created then create it and add it to the database.
+    // Otherwise, retrieve it from the database.
 	if (!retrieve_dbStops($routeID.$client_id)){
 	$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
 	insert_dbStops($stop1);
 	}
 	else{
 		$stop1 = retrieve_dbStops($routeID.$client_id);
-	}
-	
+	}	
 ?>
+
 <html>
 	<head>
 		<title>
@@ -58,46 +78,39 @@
 		<div id="container">
 			<?php include('header.php');?>
 			<div id="content">
-  
+  			
+  			<!-- Display the name of the current stop -->
 			<p><big><b><?php echo($client_id)?></b></big></p>
 			
+			<!-- Display the associated route, driver and date of the stop -->
 			<p>Route: <?php echo($area)?><br />
-			   Driver: <?php // echo($volunteer->get_first_name()." ".$volunteer->get_last_name())?>
-			   			Nick Wetzel<br />
+			   Driver: <?php echo($first_name." ".$last_name)?><br />
 			   Date: <?php echo($date)?></p>
-			   
-			<fieldset>
-				<legend><b>Instructions:</b></legend><br />
-			   <b>1.</b> To insert the total number of cartons, tap the corresponding text box below.<br /><br />
-			   <b>2.</b> Insert additional notes into the text box below if necessary.<br /><br />
-			   <b>3.</b> When the values are entered, tap the "Submit" button at the bottom.<br /><br />
-			   <b>4.</b> Check that the submitted values in the red box at the bottom of the screen are correct. If not, re-enter them.<br /><br /> 
-			   <b>5.</b> After all values are submitted, tap the "Return to Route" button at the bottom.<br />
-			</fieldset><br/><br/>
 			
+			<!-- The data entry field for total cartons and driver notes -->
 			<form method="post"?>
 			<fieldset>
 				<legend><b>Data Entry:</b></legend><br />
-				<b>Enter Total Cartons:</b> <input type = "text" name = "total_cartons" value = 0 />
-				<br />
-			<p>Enter any additional notes by tapping the text box below:</p>
+				<p><b>Enter Total Cartons:</b> <input type = "text" name = "total_cartons" value = 0 /></p>
+				
+			<p><i>Enter any additional notes by tapping the text box below:</i><br /><br />
+			<textarea rows="5" cols="50" name="driver_notes" ></textarea></p>
 			
-			<textarea rows="10" cols="50" name="driver_notes" ></textarea>
+			<!-- A hidden variable that, when submitted, is used to display submitted values and update the databases -->	
+			<p><input type = "hidden" name = "submitted" value = "true"/></p>
 				
-			<input type = "hidden" name = "submitted" value = "true"/>
-				
-				<br />
-				<br />
-				
-			<input type="submit" value="Submit" />
+			<p><input type="submit" value="Submit"/>&nbsp;&nbsp;<i>Click the Submit button to submit the values and notes.</i></p>
 			</fieldset>
 			</form><br />
 				
 			<?php 
+			// If values have been submitted, then update the database and display the submitted values to the driver.
 			if (isset($_POST['submitted'])){
 				
+				// Evaluate total weight
 				$total_weight = $total_cartons * $pounds_per_carton;
-		
+				
+				// Any pre-existing items are removed to prevent overlap.
 				$stop1->remove_all_items();
 				
 				$item1 = "Meat:" . $total_weight * $meat_percent;
@@ -128,9 +141,11 @@
 				');
 			}
 			
-			echo '<a href="editRoute.php?routeID='.$routeID.'"><strong>Return to Route</strong></a>';
+			// The link to return to the current route.
+			echo '<a href="editRoute.php?routeID='.$routeID.'"><big>Return to Route</big></a><br />';
 			include('footer.inc');
 			?>
+			
 			</div>
 		</div>
 	</body>
