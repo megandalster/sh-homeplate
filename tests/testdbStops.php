@@ -8,9 +8,13 @@
 */
 
 /*
- * dbStops module for SH Homeplate
- * @author Nicholas Wetzel and Alex Lucyk
- * @version February 22, 2012
+ * testdbStops module for SH Homeplate
+ * @author Nicholas Wetzel
+ * @version May 8, 2012
+ */
+
+/*
+ * Provides the test module for the dbStops file.
  */
 
 include_once(dirname(__FILE__).'/../domain/Stop.php');

@@ -10,8 +10,14 @@
 /*
  * Stop class for Homeplate
  * @author Nicholas Wetzel and Allen Tucker
- * @version April 27, 2012
+ * @version May 8, 2012
  */
+
+/*
+ * This class serves as the basis for all actions associated with the a Stop.
+ * A stop can be constructed and edited with the functions provided by this class.
+ */
+
 class Stop {
 	private $id;		// String $route_id . $Client_id 
 	private $type;		// "donor" or "recipient"
@@ -19,7 +25,7 @@ class Stop {
 	private $total_weight; // total weight for this stop
 	private $notes;		// notes written by the driver 
 
-	//Constructor for an indvidual Stop/Client
+	// Constructor for an indvidual Stop/Client
 	function __construct($route_id, $client_id, $type, $items, $notes){
 		$this->id = $route_id . $client_id;
 		$this->route_id = $route_id;
@@ -55,6 +61,7 @@ class Stop {
 	function get_items(){
 		return $this->items;
 	}
+	// Returns the weight of a certain food type based on the numeric index parameter.
 	function get_item_weight($index){
 		$item_weights = array();
 		foreach($this->items as $item){
@@ -73,7 +80,10 @@ class Stop {
 		return substr($this->id,0,8);
 	}
 	
-	//setters
+	// Setter functions for the Stop class.
+	
+	// Sets the total weight by accessing and summing the weights
+	// of each food type in the stop's item array.
 	function set_all_totals(){
 		$this->total_weight = 0;
 		foreach($this->items as $item){
@@ -82,8 +92,7 @@ class Stop {
 		}
 	}
 	
-	
-	// used to directly set the total weight
+	// Sets the stop's total weight to the specified numeric value.
 	function set_total_weight($weight){
 		$this->total_weight = $weight;
 	}
@@ -91,11 +100,12 @@ class Stop {
 	function set_id($new_id){
 		$this->id = $new_id;
 	}
+	// Adds an item to the end of the stop's array of items.
 	function add_item ($new_item) {
         $this->items[] = $new_item;
-        $this->set_all_totals();
-        
+        $this->set_all_totals();    
     }
+    // Sets the specified item to the specified index into the item array.
     function set_item($index, $new_item){
     	$this->items[$index] = $new_item;
     	$this->set_all_totals();
@@ -114,8 +124,7 @@ class Stop {
 			    break;
 			}
 		}
-		$this->set_all_totals();
-		
+		$this->set_all_totals();	
 	}
 }
 ?>

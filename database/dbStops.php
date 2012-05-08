@@ -8,14 +8,19 @@
 */
 
 /*
- * dbStops module for SH Homeplate
- * @author Nicholas Wetzel and Alex Lucyk
- * @version February 22, 2012
+ * dbStops module for Homeplate
+ * @author Nicholas Wetzel
+ * @version May 8, 2012
+ */
+
+/*
+ * This module implements all functionality with the 'Stop' database using mySQL queries. 
  */
 
 include_once(dirname(__FILE__).'/../domain/Stop.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
 
+// Create the DB stops table with the necessary column values.
 function create_dbStops() {
     connect();
     mysql_query("DROP TABLE IF EXISTS dbStops");
@@ -29,6 +34,7 @@ function create_dbStops() {
     return true;
 }
 
+// Insert a stop and all of its values into the DB.
 function insert_dbStops ($stop){
     if (! $stop instanceof Stop) {
         return false;
@@ -59,7 +65,8 @@ function insert_dbStops ($stop){
     mysql_close();
     return true;
 }
-                
+
+// Retrieve a stop from the DB by passing the stop ID.
 function retrieve_dbStops ($id) {
 	connect();
     $query = "SELECT * FROM dbStops WHERE id = '".$id."'";
@@ -74,6 +81,7 @@ function retrieve_dbStops ($id) {
     return $theStop;   
 }
 
+// Return all stops from the DB.
 function getall_dbStops () {
     connect();
     $query = "SELECT * FROM dbStops ORDER BY id";
@@ -87,12 +95,15 @@ function getall_dbStops () {
     return $theStops; 
 }
 
+// Returns all stops within a certain date range.
 function getall_dbStops_between_dates ($start_date, $end_date) {
 	connect();
 	$query = "SELECT route, client, type, SUM(weight), notes FROM dbStops where date >= '". $start_date . "' AND date <= '". $end_date . "' GROUP BY client";
     $result = mysql_query ($query);
     $theStops = array();
     while ($result_row = mysql_fetch_assoc($result)) {
+    	// The total weight of the stop is returned instead of its items for the purpose
+    	// of generating reports with each stops total weight.
         $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['SUM(weight)'], $result_row['notes']);
         $theStops[] = $theStop;
     }
@@ -100,6 +111,8 @@ function getall_dbStops_between_dates ($start_date, $end_date) {
     return $theStops; 
 }
 
+// Update the values of a specified stop by removing it from the DB and then
+// inserting it again.
 function update_dbStops ($stop) {
 if (! $stop instanceof Stop) {
 		echo ("Invalid argument for update_dbStops function call");
@@ -113,6 +126,7 @@ if (! $stop instanceof Stop) {
 	}
 }
 
+// Remove a stop and all of its values from the DB.
 function delete_dbStops($id) {
 	connect();
     $query="DELETE FROM dbStops WHERE id=\"".$id."\"";

@@ -9,15 +9,23 @@
 */
 
 /*
- * viewStop GUI for Homeplate
+ * viewStop1 GUI for Homeplate
  * @author Nicholas Wetzel
- * @version April 4, 2012
+ * @version May 8, 2012
+ */
+
+/*
+ * This file creates the data entry page for stops that record only total weight.
  */
 	session_start();
 	session_cache_expire(30);
 	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');
+	include_once('database/dbVolunteers.php');
+    include_once('domain/Volunteer.php');
+	
+    // Set necessary values using the GET routine
 	$routeID = substr($_GET['stop_id'],0,12);
 	$client_id = substr($_GET['stop_id'],12);
 	$client_type = $_GET['client_type'];
@@ -26,9 +34,17 @@
 	$date = date('l, F j, Y', mktime(0,0,0,substr($ndate,3,2),substr($ndate,6,2),substr($ndate,0,2)));
 	$client_items = "";
 	
+	// Total weight variable and driver notes are initialized if they have not already been set.
 	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
 	
+	// Retrieve the first and last name of the current driver from the database.
+	$person = retrieve_dbVolunteers($_SESSION['_id']);
+    $first_name = $person->get_first_name();
+    $last_name = $person->get_last_name();
+	
+    // If the current stop has not been created then create it and add it to the database.
+    // Otherwise, retrieve it from the database.
 	if (!retrieve_dbStops($routeID.$client_id)){
 		$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
 		insert_dbStops($stop1);
@@ -36,8 +52,8 @@
 	else{
 		$stop1 = retrieve_dbStops($routeID.$client_id);
 	}
-	
 ?>
+
 <html>
 	<head>
 		<title>
@@ -50,47 +66,36 @@
 			<?php include('header.php');?>
 			<div id="content">
   
+  			<!-- Display the name of the current stop -->
 			<p><big><b><?php echo($client_id)?></b></big></p>
 			
+			<!-- Display the associated route, driver and date of the stop -->
 			<p>Route: <?php echo($area)?><br />
-			   Driver: <?php // echo($volunteer->get_first_name()." ".$volunteer->get_last_name())?>
-			   			Nick Wetzel<br />
+			   Driver: <?php echo($first_name." ".$last_name)?><br />
 			   Date: <?php echo($date)?></p>
-			   
-			<fieldset> 
-				<legend><b>Instructions:</b></legend><br />
-			   <b>1.</b> To insert the total weight, tap the corresponding text box.<br /><br />
-			   <b>2.</b> Insert additional notes into the text box below the table if necessary.<br /><br />
-			   <b>3.</b> When the values are entered, tap the "Submit" button at the bottom.<br /><br />
-			   <b>4.</b> Check that the submitted values in the red box at the bottom of the screen are correct. If not, re-enter them.<br /><br />
-			   <b>5.</b> After all values are correct, tap the "Return to Route" button at the bottom.<br />
-			</fieldset><br/><br/>
 			
+			<!-- The data entry field for total weight and driver notes -->
 			<form method = "post">
 			<fieldset>
 				<legend><b>Data Entry:</b></legend><br />
-				<b>Enter Total Weight:</b> <input type = "text" name = "total_weight" value = 0 /> lbs.
-				<br />
+				<p><b>Enter Total Weight:</b> <input type = "text" name = "total_weight" value = 0 /> lbs.</p>
 				
-			<p>Enter any additional notes by tapping the text box below:</p>
-			<textarea rows="10" cols="50" name="driver_notes"></textarea>
-				
-			<input type = "hidden" name = "submitted" value = "true"/>	
+			<p><i>Enter any additional notes by tapping the text box below:</i><br /><br />
+			<textarea rows="5" cols="50" name="driver_notes"></textarea></p>
 			
-				<br />
-				<br />
+			<!-- A hidden variable that, when submitted, is used to display submitted values and update the databases -->	
+			<p><input type = "hidden" name = "submitted" value = "true"/></p>	
 				
-			<input type="submit" value="Submit"/>
+			<p><input type="submit" value="Submit"/>&nbsp;&nbsp;<i>Click the Submit button to submit the values and notes.</i></p>
 			</fieldset>
 			</form><br />
 			
 			<?php 
+			// If values have been submitted, then update the database and display the submitted values to the driver.
 			if (isset($_POST['submitted'])){
 				
 				$stop1->set_total_weight($total_weight);
-				
 				$stop1->set_notes($driver_notes);
-				
 				update_dbStops($stop1);
 				
 				echo('
@@ -102,9 +107,11 @@
 				');
 			}
 			
-			echo '<a href="editRoute.php?routeID='.$routeID.'"><strong>Return to Route</strong></a>';
+			// The link to return to the current route.
+			echo '<a href="editRoute.php?routeID='.$routeID.'"><big>Return to Route</big></a><br />';
 			include('footer.inc');
 			?>
+			
 			</div>
 		</div>
 	</body>
