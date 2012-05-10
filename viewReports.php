@@ -135,7 +135,7 @@ if($_POST['submitted'])
 	if($_POST['report_span'] == "weekly")
 	{
 		$time = strtotime('monday this week');
-		$endTime = strtotime("+1 week", $time);
+		$endTime = strtotime("sunday this week", $time);
 
 		$start_date = date('y-m-d', $time);
 		$end_date = date('y-m-d', $endTime);
@@ -260,16 +260,46 @@ if($_POST['submitted'])
 	// total weight row
 	echo "<tr>";
 
-	echo "<td><b>Total (Donors)</b></td>";
+	echo "<td><b>Totals</b></td>";
 	echo "<td>".$tw_pickups."</td>";
-	echo "<td><b>Total (Recipients)</b></td>";
+	echo "<td><b>Totals</b></td>";
 	echo "<td>".$tw_dropoffs."</td>";
 
 	echo "</tr>";
 
 	echo "</table>";
+	$start = date('F j, Y',mktime(0,0,0,substr($start_date,3,2),substr($start_date,6,2),substr($start_date,0,2)));
+	$end = date('F j, Y',mktime(0,0,0,substr($end_date,3,2),substr($end_date,6,2),substr($end_date,0,2)));
+	export_data($start, $end, $pickups, $dropoffs,$tw_pickups,$tw_dropoffs);
+	echo "This weight data has been exported. <br> Set your browser <a href='http://homeplate.myopensoftware.org/dataexport.csv'>here</a> to download it to a spreadsheet on your computer.";
 }
 
+function export_data($start,$end,$pickups,$dropoffs,$twp,$twd) {
+	$filename = "dataexport.csv";
+	$handle = fopen($filename, "w");
+	$myArray = array("Total weight data for ",$start," to ". $end);
+	fputcsv($handle, $myArray);
+	$myArray = array("Pick-ups", "weights", "Dropoffs", "weights");
+	fputcsv($handle, $myArray);
+	$max = (count($pickups) > count($dropoffs)) ? count($pickups) : count($dropoffs);
+	for ($i=0; $i<$max; ++$i) {
+		if($pickups[$i] != null)
+			$myArray = array($pickups[$i]->get_client_id(),$pickups[$i]->get_total_weight());
+		else 
+			$myArray = array("","");
+		if($dropoffs[$i] != null){
+			$myArray[] = $dropoffs[$i]->get_client_id();
+			$myArray[] = $dropoffs[$i]->get_total_weight();
+		}
+		else {
+			$myArray[] = ""; $myArray[] = "";
+		}
+		fputcsv($handle, $myArray);
+	}
+	$myArray = array("Totals", $twp, "Totals", $twd);
+	fputcsv($handle, $myArray);
+	fclose($handle);	
+}
 ?> <?php include('footer.inc');?>
 <table></table>
 </div>
