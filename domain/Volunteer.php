@@ -30,8 +30,6 @@ class Volunteer {
 	private $license_no;  		// drivers license no.
 	private $license_state;	  	// state of issue
 	private $license_expdate; 	// expiration date yy-mm-dd
-	private $convictions;   // array of traffic convictions (past 3 years)
-							// each entry shows "location:date:charge:penalty"
 	private $accidents;     // array of accidents (past 3 years)
 							// each entry shows "date:nature:fatalities:injuries"
 	private $availability; 	// array of day-week pairs; e.g. ÒMon:1Ó, ÒThu:4Ó, ÒNYÓ
@@ -46,7 +44,7 @@ class Volunteer {
          * constructor for a Volunteer
          */
     function __construct($last_name, $first_name, $address, $city, $state, $zip, $phone1, $phone2, $email, $type,
-                         $status, $area, $license_no, $license_state, $license_expdate, $convictions, $accidents, $availability, 
+                         $status, $area, $license_no, $license_state, $license_expdate, $accidents, $availability, 
                          $schedule, $history, $birthday, $start_date, $notes, $password){                
         $this->id = $first_name . $phone1; 
         $this->last_name = $last_name;
@@ -68,10 +66,6 @@ class Volunteer {
         $this->license_no = $license_no;
         $this->license_state = $license_state;
         $this->license_expdate = $license_expdate;
-        if ($convictions == "") 
-        	$this->convictions = array(); 
-        else 
-        	$this->convictions = explode(',',$convictions);
         if ($accidents == "") 
         	$this->accidents = array();
         else 
@@ -143,9 +137,6 @@ class Volunteer {
     }
     function get_license_expdate() {
         return $this->license_expdate;
-    }
-    function get_convictions() {
-        return $this->convictions;
     }
     function get_accidents() {
         return $this->accidents;

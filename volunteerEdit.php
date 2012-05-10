@@ -21,7 +21,7 @@
 	$id = $_GET["id"];
 	if ($id=='new') {
 	 	$person = new Volunteer(null,'new',null,null,null,null,null,null,null,null,"applicant",
-	 	     	null,null,null,null,null,null,null,null,null,null,null,null,md5("new"));
+	 	     	null,null,null,null,null,null,null,null,null,null,null,md5("new"));
 	}
 	else {
 		$person = retrieve_dbVolunteers($id);
@@ -60,7 +60,7 @@
 			$person = new Volunteer($_POST['last_name'], $_POST['first_name'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
 								 $_POST['phone1'], $_POST['phone2'], $_POST['email'], implode(',',$_POST['type']),
 								 $_POST['status'], $_POST['area'], $_POST['license_no'], $_POST['license_state'], $_POST['license_expdate'],
-                                 $_POST['convictions'], $_POST['accidents'],
+                                 $_POST['accidents'],
                                  $avail, $_POST['schedule'], $_POST['history'],
                                  $_POST['birthday'],
                                  $_POST['start_date'],
@@ -103,7 +103,6 @@ function process_form($id)	{
         $license_state = $_POST['license_state'];
         $license_expdate = $_POST['license_expdate_Year'].'-'.$_POST['license_expdate_Month'].'-'.$_POST['license_expdate_Day'];
         if (strlen($license_expdate) < 8) $license_expdate = '';
-        $convictions = trim(str_replace('\\\'','\'',htmlentities($_POST['convictions'])));
         $accidents = trim(str_replace('\\\'','\'',htmlentities($_POST['accidents'])));
         if ($_POST['availability'] != null)
 			$availability=implode(',', $_POST['availability']);
@@ -154,7 +153,7 @@ function process_form($id)	{
 				$result = delete_dbVolunteers($id);
 				$pass = md5($first_name . $phone1);
                 $newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
-                		$status, $area, $license_no, $license_state, $license_expdate, $convictions, $accidents,
+                		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
                 		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass);
                 $result = insert_dbVolunteers($newperson);
 				if (!$result)
@@ -171,7 +170,7 @@ function process_form($id)	{
 					echo('<p class="error">Unable to add ' .$first_name.' '.$last_name. ' to the database. <br>Another person with the same id is already there.');
 				else {
 					$newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
-                		$status, $area, $license_no, $license_state, $license_expdate, $convictions, $accidents,
+                		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
                 		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass);
                     $result = insert_dbVolunteers($newperson);
 					if (!$result)
@@ -191,7 +190,7 @@ function process_form($id)	{
                    echo ('<p class="error">Unable to update ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');
 				else {
 					$newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
-                		$status, $area, $license_no, $license_state, $license_expdate, $convictions, $accidents,
+                		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
                 		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass);
                 	$result = insert_dbVolunteers($newperson);
 					if (!$result)
