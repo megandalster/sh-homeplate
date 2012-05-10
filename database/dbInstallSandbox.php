@@ -62,19 +62,19 @@ function fill_the_sandbox() {
 	
 	// add some volunteer data
 	    $vol1 = new Volunteer("Brody", "Hartley", "1 Scarborough Head Rd","Hilton Head", "SC", "29928", "1112345678", "", 
-    				"Hartley.Brody@gmail.com", "driver", "active", "HHI", "123456789","SC", "14-01-29", "", "", "Tue,Thu","",
+    				"Hartley.Brody@gmail.com", "driver", "active", "HHI", "123456789","SC", "14-01-29", "", "Tue,Thu","",
     				"", "59-01-01","98-01-01", "", "");
         $vol2 = new Volunteer("Hopkins", "Richardo", "1 Scarborough Head Rd","Hilton Head", "SC", "29928", "1112345678", "", 
-    				"milkywayw@gmail.com", "driver", "active", "HHI", "234567890","SC", "14-01-29", "", "", "Wed,Fri","",
+    				"milkywayw@gmail.com", "driver", "active", "HHI", "234567890","SC", "14-01-29", "", "Wed,Fri","",
     				"", "59-01-01","98-01-01", "", "");
         $vol3 = new Volunteer("Wetzel", "Nick", "1 Scarborough Head Rd","Hilton Head", "SC", "29928", "1112345678", "", 
-    				"nwetzel41@gmail.com", "driver", "active", "HHI", "345678901","SC", "14-01-29", "", "", "Mon,Fri","",
+    				"nwetzel41@gmail.com", "driver", "active", "HHI", "345678901","SC", "14-01-29", "", "Mon,Fri","",
     				"", "59-01-01","98-01-01", "", "");
         $vol4 = new Volunteer("Peluso", "Jon", "1 Scarborough Head Rd","Hilton Head", "SC", "29928", "1112345678", "", 
-    				"jon25T@gmail.com", "driver,teamcaptain", "active", "HHI", "456789012","SC", "14-01-29", "", "", "Thu,Fri","",
+    				"jon25T@gmail.com", "driver,teamcaptain", "active", "HHI", "456789012","SC", "14-01-29", "", "Thu,Fri","",
     				"", "59-01-01","98-01-01", "", "");
         $vol5 = new Volunteer("Tucker", "Allen", "1 Scarborough Head Rd","Hilton Head", "SC", "29928", "1112345678", "", 
-    				"allen@bowdoin.edu", "driver", "active", "HHI", "567890123","SC", "14-01-29", "", "", "Sat,Fri","",
+    				"allen@bowdoin.edu", "driver", "active", "HHI", "567890123","SC", "14-01-29", "", "Sat,Fri","",
     				"", "59-01-01","98-01-01", "", "");
 		insert_dbVolunteers($vol1);
 		insert_dbVolunteers($vol2);

@@ -181,13 +181,7 @@ else {
 	      echo('<textarea name="accidents" rows="2" cols="60">');
 	      echo(implode(',',$person->get_accidents()));
 	      echo('</textarea>');
-	      
-	      echo('<p>Convictions:<br />');
-	      echo('<textarea name="convictions" rows="2" cols="60">');
-	      echo(implode(',',$person->get_convictions()));
-	      echo('</textarea>');
 	     
-		
 		  echo('<p>Notes:<br />');
 	      echo('<textarea name="notes" rows="2" cols="60">');
 	      echo($_POST['notes']);
