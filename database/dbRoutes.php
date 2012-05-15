@@ -14,8 +14,9 @@
 
 include_once(dirname(__FILE__).'/../domain/Route.php');
 include_once(dirname(__FILE__).'/dbStops.php');
-include_once(dirname(__FILE__).'/dbVolunteers.php');
+// include_once(dirname(__FILE__).'/dbVolunteers.php');
 include_once(dirname(__FILE__).'/dbClients.php');
+include_once(dirname(__FILE__).'/dbSchedules.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
 
 function create_dbRoutes() {
@@ -129,12 +130,23 @@ function make_new_route ($routeID, $teamcaptain_id) {
 	{
 		$area = substr($routeID,9);
 		$date = substr($routeID,0,8);
-
-		//	$week_no = floor((substr($date,6,2)-1) / 7) + 1;
+		$month_weeks = array(1=>"1st",2=>"2nd", 3=>"3rd", 4=>"4th", 5=>"5th");
+		if ($area=="BFT") {
+			$week = $month_weeks[floor((substr($date,6,2)-1) / 7) + 1];
+		}
+		else {
+			$week_of_year = date ("W",mktime(0,0,0,substr($date,3,2),substr($date,6,2),substr($date,0,2)));
+			if ($week_of_year % 2 == 0)
+				$week = "even";
+			else $week = "odd";
+		}
 		$day = date('D',mktime(0,0,0,substr($date,3,2),substr($date,6,2),substr($date,0,2)));
-
+		
 		// find drivers for this date and area from the dbSchedules table
-		$driver_ids = get_driver_ids($area, $day);
+		// calculate the week of the month or year, depending on the area
+		 echo "area.week.day = ". $area. $week. $day;
+		$driver_ids = implode(',',get_drivers_scheduled($area, $week, $day));
+		echo $driver_ids;
 
 		// store pickup and dropoff stops for this date and area using the dbClients table
 		$pickup_clients = getall_clients($area, "donor", "", "", array($day));

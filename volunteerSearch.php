@@ -25,7 +25,7 @@
 					$area = $_GET['area'];
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Sun City","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
-					echo('<p><a href="'.$path.'volunteerSchedule.php?area='.$area.'">View driver schedule</a>');
+					echo('<p><a href="'.$path.'scheduleView.php?area='.$area.'">View driver schedule</a>');
 					echo('<a href="'.$path.'volunteerEdit.php?id=new"> | Add new volunteer</a>');	
 					echo('<form method="post">');
 						echo('<p><strong>Search for volunteers:</strong>');
@@ -131,8 +131,9 @@
 					
 				?>
 				<!-- below is the footer that we're using currently-->
-				<?PHP include('footer.inc');?>
+				
 			</div>
+			<?PHP include('footer.inc');?>
 		</div>
 	</body>
 </html>

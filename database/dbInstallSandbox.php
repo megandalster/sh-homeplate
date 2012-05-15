@@ -74,7 +74,7 @@ function fill_the_sandbox() {
     				"jon25T@gmail.com", "driver,teamcaptain", "active", "HHI", "456789012","SC", "14-01-29", "", "Thu,Fri","",
     				"", "59-01-01","98-01-01", "", "");
         $vol5 = new Volunteer("Tucker", "Allen", "1 Scarborough Head Rd","Hilton Head", "SC", "29928", "1112345678", "", 
-    				"allen@bowdoin.edu", "driver", "active", "HHI", "567890123","SC", "14-01-29", "", "Sat,Fri","",
+    				"allen@bowdoin.edu", "driver,teamcaptain", "active", "BFT", "567890123","SC", "14-01-29", "", "Sat,Fri","",
     				"", "59-01-01","98-01-01", "", "");
 		insert_dbVolunteers($vol1);
 		insert_dbVolunteers($vol2);

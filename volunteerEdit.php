@@ -74,8 +74,7 @@
 		echo('</div></div></body></html>');
 		die();
 	}
-	include('footer.inc');
-
+	
 /**
 * process_form sanitizes data, concatenates needed data, and enters it all into a database
 */
@@ -202,6 +201,7 @@ function process_form($id)	{
 }
 ?>
     </div>
+    <?PHP include('footer.inc');?>		
   </div>
 </body>
 </html>

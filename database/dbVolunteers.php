@@ -104,13 +104,14 @@ function get_team_captains ($area) {
 	return $theVols;
 }
 
-function get_driver_ids ($area, $day) {
+function  getall_drivers_available($area, $day) {
 	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE type LIKE '%driver%' AND availability LIKE '%".$day."%' AND area  = '".$area."'");
+	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND type LIKE '%driver%' AND availability LIKE '%".
+			$day."%' AND area  = '".$area."' ORDER BY last_name, first_name");
 	
 	$theIds = "";	
 	while($result_row = mysql_fetch_assoc($result)){
-		$theIds .= ','.$result_row['id'];
+		$theIds .= ';'.$result_row['id'].":".$result_row['last_name'].", ".$result_row['first_name'];
 	}
 	mysql_close();
 	return substr($theIds,1);
