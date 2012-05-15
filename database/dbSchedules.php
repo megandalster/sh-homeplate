@@ -10,7 +10,8 @@
 /*
 * dbSchedules table for Homeplate -- this is the master schedule from which drivers
 * are assigned to routes.  
-* It is created with a fixed number of rows, 5x7=35 for each of the three areas,
+* It is created with a fixed number of rows, 5x7=35 for the Beaufort area (5-week monthly schedule)
+* and 2x7=14 rows for each of the Hilton Head and Sun City areas (alternate-week schedule),
 * and each row initially has no drivers assigned.  The GUI will support the addition and
 * removal of individual drivers from any row.    
 * So the function insert_dbSchedules should not be called from anywhere outside 
@@ -31,13 +32,20 @@ function create_dbSchedules(){
 			echo (mysql_error()."Error creating database table dbSchedules. \n");
 			return false;
 	}
-	// populate the table with 105 rows (35 for each area).
-	$areas = array("HHI","SUN","BFT");
+	// populate the table 
+	$areas = array("HHI","SUN");
+	$weekly_groups = array("odd","even");
+	$monthly_groups = array("1st","2nd", "3rd", "4th", "5th");
 	$days = array("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
+	foreach ($monthly_groups as $monthly_group)
+		foreach ($days as $day) {   // day of the week
+			$se = new ScheduleEntry("BFT", $day.":".$monthly_group, "", "");
+			insert_dbSchedules($se);
+		}
 	foreach ($areas as $area) 
-		for ($i=1; $i<=5; $i++)   // week of the month
+		foreach ($weekly_groups as $week)   // week of the year
 			foreach ($days as $day) {   // day of the week
-				$se = new ScheduleEntry($area, $day.":".$i, "", "");
+				$se = new ScheduleEntry($area, $day.":".$week, "", "");
 				insert_dbSchedules($se);
 			}
 	return true;
@@ -60,7 +68,7 @@ function retrieve_dbSchedules($area, $id){
 
 function getall_dbSchedules(){
 	connect();
-	$result = mysql_query("SELECT * FROM dbSchedules ORDER BY last_name");
+	$result = mysql_query("SELECT * FROM dbSchedules ORDER BY last_name,first_name");
 	$theScheduleEntries = array();
 	while($result_row = mysql_fetch_assoc($result)){
 		$theScheduleEntry = new ScheduleEntry($result_row['area'], $result_row['id'], $result_row['drivers'], $result_row['notes']);
@@ -79,7 +87,7 @@ function insert_dbSchedules($scheduleentry){
 	$query = "SELECT * FROM dbSchedules WHERE id = '" . $scheduleentry->get_id() ."' AND area = '".$scheduleentry->get_area()."'";
 	$result = mysql_query($query);
 	if (mysql_num_rows($result) != 0) {
-		delete_dbScheduleEntries ($scheduleentry->get_id());
+		delete_dbSchedules ($scheduleentry->get_area(), $scheduleentry->get_id());
 		connect();
 	}
 	$query = "INSERT INTO dbSchedules VALUES ('".
@@ -104,8 +112,9 @@ function update_dbSchedules($scheduleentry){
 		echo ("Invalid argument for update_dbSchedules function call");
 		return false;
 	}
-	if (delete_dbScheduleEntries($scheduleentry->get_area(), $scheduleentry->get_id()))
-		return insert_dbScheduleEntries($scheduleentry);
+	if (delete_dbSchedules($scheduleentry->get_area(), $scheduleentry->get_id())) {
+		return insert_dbSchedules($scheduleentry);
+	}
 	else {
 		echo (mysql_error()."unable to update dbSchedules table: ".$scheduleentry->get_area().$scheduleentry->get_id());
 		return false;
@@ -114,7 +123,7 @@ function update_dbSchedules($scheduleentry){
 
 function delete_dbSchedules($area, $id){
 	connect();
-	$result = mysql_query("DELETE FROM dbSchedules WHERE id =\"".$id."' AND area = '".$area."\"");
+	$result = mysql_query("DELETE FROM dbSchedules WHERE id ='".$id."' AND area = '".$area."'");
 	mysql_close();
 	if (!$result) {
 		echo (mysql_error()." unable to delete from dbSchedules: ".$area.$id);
@@ -122,23 +131,47 @@ function delete_dbSchedules($area, $id){
 	}
 	return true;
 }
-
-function get_drivers($area, $week, $day) {
+//  retrieve an array of driver id's
+function get_drivers_scheduled($area, $week, $day) {
 	connect();
-	$result = mysql_query("SELECT * FROM dbSchedules WHERE id=" .
-		$day.":".$week." AND area=".$area." ORDER BY last_name");
+	$result = mysql_query("SELECT * FROM dbSchedules WHERE id='" .
+		$day.":".$week."' AND area='".$area."'");
 	if ($result_row = mysql_fetch_assoc($result))
-		$theDrivers = explode(',',retrieve_dbVolunteers($result_row['drivers']));
-	else $theDrivers = null;
+		$theDrivers = explode(',',$result_row['drivers']);
+	else $theDrivers = array();
 	mysql_close();
 	return $theDrivers;
 }
-// add a driver to a schedule
-function add_driver ($area, $week, $day, $driver_id) {
-	
+function get_total_openings($area, $week, $day) {
+	$d = get_drivers_scheduled($area, $week, $day);
+	return max(2-sizeof($d), 0);
 }
+function get_total_slots($area, $week, $day) {
+	$d = get_drivers_scheduled($area, $week, $day);
+	return max(sizeof($d),2);
+}
+
 // remove a driver from a schedule
 function remove_driver ($area, $week, $day, $driver_id) {
-	
+	$se = retrieve_dbSchedules($area, $day.":".$week);
+	$remaining = array();
+	foreach($se->get_drivers() as $adriver) 
+		if ($adriver != $driver_id) 
+			$remaining[] = $adriver;
+	$se->set_drivers($remaining);
+	update_dbSchedules($se);
+	return true;
+}
+// add a driver to a schedule
+function add_driver ($area, $week, $day, $driver_id) {
+	$se = retrieve_dbSchedules($area, $day.":".$week);
+	if ($se && !in_array($driver_id,$se->get_drivers())) {
+		$scheduled = $se->get_drivers();
+		$scheduled[] = $driver_id;
+		$se->set_drivers($scheduled);
+		update_dbSchedules($se);
+		return true;
+	}
+	else return false;
 }
 ?>

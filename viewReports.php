@@ -271,7 +271,7 @@ if($_POST['submitted'])
 	$start = date('F j, Y',mktime(0,0,0,substr($start_date,3,2),substr($start_date,6,2),substr($start_date,0,2)));
 	$end = date('F j, Y',mktime(0,0,0,substr($end_date,3,2),substr($end_date,6,2),substr($end_date,0,2)));
 	export_data($start, $end, $pickups, $dropoffs,$tw_pickups,$tw_dropoffs);
-	echo "This weight data has been exported. <br> Set your browser <a href='http://homeplate.myopensoftware.org/dataexport.csv'>here</a> to download it to a spreadsheet on your computer.";
+	echo "This weight data has been exported. <br> Set your browser <a href='http://homeplate.secondhelpingslc.org/dataexport.csv'>here</a> to download it to a spreadsheet on your computer.";
 }
 
 function export_data($start,$end,$pickups,$dropoffs,$twp,$twd) {
@@ -300,9 +300,10 @@ function export_data($start,$end,$pickups,$dropoffs,$twp,$twd) {
 	fputcsv($handle, $myArray);
 	fclose($handle);	
 }
-?> <?php include('footer.inc');?>
+?> 
 <table></table>
 </div>
+<?php include('footer.inc');?>
 </div>
 </body>
 </html>

@@ -19,7 +19,8 @@ include_once('database/dbRoutes.php');
 include_once('domain/Route.php');
 include_once('domain/Client.php');
 include_once('database/dbClients.php');
-
+include_once('domain/Volunteer.php');
+include_once('database/dbVolunteers.php');
 //    include_once('database/dbLog.php');
 $routeID = $_GET['routeID'];
 $route = get_route($routeID);
@@ -35,7 +36,7 @@ if(! $route)
 <div id="container"><?PHP include('header.php');?>
 <div id="content"><?PHP
 
-if($_POST['submitted'] != NULL)
+if($_POST['_form_submit'] == 1)
 {
 	$message = process_form($_POST, $route);
 	echo '<br><fieldset><legend>Change Summary</legend>';
@@ -55,7 +56,7 @@ echo('</div></div></body></html>');
 function process_form($_POST, $route)
 {
 	// respond to the POST
-	if($_POST['change_status'])// != $route->get_status() && $_POST['change_status']!="")
+	if($_POST['change_status'] != $route->get_status() && $_POST['change_status']!="")
 	{
 		$route->change_status($_POST['change_status']);
 		update_dbRoutes($route);

@@ -122,8 +122,9 @@
 					
 				?>
 				<!-- below is the footer that we're using currently-->
-				<?PHP include('footer.inc');?>
+				
 			</div>
+			<?PHP include('footer.inc');?>
 		</div>
 	</body>
 </html>
