@@ -30,7 +30,7 @@ else if($_SESSION['access_level']==1)
 	    echo('Here you can edit your own information in the database.' .
 	    	 '<br>When you are finished, hit <b>Submit</b> at the bottom of this page.');
 	}
-else if ($_SESSION['access_level']==2)
+else // $_SESSION['access_level']>=2
 	if ($id=='new') {
 	  echo('<p><strong>Volunteer Input Form</strong><br />');
 	  echo('Here you can add a new volunteer to the database. </p>');
@@ -39,12 +39,6 @@ else if ($_SESSION['access_level']==2)
 	   echo('<p><strong>Volunteer Information Form</strong><br />');
 	   echo('Here you can edit, delete, or change the password for a volunteer in the database.</p><p>');
     }
-else {
-    echo("<p id=\"error\">You do not have sufficient permissions to add a new person to the database.</p>");
-	include('footer.inc');
-	echo('</div></div></body></html>');
-	die();
-}
 
 ?>
 <form method="POST">
