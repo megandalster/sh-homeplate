@@ -31,7 +31,7 @@ else {
 	<input type="hidden" name="_form_submit" value="1">
 <p>(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)
 
-<p>	Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" name="id" tabindex=1 value="<?PHP echo( $client->get_id() )?>">
+<p>	Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" size="50" name="id" tabindex=1 value="<?PHP echo( $client->get_id() )?>">
 	Chain Name: <input type="text" name="chain_name" tabindex=2 value="<?PHP echo($client->get_chain_name() )?>">
 
 <?PHP
