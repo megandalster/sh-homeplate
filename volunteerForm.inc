@@ -121,7 +121,7 @@ else {
 	
 	$st = implode(',',$person->get_type());
     $types = array('driver'=>'Driver', 'helper'=>'Helper', 'teamcaptain'=>'Team Captain',
-                   'coordinator'=>'Coordinator', 'associate'=>"Associate");
+                   'coordinator'=>'Coordinator', 'associate'=>"Associate", 'boardmember'=>"Board Member");
 	echo('<p>Type: ');
 	echo('<span style="font-size:x-small;color:FF0000">*</span>&nbsp;&nbsp;');
 

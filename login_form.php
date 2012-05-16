@@ -17,7 +17,7 @@
 					echo('<div align="left"><p>Access to <i>Homeplate</i> requires a Username and a Password. '  );
 						 '<ul><li>If you are applying to be a volunteer driver, please sign in with the Username <strong>guest</strong> and no Password. ' .
 						 ' Once you sign in, you will be able to fill out and submit an application form on-line.</p>';
-					echo('<ul><li>You must be a Second Helpings <i>driver, team captain, or officer</i> to access this system. ' .
+					echo('<ul><li>You must be a Second Helpings <i>volunteer, staff member, or board member</i> to access this system. ' .
 						'<li> Your Username is your first name followed by your phone number (no spaces). ');
 					echo('<br> If you do not remember your Password, please contact your <a href="mailto:jon25t@aol.com">Team Captain</a>.</ul>');
 					echo('<p><table><form method="post"><input type="hidden" name="_submit_check" value="true"><tr><td>Username:</td><td><input type="text" name="user" tabindex="1"></td></tr><tr><td>Password:</td><td><input type="password" name="pass" tabindex="2"></td></tr><tr><td colspan="2" align="center"><input type="submit" name="Login" value="Login"></td></tr></table>');
@@ -40,7 +40,7 @@
 					if($person){ //avoids null results
 						if($person->get_password()==$db_pass) { //if the passwords match, login
 							$_SESSION['logged_in']=1;
-							if (in_array('officer', $person->get_type()))
+							if (in_array('boardmember', $person->get_type()))
 									$_SESSION['access_level'] = 3;
 							else if (in_array('teamcaptain', $person->get_type()))
 								$_SESSION['access_level'] = 2;

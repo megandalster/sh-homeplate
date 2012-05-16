@@ -17,8 +17,8 @@ function validate_form(){
 	if ($_SESSION['access_level']==0 && ($_POST['type']==null || !in_array('applicant',$_POST['type'])))
 		$_POST['type'][] = 'applicant';
 	if($_POST['type']==null && $_SESSION['access_level']>=1) $errors[] = 'Select a Position type';
-	if ($_POST['type']!=null && $_SESSION['access_level']<=1 && in_array('teamcaptain',$_POST['type']))
-		$errors[] = "Sorry, you can't promote yourself to team captain.";
+	if ($_POST['type']!=null && $_SESSION['access_level']<=1 && (in_array('teamcaptain',$_POST['type']) || in_array('boardmember',$_POST['type'])))
+		$errors[] = "Sorry, you can't promote yourself to team captain or board member.";
 	if($_POST['availability']==null)
 		$errors[] = 'Must have some availabilty';
 	if(!valid_phone($_POST['phone1'])) $errors[] = 'Enter a valid primary phone number (10 digits: ### ### ####)';
