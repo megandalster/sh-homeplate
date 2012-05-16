@@ -75,7 +75,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 		if($_SESSION['access_level']>=1) // drivers, team captains, and officers 
 		    echo('<a href="'.$path.'viewRoutes.php?area='.$_SESSION['_area'].'&date='.$today.'"> | routes</a>');
 		
-	    if($_SESSION['access_level']>=2) { // team captains and officers
+	    if($_SESSION['access_level']>=2) { // team captains and board members
 	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
 	    	echo('<a href="'.$path.'clientSearch.php?area='.$_SESSION['_area'].'"> | donors and recipients</a>');
 	    	echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$week_later.'"> | reports</a>';	    
