@@ -44,6 +44,7 @@
 							echo '<option value="driver"'; if ($type=="driver") echo " SELECTED"; echo '>Driver</option>' . '<option value="helper">Helper</option>'; 
 							echo '<option value="teamcaptain"'; if ($type=="teamcaptain") echo " SELECTED"; echo '>Team Captain</option>' . '<option value="coordinator">Coordinator</option>'; 
 							echo '<option value="associate"'; if ($type=="associate") echo " SELECTED"; echo '>Associate</option>';
+							echo '<option value="boardmember"'; if ($type=="associate") echo " SELECTED"; echo '>Board Member</option>';
                         echo '</select>';
                         
                         if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
