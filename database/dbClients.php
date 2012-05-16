@@ -65,7 +65,7 @@ function getall_clients($area, $type, $status, $name, $availability) {
     $query = "SELECT * FROM dbClients WHERE area = '". $area . "' ";
             if($type)           $query .= "AND type = '". $type . "' ";
             if($status)         $query .= "AND feed_america = '" . $status . "' ";
-            if($name)           $query .= "AND id LIKE '" . $name ."' ";
+            if($name)           $query .= "AND id LIKE '%" . $name ."%' ";
             if($availability)  { 
             	$query .= "AND ";
             	foreach ($availability as $day)

@@ -31,8 +31,8 @@ else {
 	<input type="hidden" name="_form_submit" value="1">
 <p>(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)
 
-<p>	Store Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" name="id" tabindex=1 value="<?PHP echo( $client->get_id() )?>">
-	Chain Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" name="chain_name" tabindex=2 value="<?PHP echo($client->get_chain_name() )?>">
+<p>	Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" name="id" tabindex=1 value="<?PHP echo( $client->get_id() )?>">
+	Chain Name: <input type="text" name="chain_name" tabindex=2 value="<?PHP echo($client->get_chain_name() )?>">
 
 <?PHP
     echo ('<p>Area: ');
@@ -57,7 +57,7 @@ else {
 <legend>Contact Information</legend>
 	<table>		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="address" tabindex=3 value="<?PHP echo($client->get_address())?>"></td></tr>
 		<tr><td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=4 value="<?PHP echo($client->get_city())?>"></td></tr>
-		<tr><td>State, Zip<span style="font-size:x-small;color:FF0000">*</span>:</td>
+		<tr><td>State, Zip:</td>
 		<td><select name="state" tabindex=5>
 		<?PHP
 
@@ -74,7 +74,7 @@ else {
 		?>
 		</select>,
 		<input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($client->get_zip())?>"></td></tr>
-		<tr><td>Primary Phone<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo($client->get_phone1())?>"></td></tr>
+		<tr><td>Primary Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo($client->get_phone1())?>"></td></tr>
 		<tr><td>Alternate Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo($client->get_phone2())?>"></td></tr>
 
 </table>
