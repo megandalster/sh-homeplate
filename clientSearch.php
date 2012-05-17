@@ -105,12 +105,11 @@
 						if ($availability[0]!="") echo ' with pickup/dropoff day '. $availability[0];
 						if (sizeof($result)>0) {
 							echo ' (select one for more info).';
-							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>Area</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
+							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
 							foreach ($result as $client) {
 								echo ("<tr><td><a href='clientEdit.php?id=" . $client->get_id() ."'>" .
 									$client->get_id() . "</td><td>" . 
-									$client->get_phone1() . "</td><td>" . 
-									$client->get_area() . "</td><td>");
+									$client->get_phone1() . "</td><td>");
 								foreach($client->get_days() as $availableon)
 									echo ( $availableon . ", ") ;
 								echo "</td></a></tr>";

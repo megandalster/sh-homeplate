@@ -14,7 +14,7 @@
  */
 
 
-if($_SESSION['access_level']==2){
+if($_SESSION['access_level']>=2){
    echo('<p><strong>Client Information Form</strong><br />');
    echo('Here you can edit or delete a client in the database.</p><p>');
 }
@@ -82,7 +82,7 @@ else {
 
 </p>
 <fieldset id="availability">
-<legend>Availability:</strong><span style="font-size:x-small;color:FF0000">*</span> </legend>
+<legend>Pickup/Dropoff:</strong></legend>
 	<table>
 	<tr>
 		<td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>

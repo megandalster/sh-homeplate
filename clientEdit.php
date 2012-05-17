@@ -56,10 +56,15 @@
 			if ($_POST['availability']==null)
 			   $avail = "";
 			else $avail = implode(',',$_POST['availability']);
-			$client = new Client($_POST['id'], $_POST['chain_name'], $_POST['area'], $_POST['type'], 
+			
+			if ($_POST['chain_name']=="Wal-Mart") $weight_type="foodtypeboxes";
+        	else if ($_POST['chain_name']=="Publix") $weight_type="foodtype";
+        	else $weight_type = "pounds";
+			
+        	$client = new Client($_POST['id'], $_POST['chain_name'], $_POST['area'], $_POST['type'], 
                                  $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
 								 $_POST['geocoordinates'], $_POST['phone1'], $_POST['phone2'], implode(',',$_POST['days']),
-								 $feed_america, $_POST['notes'] );
+								 $feed_america, $weight_type, $_POST['notes'] );
 			include('clientForm.php');
 		}
 		// this was a successful form submission; update the database and exit
@@ -83,14 +88,19 @@ function process_form($id)	{
 		$zip =          trim(htmlentities($_POST['zip']));
         
 		$phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
-		$clean_phone1 = ereg_replace("[^0-9]", "", $phone1);
+		$clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
 		$phone2 = trim(str_replace(' ','',htmlentities($_POST['phone2'])));
-		$clean_phone2 = ereg_replace("[^0-9]", "", $phone2);
+		$clean_phone2 = preg_replace("/[^0-9]/", "", $phone2);
 			
         $type = $_POST['type'];
         $area = $_POST['area'];
-        $days=implode(',', $_POST['days']);
-            
+        if ($_POST['days'])
+        	$days=implode(',', $_POST['days']);
+        else $days="";
+        if ($chain_name=="Wal-Mart") $weight_type="foodtypeboxes";
+        else if ($chain_name=="Publix") $weight_type="foodtype";
+        else $weight_type = "pounds"; 
+        
         $notes = $_POST['notes'];
         
         // if ($_POST['availability'] != null)
@@ -118,7 +128,7 @@ function process_form($id)	{
 					echo('<p class="error">Unable to add ' . $id . ' to the database. <br>Another client with the same id is already there.');
 				else {
 					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $geocoordinates,
-	                        $phone1, $phone2, $days, $feed_america, $notes);
+	                        $phone1, $phone2, $days, $feed_america, $weight_type, $notes);
                     $result = insert_dbClients($newperson);
 					if (!$result)
                         echo ('<p class="error">Unable to add '. $id . ' in the database. <br>Please report this error to the Program Coordinator.');
@@ -133,7 +143,7 @@ function process_form($id)	{
                    echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');
 				else {
 					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $geocoordinates,
-	                        $phone1, $phone2, $days, $feed_america, $notes);
+	                        $phone1, $phone2, $days, $feed_america, $weight_type, $notes);
                 	$result = insert_dbClients($newperson);
 					if (!$result)
                    		echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');

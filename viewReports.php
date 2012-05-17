@@ -17,16 +17,13 @@ session_cache_expire(30)
 <div id="content"><?php 
 include_once('database/dbStops.php');
 include_once('domain/Stop.php');
-
-$time = time();
-echo "<h4>Today is ".date('l F j, Y', $time)."</h4>";
+echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
 ?>
 
 <form method="post" action="">
 <p>Area : <select name="report_area">
 	<option value="HHI"
-	<?php if ($_GET['id']=="HHI") echo 'selected="selected"';?>>Hilton
-	Head</option>
+	<?php if ($_GET['id']=="HHI") echo 'selected="selected"';?>>Hilton Head</option>
 	<option value="SUN"
 	<?php if ($_GET['id']=="SUN") echo 'selected="selected"';?>>Bluffton</option>
 	<option value="BFT"
@@ -141,7 +138,7 @@ if($_POST['submitted'])
 		$end_date = date('y-m-d', $endTime);
 
 		echo "<br><p>";
-		echo "<b><font color='orange'>Week of ".date('l F j, Y', $time). "</b></font>";
+		echo "<b>Week of ".date('l F j, Y', $time). "</b></font>";
 		echo "</p><br>";
 	}
 
@@ -157,7 +154,7 @@ if($_POST['submitted'])
 		$end_date = date('y-m-d', $endTime);
 
 		echo "<br><p>";
-		echo "<b><font color='orange'>".date(' F Y', $time). "</b></font>";
+		echo "<b>".date(' F Y', $time). "</b></font>";
 		echo "</p><br>";
 	}
 
@@ -173,7 +170,7 @@ if($_POST['submitted'])
 
 		if($endTime >= $time)
 		{
-			echo "<b><font color='orange'>".date('F j, Y', $time);
+			echo "<b>".date('F j, Y', $time);
 			echo "&nbsp;&nbsp;->&nbsp;&nbsp;".date('F j, Y', $endTime)."</b></font>";
 		}
 		else
@@ -271,7 +268,7 @@ if($_POST['submitted'])
 	$start = date('F j, Y',mktime(0,0,0,substr($start_date,3,2),substr($start_date,6,2),substr($start_date,0,2)));
 	$end = date('F j, Y',mktime(0,0,0,substr($end_date,3,2),substr($end_date,6,2),substr($end_date,0,2)));
 	export_data($start, $end, $pickups, $dropoffs,$tw_pickups,$tw_dropoffs);
-	echo "This weight data has been exported. <br> Set your browser <a href='http://homeplate.secondhelpingslc.org/dataexport.csv'>here</a> to download it to a spreadsheet on your computer.";
+	echo "This weight data has been exported. <br> Set your browser <a href='http://homeplate.secondhelpingslc.org/dataexport.csv'>here</a> to copy/paste it into a spreadsheet on your computer.";
 }
 
 function export_data($start,$end,$pickups,$dropoffs,$twp,$twd) {
