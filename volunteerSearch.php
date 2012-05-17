@@ -125,7 +125,8 @@
 						echo '</table>';
                         
                         echo "<br/><strong>email these people:</strong> <br/>";
-                        foreach($allEmails as $email)
+                        if ($allEmails)
+                          foreach($allEmails as $email)
                             echo $email . "; ";
 						
 					}

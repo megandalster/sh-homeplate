@@ -87,9 +87,9 @@ function process_form($id)	{
 		$state = trim(htmlentities($_POST['state']));
 		$zip = trim(htmlentities($_POST['zip']));
 		$phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
-		$clean_phone1 = ereg_replace("[^0-9]", "", $phone1);
+		$clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
 		$phone2 = trim(str_replace(' ','',htmlentities($_POST['phone2'])));
-		$clean_phone2 = ereg_replace("[^0-9]", "", $phone2);
+		$clean_phone2 = preg_replace("/[^0-9]/", "", $phone2);
 		$email = $_POST['email'];
 
 		if ($_SESSION['access_level']==0 && !in_array('applicant',$_POST['type']))
