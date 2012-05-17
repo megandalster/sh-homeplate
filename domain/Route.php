@@ -80,7 +80,7 @@ class Route {
     	return date('l F j, Y', $timestamp);
     }
     function get_area() {
-    	$areas = array("HHI"=>"Hilton Head Island", "SUN"=> "Sun City", "BFT" => "Beaufort");
+    	$areas = array("HHI"=>"Hilton Head Island", "SUN"=> "Bluffton", "BFT" => "Beaufort");
     	return $areas[substr($this->get_id(),9)];
     }
     function get_notes() {

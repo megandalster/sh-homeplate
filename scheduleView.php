@@ -32,7 +32,7 @@ include_once('domain/Volunteer.php');
 				$area = $_GET['area'];
 				if ($area=="BFT") // Beaufort is a monthly schedule
 					show_master_weeks($area, $monthly_groups, $week_days);
-				else  // Hilton Head and Sun City are bi-weekly schedules
+				else  // Hilton Head and Bluffton are bi-weekly schedules
 					show_master_weeks($area, $weekly_groups, $week_days);
 				?>
 			</div>
@@ -50,7 +50,7 @@ include_once('domain/Volunteer.php');
 	 */
 	function show_master_weeks($area, $groups, $days){
 		echo "<br><strong>Driver Schedule</strong><br><br>";
-		$areas = array("HHI"=>"Hilton Head", "SUN"=>"Sun City", "BFT"=>"Beaufort");
+		$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 		echo "Here you may schedule drivers by selecting a day and week and removing or adding drivers where there are <strong>openings</strong>.";
 		echo " The drivers you assign to this schedule will be autormatically assigned to each new route when it is created.<br>";
 		if (sizeof($groups)>2) { 

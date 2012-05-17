@@ -27,7 +27,7 @@
 				?>
 				<h4> <i>
 				<?php
-				$areas = array("HHI"=>"Hilton Head Island", "SUN"=> "Sun City", "BFT" => "Beaufort");
+				$areas = array("HHI"=>"Hilton Head Island", "SUN"=> "Bluffton", "BFT" => "Beaufort");
 				$thisArea = $_GET['area'];
 				$thisDay = $_GET['date'];
 				$thisUTC = mktime(0,0,0,substr($thisDay,3,2),substr($thisDay,6,2),substr($thisDay,0,2));

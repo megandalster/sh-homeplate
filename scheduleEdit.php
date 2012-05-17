@@ -21,7 +21,7 @@
 					$group=$_GET['group'];
 					$area=$_GET['area'];
 					$day=$_GET['day'];
-					$area_names = array("HHI"=>"Hilton Head", "SUN"=>"Sun City", "BFT"=>"Beaufort");
+					$area_names = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 					$day_names = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday",
 									"Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
 					include_once('database/dbSchedules.php');

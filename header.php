@@ -37,10 +37,14 @@ h1 {padding-left: 0px; padding-right:165px;}
 		//pages guests can view
 		$permission_array['index.php']=0;
 		$permission_array['about.php']=0;
+		$permission_array['volunteerEdit.php']=0;
 		//pages volunteers can view
-		$permission_array['viewRoute.php']=1;
+		$permission_array['viewRoutes.php']=1;
+		$permission_array['viewStop.php']=1;
+		$permission_array['viewStop1.php']=1;
+		$permission_array['viewStop2.php']=1;
+		$permission_array['viewStop3.php']=1;
 		//additional pages team captains can view
-		$permission_array['volunteerEdit.php']=2;
 		$permission_array['clientEdit.php']=2;
 		$permission_array['editSchedule.php']=2;
 		$permission_array['volunteerSearch.php']=2;

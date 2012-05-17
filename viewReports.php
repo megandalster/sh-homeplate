@@ -28,7 +28,7 @@ echo "<h4>Today is ".date('l F j, Y', $time)."</h4>";
 	<?php if ($_GET['id']=="HHI") echo 'selected="selected"';?>>Hilton
 	Head</option>
 	<option value="SUN"
-	<?php if ($_GET['id']=="SUN") echo 'selected="selected"';?>>Sun City</option>
+	<?php if ($_GET['id']=="SUN") echo 'selected="selected"';?>>Bluffton</option>
 	<option value="BFT"
 	<?php if ($_GET['id']=="BFT") echo 'selected="selected"';?>>Beaufort</option>
 </select> &nbsp;&nbsp;Report Type : <select name="report_type">
