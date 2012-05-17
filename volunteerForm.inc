@@ -100,7 +100,7 @@ else // $_SESSION['access_level']>=2
     echo('<select name="area">');
     echo ('<option value=""></option>');
     echo ('<option value="HHI"');if ($person->get_area()=='HHI') echo (' SELECTED'); echo('>Hilton Head</option>');
-    echo ('<option value="SUN"');if ($person->get_area()=='SUN') echo (' SELECTED'); echo('>Sun City</option>');
+    echo ('<option value="SUN"');if ($person->get_area()=='SUN') echo (' SELECTED'); echo('>Bluffton</option>');
 	echo ('<option value="BFT"');if ($person->get_area()=='BFT') echo (' SELECTED'); echo('>Beaufort</option>');
 	echo('</select>');
 	

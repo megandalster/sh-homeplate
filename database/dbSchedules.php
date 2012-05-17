@@ -11,7 +11,7 @@
 * dbSchedules table for Homeplate -- this is the master schedule from which drivers
 * are assigned to routes.  
 * It is created with a fixed number of rows, 5x7=35 for the Beaufort area (5-week monthly schedule)
-* and 2x7=14 rows for each of the Hilton Head and Sun City areas (alternate-week schedule),
+* and 2x7=14 rows for each of the Hilton Head and Bluffton areas (alternate-week schedule),
 * and each row initially has no drivers assigned.  The GUI will support the addition and
 * removal of individual drivers from any row.    
 * So the function insert_dbSchedules should not be called from anywhere outside 

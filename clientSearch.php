@@ -23,7 +23,7 @@
 				<?PHP
 				// display the search form
 					$area = $_GET['area'];
-					$areas = array("HHI"=>"Hilton Head","SUN"=>"Sun City","BFT"=>"Beaufort");
+					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
 					echo('<p><a href="'.$path.'clientSchedule.php">View client schedule</a>');
 					echo('<a href="'.$path.'clientEdit.php?id=new"> | Add new client</a>');	
@@ -34,7 +34,7 @@
 						echo '<p>Area: <select name="s_area">' .
 							'<option value="">--all--</option>'; 
                             echo '<option value="HHI"'; if ($area=="HHI") echo " SELECTED"; echo '>Hilton Head</option>' ;
-                            echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Sun City</option>' ;
+                            echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Bluffton</option>' ;
                             echo '<option value="BFT"'; if ($area=="BFT") echo " SELECTED"; echo '>Beaufort</option>';
 						echo '</select>';
                         
