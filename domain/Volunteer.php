@@ -162,7 +162,7 @@ class Volunteer {
 	function get_password () {
         return $this->password;
     }
-    //returns true if the person has type $t
+	//returns true if the person has type $t
     function is_type($t){
         if (in_array($t, $this->type))
             return true;
@@ -177,6 +177,12 @@ class Volunteer {
             return false;
     }
     //setter functions ... can be added later as needed
+    function set_license_expdate ($exp_date) {
+        $this->license_expdate = $exp_date;
+    }
+    function set_birthday ($birthday) {
+        $this->birthday = $birthday;
+    }
     function set_password ($new_password) {
         $this->password = $new_password;
     }
