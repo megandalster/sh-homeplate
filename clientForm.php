@@ -31,10 +31,16 @@ else {
 	<input type="hidden" name="_form_submit" value="1">
 <p>(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)
 
-<p>	Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" size="50" name="id" tabindex=1 value="<?PHP echo( $client->get_id() )?>">
-	Chain Name: <input type="text" name="chain_name" tabindex=2 value="<?PHP echo($client->get_chain_name() )?>">
+<p>	Name: 
+<?PHP 
+	if ($id=="new")
+		echo '<input type="text" size="50" name="id" tabindex=1 value="">'.
+			'Chain Name: <input type="text" name="chain_name" tabindex=2 value="">';
+	else {
+		echo $client->get_id();
+		if ($client->get_chain_name()!="") echo "&nbsp;&nbsp;&nbsp;&nbsp;Chain Name: ".$client->get_chain_name(); 
+	}
 
-<?PHP
     echo ('<p>Area: ');
     echo('<select name="area">');
     echo ('<option value=""></option>');
@@ -88,7 +94,6 @@ else {
 		<td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>
 		<td>Thu&nbsp;&nbsp;</td><td>Fri&nbsp;&nbsp;</td><td>Sat&nbsp;&nbsp;</td><td>Sun</td></tr>
 <?PHP
-    $weeks = array('1'=>'1st', '2'=>'2nd', '3'=>'3rd', '4'=>'4th', '5'=>'5th');
     $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
     $client_availability = implode(',',$client->get_days());
        echo ('<tr>');

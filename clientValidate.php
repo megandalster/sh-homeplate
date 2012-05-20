@@ -9,7 +9,7 @@
 
 function validate_form(){
     $errors = array();
-	if($_POST['id']==null)                  $errors[] = 'Please enter a name';
+	if($id=="new" && $_POST['id']==null)    $errors[] = 'Please enter a name';
 	if($_POST['address']==null)             $errors[] = 'Please enter an address';
 	if($_POST['city']==null)                $errors[] = 'Please enter a city';
 	if($_POST['state']==null)               $errors[] = 'Please enter a state';
@@ -35,7 +35,7 @@ function validate_form(){
 */
 function valid_phone($phone){
 		if($phone==null) return false;
-		$phone = str_replace(' ','',str_replace('+','',str_replace('(','',str_replace('(','',str_replace('-','',$phone)))));
+		$phone = str_replace(' ','',str_replace('+','',str_replace('(','',str_replace(')','',str_replace('-','',$phone)))));
 		$test = str_replace('0','',str_replace('1','',str_replace('2','',str_replace('3','',str_replace('4','',str_replace('5','',str_replace('6','',str_replace('7','',str_replace('8','',str_replace('9','',$phone))))))))));
 		if($test != null) return false;
 		if (strlen($phone) != 7 && strlen($phone) != 10) return false;

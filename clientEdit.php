@@ -33,7 +33,7 @@
 <html>
 	<head>
 		<title>
-			Editing <?PHP echo($client->get_id());?>
+			Editing Client
 		</title>
 		<link rel="stylesheet" href="styles.css" type="text/css" />
 	</head>
@@ -56,12 +56,15 @@
 			if ($_POST['availability']==null)
 			   $avail = "";
 			else $avail = implode(',',$_POST['availability']);
-			
-			if ($_POST['chain_name']=="Wal-Mart") $weight_type="foodtypeboxes";
-        	else if ($_POST['chain_name']=="Publix") $weight_type="foodtype";
-        	else $weight_type = "pounds";
-			
-        	$client = new Client($_POST['id'], $_POST['chain_name'], $_POST['area'], $_POST['type'], 
+					
+			if ($id=="new"){
+				$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#','-',$_POST['id'])))));
+				$chain_name =   trim(str_replace('\\\'','\'',htmlentities($_POST['chain_name'])));
+				if ($_POST['chain_name']=="Wal-Mart") $weight_type="foodtypeboxes";
+        			else if ($_POST['chain_name']=="Publix") $weight_type="foodtype";
+        			else $weight_type = "pounds";
+			}
+        	$client = new Client($id, $chain_name, $_POST['area'], $_POST['type'], 
                                  $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
 								 $_POST['geocoordinates'], $_POST['phone1'], $_POST['phone2'], implode(',',$_POST['days']),
 								 $feed_america, $weight_type, $_POST['notes'] );
@@ -70,8 +73,9 @@
 		// this was a successful form submission; update the database and exit
 		else
 			process_form($id);
+		echo('</div>');
 		include('footer.inc');
-		echo('</div></div></body></html>');
+		echo('</div></body></html>');
 		die();
 	}
 
@@ -80,8 +84,10 @@
 */
 function process_form($id)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
-		$id =           trim(str_replace('\\\'','',htmlentities(str_replace(' ','_',$_POST['id']))));
-		$chain_name =   trim(str_replace('\\\'','\'',htmlentities($_POST['chain_name'])));
+		if ($id=="new"){
+			$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#','-',$_POST['id'])))));
+			$chain_name =   trim(str_replace('\\\'','\'',htmlentities($_POST['chain_name'])));
+		}
 		$address =      trim(str_replace('\\\'','\'',htmlentities($_POST['address'])));
 		$city =         trim(str_replace('\\\'','\'',htmlentities($_POST['city'])));
 		$state =        trim(htmlentities($_POST['state']));
@@ -111,14 +117,13 @@ function process_form($id)	{
 		if($_POST['deleteMe']=="DELETE"){
 			$result = retrieve_dbClients($id);
 			if (!$result)
-				echo('<p>Unable to delete. ' . $id . ' is not in the database. <br>Please report this error to the House Manager.');
+				echo('<p>Unable to delete. ' . $id . ' is not in the database. <br>Please report this error to the Program Coordinator.');
 			else {
-                $result = delete_dbVolunteers($id);
+                $result = delete_dbClients($id);
                 echo("<p>You have successfully removed " . $id . " from the database.</p>");
 					
             }
 		}
-
 
 		// try to add a new client to the database
 		else if ($_POST['old_id']=='new') {
