@@ -26,7 +26,6 @@
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
 					echo('<p><a href="'.$path.'volunteerEdit.php?id=new">Add new volunteer</a>');
-					echo('<a href="'.$path.'scheduleView.php?area='.$area.'"> | View driver schedule</a>');	
 					echo('<form method="post">');
 						echo('<p><strong>Search for volunteers:</strong>');
                         
@@ -116,7 +115,7 @@
                             foreach ($result as $vol) {
 								echo "<tr><td><a href=volunteerEdit.php?id=".$vol->get_id().">" . 
 									$vol->get_last_name() .  ", " . $vol->get_first_name() . "</td><td>" . 
-									phone_edit($vol->get_phone1()) . "</td><td>" . 
+									$vol->get_phone1() . "</td><td>" . 
 									$vol->get_email() . "</td><td>"; $allEmails[] = $vol->get_email();
 								foreach($vol->get_availability() as $availableon)
 									echo ($availableon . ", ") ;

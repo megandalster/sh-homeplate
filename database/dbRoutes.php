@@ -144,9 +144,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		
 		// find drivers for this date and area from the dbSchedules table
 		// calculate the week of the month or year, depending on the area
-		 echo "area.week.day = ". $area. $week. $day;
 		$driver_ids = implode(',',get_drivers_scheduled($area, $week, $day));
-		echo $driver_ids;
 
 		// store pickup and dropoff stops for this date and area using the dbClients table
 		$pickup_clients = getall_clients($area, "donor", "", "", array($day));

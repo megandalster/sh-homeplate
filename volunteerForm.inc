@@ -70,8 +70,8 @@ else // $_SESSION['access_level']>=2
 		?>
 		</select>,
 		<input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($person->get_zip())?>"></td></tr>
-		<tr><td>Primary Phone<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo(phone_edit($person->get_phone1()))?>"></td>
-		<td>Cell Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo(phone_edit($person->get_phone2()))?>"></td></tr>
+		<tr><td>Primary Phone<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo $person->get_phone1()?>"></td>
+		<td>Cell Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo $person->get_phone2()?>"></td></tr>
 		<tr><td>Email:</td><td><input type="text" name="email" size="40" tabindex=9 value="<?PHP echo($person->get_email())?>"></td></tr>
 
 
@@ -239,5 +239,6 @@ function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
         }
 		echo "</select>";	
 }
+
 ?>
 </form>
