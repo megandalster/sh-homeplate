@@ -47,18 +47,18 @@
 						$the_entry = retrieve_dbSchedules($area, $day.":".$group);
 						$drivers_scheduled=get_drivers_scheduled($area,$group,$day);
 							    // $groupdisplay = $area . " Group ".$group;
-								echo ("<table align=\"left\"><tr><td align=\"center\" colspan=\"2\"><b>
+								echo ("<table align=\"center\"><tr><td align=\"center\" colspan=\"2\"><b>
 								Drivers scheduled for ".$area_names[$area].", ");
 								if ($area=="BFT") echo $group." ".$day_names[$day]." of each month:";
 								else echo $group." ".$day_names[$day]."s of the year:"; 
 								echo ("</b></td></tr>");
 								
-								echo (display_filled_slots($drivers_scheduled)
-									.display_vacant_slots(get_total_openings($area,$group,$day)));
-								echo ("<tr><td valign=\"top\"><br>&nbsp;".get_total_openings($area,$group,$day)." openings</td><td>
+								echo (display_filled_slots($drivers_scheduled));
+							//		.display_vacant_slots(get_total_openings($area,$group,$day)));
+								echo ("<tr><td valign=\"top\"></td><td>
 									<form method=\"POST\" style=\"margin-bottom:0;\">
 									<input type=\"hidden\" name=\"_submit_fill_vacancy\" value=\"1\"><br>
-									<input type=\"submit\" value=\"Add Extra Driver\"
+									<input type=\"submit\" value=\"Add Driver\"
 									name=\"submit\" >
 									</form><br></td></tr>");	
 									$returnpoint = "scheduleView.php?area=".$area;
@@ -93,7 +93,7 @@ function display_filled_slots($persons) {
 		}
 		return $s;
 }
-
+/*
 function display_vacant_slots($vacancies) {
 		$s="";
 		for($i=0;$i<$vacancies;++$i) {
@@ -105,7 +105,7 @@ function display_vacant_slots($vacancies) {
 		}
 		return $s;
 }
-
+*/
 function process_add_volunteer($post,$group, $area, $day) {
 		if(!array_key_exists('_submit_add_volunteer',$post))
 			return false;
@@ -129,26 +129,28 @@ function process_add_volunteer($post,$group, $area, $day) {
 function process_fill_vacancy($post,$group, $area, $day) {
 		if(!array_key_exists('_submit_fill_vacancy',$post))
 			return false;
+		$area_names = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
+		$day_names = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday",
+									"Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
+		$groupdisplay = $area_names[$area]." ".$group." ". $day_names[$day];
 		
-		$groupdisplay = $area." week ".$group." ". $day;
-		
-		echo "<table align=\"left\"><tr><td align=\"center\"><b>
-		Filling a vacancy for ".$groupdisplay."</b></td></tr>
+		echo "<table align=\"center\"><tr><td align=\"center\"><b>
+		Adding a driver for ".$groupdisplay."</b></td></tr>
 		<tr><td><form method=\"POST\" style=\"margin-bottom:0;\">
 			<select name=\"scheduled_vol\">
 			<option value=\"0\" style=\"width: 371px;\">Select a driver with ".$group." ".$day." availability</option>"
 			.get_available_volunteer_options($area,$day).
 			"</select><br><br>
 			<select name=\"all_vol\">
-			<option value=\"0\" style=\"width: 371px;\">Select from all drivers in this area</option>"
+			<option value=\"0\" style=\"width: 371px;\">Select from all drivers and subs in this area</option>"
 			.get_all_volunteer_options($area).
 			"</select><br><br>
 			<input type=\"hidden\" name=\"_submit_add_volunteer\" value=\"1\">
-			<input type=\"submit\" value=\"Add Volunteer\" name=\"submit\" >
+			<input type=\"submit\" value=\"Add Driver\" name=\"submit\" >
 			</form></td></tr>";
 		echo "</table>";
-		echo "<br><table align=\"left\"><tr><td align=\"left\" width=\"450\">
-		<a href=\"scheduleEdit.php?group=".$group."&day=".$day."&area=".$area."\">Back to Route</a><br></td></tr></table>";
+		echo "<br><table align=\"center\"><tr><td align=\"center\" width=\"450\">
+		<a href=\"scheduleEdit.php?group=".$group."&day=".$day."&area=".$area."\">Back to Schedule Day</a><br></td></tr></table>";
 		return true;
 }
 

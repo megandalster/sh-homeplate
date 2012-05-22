@@ -51,7 +51,7 @@ else // $_SESSION['access_level']>=2
 	Last Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" name="last_name" tabindex=2 value="<?PHP echo($person->get_last_name())?>">
 <fieldset>
 <legend>Basic Information</legend>
-	<table>		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="address" tabindex=3 value="<?PHP echo($person->get_address())?>"></td></tr>
+	<table>		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="40" name="address" tabindex=3 value="<?PHP echo($person->get_address())?>"></td></tr>
 		<tr><td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=4 value="<?PHP echo($person->get_city())?>"></td></tr>
 		<tr><td>State, Zip<span style="font-size:x-small;color:FF0000">*</span>:</td>
 		<td><select name="state" tabindex=5>
@@ -70,9 +70,9 @@ else // $_SESSION['access_level']>=2
 		?>
 		</select>,
 		<input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($person->get_zip())?>"></td></tr>
-		<tr><td>Primary Phone<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo($person->get_phone1())?>"></td></tr>
-		<tr><td>Alternate Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo($person->get_phone2())?>"></td></tr>
-		<tr><td>Email:</td><td><input type="text" name="email" tabindex=9 value="<?PHP echo($person->get_email())?>"></td></tr>
+		<tr><td>Primary Phone<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo(phone_edit($person->get_phone1()))?>"></td>
+		<td>Cell Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo(phone_edit($person->get_phone2()))?>"></td></tr>
+		<tr><td>Email:</td><td><input type="text" name="email" size="40" tabindex=9 value="<?PHP echo($person->get_email())?>"></td></tr>
 
 
        <tr><td>Birthday:</td><td>
@@ -82,10 +82,7 @@ else // $_SESSION['access_level']>=2
             	$yy = substr($person->get_birthday(),0,2);
             	select_date($mm,$dd,$yy, "birthday_Month", "birthday_Day", "birthday_Year");
             ?>
-        </td></tr>
-
-
-	    <tr><td>Start Date:</td><td>
+        </td><td>Start Date:</td><td>
 		<?PHP 
             	$mm = substr($person->get_start_date(),3,2);
             	$dd = substr($person->get_start_date(),6,2);
@@ -114,7 +111,7 @@ else // $_SESSION['access_level']>=2
 	echo('</select>');
 	
 	$st = implode(',',$person->get_type());
-    $types = array('driver'=>'Driver', 'helper'=>'Helper', 'teamcaptain'=>'Team Captain',
+    $types = array('driver'=>'Driver', 'helper'=>'Helper', 'teamcaptain'=>'Day Captain', 'sub' => "Sub",
                    'coordinator'=>'Coordinator', 'associate'=>"Associate", 'boardmember'=>"Board Member");
 	echo('<p>Type: ');
 	echo('<span style="font-size:x-small;color:FF0000">*</span>&nbsp;&nbsp;');
@@ -128,21 +125,32 @@ else // $_SESSION['access_level']>=2
 ?>
 </p>
 <fieldset id="availability">
-<legend>Availability:</strong><span style="font-size:x-small;color:FF0000">*</span> </legend>
+<legend>Availability:</strong> </legend>
 	<table>
 	<tr>
 		<td> &nbsp;&nbsp;</td><td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>
 		<td>Thu&nbsp;&nbsp;</td><td>Fri&nbsp;&nbsp;</td><td>Sat&nbsp;&nbsp;</td><td>Sun</td></tr>
 <?PHP
-    $weeks = array('1'=>'1st' /*, '2'=>'2nd', '3'=>'3rd', '4'=>'4th', '5'=>'5th' */);
+    $weeks = array('1'=>'1st' , '2'=>'2nd', '3'=>'3rd', '4'=>'4th', '5'=>'5th' );
     $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
     $person_availability = implode(',',$person->get_availability());
-    foreach ($weeks as $weekno => $weekvalue) {
-       echo ('<tr><td>'. /*$weekvalue .*/ '</td>');
+    if ($person->get_area()=="BFT" || $_SESSION['area']=="BFT")
+    	foreach ($weeks as $weekno => $weekvalue) {
+       		echo ('<tr><td>'. $weekvalue . '</td>');
+       		foreach ($days as $day) {
+       	  		$realkey = $day . ":". $weekno;
+       	  		echo ('<td><input type="checkbox" name="availability[]" value=' . $realkey);
+    	  		if (in_array($day.":".$weekno, $person->get_availability())) echo(' CHECKED');
+    	  		echo ('></td>');
+       		}
+       		echo ('</tr>');
+    	}
+    else {
+       echo ('<tr><td></td>');
        foreach ($days as $day) {
-       	  $realkey = $day /*. ":". $weekno*/;
+       	  $realkey = $day;
        	  echo ('<td><input type="checkbox" name="availability[]" value=' . $realkey);
-    	  if (in_array($day/*.":".$weekno*/, $person->get_availability())) echo(' CHECKED');
+    	  if (in_array($day, $person->get_availability())) echo(' CHECKED');
     	  echo ('></td>');
        }
        echo ('</tr>');

@@ -25,8 +25,8 @@
 					$area = $_GET['area'];
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
-					echo('<p><a href="'.$path.'scheduleView.php?area='.$area.'">View driver schedule</a>');
-					echo('<a href="'.$path.'volunteerEdit.php?id=new"> | Add new volunteer</a>');	
+					echo('<p><a href="'.$path.'volunteerEdit.php?id=new">Add new volunteer</a>');
+					echo('<a href="'.$path.'scheduleView.php?area='.$area.'"> | View driver schedule</a>');	
 					echo('<form method="post">');
 						echo('<p><strong>Search for volunteers:</strong>');
                         
@@ -42,9 +42,10 @@
 						echo '&nbsp;&nbsp;Type:<select name="s_type">';
 							echo '<option value=""'; if ($type=="") echo " SELECTED"; echo '>--all--</option>'; 
 							echo '<option value="driver"'; if ($type=="driver") echo " SELECTED"; echo '>Driver</option>' . '<option value="helper">Helper</option>'; 
-							echo '<option value="teamcaptain"'; if ($type=="teamcaptain") echo " SELECTED"; echo '>Team Captain</option>' . '<option value="coordinator">Coordinator</option>'; 
+							echo '<option value="sub"'; if ($type=="sub") echo " SELECTED"; echo '>Sub</option>';
+							echo '<option value="teamcaptain"'; if ($type=="teamcaptain") echo " SELECTED"; echo '>Day Captain</option>' . '<option value="coordinator">Coordinator</option>'; 
 							echo '<option value="associate"'; if ($type=="associate") echo " SELECTED"; echo '>Associate</option>';
-							echo '<option value="boardmember"'; if ($type=="associate") echo " SELECTED"; echo '>Board Member</option>';
+							echo '<option value="boardmember"'; if ($type=="boardmember") echo " SELECTED"; echo '>Board Member</option>';
                         echo '</select>';
                         
                         if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
@@ -114,7 +115,7 @@
                             $allEmails = array(); // for printing all emails
                             foreach ($result as $vol) {
 								echo "<tr><td><a href=volunteerEdit.php?id=".$vol->get_id().">" . 
-									$vol->get_first_name() .  " " . $vol->get_last_name() . "</td><td>" . 
+									$vol->get_last_name() .  ", " . $vol->get_first_name() . "</td><td>" . 
 									phone_edit($vol->get_phone1()) . "</td><td>" . 
 									$vol->get_email() . "</td><td>"; $allEmails[] = $vol->get_email();
 								foreach($vol->get_availability() as $availableon)
@@ -127,7 +128,8 @@
                         echo "<br/><strong>email these people:</strong> <br/>";
                         if ($allEmails)
                           foreach($allEmails as $email)
-                            echo $email . "; ";
+                            if ($email!="")
+                              echo $email . ", ";
 						
 					}
 					

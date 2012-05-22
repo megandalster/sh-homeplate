@@ -25,10 +25,9 @@
 					$area = $_GET['area'];
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
-					echo('<p><a href="'.$path.'clientSchedule.php">View client schedule</a>');
-					echo('<a href="'.$path.'clientEdit.php?id=new"> | Add new client</a>');	
+					echo('<p><a href="'.$path.'clientEdit.php?id=new">Add new donor or recipient</a>');	
 					echo('<form method="post">');
-						echo('<p><strong>Search for clients:</strong>');
+						echo('<p><strong>Search for donors and recipients:</strong>');
                         
                         if( array_key_exists('s_area', $_POST) ) $area = $_POST['s_area']; //override the GET variable if we just conducted a search
 						echo '<p>Area: <select name="s_area">' .
@@ -40,14 +39,14 @@
                         
                         if( !array_key_exists('s_type', $_POST) ) $type = ""; else $type = $_POST['s_type'];
 						echo '&nbsp;&nbsp;Type:<select name="s_type">';
-                            echo '<option value=""';            if ($type=="")          echo " SELECTED"; echo '>--either--</option>'; 
+                            echo '<option value=""';            if ($type=="")          echo " SELECTED"; echo '>--all--</option>'; 
                             echo '<option value="donor"';       if ($type=="donor")     echo " SELECTED"; echo '>Donor</option>'; 
                             echo '<option value="recipient"';   if ($type=="recipient") echo " SELECTED"; echo '>Recipient</option>'; 
                         echo '</select>';
                         
                         if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
 						echo '&nbsp;&nbsp;Feed America:<select name="s_status">';
-                            echo '<option value=""';    if ($status=="")    echo " SELECTED"; echo '>--either--</option>';
+                            echo '<option value=""';    if ($status=="")    echo " SELECTED"; echo '>--all--</option>';
                             echo '<option value="yes"'; if ($status=="yes") echo " SELECTED"; echo '>Yes</option>';
                             echo '<option value="no"';  if ($status=="no")  echo " SELECTED"; echo '>No</option>';
                         echo '</select>';
