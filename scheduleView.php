@@ -49,7 +49,7 @@ include_once('domain/Volunteer.php');
 	function show_master_weeks($area, $groups, $days){
 		echo "<br><strong>Driver Schedule</strong><br><br>";
 		$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
-		echo "Here you may schedule drivers by selecting a day and week and removing or adding drivers where there are <strong>openings</strong>.";
+		echo "Here you may schedule drivers for future routes by selecting a day and week and removing or adding drivers.";
 		echo " The drivers you assign to this schedule will be autormatically assigned to each new route when it is created.<br>";
 		if (sizeof($groups)>2) {
 			$today = date();
@@ -100,7 +100,7 @@ include_once('domain/Volunteer.php');
 		$thisMonth=date("m",$today);
 		$thisYear = date("y",$today);
 		$dayses=array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
-		echo '<br>For example, here is the driver schedule for '; echo date("F Y",mktime(1,1,1,$thisMonth,1,$thisYear)).':';
+		echo '<br>For example, this schedule will assign drivers to routes as follows for the month of '; echo date("F Y",mktime(1,1,1,$thisMonth,1,$thisYear)).':';
 	  	echo '<br><br><table align="center">';
 	 	echo '<tr>';
 		foreach ($days as $day=>$dayname)
