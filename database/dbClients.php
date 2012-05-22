@@ -148,4 +148,9 @@ function delete_dbClients($id){
 	}
 	return true;
 }
+function phone_edit($phone) {
+	if ($phone!="")
+		return substr($phone,0,3)."-".substr($phone,3,3)."-".substr($phone,6);
+	else return "";
+}
 ?>

@@ -36,12 +36,10 @@ include_once('domain/Volunteer.php');
 					show_master_weeks($area, $weekly_groups, $week_days);
 				?>
 			</div>
-			<?PHP include('footer.inc');?>		
 		</div>
+		<?PHP include('footer.inc');?>			
 	</body>
 </html>
-
-
 
 <?php 
 	/*
@@ -53,17 +51,19 @@ include_once('domain/Volunteer.php');
 		$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 		echo "Here you may schedule drivers by selecting a day and week and removing or adding drivers where there are <strong>openings</strong>.";
 		echo " The drivers you assign to this schedule will be autormatically assigned to each new route when it is created.<br>";
-		if (sizeof($groups)>2) { 
-			echo "<br>'1st' means the first week of the month, '2nd' means the second week of the month, and so forth. ";
-			echo " This allows drivers to be scheduled on the same day(s) of each month, like the 1st and 3rd Friday for example.<br>";
-			echo ('<br><table align="left"><tr><td colspan="'.(sizeof($days)+2).'" ' .
+		if (sizeof($groups)>2) {
+			$today = date();
+			 
+			echo "<br>'1st' means the first Monday of the month, '2nd' means the second Monday of the month, and so forth. ";
+			echo " This allows drivers to be scheduled on the same day(s) of each month, like the 1st and 3rd Friday.<br>";
+			echo ('<br><br><div><table align="center"><tr><td colspan="'.(sizeof($days)+2).'" ' .
 				'bgcolor="#99B1D1" align="center" >');
 			echo ($areas[$area].' Monthly Driver Schedule');
 		}
 		else {
 			echo "<br>An 'odd week' is one of the 1st, 3rd, 5th, ... weeks of the year. ";
 			echo " An 'even week' is one of the 2nd, 4th, 6th, ... weeks of the year.  This allows drivers to be scheduled on a bi-weekly basis.<br>";
-			echo ('<br><table align="left"><tr><td colspan="'.(sizeof($days)+2).'" ' .
+			echo ('<br><table align="center"><tr><td colspan="'.(sizeof($days)+2).'" ' .
 				'bgcolor="#99B1D1" align="center" >');
 			echo ($areas[$area].' Bi-Weekly Driver Schedule');
 		}
@@ -74,7 +74,7 @@ include_once('domain/Volunteer.php');
 		echo('<td bgcolor="#99B1D1"></td></tr>');
 		
 		foreach ($groups as $group){
-			echo ("<tr><td bgcolor=\"#99B1D1\" valign=\"middle\">"."&nbsp;&nbsp;".$group."&nbsp;&nbsp;"."</td>");
+			echo ("<tr><td bgcolor=\"#99B1D1\" valign=\"middle\">"."&nbsp;&nbsp;".$group."&nbsp;&nbsp;</td>");
 			foreach ($days as $day => $dayname) {
 				$master_shift = retrieve_dbSchedules($area, $day.":".$group);	
 				if ($master_shift) {
@@ -86,13 +86,67 @@ include_once('domain/Volunteer.php');
 					echo do_shift($master_shift);
 				}	
 			}
-			echo ("<td bgcolor=\"#99B1D1\" valign=\"middle\">"."&nbsp;&nbsp;".$group."&nbsp;&nbsp;"."</td></tr>");
+			echo ("<td bgcolor=\"#99B1D1\" valign=\"middle\">"."&nbsp;&nbsp;".$group."&nbsp;&nbsp;</td></tr>");
 		}
-		echo ('<tr><td bgcolor="#99B1D1"></td>'.'<td colspan="'.sizeof($days).'"></td>'.'<td bgcolor="#99B1D1"></td></tr>');
-		echo ('<tr><td colspan="'.(sizeof($days)+2).'" ' .
-				'bgcolor="#99B1D1" align="center" >');
+		echo ('<tr><td bgcolor="#99B1D1"></td>'.'<td colspan="7"></td>'.'<td bgcolor="#99B1D1"></td></tr>');
+		echo ('<tr><td colspan="9" bgcolor="#99B1D1">');
 			echo ("</td></tr>");
-		echo "</table>";
+		echo "</table>";	
+		do_month($area, $groups, $days);	
+	}
+	
+	function do_month($area, $groups, $days) {
+		$today = strtotime("today");
+		$thisMonth=date("m",$today);
+		$thisYear = date("y",$today);
+		$dayses=array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
+		echo '<br>For example, here is the driver schedule for '; echo date("F Y",mktime(1,1,1,$thisMonth,1,$thisYear)).':';
+	  	echo '<br><br><table align="center">';
+	 	echo '<tr>';
+		foreach ($days as $day=>$dayname)
+		   echo '<td>' . $dayname . '</td>';  
+		echo '</tr>';
+		$dayCount = 1;
+		$daytime = mktime(0,0,0,$thisMonth,1,$thisYear);
+		$weekCount = 1;
+		while($dayCount<=date("t",$today)){  // number of days in this month = date("t",$today)
+		  	echo('<tr>');
+		  	for ($i=1;$i<=7;++$i){
+	  	 	  echo('<td>');
+	  		  if($dayCount>date("t",$today))
+	  		    continue;
+	  		  else if($weekCount==1 && get_first_day($thisMonth, $thisYear)>$i)
+	  		    continue;
+	  	  	  else{
+	  	    	echo('<strong>'.$dayCount.'</strong>');
+		    	$shiftID=$thisYear.'-'.$thisMonth.'-'.date("d",mktime(0,0,0,$thisMonth,$dayCount,$thisYear));
+		    	if ($area=="BFT")
+		    		$week = $groups[floor(($dayCount-1) / 7)];
+		    	else if (date("W",$daytime) % 2 == 0) 
+		    		$week="even";
+		    	else $week="odd";
+		    	// echo $week.$dayses[$i-1];
+		    	$driver_ids = get_drivers_scheduled($area, $week, $dayses[$i-1]);
+				echo '<br>';
+		    	foreach($driver_ids as $driver_id){
+		    	//	echo $driver_id;
+		      		$driver = retrieve_dbVolunteers($driver_id);
+		      		if ($driver)
+		    		echo $driver->get_first_name()." ".$driver->get_last_name()."<br>" ;
+		    	}
+		    	echo'</td>';
+		    	++$dayCount;
+		    	$daytime += 86400;
+	  	  	  }
+		   	}
+	   		echo('</tr>'); 
+	   		$weekCount+=1; 
+		}
+	 	echo '</table>';
+	}
+	
+	function get_first_day($mm, $yy) {
+		return date("N",mktime(0,0,0,$mm,1,$yy));
 	}
 	
 	function do_shift($master_shift) {
@@ -111,9 +165,6 @@ include_once('domain/Volunteer.php');
 		/* $master_shift is a ScheduleEntry object 
 		*/
 		$people=$master_shift->get_drivers(); // id's of drivers scheduled
-		$slots=max(sizeof($people), 2);		  // allow a minimum of 2 drivers per shift
-	//	if(!$people[0])
-	//		array_shift($people);
 		$p="<br>";
 		for($i=0;$i<count($people);++$i) {
 			$person = retrieve_dbVolunteers($people[$i]);
@@ -122,9 +173,9 @@ include_once('domain/Volunteer.php');
 			else
 			   $p = $p."&nbsp;".$people[$i]."<br>";
 		}
-		if($slots-count($people)>0 )
-			$p=$p."&nbsp;openings (".($slots-count($people)).")<br>";
-		else if (count($people) == 0)
+		if(count($people)==0 )
+			$p=$p."&nbsp;open<br>";
+		else 
 		    $p=$p."&nbsp;<br>";
 		return substr($p,0,strlen($p)-4) ;
 	}

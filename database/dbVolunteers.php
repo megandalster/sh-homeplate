@@ -106,7 +106,7 @@ function get_team_captains ($area) {
 
 function  getall_drivers_available($area, $day) {
 	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND type LIKE '%driver%' AND availability LIKE '%".
+	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND (type LIKE '%driver%' OR type LIKE '%sub%') AND availability LIKE '%".
 			$day."%' AND area  = '".$area."' ORDER BY last_name, first_name");
 	
 	$theIds = "";	
@@ -189,6 +189,8 @@ function delete_dbVolunteers($id){
 	return true;
 }
 function phone_edit($phone) {
-	return substr($phone,0,3)."-".substr($phone,3,3)."-".substr($phone,6);
+	if ($phone!="")
+		return substr($phone,0,3)."-".substr($phone,3,3)."-".substr($phone,6);
+	else return "";
 }
 ?>

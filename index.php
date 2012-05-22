@@ -44,8 +44,8 @@
 					/*
 					 * Check type of person, and display home page based on that.
 					 * level 0: General public, driver applications: login screen and on-line application
-					 * level 1: Volunteers: view route, select stops and enter pickup or delivery amounts
-					 * level 2: Team Captains: view and edit volunteer and route data, generate weekly and monthly reports
+					 * level 1: Volunteers, helpers, and subs: view route, select stops and enter pickup or delivery amounts
+					 * level 2: Day Captains: view and edit volunteer and route data, generate weekly and monthly reports
 					 * level 3: Officers: view weekly and monthly reports, export data
 					*/
                     //DEFAULT PASSWORD CHECK
@@ -79,27 +79,7 @@
 						 }
 						 echo('<br clear="all">');
 					}
-
-			    //NOTES OUTPUT
-				echo('<div class="infobox"><p class="notes"><strong>Notes to/from the team captain:</strong><br />');
-				echo($person->get_notes().'</div>');
-
-				// we have a guest authenticated
-				if($_SESSION['access_level']==0) {
-					echo('<div class="infobox"><p><strong>Your application has been submitted.  Thank you!</strong><br></p></div>)');
-				}
-				// We have a driver authenticated -- show them today's route
-				if ($_SESSION['access_level']==1) {
-					echo "<p>(Here we need to show the driver today's route for his/her area.)";
-				}
-				//We have a team captain authenticated	 
-				if($_SESSION['access_level']==2) {
-					echo "<p>(Here we need to show the team captain today's system status: routes completed this week, notes from drivers, etc.)";
-				}
-				//We have a program officer authenticated	 
-				if($_SESSION['access_level']==3) {
-					echo "<p>(Here we need to show the program officer today's system status: weekly report, monthly report, notes from team captains, etc.)";
-				}
+					echo "<p>Please select an item from the menu above to get started.";
 				}
 				?>
 				<br clear="all">

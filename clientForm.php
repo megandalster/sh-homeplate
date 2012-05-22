@@ -61,7 +61,7 @@ else {
     
 <fieldset>
 <legend>Contact Information</legend>
-	<table>		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="address" tabindex=3 value="<?PHP echo($client->get_address())?>"></td></tr>
+	<table>		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="40" name="address" tabindex=3 value="<?PHP echo($client->get_address())?>"></td></tr>
 		<tr><td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=4 value="<?PHP echo($client->get_city())?>"></td></tr>
 		<tr><td>State, Zip:</td>
 		<td><select name="state" tabindex=5>
@@ -80,8 +80,8 @@ else {
 		?>
 		</select>,
 		<input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($client->get_zip())?>"></td></tr>
-		<tr><td>Primary Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo($client->get_phone1())?>"></td></tr>
-		<tr><td>Alternate Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo($client->get_phone2())?>"></td></tr>
+		<tr><td>Primary Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo(phone_edit($client->get_phone1()))?>"></td>
+		<td>Alternate Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo(phone_edit($client->get_phone2()))?>"></td></tr>
 
 </table>
 </fieldset>

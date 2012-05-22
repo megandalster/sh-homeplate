@@ -19,10 +19,8 @@ function validate_form(){
 	if($_POST['type']==null && $_SESSION['access_level']>=1) $errors[] = 'Select a Position type';
 	if ($_POST['type']!=null && $_SESSION['access_level']<=1 && (in_array('teamcaptain',$_POST['type']) || in_array('boardmember',$_POST['type'])))
 		$errors[] = "Sorry, you can't promote yourself to team captain or board member.";
-	if($_POST['availability']==null)
-		$errors[] = 'Must have some availabilty';
-	if(!valid_phone($_POST['phone1'])) $errors[] = 'Enter a valid primary phone number (10 digits: ### ### ####)';
-	if($_POST['phone2']!=null && !valid_phone($_POST['phone2'])) $errors[] = 'Enter a valid secondary phone number (10 digits: ### ### ####)';
+	if(!valid_phone($_POST['phone1'])) $errors[] = 'Enter a valid primary phone number (10 digits: ###-###-####)';
+	if($_POST['phone2']!=null && !valid_phone($_POST['phone2'])) $errors[] = 'Enter a valid secondary phone number (10 digits: ###-###-####)';
 	if(!valid_email($_POST['email']) && $_POST['email']!=null) $errors[] = "Please enter a valid email";
 	if(($_POST['DateOfBirth_Month']!=="" || $_POST['DateOfBirth_Day']!=="") && $_POST['DateOfBirth_Year']==="")
 		$birthday = "XX-".$_POST['DateOfBirth_Month'].'-'.$_POST['DateOfBirth_Day'];

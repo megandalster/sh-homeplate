@@ -19,7 +19,7 @@
 						 ' Once you sign in, you will be able to fill out and submit an application form on-line.</p>';
 					echo('<ul><li>You must be a Second Helpings <i>volunteer, staff member, or board member</i> to access this system. ' .
 						'<li> Your Username is your first name followed by your phone number (no spaces). ');
-					echo('<br> If you do not remember your Password, please contact your <a href="mailto:jon25t@aol.com">Team Captain</a>.</ul>');
+					echo('<br> If you do not remember your Password, please contact your <a href="mailto:jon25t@aol.com">Day Captain</a>.</ul>');
 					echo('<p><table><form method="post"><input type="hidden" name="_submit_check" value="true"><tr><td>Username:</td><td><input type="text" name="user" tabindex="1"></td></tr><tr><td>Password:</td><td><input type="password" name="pass" tabindex="2"></td></tr><tr><td colspan="2" align="center"><input type="submit" name="Login" value="Login"></td></tr></table>');
 				}
 				else{
@@ -58,7 +58,7 @@
 							echo('<p>If you are a volunteer, team captain, or officer, your Username is your first name followed by your phone number with no spaces. ' .
 								'For instance, if your first name were John and your phone number were (843)-123-4567, ' .
 								'then your Username would be <strong>John8431234567</strong>.  ');
-							echo('<br /><br />if you cannot remember your password, ask your <a href="mailto:jon25T@gmail.com">Team Captain</a> to reset it for you.</p>');
+							echo('<br /><br />if you cannot remember your password, ask your <a href="mailto:jon25T@gmail.com">Day Captain</a> to reset it for you.</p>');
 							echo('<p><table><form method="post"><input type="hidden" name="_submit_check" value="true">'.
 								'<tr><td>Username:</td><td><input type="text" name="user" tabindex="1"></td></tr><tr><td>Password:</td>'.
 								'<td><input type="password" name="pass" tabindex="2"></td></tr><tr><td colspan="2" align="center"><input type="submit" name="Login" value="Login"></td></tr></table>');
@@ -70,7 +70,7 @@
 						echo('<p>If you are a volunteer, team captain, or officer, your Username is your first name followed by your phone number with no spaces. ' .
 							'For instance, if your first name were John and your phone number were (207)-123-4567, ' .
 							'then your Username would be <strong>John2071234567</strong>.  ');
-						echo('<br /><br />if you cannot remember your password, ask your <a href="mailto:jon25T@gmail.com">Team Captain</a> to reset it for you.</p>');
+						echo('<br /><br />if you cannot remember your password, ask your <a href="mailto:jon25T@gmail.com">Day Captain</a> to reset it for you.</p>');
 						echo('<p><table><form method="post"><input type="hidden" name="_submit_check" value="true"><tr><td>Username:</td>'.
 							'<td><input type="text" name="user" tabindex="1"></td></tr>'.
 							'<tr><td>Password:</td><td><input type="password" name="pass" tabindex="2"></td></tr><tr><td colspan="2" align="center"><input type="submit" name="Login" value="Login"></td></tr></table>');
