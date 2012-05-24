@@ -24,7 +24,7 @@ include_once(dirname(__FILE__).'/dbinfo.php');
 function create_dbStops() {
     connect();
     mysql_query("DROP TABLE IF EXISTS dbStops");
-    $result = mysql_query("CREATE TABLE dbStops (id TEXT NOT NULL, route TEXT NOT NULL, client TEXT NOT NULL,
+    $result = mysql_query("CREATE TABLE dbStops (id TEXT NOT NULL, route TEXT NOT NULL, client TEXT NOT NULL, 
      											 type TEXT NOT NULL, items TEXT, weight TEXT, date TEXT, notes TEXT)");
     mysql_close();
     if (!$result) {
@@ -96,9 +96,12 @@ function getall_dbStops () {
 }
 
 // Returns all stops within a certain date range.
-function getall_dbStops_between_dates ($start_date, $end_date) {
+function getall_dbStops_between_dates ($area, $type, $start_date, $end_date) {
 	connect();
-	$query = "SELECT route, client, type, SUM(weight), notes FROM dbStops where date >= '". $start_date . "' AND date <= '". $end_date . "' GROUP BY client";
+	$query = "SELECT route, client, type, SUM(weight), notes FROM dbStops where ".
+			"route like '%".$area."%' AND ".
+			"type like '%".$type."%' AND ".
+			"date >= '". $start_date . "' AND date <= '". $end_date . "' GROUP BY client";
     $result = mysql_query ($query);
     $theStops = array();
     while ($result_row = mysql_fetch_assoc($result)) {
@@ -110,6 +113,26 @@ function getall_dbStops_between_dates ($start_date, $end_date) {
 	mysql_close();
     return $theStops; 
 }
+
+// Returns all stops within a certain date range.
+function getall_dbWalmartPublixStops_between_dates ($area, $start_date, $end_date) {
+	connect();
+	$query = "SELECT route, client, type, items, notes FROM dbStops where ".
+			"route like '%".$area."%' AND ".
+			"items > '' and ".
+			"date >= '". $start_date . "' AND date <= '". $end_date . "' ORDER BY client";
+    $result = mysql_query ($query);
+    $theStops = array();
+    while ($result_row = mysql_fetch_assoc($result)) {
+    	// The total weight of the stop is returned instead of its items for the purpose
+    	// of generating reports with each stops total weight.
+        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['items'], $result_row['notes']);
+        $theStops[] = $theStop;
+    }
+	mysql_close();
+    return $theStops; 
+}
+
 
 // Update the values of a specified stop by removing it from the DB and then
 // inserting it again.

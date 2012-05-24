@@ -19,7 +19,9 @@
  */
 
 class Stop {
-	private $id;		// String $route_id . $Client_id 
+	private $id;		// String $route_id . $Client_id
+	private $route_id;
+	private $client_id; 
 	private $type;		// "donor" or "recipient"
 	private $items;		// array of foodtype:weight pairs for this stop
 	private $total_weight; // total weight for this stop
