@@ -19,6 +19,7 @@
     include_once('domain/Client.php');
 //    include_once('database/dbLog.php');
 	$id = $_GET["id"];
+	$chain_name = "";
 	if ($id=='new') {
 	 	$client = new Client(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 	}
@@ -27,7 +28,8 @@
 		if (!$client) {
 	         echo('<p id="error">Error: there\'s no client with this id in the database</p>'. $id);
 		     die();
-        }  
+        }
+        $chain_name = $client->get_chain_name();  
 	}
 ?>
 <html>
@@ -60,7 +62,7 @@
 			if ($id=="new"){
 				$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#','-',$_POST['id'])))));
 				$chain_name =   trim(str_replace('\\\'','\'',htmlentities($_POST['chain_name'])));
-				if ($_POST['chain_name']=="Wal-Mart") $weight_type="foodtypeboxes";
+				if ($_POST['chain_name']=="WalMart") $weight_type="foodtypeboxes";
         			else if ($_POST['chain_name']=="Publix") $weight_type="foodtype";
         			else $weight_type = "pounds";
 			}
@@ -72,7 +74,7 @@
 		}
 		// this was a successful form submission; update the database and exit
 		else
-			process_form($id);
+			process_form($id,$chain_name);
 		echo('</div>');
 		include('footer.inc');
 		echo('</div></body></html>');
@@ -82,7 +84,7 @@
 /**
 * process_form sanitizes data, concatenates needed data, and enters it all into a database
 */
-function process_form($id)	{
+function process_form($id,$chain_name)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
 		if ($id=="new"){
 			$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#','-',$_POST['id'])))));
@@ -103,7 +105,7 @@ function process_form($id)	{
         if ($_POST['days'])
         	$days=implode(',', $_POST['days']);
         else $days="";
-        if ($chain_name=="Wal-Mart") $weight_type="foodtypeboxes";
+        if ($chain_name=="WalMart") $weight_type="foodtypeboxes";
         else if ($chain_name=="Publix") $weight_type="foodtype";
         else $weight_type = "pounds"; 
         
@@ -143,6 +145,7 @@ function process_form($id)	{
 		// try to replace an existing client in the database by removing and adding
 		else {
 				$id = $_POST['old_id'];
+				$chain_name = $_POST['old_chain_name'];
 				$result = delete_dbClients($id);
                 if (!$result)
                    echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');

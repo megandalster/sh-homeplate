@@ -42,7 +42,7 @@
 	$dairy_percent = 0.03;
 	$bakery_percent = 0.31;
 	$produce_percent = 0.18;
-	$dry_goods_percent = 0.23;
+	$grocery_percent = 0.23;
 	
 	// The average number of pounds per carton given by the client.
 	$pounds_per_carton = 33;
@@ -125,7 +125,7 @@
 				$item4 = "Produce:" . $total_weight * $produce_percent;
 				$stop1->set_item(3, $item4);
 		
-				$item5 = "Dry Goods:" . $total_weight * $dry_goods_percent;
+				$item5 = "Grocery:" . $total_weight * $grocery_percent;
 				$stop1->set_item(4, $item5);
 		
 				$stop1->set_notes($driver_notes);

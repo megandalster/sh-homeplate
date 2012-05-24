@@ -1,3 +1,6 @@
-"Total weight data for ","January 1, 2012"," to January 31, 2012"
-Pick-ups,weights,Dropoffs,weights
-Totals,0,Totals,0
+"Second Helpings Truck Weight Report for "," all areas, "," Publix and Walmart only ",": "," May 2012"
+Store,Meat,Bakery,Dairy,Produce,Grocery,Total
+"Publix  Buckwalter (1205)",10,10,10,10,10,50
+"Publix  Hilton Head North (473)",20,0,0,0,0,20
+"WalMart Supercenter",165,204.6,19.8,118.8,151.8,660
+Totals,195,214.6,29.8,128.8,161.8,730

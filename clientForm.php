@@ -28,6 +28,7 @@ else {
 ?>
 <form method="POST">
 	<input type="hidden" name="old_id" value=<?PHP echo("\"".$id."\"");?>>
+	<input type="hidden" name="old_chain_name" value=<?PHP echo("\"".$chain_name."\"");?>>
 	<input type="hidden" name="_form_submit" value="1">
 <p>(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)
 
@@ -80,8 +81,8 @@ else {
 		?>
 		</select>,
 		<input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($client->get_zip())?>"></td></tr>
-		<tr><td>Primary Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo(phone_edit($client->get_phone1()))?>"></td>
-		<td>Alternate Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo(phone_edit($client->get_phone2()))?>"></td></tr>
+		<tr><td>Primary Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo $client->get_phone1()?>"></td>
+		<td>Alternate Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo $client->get_phone2()?>"></td></tr>
 
 </table>
 </fieldset>
