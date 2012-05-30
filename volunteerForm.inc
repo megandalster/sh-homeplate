@@ -37,7 +37,7 @@ else // $_SESSION['access_level']>=2
     }
     else {
 	   echo('<p><strong>Volunteer Information Form</strong><br />');
-	   echo('Here you can edit, delete, or change the password for a volunteer in the database.</p><p>');
+	   echo('Here you can edit, delete, or reset the password for a volunteer.</p><p>');
     }
 
 ?>
@@ -93,7 +93,7 @@ else // $_SESSION['access_level']>=2
 </table>
 </fieldset>
 <?PHP
-    echo ('<p>Area: ');
+    echo ('<p>Area<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="area">');
     echo ('<option value=""></option>');
     echo ('<option value="HHI"');if ($person->get_area()=='HHI') echo (' SELECTED'); echo('>Hilton Head</option>');
@@ -113,8 +113,8 @@ else // $_SESSION['access_level']>=2
 	$st = implode(',',$person->get_type());
     $types = array('driver'=>'Driver', 'helper'=>'Helper', 'teamcaptain'=>'Day Captain', 'sub' => "Sub",
                    'coordinator'=>'Coordinator', 'associate'=>"Associate", 'boardmember'=>"Board Member");
-	echo('<p>Type: ');
-	echo('<span style="font-size:x-small;color:FF0000">*</span>&nbsp;&nbsp;');
+	echo('<p>Role(s)');
+	echo('<span style="font-size:x-small;color:FF0000">*</span>: ');
 
     foreach ($types as $key=>$value) {
     	echo ('<input type="checkbox" name="type[]" value=' . $key);
@@ -125,13 +125,14 @@ else // $_SESSION['access_level']>=2
 ?>
 </p>
 <fieldset id="availability">
-<legend>Availability:</strong> </legend>
+<legend>Schedule:</strong> </legend>
 	<table>
 	<tr>
 		<td> &nbsp;&nbsp;</td><td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>
 		<td>Thu&nbsp;&nbsp;</td><td>Fri&nbsp;&nbsp;</td><td>Sat&nbsp;&nbsp;</td><td>Sun</td></tr>
 <?PHP
     $weeks = array('1'=>'1st' , '2'=>'2nd', '3'=>'3rd', '4'=>'4th', '5'=>'5th' );
+    $oddeven = array ('odd', 'even');
     $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
     $person_availability = implode(',',$person->get_availability());
     if ($person->get_area()=="BFT" || $_SESSION['area']=="BFT")
@@ -146,14 +147,17 @@ else // $_SESSION['access_level']>=2
        		echo ('</tr>');
     	}
     else {
-       echo ('<tr><td></td>');
-       foreach ($days as $day) {
-       	  $realkey = $day;
-       	  echo ('<td><input type="checkbox" name="availability[]" value=' . $realkey);
-    	  if (in_array($day, $person->get_availability())) echo(' CHECKED');
-    	  echo ('></td>');
-       }
+       foreach ($oddeven as $weekno) {
+       	  echo ('<tr><td>'. $weekno . '</td>');
+       	  foreach ($days as $day) {
+       	  	$realkey = $day. ":". $weekno;;
+       	  	echo ('<td><input type="checkbox" name="availability[]" value=' . $realkey);
+    	  	if (in_array($day.":".$weekno, $person->get_availability()) ||
+    	  		in_array($day, $person->get_availability())) echo(' CHECKED');
+    	  	echo ('></td>');
+       	  }
        echo ('</tr>');
+       }
     }
 ?>
 </table>

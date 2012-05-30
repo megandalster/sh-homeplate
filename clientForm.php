@@ -28,20 +28,28 @@ else {
 ?>
 <form method="POST">
 	<input type="hidden" name="old_id" value=<?PHP echo("\"".$id."\"");?>>
-	<input type="hidden" name="old_chain_name" value=<?PHP echo("\"".$chain_name."\"");?>>
 	<input type="hidden" name="_form_submit" value="1">
 <p>(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)
 
 <p>	Name: 
 <?PHP 
-	if ($id=="new")
-		echo '<input type="text" size="50" name="id" tabindex=1 value="">'.
-			'Chain Name: <input type="text" name="chain_name" tabindex=2 value="">';
-	else {
-		echo $client->get_id();
-		if ($client->get_chain_name()!="") echo "&nbsp;&nbsp;&nbsp;&nbsp;Chain Name: ".$client->get_chain_name(); 
+	if ($id=="new") 
+		echo '<input type="text" size="40" name="id" tabindex=1 value="">';
+	else echo $client->get_id();
+	
+	if ($id=="new" || $client->get_type() == "donor") {
+		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Chain Name: ');
+    
+		echo('<select name="chain_name">');
+    	echo ('<option value=""></option>');
+    	echo ('<option value="BiLo"');if ($client->get_chain_name()=='BiLo') echo (' SELECTED'); echo('>BiLo</option>');
+		echo ('<option value="Food Lion"');if ($client->get_chain_name()=='Food Lion') echo (' SELECTED'); echo('>Food Lion</option>');
+		echo ('<option value="Harris Teeter"');if ($client->get_chain_name()=='Harris Teeter') echo (' SELECTED'); echo('>Harris Teeter</option>');
+		echo ('<option value="Piggly Wiggly"');if ($client->get_chain_name()=='Piggly Wiggly') echo (' SELECTED'); echo('>Piggly Wiggly</option>');
+		echo ('<option value="Publix"');if ($client->get_chain_name()=='Publix') echo (' SELECTED'); echo('>Publix</option>');
+		echo ('<option value="WalMart"');if ($client->get_chain_name()=='WalMart') echo (' SELECTED'); echo('>WalMart</option>');
+    	echo('</select>');
 	}
-
     echo ('<p>Area: ');
     echo('<select name="area">');
     echo ('<option value=""></option>');

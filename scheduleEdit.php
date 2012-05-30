@@ -31,7 +31,7 @@
 					
 				//	include_once('database/dbLog.php');
 					if (!process_fill_vacancy($_POST,$group,$area,$day) &&  // try to fill a vacancy
-					    !process_add_volunteer($_POST,$group,$area,$day)) // try to add a driver
+					    !process_add_volunteer($_POST,$group,$area,$day)) // try to add a volunteer
 					{
 						if(process_unfill_shift($_POST,$group,$area,$day)){  // try to remove everyone
 								
@@ -48,7 +48,7 @@
 						$drivers_scheduled=get_drivers_scheduled($area,$group,$day);
 							    // $groupdisplay = $area . " Group ".$group;
 								echo ("<table align=\"center\"><tr><td align=\"center\" colspan=\"2\"><b>
-								Drivers scheduled for ".$area_names[$area].", ");
+								Volunteers scheduled for ".$area_names[$area].", ");
 								if ($area=="BFT") echo $group." ".$day_names[$day]." of each month:";
 								else echo $group." ".$day_names[$day]."s of the year:"; 
 								echo ("</b></td></tr>");
@@ -58,12 +58,12 @@
 								echo ("<tr><td valign=\"top\"></td><td>
 									<form method=\"POST\" style=\"margin-bottom:0;\">
 									<input type=\"hidden\" name=\"_submit_fill_vacancy\" value=\"1\"><br>
-									<input type=\"submit\" value=\"Add Driver\"
+									<input type=\"submit\" value=\"Add Volunteer\"
 									name=\"submit\" >
 									</form><br></td></tr>");	
 									$returnpoint = "scheduleView.php?area=".$area;
 								echo "<tr><td><a href=\"" .$returnpoint. "\">
-										   Back to Driver Schedule</a>";
+										   Back to Master Schedule</a>";
 								echo ("</td></tr></table>");
 						   }
 				?>
@@ -88,7 +88,7 @@ function display_filled_slots($persons) {
 			$s=$s."<tr><td valign=\"top\"><br>&nbsp;".$p."</td><td>
 				<form method=\"POST\" style=\"margin-bottom:0;\">
 				<input type=\"hidden\" name=\"_submit_filled_slot_".$i."\" value=\"1\"><br>
-				<input type=\"submit\" value=\"Remove Driver\" name=\"submit\" >
+				<input type=\"submit\" value=\"Remove Volunteer\" name=\"submit\" >
 			</form></td></tr>";
 		}
 		return $s;
@@ -135,22 +135,22 @@ function process_fill_vacancy($post,$group, $area, $day) {
 		$groupdisplay = $area_names[$area]." ".$group." ". $day_names[$day];
 		
 		echo "<table align=\"center\"><tr><td align=\"center\"><b>
-		Adding a driver for ".$groupdisplay."</b></td></tr>
+		Adding a volunteer for ".$groupdisplay."</b></td></tr>
 		<tr><td><form method=\"POST\" style=\"margin-bottom:0;\">
 			<select name=\"scheduled_vol\">
-			<option value=\"0\" style=\"width: 371px;\">Select a driver with ".$group." ".$day." availability</option>"
+			<option value=\"0\" style=\"width: 371px;\">Select a volunteer with ".$group." ".$day." availability</option>"
 			.get_available_volunteer_options($area,$day).
 			"</select><br><br>
 			<select name=\"all_vol\">
-			<option value=\"0\" style=\"width: 371px;\">Select from all drivers and subs in this area</option>"
+			<option value=\"0\" style=\"width: 371px;\">Select from all volunteers in this area</option>"
 			.get_all_volunteer_options($area).
 			"</select><br><br>
 			<input type=\"hidden\" name=\"_submit_add_volunteer\" value=\"1\">
-			<input type=\"submit\" value=\"Add Driver\" name=\"submit\" >
+			<input type=\"submit\" value=\"Add Volunteer\" name=\"submit\" >
 			</form></td></tr>";
 		echo "</table>";
 		echo "<br><table align=\"center\"><tr><td align=\"center\" width=\"450\">
-		<a href=\"scheduleEdit.php?group=".$group."&day=".$day."&area=".$area."\">Back to Schedule Day</a><br></td></tr></table>";
+		<a href=\"scheduleEdit.php?group=".$group."&day=".$day."&area=".$area."\">Back</a><br></td></tr></table>";
 		return true;
 }
 

@@ -35,7 +35,7 @@ function create_dbSchedules(){
 	// populate the table 
 	$areas = array("HHI","SUN");
 	$weekly_groups = array("odd","even");
-	$monthly_groups = array("1st","2nd", "3rd", "4th", "5th");
+	$monthly_groups = array("1","2", "3", "4", "5");
 	$days = array("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
 	foreach ($monthly_groups as $monthly_group)
 		foreach ($days as $day) {   // day of the week
@@ -173,5 +173,49 @@ function add_driver ($area, $week, $day, $driver_id) {
 		return true;
 	}
 	else return false;
+}
+function get_all_foradriver($area, $driver_id){
+	connect();
+	$result = mysql_query("SELECT * FROM dbSchedules WHERE area = '".$area."' AND drivers LIKE '%".$driver_id."%' ");
+	$theScheduleEntries = array();
+	while($result_row = mysql_fetch_assoc($result)){
+		$theScheduleEntry = new ScheduleEntry($result_row['area'], $result_row['id'], $result_row['drivers'], $result_row['notes']);
+		$theScheduleEntries[] = $theScheduleEntry;
+	}
+	mysql_close();
+	return $theScheduleEntries;
+}
+// update all schedules with the changed availability of a particular driver
+function update_volunteers_scheduled ($area, $driver_id, $availability) {
+	$days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
+    $weeks = array("1","2","3","4","5");
+	$oddeven = array ('odd', 'even');
+	// first remove the driver from all schedules where he is scheduled
+	$entries = get_all_foradriver ($area, $driver_id);	
+	foreach ($entries as $an_entry) {
+		$i=strpos($an_entry->get_id(),":");		
+		remove_driver($area, $an_entry->get_week(),  $an_entry->get_day(), $driver_id);		   	
+	}
+	// now add the driver back to all the schedules that he/she has checked
+	foreach ($availability as $scheduled_day) {
+		$i=strpos($scheduled_day,":");
+		if ($i>=0) { // schedule one day for this person
+			$day = substr($scheduled_day,0,$i);
+			$week_id = substr($scheduled_day,$i+1);
+			if ($area == "BFT")
+				add_driver ($area, $week_id, $day, $driver_id);
+			else 
+				add_driver ($area, $week_id, $day, $driver_id);
+		}
+		else { // schedule multiple days for this person
+			if ($area=="BFT")
+		    	foreach ($weeks as $week_id)
+		    	    add_driver($area, $week_id, $scheduled_day, $driver_id);
+		    else 
+		    	foreach ($oddeven as $week_id)
+		    		add_driver($area, $week_id, $scheduled_day, $driver_id);
+		}
+	}
+    	
 }
 ?>

@@ -16,9 +16,10 @@ function validate_form(){
 	if(($_POST['zip'] != strval(intval($_POST['zip']))) || ($_POST['zip']==null) || (strlen($_POST['zip'])!=5)) $errors[] = 'Please enter a valid zip code';
 	if ($_SESSION['access_level']==0 && ($_POST['type']==null || !in_array('applicant',$_POST['type'])))
 		$_POST['type'][] = 'applicant';
-	if($_POST['type']==null && $_SESSION['access_level']>=1) $errors[] = 'Select a Position type';
-	if ($_POST['type']!=null && $_SESSION['access_level']<=1 && (in_array('teamcaptain',$_POST['type']) || in_array('boardmember',$_POST['type'])))
-		$errors[] = "Sorry, you can't promote yourself to team captain or board member.";
+	if($_POST['area']==null && $_SESSION['access_level']>=1) $errors[] = 'Select an Area';
+	if($_POST['type']==null && $_SESSION['access_level']>=1) $errors[] = 'Select a Role';
+	if ($_POST['type']!=null && $_SESSION['access_level']<=1 && (in_array('teamcaptain',$_POST['type']) || in_array('boardmember',$_POST['type']) || in_array('coordinator',$_POST['type'])))
+		$errors[] = "Sorry, you can't promote yourself to a higher role.";
 	if(!valid_phone($_POST['phone1'])) $errors[] = 'Enter a valid primary phone number (10 digits: ###-###-####)';
 	if($_POST['phone2']!=null && !valid_phone($_POST['phone2'])) $errors[] = 'Enter a valid secondary phone number (10 digits: ###-###-####)';
 	if(!valid_email($_POST['email']) && $_POST['email']!=null) $errors[] = "Please enter a valid email";

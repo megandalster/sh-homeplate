@@ -112,7 +112,13 @@ class Client {
     function get_notes(){
         return $this->notes;
     }
-    
+	function get_nice_phone1 () {
+    	if (strlen($this->phone1)==10)
+    		return substr($this->phone1,0,3)."-".substr($this->phone1,3,3)."-".substr($this->phone1,6);
+    	else if (strlen($this->phone1)==7)
+    		return substr($this->phone1,0,3)."-".substr($this->phone1,3);
+    	else return $this->phone1;
+    }
     //setter functions ... can be added later as needed
         
 }

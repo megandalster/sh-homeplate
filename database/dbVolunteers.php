@@ -70,8 +70,14 @@ function getonlythose_dbVolunteers($area, $type, $status, $name, $availability) 
 	$query = "SELECT * FROM dbVolunteers WHERE area like '%".$area. "%'" .  
 	       " AND type LIKE '%".$type."%'" . 
 			 " AND status LIKE '%".$status."%'" . 
-			 " AND (first_name LIKE '%".$name."%' OR last_name LIKE '%".$name."%')" .
-			 " AND availability LIKE '%".$availability."%' ORDER BY last_name";
+			 " AND (first_name LIKE '%".$name."%' OR last_name LIKE '%".$name."%')" ;
+	if ($availability[0]!="")  { 
+            $query .= "AND (";
+            foreach ($availability as $day)
+                $query .= "availability LIKE '%".$day."%' OR ";
+            $query = substr($query, 0, strlen( $query ) - 4).") ";
+	}
+    $query .= " ORDER BY last_name";
 	$result = mysql_query($query);
 	$theVols = array();
 		
@@ -106,7 +112,7 @@ function get_team_captains ($area) {
 
 function  getall_drivers_available($area, $day) {
 	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND (type LIKE '%driver%' OR type LIKE '%sub%') AND availability LIKE '%".
+	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND (type LIKE '%driver%' OR type LIKE '%sub%' OR type LIKE '%helper%') AND availability LIKE '%".
 			$day."%' AND area  = '".$area."' ORDER BY last_name, first_name");
 	
 	$theIds = "";	

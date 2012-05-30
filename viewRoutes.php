@@ -25,20 +25,25 @@
 					include_once('domain/Volunteer.php');
 					
 				?>
-				<h4> <i>
+				<br><strong>
 				<?php
-				$areas = array("HHI"=>"Hilton Head Island", "SUN"=> "Bluffton", "BFT" => "Beaufort");
+				$areas = array("HHI"=>"Hilton Head", "SUN"=> "Bluffton", "BFT" => "Beaufort");
 				$thisArea = $_GET['area'];
 				$thisDay = $_GET['date'];
+				$today = date('y-m-d');
 				$thisUTC = mktime(0,0,0,substr($thisDay,3,2),substr($thisDay,6,2),substr($thisDay,0,2));
 				$nextweekUTC = $thisUTC + 604800;
 				$prevweekUTC = $thisUTC - 604800;
-				echo "$areas[$thisArea]"
+				echo "$areas[$thisArea]</strong>"
 				?>
-				</i> weekly route status summary</h4>
-				
-				
-
+				 weekly route summary  (View other areas:
+				<?php 
+				foreach ($areas as $area=>$areaName) {
+				   if ($thisArea!=$area)
+				   	  echo "<a href=viewRoutes.php?area=".$area."&date=".$thisDay."> $areaName</a>";	
+				}
+				?>
+)
 <table cellspacing="10">
 	<style type="text/css">
 td
@@ -50,13 +55,13 @@ padding:10px 10px 10px 10px;
 <?php
 				echo "<td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$prevweekUTC)."><< Previous</a></td>";
 				$mondaythisweek = strtotime('monday this week',$thisUTC);
-				echo "<td colspan='2'><strong>Week of ".date('l F j, Y', $mondaythisweek)."</strong></td>";
+				echo "<td colspan='2'><strong>Week of ".date('F j, Y', $mondaythisweek)."</strong></td>";
 				echo "<td></td><td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">Next >></a></td>";
 				?>
 </tr>
 	<tr>
 		<th></th>
-		<td> <b> Status </b> </td>
+		<td> <b> Action* </b> </td>
 		<td> <b> Driver(s) </b> </td>
 		<td> <b> Pickups </b> </td>
 		<td> <b> Dropoffs </b> </td>
@@ -76,13 +81,13 @@ padding:10px 10px 10px 10px;
 		echo "<tr>" ;
 		
 		// col 1 : day of week
-		echo "<td><b>"."<a href=editRoute.php?routeID=".$routeID.">".$weekday." ". date('F j', $dayUTC)."</a></b></td>" ;
+		echo "<td>".$weekday." ". date('F j', $dayUTC)."</td>" ;
 		
 		// if route exists, generate this set of cols
 		if($route != NULL)
 		{
-			// col 2 : status
-			echo "<td>".$route->get_status()."</td>";
+			// col 2 : action
+			echo "<td>"."<a href=editRoute.php?routeID=".$routeID.">view</a>"."</td>";
 
 			// *note : this design requires driver in position 0 of array
 			$volunteers = $route->get_drivers();
@@ -107,8 +112,10 @@ padding:10px 10px 10px 10px;
 		// else, use defaults
 		else
 		{
-			// col 2 : status (blank)
-			echo "<td>not yet created</td>";
+			// col 2 : action
+			if (substr($routeID,0,8)>$today)
+				echo "<td>"."<a href=editRoute.php?routeID=".$routeID.">create</a></td>";
+			else echo "<td></td>";
 			
 			// col 3 : driver (blank)
 			echo "<td></td>";
@@ -126,6 +133,8 @@ padding:10px 10px 10px 10px;
 	}
 	?>
 </table>	
+<br><strong>*</strong> You can create any future route and you can view any route.
+	
 			</div>
 			<?php include('footer.inc');?>
 		</div>

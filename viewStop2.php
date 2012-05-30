@@ -37,10 +37,11 @@
 	
 	// Weight variables for different food types and driver notes are initialized if they have not already been set.
 	$meat_weight = isset($_POST["meat_weight"]) ? $_POST["meat_weight"] : "0";
+	$frozen_weight = isset($_POST["frozen_weight"]) ? $_POST["frozen_weight"] : "0";
 	$bakery_weight = isset($_POST["bakery_weight"]) ? $_POST["bakery_weight"] : "0";
+	$grocery_weight = isset($_POST["grocery_weight"]) ? $_POST["grocery_weight"] : "0";
 	$dairy_weight = isset($_POST["dairy_weight"]) ? $_POST["dairy_weight"] : "0";
 	$produce_weight = isset($_POST["produce_weight"]) ? $_POST["produce_weight"] : "0";
-	$grocery_weight = isset($_POST["grocery_weight"]) ? $_POST["grocery_weight"] : "0";
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
 	
 	// Retrieve the first and last name of the current driver from the database.
@@ -84,10 +85,11 @@
 			<fieldset>
 				<legend><b>Data Entry:</b></legend><br />
 				<p><b>Enter Meat Weight:</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="meat_weight" value = 0 /> lbs.<br /><br />
+				<b>Enter Frozen Weight:</b>&nbsp;&nbsp;<input type="text" name="frozen_weight" value = 0 /> lbs.<br /><br />
 				<b>Enter Bakery Weight:</b>&nbsp;&nbsp;<input type="text" name="bakery_weight" value = 0 /> lbs.<br /><br />
-				<b>Enter Dairy Weight:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="dairy_weight" value = 0 /> lbs.<br /><br />
-				<b>Enter Produce Weight:</b> <input type="text" name="produce_weight" value = 0 /> lbs.<br /><br />
-				<b>Enter Grocery Weight:</b> <input type="text" name="grocery_weight" value = 0 /> lbs.</p>	
+				<b>Enter Grocery Weight:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="grocery_weight" value = 0 /> lbs.<br /><br />
+				<b>Enter Dairy Weight:</b> <input type="text" name="dairy_weight" value = 0 /> lbs.<br /><br />
+				<b>Enter Produce Weight:</b> <input type="text" name="produce_weight" value = 0 /> lbs.</p>	
 			
 			<p><i>Enter any additional notes by tapping the text box below:</i><br /><br />
 			<textarea rows="5" cols="50" name="driver_notes" ></textarea></p>
@@ -109,17 +111,20 @@
 				$item1 = "Meat:" . $meat_weight;
 				$stop1->set_item(0, $item1);
 				
-				$item2 = "Bakery:" . $bakery_weight;
+				$item2 = "Frozen:" . $frozen_weight;
 				$stop1->set_item(1, $item2);
 				
-				$item3 = "Dairy:" . $dairy_weight;
+				$item3 = "Bakery:" . $bakery_weight;
 				$stop1->set_item(2, $item3);
-		
-				$item4 = "Produce:" . $produce_weight;
+				
+				$item4 = "Grocery:" . $grocery_weight;
 				$stop1->set_item(3, $item4);
 		
-				$item5 = "Grocery:" . $grocery_weight;
+				$item5 = "Dairy:" . $dairy_weight;
 				$stop1->set_item(4, $item5);
+		
+				$item6 = "Produce:" . $produce_weight;
+				$stop1->set_item(5, $item6);
 				
 				$stop1->set_notes($driver_notes);
 				
@@ -129,11 +134,12 @@
 				<div class = "warning">
 				<b>Check that the values below are correct before "Returning to Route":</b><br/><br/>
 				Meat: <b>'.$meat_weight.'</b> lbs. <br/><br/>
+				Frozen: <b>'.$frozen_weight.'</b> lbs. <br/><br/>
 				Bakery: <b>'.$bakery_weight.'</b> lbs. <br/><br/>
+				Grocery: <b>'.$grocery_weight.'</b> lbs. <br/><br/>
 				Dairy: <b>'.$dairy_weight.'</b> lbs. <br/><br/>
 				Produce: <b>'.$produce_weight.'</b> lbs. <br/><br/>
-				Grocery: <b>'.$grocery_weight.'</b> lbs. <br/><br/>
-				Total Weight: <b>'.($meat_weight + $bakery_weight + $dairy_weight + 
+				Total Weight: <b>'.($meat_weight + $frozen_weight + $bakery_weight + $dairy_weight + 
 								$produce_weight + $grocery_weight).'</b> lbs.<br/><br/>
 				Notes: '.$driver_notes.'
 				</div><br/><br/>

@@ -40,12 +40,14 @@
 					if($person){ //avoids null results
 						if($person->get_password()==$db_pass) { //if the passwords match, login
 							$_SESSION['logged_in']=1;
-							if (in_array('boardmember', $person->get_type()))
-									$_SESSION['access_level'] = 3;
-							else if (in_array('teamcaptain', $person->get_type()))
-								$_SESSION['access_level'] = 2;
-							else if (in_array('driver', $person->get_type()))
-								$_SESSION['access_level'] = 1;
+							if (in_array('boardmember', $person->get_type()) || 
+								in_array('coordinator', $person->get_type()) ||
+								in_array('teamcaptain', $person->get_type()))
+									$_SESSION['access_level'] = 2;
+							else if (in_array('driver', $person->get_type()) ||
+								in_array('helper', $person->get_type()) ||
+								in_array('sub', $person->get_type()))
+									$_SESSION['access_level'] = 1;
 							else $_SESSION['access_level'] = 0;
 							$_SESSION['f_name']=$person->get_first_name();
 							$_SESSION['l_name']=$person->get_last_name();

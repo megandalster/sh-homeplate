@@ -77,7 +77,9 @@
 					
 				// if user hit "Search"  button, query the database and display the results
 					if( array_key_exists('s_submitted', $_POST) ){
-						$area = $_POST['s_area'];
+						if ($_POST['s_area']=="--all--")
+							$area = "";
+						else $area = $_POST['s_area'];
 						$type = $_POST['s_type'];
 						$status = $_POST['s_status'];
                         $name = trim(str_replace('\'','&#39;',htmlentities($_POST['s_name'])));
@@ -101,7 +103,7 @@
                             else echo $type.'s';
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
 						if ($name!="") echo ' with name like "'.$name.'"';
-						if ($availability[0]!="") echo ' with pickup/dropoff day '. $availability[0];
+						if ($availability[0]!="") echo ' with selected pickup/dropoff days ';
 						if (sizeof($result)>0) {
 							echo ' (select one for more info).';
 							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
