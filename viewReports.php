@@ -134,10 +134,10 @@ if($_POST['submitted'])
 		else if ($_POST['report_type']=="pickup") $header[] = " donors only ";
 		else if ($_POST['report_type']=="dropoff") $header[] = " recipients only ";
 		else $header[] = " donors and recipients ";
-	$header[] =  ": ";
+	$header[] =  "<br>";
 	if($_POST['report_span'] == "weekly")
 	{
-		$time = strtotime('monday last week') - 604800;
+		$time = strtotime('monday this week') - 604800;
 		$endTime = $time + 518400;
 
 		$start_date = date('y-m-d', $time);
@@ -260,9 +260,9 @@ if($_POST['submitted'])
 	$all_stops = getall_dbWalmartPublixStops_between_dates($_POST['report_area'], $start_date, $end_date);
 
 	//split all_stops into 5 different arrays - one for each food type
-	$food_types = array("Store", "Meat","Bakery","Dairy","Produce","Grocery","Total");
+	$food_types = array("Store", "Meat","Frozen","Bakery","Grocery","Dairy","Produce","Total");
 	$row_totals = array();
-	$food_type_totals = array("Totals",0,0,0,0,0,0);
+	$food_type_totals = array("Totals",0,0,0,0,0,0,0);
 	
 	echo '<table><tr>';
 	foreach($food_types as $food_type)
@@ -271,7 +271,7 @@ if($_POST['submitted'])
 	
 	$all_stops[] = new Stop("","","","",""); // add a dummy stop at the end
 	$prev_stop = new Stop("","","","","");   // and at the beginning
-	$prev_stop_totals = array(0,0,0,0,0,0);
+	$prev_stop_totals = array(0,0,0,0,0,0,0);
 	foreach ($all_stops as $a_stop) {  
 		if ($prev_stop->get_client_id() == $a_stop->get_client_id()) {
 			if ($a_stop->get_client_id()==null) // we're outta here
@@ -283,7 +283,7 @@ if($_POST['submitted'])
 				$prev_stop_totals[$i] += $item_weight;
 				$i++;
 			}
-			$prev_stop_totals[5] += $a_stop->get_total_weight();
+			$prev_stop_totals[6] += $a_stop->get_total_weight();
 			continue;
 		}
 		else if ($prev_stop->get_client_id()!="" || $a_stop->get_client_id()=="") { // display prev_stop
@@ -298,10 +298,10 @@ if($_POST['submitted'])
 				$food_type_totals[$i+1] += $prev_stop_totals[$i];
 				$i++;
 			}
-			echo "<td align='right'>".$prev_stop_totals[5]."</td>";
-			$export_row[] = $prev_stop_totals[5];
+			echo "<td align='right'>".$prev_stop_totals[6]."</td>";
+			$export_row[] = $prev_stop_totals[6];
 			$row_totals[] = $export_row;
-			$food_type_totals[6] += $prev_stop_totals[5];
+			$food_type_totals[7] += $prev_stop_totals[6];
 			echo "</tr>";		
 		}
 		$prev_stop = clone($a_stop);  // reinitialize prev_stop
@@ -311,7 +311,7 @@ if($_POST['submitted'])
 				$prev_stop_totals[$i] = $item_weight;
 				$i++;
 		}
-		$prev_stop_totals[5] = $a_stop->get_total_weight();	
+		$prev_stop_totals[6] = $a_stop->get_total_weight();	
 	}
 
 	// total weight row

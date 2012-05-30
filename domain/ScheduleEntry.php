@@ -15,7 +15,7 @@
 class ScheduleEntry {	
 	private $area;	// "HHI", "SUN" (alternate week calendars), or "BFT" (5-week monthly calendar)
 	private $id;	// "ddd:w" identifies a day on the master schedule
-					// e.g., "Mon:1" means Monday on week 1 (5-week monthly calendar)
+					// e.g., "Mon:1st" means 1st Monday (5-week monthly calendar)
 					// "Mon:odd" means every odd Monday (alternate week calendar)
 	private $drivers;   // array of driver id's scheduled for this run,
 					// e.g. ["malcom1234567890", “sandi8437891234”]
@@ -39,6 +39,9 @@ class ScheduleEntry {
     }
 	function get_day() {
         return substr($this->id,0,3);
+    }
+    function get_week() {
+    	return substr($this->id,4);
     }
     function get_group() {
         return substr($this->id,4);

@@ -36,24 +36,20 @@ h1 {padding-left: 0px; padding-right:165px;}
 		 */
 		//pages guests can view
 		$permission_array['index.php']=0;
-		$permission_array['about.php']=0;
 		$permission_array['volunteerEdit.php']=0;
-		//pages volunteers can view
+		//pages volunteers -- drivers, helpers, subs -- can view
 		$permission_array['viewRoutes.php']=1;
-		$permission_array['viewStop.php']=1;
 		$permission_array['viewStop1.php']=1;
 		$permission_array['viewStop2.php']=1;
 		$permission_array['viewStop3.php']=1;
-		//additional pages team captains can view
-		$permission_array['clientEdit.php']=2;
-		$permission_array['editSchedule.php']=2;
-		$permission_array['volunteerSearch.php']=2;
+		$permission_array['scheduleView.php']=1;
+		//additional pages team captains, coordinators, and boardmembers can view
 		$permission_array['clientSearch.php']=2;
-		$permission_array['generateReports.php']=2;
-		//additional pages program coordinators can view
+		$permission_array['clientEdit.php']=2;
+		$permission_array['volunteerSearch.php']=2;
+		// $permission_array['volunteerEdit.php']=2;
 		$permission_array['viewReports.php']=2;
-		$permission_array['exportData.php']=2;
-
+		
 		//Check if they're at a valid page for their access level.
 		$current_page = substr($_SERVER['PHP_SELF'],1);
 		if($permission_array[$current_page]>$_SESSION['access_level']){
@@ -80,7 +76,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 		    echo('<a href="'.$path.'viewRoutes.php?area='.$_SESSION['_area'].'&date='.$today.'"> | routes</a>');
 		
 	    if($_SESSION['access_level']>=2) { // team captains and board members
-	    	echo('<a href="'.$path.'scheduleView.php?area='.$_SESSION['_area'].'"> | driver schedule</a>');	
+	    	echo('<a href="'.$path.'scheduleView.php?area='.$_SESSION['_area'].'"> | master schedules</a>');	
 	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
 	    	echo('<a href="'.$path.'clientSearch.php?area='.$_SESSION['_area'].'"> | donors and recipients</a>');
 	    	echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$week_later.'"> | reports</a>';	    

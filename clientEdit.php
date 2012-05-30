@@ -61,12 +61,12 @@
 					
 			if ($id=="new"){
 				$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#','-',$_POST['id'])))));
-				$chain_name =   trim(str_replace('\\\'','\'',htmlentities($_POST['chain_name'])));
-				if ($_POST['chain_name']=="WalMart") $weight_type="foodtypeboxes";
-        			else if ($_POST['chain_name']=="Publix") $weight_type="foodtype";
-        			else $weight_type = "pounds";
+				$chain_name =   $_POST['chain_name'];
+				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion") 
+        			$weight_type="foodtype";
+        		else $weight_type = "pounds";
 			}
-        	$client = new Client($id, $chain_name, $_POST['area'], $_POST['type'], 
+        	$client = new Client($id, $_POST['chain_name'], $_POST['area'], $_POST['type'], 
                                  $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
 								 $_POST['geocoordinates'], $_POST['phone1'], $_POST['phone2'], implode(',',$_POST['days']),
 								 $feed_america, $weight_type, $_POST['notes'] );
@@ -74,7 +74,7 @@
 		}
 		// this was a successful form submission; update the database and exit
 		else
-			process_form($id,$chain_name);
+			process_form($id);
 		echo('</div>');
 		include('footer.inc');
 		echo('</div></body></html>');
@@ -84,12 +84,12 @@
 /**
 * process_form sanitizes data, concatenates needed data, and enters it all into a database
 */
-function process_form($id,$chain_name)	{
+function process_form($id)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
 		if ($id=="new"){
 			$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#','-',$_POST['id'])))));
-			$chain_name =   trim(str_replace('\\\'','\'',htmlentities($_POST['chain_name'])));
 		}
+		$chain_name =   $_POST['chain_name'];
 		$address =      trim(str_replace('\\\'','\'',htmlentities($_POST['address'])));
 		$city =         trim(str_replace('\\\'','\'',htmlentities($_POST['city'])));
 		$state =        trim(htmlentities($_POST['state']));
@@ -105,8 +105,8 @@ function process_form($id,$chain_name)	{
         if ($_POST['days'])
         	$days=implode(',', $_POST['days']);
         else $days="";
-        if ($chain_name=="WalMart") $weight_type="foodtypeboxes";
-        else if ($chain_name=="Publix") $weight_type="foodtype";
+        if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion") 
+        	$weight_type="foodtype";
         else $weight_type = "pounds"; 
         
         $notes = $_POST['notes'];
@@ -145,7 +145,7 @@ function process_form($id,$chain_name)	{
 		// try to replace an existing client in the database by removing and adding
 		else {
 				$id = $_POST['old_id'];
-				$chain_name = $_POST['old_chain_name'];
+				$chain_name = $_POST['chain_name'];
 				$result = delete_dbClients($id);
                 if (!$result)
                    echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');

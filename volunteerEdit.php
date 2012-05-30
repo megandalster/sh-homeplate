@@ -17,6 +17,8 @@
 	session_cache_expire(30);
     include_once('database/dbVolunteers.php');
     include_once('domain/Volunteer.php');
+    include_once('database/dbSchedules.php'); 
+    
 //    include_once('database/dbLog.php');
 	$id = $_GET["id"];
 	if ($id=='new') {
@@ -118,10 +120,12 @@ function process_form($id)	{
 				$birthday = $_POST['birthday_Year'].'-'.$_POST['birthday_Month'].'-'.$_POST['birthday_Day'];
 		if (strlen($birthday) < 8) $birthday = '';
 		$start_date = $_POST['startdate_Year'].'-'.$_POST['startdate_Month'].'-'.$_POST['startdate_Day'];
-        if (strlen($start_date) < 8) $start_date = '';
-		
+        if (strlen($start_date) < 8) $start_date = '';		
 		$notes = trim(str_replace('\\\'','\'',htmlentities($_POST['my_notes'])));
-
+		$newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
+                		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
+                		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass);
+        
 	//step two: try to make the deletion, password change, addition, or change
 		if($_POST['deleteMe']=="DELETE"){
 			$result = retrieve_dbVolunteers($id);
@@ -136,11 +140,13 @@ function process_form($id)	{
 						echo('<p class="error">You cannot remove yourself or the last remaining coordinator from the database.</p>');
 					else {
 						$result = delete_dbVolunteers($id);
+						update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability());
 						echo("<p>You have successfully removed " .$first_name." ".$last_name. " from the database.</p>");
 					}
 				}
 				else {
 					$result = delete_dbVolunteers($id);
+					update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability());
 					echo("<p>You have successfully removed " .$first_name." ".$last_name. " from the database.</p>");		
 				}
 			}
@@ -151,9 +157,6 @@ function process_form($id)	{
 				$id = $_POST['old_id'];
 				$result = delete_dbVolunteers($id);
 				$pass = md5($first_name . $phone1);
-                $newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
-                		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
-                		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass);
                 $result = insert_dbVolunteers($newperson);
 				if (!$result)
                    echo ('<p class="error">Unable to reset ' .$first_name.' '.$last_name. "'s password.. <br>Please report this error to the House Manager.");
@@ -168,10 +171,8 @@ function process_form($id)	{
 				if ($dup)
 					echo('<p class="error">Unable to add ' .$first_name.' '.$last_name. ' to the database. <br>Another person with the same id is already there.');
 				else {
-					$newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
-                		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
-                		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass);
-                    $result = insert_dbVolunteers($newperson);
+					$result = insert_dbVolunteers($newperson);
+					update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability());
 					if (!$result)
                         echo ('<p class="error">Unable to add " .$first_name." ".$last_name. " in the database. <br>Please report this error to the Program Coordinator.');
 					else if ($_SESSION['access_level']==0)
@@ -182,17 +183,17 @@ function process_form($id)	{
 
 		// try to replace an existing person in the database by removing and adding
 		else {
+			
 				$id = $_POST['old_id'];
 				$pass = $_POST['old_pass'];
 				$result = delete_dbVolunteers($id);
                 if (!$result)
                    echo ('<p class="error">Unable to update ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');
 				else {
-					$newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
-                		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
-                		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass);
-                	$result = insert_dbVolunteers($newperson);
-					if (!$result)
+					$result = insert_dbVolunteers($newperson);
+                	update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability());
+					
+                	if (!$result)
                    		echo ('<p class="error">Unable to update ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');
 					else echo("<p>You have successfully updated " .$first_name." ".$last_name. " in the database.</p>");
 //					add_log_entry('<a href=\"viewPerson.php?id='.$id.'\">'.$first_name.' '.$last_name.'</a>\'s database entry has been updated.');

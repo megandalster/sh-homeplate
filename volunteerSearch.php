@@ -38,7 +38,7 @@
 						echo '</select>';
                         
                         if( !array_key_exists('s_type', $_POST) ) $type = ""; else $type = $_POST['s_type'];
-						echo '&nbsp;&nbsp;Type:<select name="s_type">';
+						echo '&nbsp;&nbsp;Role:<select name="s_type">';
 							echo '<option value=""'; if ($type=="") echo " SELECTED"; echo '>--all--</option>'; 
 							echo '<option value="driver"'; if ($type=="driver") echo " SELECTED"; echo '>Driver</option>' . '<option value="helper">Helper</option>'; 
 							echo '<option value="sub"'; if ($type=="sub") echo " SELECTED"; echo '>Sub</option>';
@@ -61,7 +61,7 @@
 						echo '<input type="text" name="s_name" value="' . $name . '">';
 					
 						echo '<fieldset>';
-						echo '<legend>Availability:</legend>';
+						echo '<legend>Schedule:</legend>';
                         echo '<p id="s_day">Day:&nbsp;&nbsp;&nbsp;&nbsp;';
                             if( array_key_exists('s_day', $_POST) ){
                                 foreach($days as $day=>$dayname){
@@ -100,22 +100,22 @@
                         include_once('database/dbVolunteers.php');
                         include_once('domain/Volunteer.php');
                         
-                        $result = getonlythose_dbVolunteers($area, $type, $status, $name, $availability[0]);  
+                        $result = getonlythose_dbVolunteers($area, $type, $status, $name, $availability);  
 
 						echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
                             if (!$type) echo "volunteer(s)"; 
                             else echo $type.'s';
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
 						if ($name!="") echo ' with name like "'.$name.'"';
-						if ($availability[0]!="") echo ' with availability '. $availability[0];
+						if ($availability[0]!="") echo ' with any of the selected schedule days ';
 						if (sizeof($result)>0) {
 							echo ' (select one for more info).';
-							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Availability</strong></td></tr>';
+							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Schedule</strong></td></tr>';
                             $allEmails = array(); // for printing all emails
                             foreach ($result as $vol) {
 								echo "<tr><td><a href=volunteerEdit.php?id=".$vol->get_id().">" . 
 									$vol->get_last_name() .  ", " . $vol->get_first_name() . "</td><td>" . 
-									$vol->get_phone1() . "</td><td>" . 
+									$vol->get_nice_phone1() . "</td><td>" . 
 									$vol->get_email() . "</td><td>"; $allEmails[] = $vol->get_email();
 								foreach($vol->get_availability() as $availableon)
 									echo ($availableon . ", ") ;
@@ -131,7 +131,6 @@
                               echo $email . ", ";
 						
 					}
-					
 				?>
 				<!-- below is the footer that we're using currently-->
 				

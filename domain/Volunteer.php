@@ -162,6 +162,13 @@ class Volunteer {
 	function get_password () {
         return $this->password;
     }
+	function get_nice_phone1 () {
+    	if (strlen($this->phone1)==10)
+    		return substr($this->phone1,0,3)."-".substr($this->phone1,3,3)."-".substr($this->phone1,6);
+    	else if (strlen($this->phone1)==7)
+    		return substr($this->phone1,0,3)."-".substr($this->phone1,3);
+    	else return $this->phone1;
+    }
 	//returns true if the person has type $t
     function is_type($t){
         if (in_array($t, $this->type))
