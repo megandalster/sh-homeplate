@@ -76,7 +76,10 @@ function retrieve_dbStops ($id) {
         return false;
     }
     $result_row = mysql_fetch_assoc($result);
-    $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['items'], $result_row['notes']);
+    $items = $result_row['items'];
+    if ($result_row['items']=="")
+    	$items = $result_row['weight']; 
+    $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $items, $result_row['notes']);
 	mysql_close(); 
     return $theStop;   
 }
@@ -88,7 +91,10 @@ function getall_dbStops () {
     $result = mysql_query ($query);
     $theStops = array();
     while ($result_row = mysql_fetch_assoc($result)) {
-        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['items'], $result_row['notes']);
+    	$items = $result_row['items'];
+    	if ($result_row['items']=="")
+    		$items = $result_row['weight'];
+        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $items, $result_row['notes']);
         $theStops[] = $theStop;
     }
 	mysql_close();
@@ -106,8 +112,8 @@ function getall_dbStops_between_dates ($area, $type, $start_date, $end_date) {
     $theStops = array();
     while ($result_row = mysql_fetch_assoc($result)) {
     	// The total weight of the stop is returned instead of its items for the purpose
-    	// of generating reports with each stops total weight.
-        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['SUM(weight)'], $result_row['notes']);
+    	// of generating reports with each stop's total weight.
+    	$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['SUM(weight)'], $result_row['notes']);
         $theStops[] = $theStop;
     }
 	mysql_close();
@@ -119,7 +125,7 @@ function getall_dbWalmartPublixStops_between_dates ($area, $start_date, $end_dat
 	connect();
 	$query = "SELECT route, client, type, items, notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
-			"items > '' and ".
+			"items like '%:%' and ".
 			"date >= '". $start_date . "' AND date <= '". $end_date . "' ORDER BY client";
     $result = mysql_query ($query);
     $theStops = array();

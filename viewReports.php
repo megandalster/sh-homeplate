@@ -30,7 +30,7 @@ echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
 	<option value="">All Stops</option>
 	<option value="pickup">Donors Only</option>
 	<option value="dropoff">Recepients Only</option>
-	<option value="publixwalmart">Publix and Walmart Only</option>
+	<option value="publixwalmart">Breakdowns by Food Type</option>
 </select> <br>
 
 <fieldset><legend>Select report dates</legend>
@@ -130,7 +130,7 @@ if($_POST['submitted'])
 	$header = array("Second Helpings Truck Weight Report for ");
 	if ($_POST['report_area']!="") $header[] = $areas[$_POST['report_area']]." area, "; 
 		else $header[] = " all areas, ";
-	if ($_POST['report_type']=="publixwalmart") $header[] = " Publix and Walmart only ";
+	if ($_POST['report_type']=="publixwalmart") $header[] = " food type breakdowns ";
 		else if ($_POST['report_type']=="pickup") $header[] = " donors only ";
 		else if ($_POST['report_type']=="dropoff") $header[] = " recipients only ";
 		else $header[] = " donors and recipients ";

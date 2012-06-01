@@ -23,7 +23,7 @@ if($_SESSION['access_level']==1 && substr($route->get_id(),0,8)==$today) {
 else if ($_SESSION['access_level']>=2) {
 	echo('<p><strong>Route Information Form</strong><br />');
 	if (substr($route->get_id(),0,8)>$today)
-		echo('Yoiu can make last-minute changes to this crew at the bottom of this form.</p><p>');
+		echo('You can make last-minute changes to this crew at the bottom of this form.</p><p>');
 }
 // for all other situations, the route cannot viewed.
 // else {
@@ -103,7 +103,7 @@ if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 	*/
 	echo "</td><tr><td>";
 	echo "Select a volunteer:<br>";
-	$drivers = getonlythose_dbVolunteers(substr($route->get_id(),9,3), "", "active", "", "");
+	$drivers = getall_drivers_available(substr($route->get_id(),9,3),substr($route->get_day(),0,3));
 
 if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 	echo('<select name="add_driver">');
@@ -152,6 +152,7 @@ echo('<input type="submit" value="Submit" name="Submit"> to add him/her to the c
 echo ('<input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
 				'<input type="submit" value="Delete" name="Delete Entry"> to delete this route from the database. ');
 }
+else echo "</td></tr></table>";
 echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Back to Routes</a>";
 echo('</div></div>');
 	include('footer.inc');

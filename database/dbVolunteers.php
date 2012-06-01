@@ -112,15 +112,20 @@ function get_team_captains ($area) {
 
 function  getall_drivers_available($area, $day) {
 	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND (type LIKE '%driver%' OR type LIKE '%sub%' OR type LIKE '%helper%') AND availability LIKE '%".
-			$day."%' AND area  = '".$area."' ORDER BY last_name, first_name");
+	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND (type LIKE '%sub%' OR (type LIKE '%driver%' OR type LIKE '%helper%') AND availability LIKE '%".
+			$day."%') AND area  = '".$area."' ORDER BY last_name, first_name");
 	
-	$theIds = "";	
+	$theVols = array();	
 	while($result_row = mysql_fetch_assoc($result)){
-		$theIds .= ';'.$result_row['id'].":".$result_row['last_name'].", ".$result_row['first_name'];
+		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
+							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
+							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
+							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
+							$result_row['start_date'], $result_row['notes'], $result_row['password']);
+		$theVols[] = $theVol;
 	}
 	mysql_close();
-	return substr($theIds,1);
+	return $theVols;
 }
 
 function insert_dbVolunteers($volunteer){
