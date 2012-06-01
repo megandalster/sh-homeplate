@@ -24,10 +24,20 @@
 	include_once('domain/Stop.php');
 	include_once('database/dbVolunteers.php');
     include_once('domain/Volunteer.php');
-	
+	$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
+					
     // Set necessary values using the GET routine
 	$routeID = substr($_GET['stop_id'],0,12);
 	$client_id = substr($_GET['stop_id'],12);
+	// If the current stop has not been created then create it and add it to the database.
+    // Otherwise, retrieve it from the database.
+	if (!retrieve_dbStops($routeID.$client_id)){
+		$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
+		insert_dbStops($stop1);	
+	}
+	else{
+		$stop1 = retrieve_dbStops($routeID.$client_id);
+	}
 	$client_type = $_GET['client_type'];
 	$area = substr($_GET['stop_id'],9,3);
 	$ndate = substr($_GET['stop_id'],0,8);
@@ -35,23 +45,9 @@
 	$client_items = "";
 	
 	// Total weight variable and driver notes are initialized if they have not already been set.
-	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : "0";
-	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : "";
+	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : $stop1->get_total_weight();
+	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : $stop1->get_notes();
 	
-	// Retrieve the first and last name of the current driver from the database.
-	$person = retrieve_dbVolunteers($_SESSION['_id']);
-    $first_name = $person->get_first_name();
-    $last_name = $person->get_last_name();
-	
-    // If the current stop has not been created then create it and add it to the database.
-    // Otherwise, retrieve it from the database.
-	if (!retrieve_dbStops($routeID.$client_id)){
-		$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
-		insert_dbStops($stop1);
-	}
-	else{
-		$stop1 = retrieve_dbStops($routeID.$client_id);
-	}
 ?>
 
 <html>
@@ -70,49 +66,44 @@
 			<p><big><b><?php echo($client_id)?></b></big></p>
 			
 			<!-- Display the associated route, driver and date of the stop -->
-			<p>Route: <?php echo($area)?><br />
-			   Driver: <?php echo($first_name." ".$last_name)?><br />
+			<p>Area: <?php echo($areas[$area])?><br />
 			   Date: <?php echo($date)?></p>
 			
 			<!-- The data entry field for total weight and driver notes -->
 			<form method = "post">
 			<fieldset>
-				<legend><b>Data Entry:</b></legend><br />
-				<p><b>Enter Total Weight:</b> <input type = "text" name = "total_weight" value = 0 /> lbs.</p>
+				<legend><b>Data Entry</b></legend><br />
+				<i>Total Weight:</i> <input type="text" name="total_weight" <?php echo 'value='.$total_weight?>> lbs.
 				
-			<p><i>Enter any additional notes by tapping the text box below:</i><br /><br />
-			<textarea rows="5" cols="50" name="driver_notes"></textarea></p>
+			<br><br><i>Additional notes:</i><br />
+			<textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>
 			
 			<!-- A hidden variable that, when submitted, is used to display submitted values and update the databases -->	
-			<p><input type = "hidden" name = "submitted" value = "true"/></p>	
-				
-			<p><input type="submit" value="Submit"/>&nbsp;&nbsp;<i>Click the Submit button to submit the values and notes.</i></p>
+			<br><input type = "hidden" name = "submitted" value = "true"/>		
+			<br><input type="submit" value="Submit"/>&nbsp;&nbsp;<i>Hit the Submit button to save this weight and notes.</i>
 			</fieldset>
 			</form><br />
 			
 			<?php 
 			// If values have been submitted, then update the database and display the submitted values to the driver.
 			if (isset($_POST['submitted'])){
-				
-				$stop1->set_total_weight($total_weight);
-				$stop1->set_notes($driver_notes);
-				update_dbStops($stop1);
-				
-				echo('
-				<div class = "warning">
-					<b>Check that the values below are correct before "Returning to Route":</b><br/><br/>
-					Total Weight: <b>'.$total_weight.'</b> lbs.<br/><br/>
-					Notes:'.$driver_notes.'
-				</div><br/><br/>
-				');
+				if (preg_match('/[0-9]+/',$total_weight,$matches)==0 || $matches[0]!=$total_weight)  // validate total weight as a number
+					echo('<div class = "warning"><b>Please enter a valid total weight</b>
+						</div><br/><br/>');
+				else {
+					$stop1->set_total_weight($total_weight);
+					$stop1->set_notes($driver_notes);
+					update_dbStops($stop1);
+					echo('<div class = "warning"><b>Please check that the weight you submitted is correct before "Returning to Route"</b>
+						</div><br/>');
+				}
 			}
 			
 			// The link to return to the current route.
-			echo '<a href="editRoute.php?routeID='.$routeID.'"><big>Return to Route</big></a><br />';
+			echo '<a href="editRoute.php?routeID='.$routeID.'"><big>Return to Route</big></a><br><br>';
+			echo '</div>';
 			include('footer.inc');
 			?>
-			
-			</div>
 		</div>
 	</body>
 </html>

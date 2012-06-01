@@ -113,9 +113,9 @@ padding:10px 10px 10px 10px;
 		else
 		{
 			// col 2 : action
-			if (substr($routeID,0,8)>$today)
+		//	if (substr($routeID,0,8)>$today)
 				echo "<td>"."<a href=editRoute.php?routeID=".$routeID.">create</a></td>";
-			else echo "<td></td>";
+		//	else echo "<td></td>";
 			
 			// col 3 : driver (blank)
 			echo "<td></td>";
