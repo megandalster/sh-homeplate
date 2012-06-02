@@ -109,9 +109,10 @@ function process_form($id)	{
 			$availability=implode(',', $_POST['availability']);
 		else $availability = "";
         
-		// these two are not visible for editing, so they go in and out unchanged
+		// these three are not visible for editing, so they go in and out unchanged
 		$schedule = $_POST['schedule'];
 		$history = $_POST['history'];
+		$pass = $_POST['password'];
 		
 		//rebuild birthday and start_date strings
 		if($_POST['birthday_Year']=="")
@@ -156,10 +157,10 @@ function process_form($id)	{
 		else if($_POST['reset_pass']=="RESET"){
 				$id = $_POST['old_id'];
 				$result = delete_dbVolunteers($id);
-				$pass = md5($first_name . $phone1);
+				$newperson->set_password (md5($first_name . $clean_phone1));
                 $result = insert_dbVolunteers($newperson);
 				if (!$result)
-                   echo ('<p class="error">Unable to reset ' .$first_name.' '.$last_name. "'s password.. <br>Please report this error to the House Manager.");
+                   echo ('<p class="error">Unable to reset ' .$first_name.' '.$last_name. "'s password.. <br>Please report this error to the Program Coordinator.");
 				else echo("<p>You have successfully reset " .$first_name." ".$last_name. "'s password.</p>");
 		}
 
@@ -171,6 +172,7 @@ function process_form($id)	{
 				if ($dup)
 					echo('<p class="error">Unable to add ' .$first_name.' '.$last_name. ' to the database. <br>Another person with the same id is already there.');
 				else {
+					$newperson->set_password (md5($first_name.$clean_phone1));
 					$result = insert_dbVolunteers($newperson);
 					update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability());
 					if (!$result)
@@ -183,9 +185,7 @@ function process_form($id)	{
 
 		// try to replace an existing person in the database by removing and adding
 		else {
-			
 				$id = $_POST['old_id'];
-				$pass = $_POST['old_pass'];
 				$result = delete_dbVolunteers($id);
                 if (!$result)
                    echo ('<p class="error">Unable to update ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');

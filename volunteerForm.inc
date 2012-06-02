@@ -121,16 +121,11 @@ else // $_SESSION['access_level']>=2
     	if (strpos($st,$key)!==false) echo(' CHECKED');
     	echo ('>' . $value . '&nbsp;&nbsp;');
     }
-    
-?>
-</p>
-<fieldset id="availability">
-<legend>Schedule:</strong> </legend>
-	<table>
-	<tr>
-		<td> &nbsp;&nbsp;</td><td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>
-		<td>Thu&nbsp;&nbsp;</td><td>Fri&nbsp;&nbsp;</td><td>Sat&nbsp;&nbsp;</td><td>Sun</td></tr>
-<?PHP
+
+    if ($id!="new") {
+    echo "</p><fieldset id='availability'><legend>Schedule:</strong> </legend><table>".
+		"<tr><td> &nbsp;&nbsp;</td><td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>".
+		"<td>Thu&nbsp;&nbsp;</td><td>Fri&nbsp;&nbsp;</td><td>Sat&nbsp;&nbsp;</td><td>Sun</td></tr>";
     $weeks = array('1'=>'1st' , '2'=>'2nd', '3'=>'3rd', '4'=>'4th', '5'=>'5th' );
     $oddeven = array ('odd', 'even');
     $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
@@ -159,11 +154,9 @@ else // $_SESSION['access_level']>=2
        echo ('</tr>');
        }
     }
-?>
-</table>
-</fieldset>
-<p>
-		<?PHP
+    echo "</table></fieldset><p>";
+    }
+    else echo "<p>(<i>Note: A new volunteer's schedule cannot be made until the above contact data has been submitted.</i>)";
 //		if($id == 'new' || strpos(implode(',',$person->get_type()),'applicant') !== false) {
 		  echo('<p>License no: ');
 	      echo('<input type="text" name="license_no" value="'.$person->get_license_no().'">');
@@ -195,7 +188,7 @@ else // $_SESSION['access_level']>=2
 
 		  echo('<input type="hidden" name="schedule" value="'.implode(',',$person->get_schedule()).'">');
 		  echo('<input type="hidden" name="history" value="'.implode(',',$person->get_history()).'">');
-		  echo('<input type="hidden" name="password" value="'.$person->get_password().')">');
+		  echo('<input type="hidden" name="password" value="'.$person->get_password().'">');
 		  echo('<input type="hidden" name="_submit_check" value="1"><p>');
 		  if ($_SESSION['access_level']==0)
 		  	 echo('Hit <input type="submit" value="Submit" name="Submit Edits"> to complete this application.<br /><br />');

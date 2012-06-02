@@ -33,12 +33,12 @@ class Stop {
 		$this->route_id = $route_id;
 		$this->client_id = $client_id;
 		$this->type = $type;
-		$this->items = $items;
 		if (strpos($items,":")>0) {
 			$this->items = explode(',',$items);  	
         	$this->set_all_totals();
 		} 
         else {
+        	$this->items = array();
         	$this->total_weight = $items;
         }
         $this->notes = $notes;
