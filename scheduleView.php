@@ -31,7 +31,7 @@ include_once('domain/Volunteer.php');
 				$monthly_groups = array("1"=>"1st","2"=>"2nd", "3"=>"3rd", "4"=>"4th", "5"=>"5th");
 				$area = $_GET['area'];
 				$areas = array("HHI"=>"Hilton Head", "SUN"=> "Bluffton", "BFT" => "Beaufort");
-				echo "<p><strong>".$areas[$area]."</strong> Master Schedule (View others: ";
+				echo "<p><strong>".$areas[$area]." Master Schedule</strong> (View others: ";
 				foreach ($areas as $otherArea=>$areaName) {
 				   if ($otherArea!=$area)
 				   	  echo "<a href=scheduleView.php?area=".$otherArea."> $areaName</a>";	
@@ -54,8 +54,11 @@ include_once('domain/Volunteer.php');
 	 * and series of days (Mon-Fri or Sat-Sun)
 	 */
 	function show_master_weeks($areas, $area, $groups, $days){
+		echo "This schedule automatically assigns the crew whenever you create a new route.";
+		echo "  An <b>open</b> entry means that no crew will be assigned to that route.<b>*</b><p>";
+		
 		if (sizeof($groups)>2) {
-			$today = date();
+			$today = date('y-m-d');
 			 
 			echo "('1st' means the first Monday of the month, '2nd' means the second Monday of the month, and so forth. ";
 			echo " This allows volunteers to be scheduled on the same day(s) of each month, like the 1st and 3rd Friday.)";
@@ -96,7 +99,8 @@ include_once('domain/Volunteer.php');
 			echo ("</td></tr>");
 		echo "</table>";	
 		do_month($area, $groups, $days);
-		echo "<p>This schedule automtically assigns the crew whenever a new route is created.  It will also be automatically updated whenever you change the schedule of an individual volunteer.";	
+		echo "<p><b>*</b>To change an entry on this schedule, you must <a href='volunteerSearch.php'>edit</a> volunteer records individually.  ";
+		echo "Whenever you change a volunteer's record, this schedule will be automatically updated.";	
 	}
 	
 	function do_month($area, $groups, $days) {
@@ -134,10 +138,10 @@ include_once('domain/Volunteer.php');
 		    	$driver_ids = get_drivers_scheduled($area, $week, $dayses[$i-1]);
 				echo '<br>';
 		    	foreach($driver_ids as $driver_id){
-		    	//	echo $driver_id;
-		      		$driver = retrieve_dbVolunteers($driver_id);
+		    		$driver = retrieve_dbVolunteers($driver_id);
 		      		if ($driver)
-		    		echo $driver->get_first_name()." ".$driver->get_last_name()."<br>" ;
+		    			echo $driver->get_first_name()." ".$driver->get_last_name()."<br>" ;
+		    		else echo $driver_id;
 		    	}
 		    	echo'</td>';
 		    	++$dayCount;
