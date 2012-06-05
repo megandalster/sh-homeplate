@@ -52,7 +52,7 @@ else // $_SESSION['access_level']>=2
 		echo 'First Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" name="first_name" tabindex=1 value="'.$person->get_first_name().'">';
 		echo 'Last Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" name="last_name" tabindex=2 value="'.$person->get_last_name().'">';
 	}
-	else	
+	else 	
 		echo 'Name: '.$person->get_first_name().' '.$person->get_last_name();		
 ?>
 <fieldset>
@@ -81,8 +81,8 @@ else // $_SESSION['access_level']>=2
 			if ($id=="new")
 				echo '<td>Primary Phone<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="'.$person->get_phone1().'"></td>';
 			else 
-				echo '<td>Primary Phone:</td><td>'.$person->get_phone1().'</td>'
-				?>
+				echo '<td>Primary Phone:</td><td>'.$person->get_phone1().'</td>';
+		?>
 		<td>Cell Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo $person->get_phone2()?>"></td></tr>
 		<tr><td>Email:</td><td><input type="text" name="email" size="40" tabindex=9 value="<?PHP echo($person->get_email())?>"></td></tr>
 
