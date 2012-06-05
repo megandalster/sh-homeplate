@@ -62,25 +62,25 @@ include_once('domain/Volunteer.php');
 			 
 			echo "('1st' means the first Monday of the month, '2nd' means the second Monday of the month, and so forth. ";
 			echo " This allows volunteers to be scheduled on the same day(s) of each month, like the 1st and 3rd Friday.)";
-			echo ('<br><br><table align="center"><tr><td colspan="'.(sizeof($days)+2).'" ' .
+			echo ('<br><br><table><tr><td colspan="'.(sizeof($days)+2).'" ' .
 				'bgcolor="#bbe1d1" align="center" >');
 			echo ($areas[$area].' Monthly Driver Schedule');
 		}
 		else {
 			echo "(An 'odd week' is one of the 1st, 3rd, 5th, ... weeks of the year. ";
 			echo " An 'even week' is one of the 2nd, 4th, 6th, ... weeks of the year.  This allows volunteers to be scheduled on a bi-weekly basis.)";
-			echo ('<br><br><table align="center"><tr><td colspan="'.(sizeof($days)+2).'" ' .
+			echo ('<br><br><table><tr><td colspan="'.(sizeof($days)+2).'" ' .
 				'bgcolor="#bbe1d1" align="center" >');
-			echo ($areas[$area].' Bi-Weekly Volunteer Schedule');
+			echo ('<b>'.$areas[$area].' Bi-Weekly Volunteer Schedule</b>');
 		}
 		
 		echo ('</td></tr><tr><td bgcolor="#bbe1d1"></td>');
 		foreach ($days as $day => $dayname)
-			echo ('<td align="center"> '. $dayname .' </td>');
+			echo ('<td align="left"><b>'. $dayname .'</b></td>');
 		echo('<td bgcolor="#bbe1d1"></td></tr>');
 		
 		foreach ($groups as $group=>$group_name){
-			echo ("<tr><td bgcolor=\"#bbe1d1\" valign=\"middle\">"."&nbsp;&nbsp;".$group_name."&nbsp;&nbsp;</td>");
+			echo ("<tr><td bgcolor=\"#bbe1d1\" align=\"center\" valign=\"top\"><b>".$group_name."</b></td>");
 			foreach ($days as $day => $dayname) {
 				$master_shift = retrieve_dbSchedules($area, $day.":".$group);	
 				if ($master_shift) {
@@ -92,14 +92,14 @@ include_once('domain/Volunteer.php');
 					echo do_shift($master_shift);
 				}	
 			}
-			echo ("<td bgcolor=\"#bbe1d1\" valign=\"middle\">"."&nbsp;&nbsp;".$group_name."&nbsp;&nbsp;</td></tr>");
+			echo ("<td bgcolor=\"#bbe1d1\" align=\"center\" valign=\"top\"><b>".$group_name."</b></td></tr>");
 		}
 		echo ('<tr><td bgcolor="#bbe1d1"></td>'.'<td colspan="7"></td>'.'<td bgcolor="#bbe1d1"></td></tr>');
 		echo ('<tr><td colspan="9" bgcolor="#bbe1d1">');
 			echo ("</td></tr>");
 		echo "</table>";	
 		do_month($area, $groups, $days);
-		echo "<p><b>*</b>To change an entry on this schedule, you must <a href='volunteerSearch.php'>edit</a> volunteer records individually.  ";
+		echo "<br><b>*</b>To change an entry on this schedule, you must <a href='volunteerSearch.php'>edit</a> volunteer records individually.  ";
 		echo "Whenever you change a volunteer's record, this schedule will be automatically updated.";	
 	}
 	
@@ -109,10 +109,10 @@ include_once('domain/Volunteer.php');
 		$thisYear = date("y",$today);
 		$dayses=array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
 		echo '<p>View a month in advance: <strong>'; echo date("F Y",mktime(1,1,1,$thisMonth,1,$thisYear))."</strong>";
-	  	echo '<br><br><table align="center">';
+	  	echo '<br><br><table>';
 	 	echo '<tr>';
 		foreach ($days as $day=>$dayname)
-		   echo '<td>' . $dayname . '</td>';  
+		   echo '<td><b>' . $dayname . '</b></td>';  
 		echo '</tr>';
 		$dayCount = 1;
 		$daytime = mktime(0,0,0,$thisMonth,1,$thisYear);
@@ -120,7 +120,7 @@ include_once('domain/Volunteer.php');
 		while($dayCount<=date("t",$today)){  // number of days in this month = date("t",$today)
 		  	echo('<tr>');
 		  	for ($i=1;$i<=7;++$i){
-	  	 	  echo('<td>');
+	  	 	  echo('<td valign="top">');
 	  		  if($dayCount>date("t",$today))
 	  		    continue;
 	  		  else if($weekCount==1 && get_first_day($thisMonth, $thisYear)>$i)
@@ -161,7 +161,7 @@ include_once('domain/Volunteer.php');
 	function do_shift($master_shift) {
 		/* $master_shift is a ScheduleEntry object
 		*/		
-		$s= "<td>".
+		$s= "<td valign='top'>".
 			//	"<a id=\"shiftlink\" href=\"scheduleEdit.php?area=".
 			//	$master_shift->get_area()."&day=".$master_shift->get_day()."&group=".
 			//	$master_shift->get_group()."\">".
@@ -174,7 +174,7 @@ include_once('domain/Volunteer.php');
 		/* $master_shift is a ScheduleEntry object 
 		*/
 		$people=$master_shift->get_drivers(); // id's of drivers scheduled
-		$p="<br>";
+		$p="";
 		for($i=0;$i<count($people);++$i) {
 			$person = retrieve_dbVolunteers($people[$i]);
 			if ($person)
