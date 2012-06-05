@@ -7,21 +7,21 @@
  * by the Free Software Foundation (see <http://www.gnu.org/licenses/).
 */
 
-function validate_form(){
-	if($_POST['first_name']==null || $_POST['first_name']=='new') $errors[] = 'Please enter a first name';
-	if($_POST['last_name']==null) $errors[] = 'Please enter a last name';
+function validate_form($id){
+	if($id=='new' && ($_POST['first_name']==null || $_POST['first_name']=='new')) $errors[] = 'Please enter a first name';
+	if($id=='new' && $_POST['last_name']==null) $errors[] = 'Please enter a last name';
+	if($id=='new' && !valid_phone($_POST['phone1'])) $errors[] = 'Please enter a valid primary phone number (10 digits: ###-###-####)';
 	if($_POST['city']==null) $errors[] = 'Please enter a city';
 	if($_POST['address']==null) $errors[] = 'Please enter an address';
 	if($_POST['state']==null) $errors[] = 'Please enter a state';
 	if(($_POST['zip'] != strval(intval($_POST['zip']))) || ($_POST['zip']==null) || (strlen($_POST['zip'])!=5)) $errors[] = 'Please enter a valid zip code';
 	if ($_SESSION['access_level']==0 && ($_POST['type']==null || !in_array('applicant',$_POST['type'])))
 		$_POST['type'][] = 'applicant';
-	if($_POST['area']==null && $_SESSION['access_level']>=1) $errors[] = 'Select an Area';
-	if($_POST['type']==null && $_SESSION['access_level']>=1) $errors[] = 'Select a Role';
+	if($_POST['area']==null && $_SESSION['access_level']>=1) $errors[] = 'Please select an Area';
+	if($_POST['type']==null && $_SESSION['access_level']>=1) $errors[] = 'Please select a Role';
 	if ($_POST['type']!=null && $_SESSION['access_level']<=1 && (in_array('teamcaptain',$_POST['type']) || in_array('boardmember',$_POST['type']) || in_array('coordinator',$_POST['type'])))
 		$errors[] = "Sorry, you can't promote yourself to a higher role.";
-	if(!valid_phone($_POST['phone1'])) $errors[] = 'Enter a valid primary phone number (10 digits: ###-###-####)';
-	if($_POST['phone2']!=null && !valid_phone($_POST['phone2'])) $errors[] = 'Enter a valid secondary phone number (10 digits: ###-###-####)';
+	if($_POST['phone2']!=null && !valid_phone($_POST['phone2'])) $errors[] = 'Please enter a valid secondary phone number (10 digits: ###-###-####)';
 	if(!valid_email($_POST['email']) && $_POST['email']!=null) $errors[] = "Please enter a valid email";
 	if(($_POST['DateOfBirth_Month']!=="" || $_POST['DateOfBirth_Day']!=="") && $_POST['DateOfBirth_Year']==="")
 		$birthday = "XX-".$_POST['DateOfBirth_Month'].'-'.$_POST['DateOfBirth_Day'];

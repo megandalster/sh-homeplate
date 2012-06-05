@@ -51,27 +51,37 @@
 		include('volunteerForm.inc');
 	else {
 	//in this case, the form has been submitted, so validate it
-		$errors = validate_form(); 	//step one is validation.
-									// errors array lists problems on the form submitted
-		if ($errors) {
-		// display the errors and the form to fix
-			show_errors($errors);
-			if ($_POST['availability']==null)
+		if ($_POST['availability']==null)
 			   $avail = "";
-			else $avail = implode(',',$_POST['availability']);
-			$person = new Volunteer($_POST['last_name'], $_POST['first_name'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
-								 $_POST['phone1'], $_POST['phone2'], $_POST['email'], implode(',',$_POST['type']),
+		else $avail = implode(',',$_POST['availability']);
+		if ($id=='new') {
+				$first_name = $_POST['first_name'];
+				$last_name = $_POST['last_name'];
+				$phone1 = $_POST['phone1'];
+		}
+		else {
+				$first_name = $person->get_first_name();
+				$last_name = $person->get_last_name();
+				$phone1 = $person->get_phone1();
+		}
+		$person = new Volunteer($last_name, $first_name, $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
+								 $phone1, $_POST['phone2'], $_POST['email'], implode(',',$_POST['type']),
 								 $_POST['status'], $_POST['area'], $_POST['license_no'], $_POST['license_state'], $_POST['license_expdate'],
                                  $_POST['accidents'],
                                  $avail, $_POST['schedule'], $_POST['history'],
                                  $_POST['birthday'],
                                  $_POST['start_date'],
                                  $_POST['notes'], $_POST['old_pass']);
+		$errors = validate_form($id); 	//step one is validation.
+									// errors array lists problems on the form submitted
+		if ($errors) {
+		// display the errors and the form to fix
+			show_errors($errors);
 			include('volunteerForm.inc');
 		}
 		// this was a successful form submission; update the database and exit
 		else
-			process_form($id);
+			process_form($id, $person);
 		include('footer.inc');
 		echo('</div></div></body></html>');
 		die();
@@ -80,16 +90,24 @@
 /**
 * process_form sanitizes data, concatenates needed data, and enters it all into a database
 */
-function process_form($id)	{
+function process_form($id, $person)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
-		$first_name = trim(str_replace('\\\'','',htmlentities(str_replace(' ','_',$_POST['first_name']))));
-		$last_name = trim(str_replace('\\\'','\'',htmlentities($_POST['last_name'])));
+		if ($id=='new') {
+				$first_name = trim(str_replace('\\\'','',htmlentities(str_replace(' ','_',$_POST['first_name']))));
+				$last_name = trim(str_replace('\\\'','\'',htmlentities($_POST['last_name'])));
+				$phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
+				$clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
+		}
+		else {
+				$first_name = $person->get_first_name();
+				$last_name = $person->get_last_name();
+				$phone1 = $person->get_phone1();
+				$clean_phone1 = $phone1;
+		}
 		$address = trim(str_replace('\\\'','\'',htmlentities($_POST['address'])));
 		$city = trim(str_replace('\\\'','\'',htmlentities($_POST['city'])));
 		$state = trim(htmlentities($_POST['state']));
 		$zip = trim(htmlentities($_POST['zip']));
-		$phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
-		$clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
 		$phone2 = trim(str_replace(' ','',htmlentities($_POST['phone2'])));
 		$clean_phone2 = preg_replace("/[^0-9]/", "", $phone2);
 		$email = $_POST['email'];
