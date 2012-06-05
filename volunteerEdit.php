@@ -159,13 +159,13 @@ function process_form($id, $person)	{
 						echo('<p class="error">You cannot remove yourself or the last remaining coordinator from the database.</p>');
 					else {
 						$result = delete_dbVolunteers($id);
-						update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability());
+						update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability(),"deleteonly");
 						echo("<p>You have successfully removed " .$first_name." ".$last_name. " from the database.</p>");
 					}
 				}
 				else {
 					$result = delete_dbVolunteers($id);
-					update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability());
+					update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability(),"deleteonly");
 					echo("<p>You have successfully removed " .$first_name." ".$last_name. " from the database.</p>");		
 				}
 			}
@@ -192,7 +192,7 @@ function process_form($id, $person)	{
 				else {
 					$newperson->set_password (md5($first_name.$clean_phone1));
 					$result = insert_dbVolunteers($newperson);
-					update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability());
+					update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability(),"deleteandinsert");
 					if (!$result)
                         echo ('<p class="error">Unable to add " .$first_name." ".$last_name. " in the database. <br>Please report this error to the Program Coordinator.');
 					else if ($_SESSION['access_level']==0)
@@ -209,7 +209,7 @@ function process_form($id, $person)	{
                    echo ('<p class="error">Unable to update ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');
 				else {
 					$result = insert_dbVolunteers($newperson);
-                	update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability());
+                	update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability(),"deleteandinsert");
 					
                 	if (!$result)
                    		echo ('<p class="error">Unable to update ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');

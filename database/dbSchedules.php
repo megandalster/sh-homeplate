@@ -186,7 +186,7 @@ function get_all_foradriver($area, $driver_id){
 	return $theScheduleEntries;
 }
 // update all schedules with the changed availability of a particular driver
-function update_volunteers_scheduled ($area, $driver_id, $availability) {
+function update_volunteers_scheduled ($area, $driver_id, $availability,$deleteonly) {
 	$days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
     $weeks = array("1","2","3","4","5");
 	$oddeven = array ('odd', 'even');
@@ -196,8 +196,9 @@ function update_volunteers_scheduled ($area, $driver_id, $availability) {
 		$i=strpos($an_entry->get_id(),":");		
 		remove_driver($area, $an_entry->get_week(),  $an_entry->get_day(), $driver_id);		   	
 	}
-	// now add the driver back to all the schedules that he/she has checked
-	foreach ($availability as $scheduled_day) {
+	// put the driver back into all the schedules, but only if not a deletion
+	if ($deleteonly!="deleteonly")
+	  foreach ($availability as $scheduled_day) {
 		$i=strpos($scheduled_day,":");
 		if ($i>=0) { // schedule one day for this person
 			$day = substr($scheduled_day,0,$i);
@@ -215,7 +216,7 @@ function update_volunteers_scheduled ($area, $driver_id, $availability) {
 		    	foreach ($oddeven as $week_id)
 		    		add_driver($area, $week_id, $scheduled_day, $driver_id);
 		}
-	}
+	  }
     	
 }
 ?>
