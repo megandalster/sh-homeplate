@@ -55,7 +55,7 @@
 			   $avail = "";
 		else $avail = implode(',',$_POST['availability']);
 		if ($id=='new') {
-				$first_name = $_POST['first_name'];
+				$first_name = trim($_POST['first_name']);
 				$last_name = $_POST['last_name'];
 				$phone1 = $_POST['phone1'];
 		}
@@ -93,7 +93,7 @@
 function process_form($id, $person)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
 		if ($id=='new') {
-				$first_name = trim(str_replace('\\\'','',htmlentities(str_replace(' ','_',$_POST['first_name']))));
+				$first_name = trim(str_replace('\\\'','',htmlentities(trim($_POST['first_name']))));
 				$last_name = trim(str_replace('\\\'','\'',htmlentities($_POST['last_name'])));
 				$phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
 				$clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
