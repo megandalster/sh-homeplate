@@ -21,6 +21,8 @@ include_once('domain/Client.php');
 include_once('database/dbClients.php');
 include_once('domain/Volunteer.php');
 include_once('database/dbVolunteers.php');
+include_once('domain/Stop.php');
+include_once('database/dbStops.php');
 //    include_once('database/dbLog.php');
 $routeID = $_GET['routeID'];
 $route = get_route($routeID);
