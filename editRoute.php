@@ -74,7 +74,10 @@ function process_form($_POST, $route)
 		$selected = "";
 		foreach($_POST['s_driver'] as $driver_id) {
 			$driver = retrieve_dbVolunteers($driver_id);
-			$selected .= ", ".$driver->get_first_name() . " " . $driver->get_last_name();
+			if ($driver)
+	    		$name = $driver->get_first_name() . ' ' . $driver->get_last_name();
+			else $name = $driver_id;
+			$selected .= ", ".$name;
 			$route->remove_driver($driver_id);
 		}
 		update_dbRoutes($route);
