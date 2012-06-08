@@ -73,7 +73,7 @@
 			<form method = "post">
 			<fieldset>
 				<legend><b>Data Entry</b></legend><br />
-				<i>Total Weight:</i> <input type="text" name="total_weight" <?php echo 'value='.$total_weight?>> lbs.
+				<i>Total Weight: </i><input type="text" size="10" name="total_weight" <?php echo 'value='.$total_weight?>> lbs.
 				
 			<br><br><i>Additional notes:</i><br />
 			<textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>

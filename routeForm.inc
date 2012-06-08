@@ -53,7 +53,7 @@ if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 }
 else echo $route->get_status();
 */
-echo ('<p><table><tr><td>Crew: ');echo ('</td><td>Pick-ups: '); echo ('</td><td>Drop-offs: '); echo ('</td></tr>');
+echo ('<p><table><tr><td>Crew: ');echo ('</td><td>Pick-ups -- weights'); echo ('</td><td>Drop-offs -- weights'); echo ('</td></tr>');
 echo "<tr><td valign='top'>";
 foreach ($route->get_drivers() as $driver_id) {
 	$driver = retrieve_dbVolunteers($driver_id);
@@ -62,7 +62,7 @@ foreach ($route->get_drivers() as $driver_id) {
 	else $name = $driver_id;
 	if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today)
 	echo "<input type='checkbox' name='s_driver[]' value='".$driver_id."'>".$name."<br>";
-	else echo $name;
+	else echo $name."<br>";
 }
 echo "</td><td valign='top'>";
 foreach ($route->get_pickup_stops() as $pickup_id) {
@@ -79,7 +79,10 @@ foreach ($route->get_pickup_stops() as $pickup_id) {
 	//if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today)
 	//echo "<input type='checkbox' name='s_pickup[]' value='".$pickup_id."' />".$pickup_link."<br>";
 	//else 
-	echo $pickup_link."<br>";
+	$theStop = retrieve_dbStops($routeID.$client_id);
+	echo $pickup_link;
+	if ($theStop->get_total_weight()>0) echo " -- ".$theStop->get_total_weight();
+	echo "<br>";
 }
 echo "</td><td valign='top'>";
 foreach ($route->get_dropoff_stops() as $dropoff_id) {
@@ -89,7 +92,10 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	//if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today)
 	//echo "<input type='checkbox' name='s_dropoff[]' value='".$dropoff_id."' />".$dropoff_link."<br>";
 	//else 
-	echo $dropoff_link."<br>";
+	$theStop = retrieve_dbStops($routeID.$client_id);
+	echo $dropoff_link;
+	if ($theStop->get_total_weight()>0) echo " -- ".$theStop->get_total_weight();
+	echo "<br>";
 }
 if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 	echo "</td><tr><td>";
@@ -151,10 +157,11 @@ echo '</td>';
 echo('<td colspan="2"> and hit <input type="hidden" name="submitted" value="1">');
 echo('<input type="submit" value="Submit" name="Submit"> to add him/her to the crew.</td></tr></table>');
 
-echo ('<input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
-				'<input type="submit" value="Delete" name="Delete Entry"> to delete this route from the database. ');
 }
 else echo "</td></tr></table>";
+echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
+				'<input type="submit" value="Delete" name="Delete Entry"> to delete this route from the database. ');
+
 echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Back to Routes</a>";
 echo('</div></div>');
 	include('footer.inc');
