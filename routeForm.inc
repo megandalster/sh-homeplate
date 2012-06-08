@@ -57,7 +57,9 @@ echo ('<p><table><tr><td>Crew: ');echo ('</td><td>Pick-ups: '); echo ('</td><td>
 echo "<tr><td valign='top'>";
 foreach ($route->get_drivers() as $driver_id) {
 	$driver = retrieve_dbVolunteers($driver_id);
-	$name = $driver->get_first_name() . ' ' . $driver->get_last_name();
+	if ($driver)
+	    $name = $driver->get_first_name() . ' ' . $driver->get_last_name();
+	else $name = $driver_id;
 	if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today)
 	echo "<input type='checkbox' name='s_driver[]' value='".$driver_id."'>".$name."<br>";
 	else echo $name;

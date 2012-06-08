@@ -97,7 +97,10 @@ padding:10px 10px 10px 10px;
 			foreach($volunteers as $driverID)
 			{
 				$driver = retrieve_dbVolunteers($driverID);
-				echo $driver->get_first_name()." ".$driver->get_last_name()."<br>";
+				if ($driver)
+	    			$name = $driver->get_first_name() . ' ' . $driver->get_last_name();
+				else $name = $driver_id;
+				echo $name."<br>";
 			}
 			echo "</td>";
 			
