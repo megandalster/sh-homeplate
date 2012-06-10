@@ -54,7 +54,7 @@ padding:10px 10px 10px 10px;
 <tr>
 <?php
 				echo "<td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$prevweekUTC)."><< Previous</a></td>";
-				$mondaythisweek = strtotime('monday this week',$thisUTC);
+				$mondaythisweek = strtotime('last monday', strtotime('tomorrow',$thisUTC));
 				echo "<td colspan='2'><strong>Week of ".date('F j, Y', $mondaythisweek)."</strong></td>";
 				echo "<td></td><td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">Next >></a></td>";
 				?>
