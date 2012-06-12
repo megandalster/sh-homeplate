@@ -35,15 +35,15 @@ echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
 
 <fieldset><legend>Select report dates</legend>
 <p><input type="radio" name="report_span" value="weekly" /> Last Week <br>
-<input type="radio" name="report_span" value="monthly" />
-Monthly&nbsp;&nbsp; <?php 
+<input type="radio" name="report_span" value="daily" />
+Single Day&nbsp;&nbsp; <?php 
 
 $months = array ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
 				 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
 $areas = array("SUN"=>"Bluffton","HHI"=>"Hilton Head","BFT"=>"Beaufort");
 
 // month selector
-echo '<select name="monthly_month">';
+echo '<select name="daily_month">';
 foreach($months as $month)
 {
 	echo '<option value="'.$month.'">'.$month.'</option>';
@@ -52,8 +52,16 @@ echo '</select>&nbsp;';
 
 $current_time = getdate(time());
 
+// day selector
+echo '<select name="daily_day">';
+for($i = 1; $i <=31; $i++)
+{
+	echo '<option value="'.$i.'">'.$i.'</option>';
+}
+echo '</select>';
+
 // year selector
-echo '<select name="monthly_year">';
+echo '<select name="daily_year">';
 for($i = $current_time[year]; $i >= 1990; $i--)
 {
 	echo '<option value="'.$i.'">'.$i.'</option>';
@@ -137,27 +145,27 @@ if($_POST['submitted'])
 	$header[] =  "<br>";
 	if($_POST['report_span'] == "weekly")
 	{
-		$time = strtotime('monday this week') - 604800;
+		$time = strtotime('last monday', strtotime('tomorrow',time())) - 604800;
 		$endTime = $time + 518400;
 
 		$start_date = date('y-m-d', $time);
 		$end_date = date('y-m-d', $endTime);
 
-		$header[] =  "Week of ".date('l F j, Y', $time);
+		$header[] =  "Week beginning ".date('l F j, Y', $time);
 	}
 
-	else if($_POST['report_span'] == "monthly")
+	else if($_POST['report_span'] == "daily")
 	{
-		$month = $_POST['monthly_month'];
-		$year = $_POST['monthly_year'];
+		$month = $_POST['daily_month'];
+		$day = $_POST['daily_day'];
+		$year = $_POST['daily_year'];
 
-		$time = strtotime($month.' 01, '.$year);
-		$endTime = $time + 86400*(date("t",$time)-1);
-
-		$start_date = date('y-m-d', $time);
-		$end_date = date('y-m-d', $endTime);
+		$time = strtotime($month.' '.$day.', '.$year);
 		
-		$header[] =  date(' F Y', $time);
+		$start_date = date('y-m-d', $time);
+		$end_date = $start_date;
+		
+		$header[] =  date('l F j, Y', $time);
 	}	
     else if($_POST['report_span'] == "range")
     {

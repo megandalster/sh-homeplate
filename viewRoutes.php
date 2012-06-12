@@ -62,7 +62,7 @@ padding:10px 10px 10px 10px;
 	<tr>
 		<th></th>
 		<td> <b> Action* </b> </td>
-		<td> <b> Driver(s) </b> </td>
+		<td> <b> Drivers </b> </td>
 		<td> <b> Pickups </b> </td>
 		<td> <b> Dropoffs </b> </td>
 	</tr>
@@ -93,8 +93,8 @@ padding:10px 10px 10px 10px;
 			$volunteers = $route->get_drivers();
 			
 			//col 3 : driver
-			echo "<td>";
-			foreach($volunteers as $driverID)
+			echo "<td align='center'>".sizeof($volunteers);
+		/*	foreach($volunteers as $driverID)
 			{
 				$driver = retrieve_dbVolunteers($driverID);
 				if ($driver)
@@ -102,7 +102,7 @@ padding:10px 10px 10px 10px;
 				else $name = $driver_id;
 				echo $name."<br>";
 			}
-			echo "</td>";
+		*/	echo "</td>";
 			
 			//col 4 : pickups
 			echo "<td align='center'>".$route->get_num_pickups()."</td>";
