@@ -46,7 +46,7 @@ if($_POST['_form_submit'] == 1)
 //	echo '</fieldset><br>';
 }
 if ($_POST['deleteMe']=="DELETE") {
-	echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Back to Routes</a>";
+	echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Click here to update and return to routes.</a>";
 	echo('</div></div>');
 	include('footer.inc');
 	echo('</body></html>');
@@ -83,7 +83,7 @@ function process_form($_POST, $route)
 			$route->remove_driver($driver_id);
 		}
 		update_dbRoutes($route);
-		return ("Driver removed: ". substr($selected, 2));
+		return ("Drivers removed: ". substr($selected, 2));
 	}
 	/*
 	// remove a pick up from the route

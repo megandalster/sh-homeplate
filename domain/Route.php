@@ -91,8 +91,7 @@ class Route {
     	$this->status = $new_status;
     }
     function remove_driver($theDriver){
-    	$size = count($this->drivers);
-    	for ($i=0; $i<$size; $i++){
+    	for ($i=0; $i<count($this->drivers); $i++){
     		if ($this->drivers[$i] == $theDriver){
     			unset($this->drivers[$i]);
     			break;
