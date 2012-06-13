@@ -77,7 +77,7 @@ function retrieve_dbStops ($id) {
     }
     $result_row = mysql_fetch_assoc($result);
     $items = $result_row['items'];
-    if ($result_row['items']=="")
+    if ($result_row['items']=="" || $result_row['items']=="Meat:,Frozen:,Bakery:,Grocery:,Dairy:,Produce:")
     	$items = $result_row['weight']; 
     $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $items, $result_row['notes']);
 	mysql_close(); 
