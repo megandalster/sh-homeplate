@@ -91,12 +91,14 @@ class Route {
     	$this->status = $new_status;
     }
     function remove_driver($theDriver){
-    	for ($i=0; $i<count($this->drivers); $i++){
-    		if ($this->drivers[$i] == $theDriver){
-    			unset($this->drivers[$i]);
-    			break;
+    	$size = count($this->drivers);
+    	$remaining = array();
+    	for ($i=0; $i<$size; $i++){
+    		if ($this->drivers[$i] != $theDriver){
+    			$remaining[] = $this->drivers[$i];
     		}
     	}
+    	$this->drivers = $remaining;
     }
     function add_driver($theDriver){
     	$this->drivers[]= $theDriver;
