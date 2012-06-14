@@ -25,12 +25,13 @@
 					include_once('domain/Volunteer.php');
 					
 				?>
-				<br><strong>
+				<br><strong>&nbsp;&nbsp;
 				<?php
 				$areas = array("HHI"=>"Hilton Head", "SUN"=> "Bluffton", "BFT" => "Beaufort");
 				$thisArea = $_GET['area'];
 				$thisDay = $_GET['date'];
 				$today = date('y-m-d');
+				$todayUTC = time();
 				$thisUTC = mktime(0,0,0,substr($thisDay,3,2),substr($thisDay,6,2),substr($thisDay,0,2));
 				$nextweekUTC = $thisUTC + 604800;
 				$prevweekUTC = $thisUTC - 604800;
@@ -44,7 +45,7 @@
 				}
 				?>
 )
-<table cellspacing="10">
+<br><br><table cellspacing="10">
 	<style type="text/css">
 td
 {
@@ -56,12 +57,11 @@ padding:10px 10px 10px 10px;
 				echo "<td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$prevweekUTC)."><< Previous</a></td>";
 				$mondaythisweek = strtotime('last monday', strtotime('tomorrow',$thisUTC));
 				echo "<td colspan='2'><strong>Week of ".date('F j, Y', $mondaythisweek)."</strong></td>";
-				echo "<td></td><td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">Next >></a></td>";
+				echo "<td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">Next >></a></td>";
 				?>
 </tr>
 	<tr>
-		<th></th>
-		<td> <b> Action* </b> </td>
+		<td> <b> Route * </b> </td>
 		<td> <b> Drivers </b> </td>
 		<td> <b> Pickups </b> </td>
 		<td> <b> Dropoffs </b> </td>
@@ -77,56 +77,38 @@ padding:10px 10px 10px 10px;
 	{
 		$routeID = date('y-m-d', $dayUTC).'-'.$_GET[area];
 		$route = get_route($routeID);
+        if (!$route && $thisUTC <= $todayUTC + 1814400)   // autogenerate routes 3 weeks out from today
+	        $route = make_new_route($routeID,$_SESSION['_id']);
 		// start row
 		echo "<tr>" ;
 		
 		// col 1 : day of week
-		echo "<td>".$weekday." ". date('F j', $dayUTC)."</td>" ;
+		echo "<td>"."<a href=editRoute.php?routeID=".$routeID.">".$weekday." ". date('F j', $dayUTC)."</a></td>" ;
 		
 		// if route exists, generate this set of cols
 		if($route != NULL)
-		{
-			// col 2 : action
-			echo "<td>"."<a href=editRoute.php?routeID=".$routeID.">view</a>"."</td>";
-
-			// *note : this design requires driver in position 0 of array
+		{	
+			//col 2 : drivers
 			$volunteers = $route->get_drivers();
+			echo "<td align='center'>".sizeof($volunteers)."</td>";
 			
-			//col 3 : driver
-			echo "<td align='center'>".sizeof($volunteers);
-		/*	foreach($volunteers as $driverID)
-			{
-				$driver = retrieve_dbVolunteers($driverID);
-				if ($driver)
-	    			$name = $driver->get_first_name() . ' ' . $driver->get_last_name();
-				else $name = $driver_id;
-				echo $name."<br>";
-			}
-		*/	echo "</td>";
-			
-			//col 4 : pickups
+			//col 3 : pickups
 			echo "<td align='center'>".$route->get_num_pickups()."</td>";
 			
-			//col 5 : dropoffs
+			//col 4 : dropoffs
 			echo "<td align='center'>".$route->get_num_dropoffs()."</td>";
 
 		}
-		
 		// else, use defaults
 		else
-		{
-			// col 2 : action
-		//	if (substr($routeID,0,8)>$today)
-				echo "<td>"."<a href=editRoute.php?routeID=".$routeID.">create</a></td>";
-		//	else echo "<td></td>";
-			
-			// col 3 : driver (blank)
+		{	
+			// col 2 : driver (blank)
 			echo "<td></td>";
 			
-			// col 4 : pickups (blank)
+			// col 3 : pickups (blank)
 			echo "<td></td>";
 			
-			// col 5 : dropoffs (blank)
+			// col 4 : dropoffs (blank)
 			echo "<td></td>";
 		}
 		
@@ -136,7 +118,7 @@ padding:10px 10px 10px 10px;
 	}
 	?>
 </table>	
-<br><strong>*</strong> You can create any future route and you can view any route.
+<br><strong>*</strong> View any route by clicking its date.
 	
 			</div>
 			<?php include('footer.inc');?>
