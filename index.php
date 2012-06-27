@@ -37,16 +37,21 @@
 					if($_SESSION['access_level']==0) 
 					    echo('<p> To apply to become a driver with Second Helpings, select <a href="'.$path.
 					         'volunteerEdit.php?id='.'new'.'">apply</a>.');
+					else if($_SESSION['access_level']>=2) {
+						include_once('ftp.php');
+						update_ftp();
+						echo "<p>Route and Weight data are up to date with all tablets that have checked in.";
+					}
 				?>
 
 			<?PHP
 				if ($person){
 					/*
 					 * Check type of person, and display home page based on that.
-					 * level 0: General public, driver applications: login screen and on-line application
-					 * level 1: Volunteers, helpers, and subs: view route, select stops and enter pickup or delivery amounts
-					 * level 2: Day Captains: view and edit volunteer and route data, generate weekly and monthly reports
-					 * level 3: Officers: view weekly and monthly reports, export data
+					 * level 0: General public, view and edit on-line application
+					 * level 1: Volunteers, helpers, and subs: view today's route, upcoming driver schedule
+					 * level 2: Day Captains: view this week's route data
+					 * level 3: Coordinators: view weekly and monthly reports, export data
 					*/
                     //DEFAULT PASSWORD CHECK
 					if (md5($person->get_id())==$person->get_password()){

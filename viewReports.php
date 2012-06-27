@@ -259,8 +259,8 @@ if($_POST['submitted'])
 	echo "</table>";
 	//$start = date('F j, Y',mktime(0,0,0,substr($start_date,3,2),substr($start_date,6,2),substr($start_date,0,2)));
 	//$end = date('F j, Y',mktime(0,0,0,substr($end_date,3,2),substr($end_date,6,2),substr($end_date,0,2)));
-	export_data($header, $pickups, $dropoffs,$tw_pickups,$tw_dropoffs);
-	echo "<br>(This weight data has been exported. <br> Set your browser <a href='http://homeplate.secondhelpingslc.org/dataexport.csv'>here</a> to copy/paste it to your computer.)";
+//	export_data($header, $pickups, $dropoffs,$tw_pickups,$tw_dropoffs);
+//	echo "<br>(To get a different view of this report, you may copy and paste it into a spreadsheet on your computer.)";
   }
   else if ($_POST['report_span']!="") 
   {
@@ -330,8 +330,8 @@ if($_POST['submitted'])
 
 	echo "</table>";
 	
-	export_publixwalmart_data($header, $food_types, $row_totals, $food_type_totals);
-	echo "<br>(This weight data has been exported. <br> Set your browser <a href='http://homeplate.secondhelpingslc.org/dataexport.csv'>here</a> to copy/paste it to your computer.)";
+//	export_publixwalmart_data($header, $food_types, $row_totals, $food_type_totals);
+//	echo "<br>(To get a different view of this report, you may copy and paste it into a spreadsheet on your computer.)";
   	
   }
 }
