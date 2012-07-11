@@ -93,9 +93,9 @@ function getonlythose_dbVolunteers($area, $type, $status, $name, $availability) 
 	return $theVols;
 }
 
-function get_team_captains ($area) {
+function get_team_captains ($area, $day) {
 	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE type LIKE %teamcaptain% AND area  = '".$area."'");
+	$result=mysql_query("SELECT * FROM dbVolunteers WHERE type LIKE '%teamcaptain%' AND availability LIKE '%".$day."%' AND area  = '".$area."'");
 	
 	$theVols = array();	
 	while($result_row = mysql_fetch_assoc($result)){
