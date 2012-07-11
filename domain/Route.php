@@ -17,11 +17,14 @@ class Route {
 							// for the route.  e.g. 11-12-29-HHI
  	private $drivers;       // array of driver id's scheduled for this route,
 							// e.g. ["malcom1234567890", Òsandi8437891234Ó]
+							// for a completed route, an array of the driver
+							// names who rode on the truck that day
 	private $teamcaptain_id;
 	private $pickup_stops;	// array of stop id's for donors
     private $dropoff_stops;	// array of stop id's for recipients
     private $status;		// "created", "published", or "completed"
-    private $notes;			// notes written by the team captain or driver 
+    private $notes;			// for a completed route, deviceId;start time;end time
+        					// e.g. 8c5328005a8d7784;08:30;13:30
 
 		/**
          * constructor for a Route
@@ -125,7 +128,22 @@ class Route {
     	}
     }
     function add_drop_off($drop_off){
-    	$this->dropoff_stops[]= $drop_off;
+    	$this->dropoff_stops[] = $drop_off;
+    }
+    function set_status($status){
+     	$this->status = $status;
+    }
+    function set_notes($notes) {
+    	$this->notes = $notes;
+    }
+    function set_drivers($drivers) {
+    	$this->drivers = $drivers;
+    }
+	function set_pickup_stops($pickup_stops) {
+    	$this->pickup_stops = $pickup_stops;
+    }
+    function set_dropoff_stops($dropoff_stops) {
+    	$this->dropoff_stops = $dropoff_stops;
     }
 }
 ?>

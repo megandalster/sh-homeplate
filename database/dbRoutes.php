@@ -33,6 +33,8 @@ function create_dbRoutes() {
 }
 /*
  * insert a route to dbRoutes table and its stops to the dbStops table:
+ * if route is completed, insert the weights and drivers actually recorded
+ * otherwise, insert 0 weights and all scheduled drivers
  * if already there, return false
  */
 function insert_dbRoutes($route){
@@ -42,6 +44,43 @@ function insert_dbRoutes($route){
 	$result = mysql_query($query);
 	//if there's no entry for this id, add it
 	if ($result == null || mysql_num_rows($result) == 0) {
+	    if ($route->get_status()!="completed") {
+		  foreach ($route->get_pickup_stops() as $pickup_id) {
+			$pickup_stop = new Stop ($route->get_id(), substr($pickup_id,12), "pickup", "", "");
+			insert_dbStops($pickup_stop);
+		  }
+		  foreach ($route->get_dropoff_stops() as $dropoff_id) {
+			$dropoff_stop = new Stop ($route->get_id(), substr($dropoff_id,12), "dropoff", "", "");
+			insert_dbStops($dropoff_stop);
+		  }
+		}
+		// for a completed route, store the weights away into the stops
+		// and rebuild the pickup_stops and dropoff_stops as simple arrays of stop_ids
+		else {
+			$pickupids = array();
+			foreach ($route->get_pickup_stops() as $stop_data) {
+				$firstcomma = indexOf($stop_data, ",");
+				$stop_id = substr($stop_data,0,$firstcomma);
+				$stop_data = substr($stop_data,$firstcomma+1);
+				$secondcomma = indexOf($stop_data,',');
+				if ($secondcomma)
+					$stop_data = substr($stop_data,$secondcomma+1);
+				$pickup_stop = new Stop ($route->get_id(), $stop_id, "pickup", $stop_data, "");
+				insert_dbStops($pickup_stop);
+				$pickupids[] = $route->get_id().$stop_id;
+			}
+			$route->set_pickup_stops($pickupids);
+			$dropoffids = array();
+			foreach($route->get_dropoff_stops() as $stop_data) {
+				$firstcomma = indexOf($stop_data, ",");
+				$stop_id = substr($stop_data,0,$firstcomma);
+				$stop_data = substr($stop_data,$firstcomma+1);
+				$dropoff_stop = new Stop ($route->get_id(), $stop_id, "dropoff", $stop_data, "");
+				insert_dbStops($dropoff_stop);
+				$dropoffids[] = $route->get_id().$stop_id;
+			}
+			$route->set_dropoff_stops($dropoffids);
+		}
 		mysql_query('INSERT INTO dbRoutes VALUES("'.
 		$route->get_id().'","'.
 		implode(',', $route->get_drivers()).'","'.
@@ -52,14 +91,6 @@ function insert_dbRoutes($route){
 		$route->get_notes().
                      '");');
 		mysql_close();
-		foreach ($route->get_pickup_stops() as $pickup_id) {
-			$pickup_stop = new Stop ($route->get_id(), substr($pickup_id,12), "pickup", "", "");
-			insert_dbStops($pickup_stop);
-		}
-		foreach ($route->get_dropoff_stops() as $dropoff_id) {
-			$dropoff_stop = new Stop ($route->get_id(), substr($dropoff_id,12), "dropoff", "", "");
-			insert_dbStops($dropoff_stop);
-		}
 		return true;
 	}
 	mysql_close();

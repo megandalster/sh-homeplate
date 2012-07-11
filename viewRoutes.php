@@ -77,8 +77,14 @@ padding:10px 10px 10px 10px;
 	{
 		$routeID = date('y-m-d', $dayUTC).'-'.$_GET[area];
 		$route = get_route($routeID);
-        if (!$route && $thisUTC <= $todayUTC + 1814400)   // autogenerate routes 3 weeks out from today
-	        $route = make_new_route($routeID,$_SESSION['_id']);
+        if (!$route && $thisUTC <= $todayUTC + 1814400) {  // autogenerate routes 3 weeks out from today 
+	        $day = date("D",mktime(0,0,0,substr($routeID,3,2),substr($routeID,6,2),substr($routeID,0,2)));
+			$team_captains = get_team_captains(substr($routeID,9), $day);
+			if (sizeof($team_captains)==0)
+				$team_captain = "Lisa8437152491";   // force a day captain if there are none
+			else $team_captain = $team_captains[0]->get_id();
+			$route = make_new_route($routeID,$team_captain);
+        }
 		// start row
 		echo "<tr>" ;
 		

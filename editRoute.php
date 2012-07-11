@@ -26,8 +26,14 @@ include_once('database/dbStops.php');
 //    include_once('database/dbLog.php');
 $routeID = $_GET['routeID'];
 $route = get_route($routeID);
+$day = date("D",mktime(0,0,0,substr($routeID,3,2),substr($routeID,6,2),substr($routeID,0,2)));
+$team_captains = get_team_captains(substr($routeID,9), $day);
+if (sizeof($team_captains)==0)
+	$team_captain = "Lisa8437152491";   // force a day captain if there are none
+else $team_captain = $team_captains[0]->get_id();
+echo "dayteamcaptain = ".$day.$team_captain;
 if(! $route)
-	$route = make_new_route($routeID,$_SESSION['_id']);
+	$route = make_new_route($routeID,$team_captain);
 ?>
 <html>
 <head>
