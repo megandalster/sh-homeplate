@@ -77,7 +77,7 @@ padding:10px 10px 10px 10px;
 	{
 		$routeID = date('y-m-d', $dayUTC).'-'.$_GET[area];
 		$route = get_route($routeID);
-        if (!$route && $thisUTC <= $todayUTC + 1814400) {  // autogenerate routes 3 weeks out from today 
+        if (!$route && $thisUTC <= $todayUTC + 1209600) {  // autogenerate routes 2 weeks out from today 
 	        $day = date("D",mktime(0,0,0,substr($routeID,3,2),substr($routeID,6,2),substr($routeID,0,2)));
 			$team_captains = get_team_captains(substr($routeID,9), $day);
 			if (sizeof($team_captains)==0)
