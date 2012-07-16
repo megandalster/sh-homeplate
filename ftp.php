@@ -95,9 +95,9 @@ function ftpin($day) {
 	foreach ($areas as $area=>$area_name) {
 		foreach ($deviceIds as $deviceId) {
 	// look for a file for $day and $deviceId
-			$filename = dirname(__FILE__).'/../homeplateftp/ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv";
-			$handle = fopen($filename, "r");
-			if ($handle) {
+			$filename = dirname(__FILE__).'/../homeplateftp/ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv";	
+			if (file_exists($filename)) {
+				$handle = fopen($filename, "r");
 	// line 1			
 				$line1 = fgetcsv($handle, 0, ";");
 			//	echo "line 1 = ".$line1[0].$line1[1];
