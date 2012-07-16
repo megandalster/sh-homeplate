@@ -23,6 +23,7 @@
 				<?PHP
 					include_once('database/dbVolunteers.php');
      				include_once('domain/Volunteer.php');
+						
      		//		include_once('database/dbLog.php');
      				if($_SESSION['_id']!="guest"){
      				    $person = retrieve_dbVolunteers($_SESSION['_id']);
@@ -33,7 +34,7 @@
      				    echo "<p>Welcome to <i>Homeplate</i>! ";
      				$today = time();
 					echo "Today is ".date('l F j, Y', $today).".<p>";
-     		
+					
 					if($_SESSION['access_level']==0) 
 					    echo('<p> To apply to become a driver with Second Helpings, select <a href="'.$path.
 					         'volunteerEdit.php?id='.'new'.'">apply</a>.');

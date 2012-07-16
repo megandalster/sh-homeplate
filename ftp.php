@@ -6,23 +6,22 @@ include_once 'database/dbStops.php';
 include_once 'domain/Route.php';
 include_once 'domain/Stop.php';
 
-function update_ftp(){
+function update_ftp() {
 	$todayUTC = time();
 	$mondaythisweek = strtotime('last monday', strtotime('tomorrow',$todayUTC));
 	$weekfromtodayUTC = $todayUTC+604800;
 	$mondaynextweek = strtotime('last monday', strtotime('tomorrow',$weekfromtodayUTC));
-	// do this for each of 7 days, but only if today is a Sunday
+	// we are mid-week and we want to update the files that are there
+	for ($day = $mondaythisweek; $day < $mondaythisweek+604800; $day += 86400) {
+	  	ftpout($day);
+	  	ftpin($day);
+	}// generate next week's routes, but only if today is a Sunday
 	if (date('N',$todayUTC) == 7)
 	  for ($day = $mondaynextweek; $day < $mondaynextweek+604800; $day += 86400) {
 	  	ftpout($day);
-	  	ftpin($day);
+	 //	ftpin($day);
 	  }
-	// otherwise, we are mid-week and we want to just update the files that are there
-	else
-	  for ($day = $mondaythisweek; $day < $mondaythisweek+604800; $day += 86400) {
-	  	ftpout($day);
-	  	ftpin($day);
-	  }
+	
 }
 
 function ftpout($day) {
@@ -30,7 +29,6 @@ function ftpout($day) {
 	$yymmdd = date('y-m-d',$day);
 	$fulldate = date('l F j, Y',$day);
 	$weekagoyymmdd = date ('y-m-d',$day-604800);
-	echo "we are here with ftpout";
 	foreach ($areas as $area=>$area_name) {
 	// remove the file for a week ago from $day: date('y-m-d',$day-604800), if it's there
 	    $filename = dirname(__FILE__).'/../homeplateftp/ftpout/'.$weekagoyymmdd."-".$area.".csv";
@@ -95,30 +93,58 @@ function ftpin($day) {
 			$handle = fopen($filename, "r");
 			if ($handle) {
 	// line 1
-				fgetcsv($handle, $line1, ";");
+				
+				$line1 = fgetcsv($handle, 0, ";");
+			//	echo "line 1 = ".$line1[0].$line1[1];
 				$id = substr($line1[0],0,12);
-				$notes = substr($line1[0],13).";".$line1[5].";".$line1[6];
+				$notes = "";  //  substr($line1[0],13)."_".$line1[5]."_".$line1[6];
 				$teamcaptain = $line1[3];
-	// line 2
-				fgetcsv($handle, $drivers, ";");
+	// line 2			
+				$drivers = array();
+				$availables = getall_drivers_available($area, $day);
+				$ds = fgetcsv($handle, 0, ";");
+				foreach ($ds as $d) {
+					if (strpos($d," ")>=0) $i=strpos($d," "); else $i=-1;
+					$d_first = substr($d,0,$i);
+					$d_last = substr($d,$i+1);
+					$driver_id = $d;
+					foreach($availables as $av) 
+						if ($av->get_first_name() == $d_first && $av->get_last_name() == $d_last) {
+							$driver_id = $av->get_id();
+							break;
+						}
+					$drivers[] = $driver_id;
+				}
+			//	echo "line 2 = ".$drivers[0].$drivers[1];
+				
 	// line 3
-				fgetcsv($handle, $pickup_stops, ";");
+				$ps = fgetcsv($handle, 0, ";");
+				$pickup_stops = array();
+				foreach ($ps as $pickup_stop)
+					$pickup_stops[] = $id.$pickup_stop;
+			//	echo "line 3 = ".$pickup_stops[0].$pickup_stops[1];
+				
 	// line 4
-				fgetcsv($handle, $dropoff_stops, ";");
+				$ds = fgetcsv($handle, 0, ";");
+				$dropoff_stops = array();
+				foreach ($ds as $dropoff_stop) 
+					$dropoff_stops[] = $id.$dropoff_stop;
+			//	echo "line 4 = ".$dropoff_stops[0].$dropoff_stops[1];
+				
 	// save the stuff
 				$r = get_route($id);
+				$r->set_drivers($drivers);
+				$r->set_pickup_stops($pickup_stops);
+				$r->set_dropoff_stops($dropoff_stops);
 				$r->set_notes($notes);
 				$r->set_status("completed");
-				$r->set_drivers($drivers);
-				$r->set_pickup_stops($pickkup_stops);
-				$r->set_dropoff_stops($dropoff_stops);
-				update_dbRoutes($r);
-				
+				update_completed_dbRoutes($r);
 				// close the file
 				fclose($handle);
 			}
 		}
 	}
 }
+
 
 ?>

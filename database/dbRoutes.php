@@ -33,62 +33,85 @@ function create_dbRoutes() {
 }
 /*
  * insert a route to dbRoutes table and its stops to the dbStops table:
- * if route is completed, insert the weights and drivers actually recorded
- * otherwise, insert 0 weights and all scheduled drivers
  * if already there, return false
  */
 function insert_dbRoutes($route){
+        if(! $route instanceof Route) die("Error: insert_dbRoutes type mismatch");
+        connect();
+        $query = "SELECT * FROM dbRoutes WHERE id = '".$route->get_id()."'";
+        $result = mysql_query($query);
+        //if there's no entry for this id, add it
+        if ($result == null || mysql_num_rows($result) == 0) {
+                mysql_query('INSERT INTO dbRoutes VALUES("'.
+                $route->get_id().'","'.
+                implode(',', $route->get_drivers()).'","'.
+                $route->get_teamcaptain_id().'","'.
+                implode(',', $route->get_pickup_stops()).'","'.
+                implode(',', $route->get_dropoff_stops()).'","'.
+                $route->get_status().'","'.
+                $route->get_notes().
+                     '");');
+                mysql_close();
+                foreach ($route->get_pickup_stops() as $pickup_id) {
+                        $pickup_stop = new Stop ($route->get_id(), substr($pickup_id,12), "pickup", "", "");
+                        insert_dbStops($pickup_stop);
+                }
+                foreach ($route->get_dropoff_stops() as $dropoff_id) {
+                        $dropoff_stop = new Stop ($route->get_id(), substr($dropoff_id,12), "dropoff", "", "");
+                        insert_dbStops($dropoff_stop);
+                }
+                return true;
+        }
+        mysql_close();
+        return false;
+}
+/*
+ * insert a completed route to dbRoutes table and its stops to the dbStops table:
+ * insert the weights and drivers actually recorded
+ * if already there, return false
+ */
+function insert_completed_dbRoutes($route){
 	if(! $route instanceof Route) die("Error: insert_dbRoutes type mismatch");
 	connect();
 	$query = "SELECT * FROM dbRoutes WHERE id = '".$route->get_id()."'";
 	$result = mysql_query($query);
+	mysql_close();
 	//if there's no entry for this id, add it
 	if ($result == null || mysql_num_rows($result) == 0) {
-	    if ($route->get_status()!="completed") {
-		  foreach ($route->get_pickup_stops() as $pickup_id) {
-			$pickup_stop = new Stop ($route->get_id(), substr($pickup_id,12), "pickup", "", "");
-			insert_dbStops($pickup_stop);
-		  }
-		  foreach ($route->get_dropoff_stops() as $dropoff_id) {
-			$dropoff_stop = new Stop ($route->get_id(), substr($dropoff_id,12), "dropoff", "", "");
-			insert_dbStops($dropoff_stop);
-		  }
-		}
-		// for a completed route, store the weights away into the stops
-		// and rebuild the pickup_stops and dropoff_stops as simple arrays of stop_ids
-		else {
-			$pickupids = array();
-			foreach ($route->get_pickup_stops() as $stop_data) {
-				$firstcomma = indexOf($stop_data, ",");
+		$pickupids = array();
+		foreach ($route->get_pickup_stops() as $stop_data) {
+				$stop_data = substr($stop_data,12);
+				$firstcomma = strpos($stop_data, ",");
 				$stop_id = substr($stop_data,0,$firstcomma);
 				$stop_data = substr($stop_data,$firstcomma+1);
-				$secondcomma = indexOf($stop_data,',');
+				$secondcomma = strpos($stop_data,',');
 				if ($secondcomma)
 					$stop_data = substr($stop_data,$secondcomma+1);
 				$pickup_stop = new Stop ($route->get_id(), $stop_id, "pickup", $stop_data, "");
 				insert_dbStops($pickup_stop);
 				$pickupids[] = $route->get_id().$stop_id;
-			}
-			$route->set_pickup_stops($pickupids);
-			$dropoffids = array();
-			foreach($route->get_dropoff_stops() as $stop_data) {
-				$firstcomma = indexOf($stop_data, ",");
+		}
+		$route->set_pickup_stops($pickupids);
+		$dropoffids = array();
+		foreach($route->get_dropoff_stops() as $stop_data) {
+				$stop_data = substr($stop_data,12);
+				$firstcomma = strpos($stop_data, ",");
 				$stop_id = substr($stop_data,0,$firstcomma);
 				$stop_data = substr($stop_data,$firstcomma+1);
 				$dropoff_stop = new Stop ($route->get_id(), $stop_id, "dropoff", $stop_data, "");
 				insert_dbStops($dropoff_stop);
 				$dropoffids[] = $route->get_id().$stop_id;
-			}
-			$route->set_dropoff_stops($dropoffids);
 		}
+		$route->set_dropoff_stops($dropoffids);
+		connect();
 		mysql_query('INSERT INTO dbRoutes VALUES("'.
-		$route->get_id().'","'.
-		implode(',', $route->get_drivers()).'","'.
-		$route->get_teamcaptain_id().'","'.
-		implode(',', $route->get_pickup_stops()).'","'.
-		implode(',', $route->get_dropoff_stops()).'","'.
-		$route->get_status().'","'.
-		$route->get_notes().
+                $route->get_id().'","'.
+                implode(',', $route->get_drivers()).'","'.
+                $route->get_teamcaptain_id().'","'.
+                implode(',', $route->get_pickup_stops()).'","'.
+                implode(',', $route->get_dropoff_stops()).'","'.
+                $route->get_status().'","'.
+                $route->get_notes().
                      '");');
 		mysql_close();
 		return true;
@@ -111,10 +134,16 @@ function delete_dbRoutes($r) {
 	$query='DELETE FROM dbRoutes WHERE id = "'.$r->get_id().'"';
 	$result=mysql_query($query);
 	mysql_close();
-	foreach ($r->get_pickup_stops() as $pickup_id)
-	delete_dbStops($pickup_id);
-	foreach ($r->get_dropoff_stops() as $dropoff_id)
-	delete_dbStops($dropoff_id);
+	foreach ($r->get_pickup_stops() as $pickup_id) {
+		$i = strpos($pickup_id,",");
+		if ($i>0) $pickup_id = substr($pickup_id,0,$i);
+		delete_dbStops($pickup_id);
+	}
+	foreach ($r->get_dropoff_stops() as $dropoff_id) {
+		$i = strpos($dropoff_id,",");
+		if ($i>0) $dropoff_id = substr($dropoff_id,0,$i);
+		delete_dbStops($dropoff_id);
+	}
 	return true;
 }
 /*
@@ -143,11 +172,21 @@ function get_route($id){
 /*
  * @update a row by deleting it and then adding it again
  */
+function update_completed_dbRoutes($r) {
+	if (! $r instanceof Route)
+	die ("Invalid argument for update_dbRoutes");
+	if (delete_dbRoutes($r))
+		return insert_completed_dbRoutes($r);
+	else return false;
+}
+/*
+ * @update a row by deleting it and then adding it again
+ */
 function update_dbRoutes($r) {
 	if (! $r instanceof Route)
 	die ("Invalid argument for update_dbRoutes");
 	if (delete_dbRoutes($r))
-	return insert_dbRoutes($r);
+		return insert_dbRoutes($r);
 	else return false;
 }
 
