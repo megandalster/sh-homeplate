@@ -7,6 +7,7 @@ include_once 'domain/Route.php';
 include_once 'domain/Stop.php';
 
 function update_ftp() {
+	autogenerate_routes();  // be sure we have next 3 weeks worth of routes in database
 	$todayUTC = time();
 	$mondaythisweek = strtotime('last monday', strtotime('tomorrow',$todayUTC));
 	$weekfromtodayUTC = $todayUTC+604800;
@@ -15,7 +16,12 @@ function update_ftp() {
 	for ($day = $mondaythisweek; $day < $mondaythisweek+604800; $day += 86400) {
 	  	ftpout($day);
 	  	ftpin($day);
-	}// generate next week's routes, but only if today is a Sunday
+	  	// on Mondays, be sure to get all weights from last week
+	  	if (date('N',$todayUTC) == 1) {
+	  		ftpin($day - 604800);
+	  	}
+	}
+	// generate next week's routes, but only if today is a Sunday
 	if (date('N',$todayUTC) == 7)
 	  for ($day = $mondaynextweek; $day < $mondaynextweek+604800; $day += 86400) {
 	  	ftpout($day);
@@ -92,8 +98,7 @@ function ftpin($day) {
 			$filename = dirname(__FILE__).'/../homeplateftp/ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv";
 			$handle = fopen($filename, "r");
 			if ($handle) {
-	// line 1
-				
+	// line 1			
 				$line1 = fgetcsv($handle, 0, ";");
 			//	echo "line 1 = ".$line1[0].$line1[1];
 				$id = substr($line1[0],0,12);

@@ -255,4 +255,24 @@ function make_new_route ($routeID, $teamcaptain_id) {
 	else
 		return false;	//route already exists, can't add a duplicate for same day and area
 }
+
+// automatically regenerate all routes for the next 2 weeks from today
+function autogenerate_routes () {
+	$areas = array("BFT", "HHI", "SUN");
+	$todayUTC = time();
+	foreach ($areas as $area) {
+	  for ($dayUTC = $todayUTC; $dayUTC <= $todayUTC + 1209600; $dayUTC += 86400) {
+		$routeID = date('y-m-d', $dayUTC).'-'.$area;
+		$route = get_route($routeID);
+		if (!$route) {
+			$day = date("D",mktime(0,0,0,substr($routeID,3,2),substr($routeID,6,2),substr($routeID,0,2)));
+			$team_captains = get_team_captains(substr($routeID,9), $day);
+			if (sizeof($team_captains)==0)
+				$team_captain = "Lisa8437152491";   // force a day captain if there are none
+			else $team_captain = $team_captains[0]->get_id();
+			$route = make_new_route($routeID,$team_captain);
+		}
+	  }
+	}
+}
 ?>
