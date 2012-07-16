@@ -126,7 +126,7 @@ echo '</select>';
 ?>
 
 </fieldset>
-</p>
+
 
 <!-- submit button --> <br>
 <input type="hidden" name="submitted" value="1"><input type="submit"

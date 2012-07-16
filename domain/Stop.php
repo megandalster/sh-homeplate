@@ -86,8 +86,8 @@ class Stop {
 	function set_all_totals(){
 		$this->total_weight = 0;
 		foreach($this->items as $item){
-        	$i = explode(':',$item);
-        	$this->total_weight += $i[1]; 		
+			$i = explode(':',$item);
+			$this->total_weight += $i[1]; 		
 		}
 	}
 	
@@ -95,7 +95,6 @@ class Stop {
 	function set_total_weight($weight){
 		$this->total_weight = $weight;
 	}
-	
 	function set_id($new_id){
 		$this->id = $new_id;
 	}
@@ -113,9 +112,6 @@ class Stop {
     function set_item_weights($items){
 		$this->items = $items;
 		$this->set_all_totals();
-	}
-	function set_total_weight($weight) {
-		$this->total_weight = $weight;
 	}
 	function set_notes($new_notes){
 		$this->notes = $new_notes;
