@@ -65,6 +65,7 @@ padding:10px 10px 10px 10px;
 		<td> <b> Drivers </b> </td>
 		<td> <b> Pickups </b> </td>
 		<td> <b> Dropoffs </b> </td>
+		<td> <b> Completed? </b> </td>
 	</tr>
 	
 	<?php
@@ -103,6 +104,11 @@ padding:10px 10px 10px 10px;
 			
 			//col 4 : dropoffs
 			echo "<td align='center'>".$route->get_num_dropoffs()."</td>";
+			
+			//col 5 : status
+			if ($route->get_status()=="completed") 
+				echo "<td align='center'>"."yes"."</td>";
+			else echo "<td align='center'>"."no"."</td>";
 
 		}
 		// else, use defaults
@@ -115,6 +121,9 @@ padding:10px 10px 10px 10px;
 			echo "<td></td>";
 			
 			// col 4 : dropoffs (blank)
+			echo "<td></td>";
+			
+			//col 5 : status
 			echo "<td></td>";
 		}
 		

@@ -41,7 +41,8 @@
 					else if($_SESSION['access_level']>=2) {
 						include_once('ftp.php');
 						update_ftp();
-						echo "<p>Route and Weight data are up to date with all tablets that have checked in.";
+						echo "<p>Route and Weight data are up to date with all tablets that have checked in this week.";
+						echo "<br>Please select <b>routes</b> above to view details.";
 					}
 				?>
 
