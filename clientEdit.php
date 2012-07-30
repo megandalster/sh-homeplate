@@ -60,9 +60,9 @@
 			else $avail = implode(',',$_POST['availability']);
 					
 			if ($id=="new"){
-				$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#','-',$_POST['id'])))));
+				$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$_POST['id'])))));
 				$chain_name =   $_POST['chain_name'];
-				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion") 
+				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo") 
         			$weight_type="foodtype";
         		else $weight_type = "pounds";
 			}
@@ -87,7 +87,7 @@
 function process_form($id)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
 		if ($id=="new"){
-			$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#','-',$_POST['id'])))));
+			$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$_POST['id'])))));
 		}
 		$chain_name =   $_POST['chain_name'];
 		$address =      trim(str_replace('\\\'','\'',htmlentities($_POST['address'])));
@@ -105,7 +105,7 @@ function process_form($id)	{
         if ($_POST['days'])
         	$days=implode(',', $_POST['days']);
         else $days="";
-        if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion") 
+        if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo") 
         	$weight_type="foodtype";
         else $weight_type = "pounds"; 
         
@@ -146,6 +146,9 @@ function process_form($id)	{
 		else {
 				$id = $_POST['old_id'];
 				$chain_name = $_POST['chain_name'];
+				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo") 
+        			$weight_type="foodtype";
+        		else $weight_type = "pounds";
 				$result = delete_dbClients($id);
                 if (!$result)
                    echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');

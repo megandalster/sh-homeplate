@@ -12,12 +12,14 @@ function update_ftp() {
 	$mondaythisweek = strtotime('last monday', strtotime('tomorrow',$todayUTC));
 	$weekfromtodayUTC = $todayUTC+604800;
 	$mondaynextweek = strtotime('last monday', strtotime('tomorrow',$weekfromtodayUTC));
-	// we are mid-week and we want to update the files that are there
+	// we are mid-week and we want to update any new files that are there
 	for ($day = $mondaythisweek; $day < $mondaythisweek+604800; $day += 86400) {
-	  	ftpout($day);
-	  	ftpin($day);
-	  	// on Mondays, be sure to get all weights from last week
-	  	if (date('N',$todayUTC) == 1) {
+	  	if ($day > $todayUTC) 
+	  		ftpout($day); // update ftpout for future days
+	  	if ($day <= $todayUTC) 
+	  		ftpin($day);  // grab data from any past days, including today
+	  	// on Mondays, be sure to clean up all weights from all days in the last week
+	  	if (date('N',$day) == 1) {
 	  		ftpin($day - 604800);
 	  	}
 	}
