@@ -7,39 +7,28 @@ include_once 'domain/Route.php';
 include_once 'domain/Stop.php';
 
 function update_ftp() {
+	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 	autogenerate_routes();  // be sure we have next 3 weeks worth of routes in database
 	$todayUTC = time();
 	$mondaythisweek = strtotime('last monday', strtotime('tomorrow',$todayUTC));
 	$weekfromtodayUTC = $todayUTC+604800;
 	$mondaynextweek = strtotime('last monday', strtotime('tomorrow',$weekfromtodayUTC));
 	// we are mid-week and we want to update any new files that are there
-	for ($day = $mondaythisweek; $day < $mondaythisweek+604800; $day += 86400) {
+	for ($day = $mondaythisweek; $day < $mondaynextweek+604800; $day += 86400) {
 	  	if ($day > $todayUTC) 
-	  		ftpout($day); // update ftpout for future days
+	  		ftpout($day, $areas); // update ftpout for future days
 	  	if ($day <= $todayUTC) 
 	  		ftpin($day);  // grab data from any past days, including today
-	  	// on Mondays, be sure to clean up all weights from all days in the last week
-	  	if (date('N',$day) == 1) {
-	  		ftpin($day - 604800);
-	  	}
 	}
-	// generate next week's routes, but only if today is a Sunday
-	if (date('N',$todayUTC) == 7)
-	  for ($day = $mondaynextweek; $day < $mondaynextweek+604800; $day += 86400) {
-	  	ftpout($day);
-	 //	ftpin($day);
-	  }
-	
 }
 
-function ftpout($day) {
-	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
+function ftpout($day, $areas) {
 	$yymmdd = date('y-m-d',$day);
 	$fulldate = date('l F j, Y',$day);
-	$weekagoyymmdd = date ('y-m-d',$day-604800);
+	$twoweeksagoyymmdd = date ('y-m-d',$day-1209600);
 	foreach ($areas as $area=>$area_name) {
 	// remove the file for a week ago from $day: date('y-m-d',$day-604800), if it's there
-	    $filename = dirname(__FILE__).'/../homeplateftp/ftpout/'.$weekagoyymmdd."-".$area.".csv";
+	    $filename = dirname(__FILE__).'/../homeplateftp/ftpout/'.$twoweeksagoyymmdd."-".$area.".csv";
 		@unlink($filename);
 	// create a new file for $day
 	    $filename = dirname(__FILE__).'/../homeplateftp/ftpout/'.$yymmdd."-".$area.".csv";
