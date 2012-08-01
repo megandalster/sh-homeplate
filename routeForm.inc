@@ -55,7 +55,10 @@ else echo $route->get_status();
 */
 echo ('<p><table><tr><td>Crew: ');echo ('</td><td>Pick-ups -- weights'); echo ('</td><td>Drop-offs -- weights'); echo ('</td></tr>');
 echo "<tr><td valign='top'>";
-foreach ($route->get_drivers() as $driver_id) {
+if (sizeof($route->get_drivers())==0 && $route->get_status()=="completed")
+	echo "no drivers checked in<br>";
+else
+  foreach ($route->get_drivers() as $driver_id) {
 	$driver = retrieve_dbVolunteers($driver_id);
 	if ($driver)
 	    $name = $driver->get_first_name() . ' ' . $driver->get_last_name();
@@ -63,7 +66,7 @@ foreach ($route->get_drivers() as $driver_id) {
 	if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today)
 	echo "<input type='checkbox' name='s_driver[]' value='".$driver_id."'>".$name."<br>";
 	else echo $name."<br>";
-}
+  }
 echo "</td><td valign='top'>";
 foreach ($route->get_pickup_stops() as $pickup_id) {
 	$client_id = substr($pickup_id,12);

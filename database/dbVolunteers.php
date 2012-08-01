@@ -112,7 +112,7 @@ function get_team_captains ($area, $day) {
 
 function  getall_drivers_available($area, $day) {
 	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND area  = '".$area."' ORDER BY last_name, first_name");
+	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND area  = '".$area."' AND availability LIKE '%".$day."%' ORDER BY last_name, first_name");
 	
 	$theVols = array();	
 	while($result_row = mysql_fetch_assoc($result)){

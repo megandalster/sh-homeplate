@@ -15,7 +15,7 @@ function update_ftp() {
 	$mondaynextweek = strtotime('last monday', strtotime('tomorrow',$weekfromtodayUTC));
 	// we are mid-week and we want to update any new files that are there
 	for ($day = $mondaythisweek; $day < $mondaynextweek+604800; $day += 86400) {
-	  	if ($day > $todayUTC) 
+		if ($day > $todayUTC) 
 	  		ftpout($day, $areas); // update ftpout for future days
 	  	if ($day <= $todayUTC) 
 	  		ftpin($day);  // grab data from any past days, including today
@@ -48,6 +48,7 @@ function ftpout($day, $areas) {
 					$drivers[] = $driver->get_first_name()." ".$driver->get_last_name();
 				else $drivers[] = $driver_id;
 			}
+			$drivers[] = "Other";
 			foreach ($theRoute->get_pickup_stops() as $pickup_stopid) {
 				$pickup_stop = retrieve_dbClients(substr($pickup_stopid,12));
 				if (!$pickup_stop || $pickup_stop->get_weight_type()=="pounds"){
@@ -56,11 +57,11 @@ function ftpout($day, $areas) {
 				else 
 					$pickup_stops[] = $pickup_stop->get_id().",0,Meat:0,Frozen:0,Bakery:0,Grocery:0,Dairy:0,Produce:0";
 		 	}
-		 	$pickup_stops[] = "Other,0";
+		 	// $pickup_stops[] = "Other,0";
 			foreach ($theRoute->get_dropoff_stops() as $dropoff_stopid) {
 				$dropoff_stops[] = substr($dropoff_stopid,12).",0";
 			}
-			$dropoff_stops[] = "Other,0";
+			// $dropoff_stops[] = "Other,0";
 	// line 1
 	    	fputcsv($handle, array(
 	    		$yymmdd."-".$area, $area_name, $fulldate, 
@@ -81,8 +82,9 @@ function ftpout($day, $areas) {
 
 function ftpin($day) {
 	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
-	$deviceIds = array("8c5328005a8d7784");
+	$deviceIds = array("8c5328005a8d7784","1fb439eca4296cba","387a6442e578d02f");
 	$yymmdd = date('y-m-d',$day);
+	$day_of_week = date ("D", $day);
 	foreach ($areas as $area=>$area_name) {
 		foreach ($deviceIds as $deviceId) {
 	// look for a file for $day and $deviceId
@@ -93,14 +95,22 @@ function ftpin($day) {
 				$line1 = fgetcsv($handle, 0, ";");
 			//	echo "line 1 = ".$line1[0].$line1[1];
 				$id = substr($line1[0],0,12);
-				$notes = "";  //  substr($line1[0],13)."_".$line1[5]."_".$line1[6];
+				$notes = substr($line1[0],13).";".$line1[5]."-".$line1[6];
 				$teamcaptain = $line1[3];
 	// line 2			
 				$drivers = array();
-				$availables = getall_drivers_available($area, $day);
+				$availables = getall_drivers_available($area, $day_of_week);
+			//	echo "availables "; var_dump($availables);
 				$ds = fgetcsv($handle, 0, ";");
 				foreach ($ds as $d) {
-					if (strpos($d," ")>=0) $i=strpos($d," "); else $i=-1;
+					if (strpos($d,"*")>0)
+					    continue;
+					$j = strpos($d,"#");
+					if ($j>0)
+						$d = substr($d,0,$j);
+					if (strpos($d," ")>0) 
+						$i=strpos($d," "); 
+					else $i=0;
 					$d_first = substr($d,0,$i);
 					$d_last = substr($d,$i+1);
 					$driver_id = $d;
@@ -109,7 +119,7 @@ function ftpin($day) {
 							$driver_id = $av->get_id();
 							break;
 						}
-					$drivers[] = $driver_id;
+					$drivers[] = $driver_id;	
 				}
 			//	echo "line 2 = ".$drivers[0].$drivers[1];
 				
