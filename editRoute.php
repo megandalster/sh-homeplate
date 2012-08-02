@@ -31,7 +31,6 @@ $team_captains = get_team_captains(substr($routeID,9), $day);
 if (sizeof($team_captains)==0)
 	$team_captain = "Lisa8437152491";   // force a day captain if there are none
 else $team_captain = $team_captains[0]->get_id();
-echo "dayteamcaptain = ".$day.$team_captain;
 if(! $route)
 	$route = make_new_route($routeID,$team_captain);
 ?>

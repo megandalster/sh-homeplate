@@ -275,4 +275,28 @@ function autogenerate_routes () {
 	  }
 	}
 }
+// for completed routes, the total weights follow the first comma in the pickup/
+// dropoff id.  That is, the route $r is not a properly formed route in this regard,
+// so we inspect the total weights to determine if the route is worth keeping (has any
+// non-zero weights).
+function has_nonzero_pickup_weight($r) {
+	$ps = $r->get_pickup_stops();
+	foreach($ps as $p) {
+		$i = strpos($p, ",");
+		$weight = substr($p, $i+1);
+		if (substr($weight,0,1)!="0") 
+			return true;
+	}
+	return false;	
+}
+function has_nonzero_dropoff_weight($r) {
+	$ds = $r->get_dropoff_stops();
+	foreach($ds as $d) {
+		$i = strpos($d, ",");
+		$weight = substr($d, $i+1);
+		if (substr($weight,0,1)!="0") 
+			return true;
+	}
+	return false;	
+}
 ?>
