@@ -90,7 +90,7 @@ function ftpin($day) {
 	// look for a file for $day and $deviceId
 			$filename = dirname(__FILE__).'/../homeplateftp/ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv";	
 			if (file_exists($filename)) {
-				$handle = fopen($filename, "r");
+				$handle = fopen($filename, "r+");
 	// line 1			
 				$line1 = fgetcsv($handle, 0, ";");
 			//	echo "line 1 = ".$line1[0].$line1[1];
@@ -144,7 +144,10 @@ function ftpin($day) {
 				$r->set_dropoff_stops($dropoff_stops);
 				$r->set_notes($notes);
 				$r->set_status("completed");
-				update_completed_dbRoutes($r);
+				if (has_nonzero_pickup_weight($r) || has_nonzero_dropoff_weight($r))
+					update_completed_dbRoutes($r);
+				else 
+					@unlink($filename);  // drop any file in ftpin that has no data
 				// close the file
 				fclose($handle);
 			}
