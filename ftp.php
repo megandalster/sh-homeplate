@@ -126,15 +126,19 @@ function ftpin($day) {
 	// line 3
 				$ps = fgetcsv($handle, 0, ";");
 				$pickup_stops = array();
-				foreach ($ps as $pickup_stop)
+				foreach ($ps as $pickup_stop) {
+					$pickup_stop = trim(str_replace('\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$pickup_stop)))));
 					$pickup_stops[] = $id.$pickup_stop;
+				}
 			//	echo "line 3 = ".$pickup_stops[0].$pickup_stops[1];
 				
 	// line 4
 				$ds = fgetcsv($handle, 0, ";");
 				$dropoff_stops = array();
-				foreach ($ds as $dropoff_stop) 
+				foreach ($ds as $dropoff_stop) {
+					$dropoff_stop = trim(str_replace('\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$dropoff_stop)))));
 					$dropoff_stops[] = $id.$dropoff_stop;
+				}
 			//	echo "line 4 = ".$dropoff_stops[0].$dropoff_stops[1];
 				
 	// save the stuff
