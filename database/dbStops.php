@@ -102,10 +102,11 @@ function getall_dbStops () {
 }
 
 // Returns all stops within a certain date range.
-function getall_dbStops_between_dates ($area, $type, $start_date, $end_date) {
+function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, $end_date) {
 	connect();
 	$query = "SELECT route, client, type, SUM(weight), notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
+			"client like '%".$client_name."%' AND ".
 			"type like '%".$type."%' AND weight > 0 AND ".
 			"date >= '". $start_date . "' AND date <= '". $end_date . "' GROUP BY client";
     $result = mysql_query ($query);
@@ -121,10 +122,11 @@ function getall_dbStops_between_dates ($area, $type, $start_date, $end_date) {
 }
 
 // Returns all stops within a certain date range.
-function getall_dbWalmartPublixStops_between_dates ($area, $start_date, $end_date) {
+function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_date, $end_date) {
 	connect();
 	$query = "SELECT route, client, type, items, notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
+			"client like '%".$client_name."%' AND ".
 			"items like '%:%' AND weight > 0 AND ".
 			"date >= '". $start_date . "' AND date <= '". $end_date . "' ORDER BY client";
     $result = mysql_query ($query);

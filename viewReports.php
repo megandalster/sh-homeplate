@@ -31,7 +31,9 @@ echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
 	<option value="pickup">Donors Only</option>
 	<option value="dropoff">Recepients Only</option>
 	<option value="publixwalmart">Breakdowns by Food Type</option>
-</select> <br>
+</select> <br>Single Client Option (type name or leave blank) :
+	<input type="text" name="client_name" value="" />
+<br>
 
 <fieldset><legend>Select report dates</legend>
 <p><input type="radio" name="report_span" value="weekly" /> Last Week <br>
@@ -137,12 +139,14 @@ if($_POST['submitted'])
 {
 	$header = array("Second Helpings Truck Weight Report for ");
 	if ($_POST['report_area']!="") $header[] = $areas[$_POST['report_area']]." area, "; 
-		else $header[] = " all areas, ";
-	if ($_POST['report_type']=="publixwalmart") $header[] = " food type breakdowns ";
-		else if ($_POST['report_type']=="pickup") $header[] = " donors only ";
-		else if ($_POST['report_type']=="dropoff") $header[] = " recipients only ";
-		else $header[] = " donors and recipients ";
-	$header[] =  "<br>";
+		else $header[] = " all areas";
+	if ($_POST['report_type']=="publixwalmart") $header[] = ", food type breakdowns";
+		else if ($_POST['report_type']=="pickup") $header[] = ", donors only";
+		else if ($_POST['report_type']=="dropoff") $header[] = ", recipients only";
+		else $header[] = ", donors and recipients";
+	if ($_POST['client_name']!="")
+		$header[] = ", single client '".$_POST['client_name']."' only";
+	$header[] =  ".<br>";
 	if($_POST['report_span'] == "weekly")
 	{
 		$time = strtotime('last monday', strtotime('tomorrow',time())) - 604800;
@@ -185,7 +189,7 @@ if($_POST['submitted'])
 	
   if ($_POST['report_span']!="" && $_POST['report_type']!="publixwalmart") {
 	// get all stops from database for given area, report type, and date range
-	$all_stops = getall_dbStops_between_dates($_POST['report_area'], $_POST['report_type'], $start_date, $end_date);
+	$all_stops = getall_dbStops_between_dates($_POST['report_area'], $_POST['report_type'], $_POST['client_name'], $start_date, $end_date);
 
 	//split all_stops into 2 different arrays - one for each
 	$pickups = array();
@@ -265,7 +269,7 @@ if($_POST['submitted'])
   else if ($_POST['report_span']!="") 
   {
   	// get all stops from database for given area, report type, and date range
-	$all_stops = getall_dbWalmartPublixStops_between_dates($_POST['report_area'], $start_date, $end_date);
+	$all_stops = getall_dbWalmartPublixStops_between_dates($_POST['report_area'], $_POST['client_name'], $start_date, $end_date);
 
 	//split all_stops into 5 different arrays - one for each food type
 	$food_types = array("Store", "Meat","Frozen","Bakery","Grocery","Dairy","Produce","Total");
