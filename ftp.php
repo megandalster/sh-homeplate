@@ -27,7 +27,7 @@ function ftpout($day, $areas) {
 	$fulldate = date('l F j, Y',$day);
 	$twoweeksagoyymmdd = date ('y-m-d',$day-1209600);
 	foreach ($areas as $area=>$area_name) {
-	// remove the file for a week ago from $day: date('y-m-d',$day-604800), if it's there
+	// remove the file for 2 weeks ago from $day: date('y-m-d',$day-604800), if it's there
 	    $filename = dirname(__FILE__).'/../homeplateftp/ftpout/'.$twoweeksagoyymmdd."-".$area.".csv";
 		@unlink($filename);
 	// create a new file for $day
@@ -150,8 +150,7 @@ function ftpin($day) {
 				$r->set_status("completed");
 				if (has_nonzero_pickup_weight($r) || has_nonzero_dropoff_weight($r))
 					update_completed_dbRoutes($r);
-				else 
-					@unlink($filename);  // drop any file in ftpin that has no data
+				@unlink($filename);  // delete the file after saving its weights
 				// close the file
 				fclose($handle);
 			}
