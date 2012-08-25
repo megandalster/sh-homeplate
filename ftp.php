@@ -28,10 +28,10 @@ function ftpout($day, $areas) {
 	$twoweeksagoyymmdd = date ('y-m-d',$day-1209600);
 	foreach ($areas as $area=>$area_name) {
 	// remove the file for 2 weeks ago from $day: date('y-m-d',$day-604800), if it's there
-	    $filename = dirname(__FILE__).'/../homeplateftp/ftpout/'.$twoweeksagoyymmdd."-".$area.".csv";
+	    $filename = dirname(__FILE__).'/../homeplateftp1/ftpout/'.$twoweeksagoyymmdd."-".$area.".csv";
 		@unlink($filename);
 	// create a new file for $day
-	    $filename = dirname(__FILE__).'/../homeplateftp/ftpout/'.$yymmdd."-".$area.".csv";
+	    $filename = dirname(__FILE__).'/../homeplateftp1/ftpout/'.$yymmdd."-".$area.".csv";
 		$handle = fopen($filename, "w");
 	// get the data to put out there
 		$theRoute = get_route($yymmdd."-".$area);
@@ -88,7 +88,7 @@ function ftpin($day) {
 	foreach ($areas as $area=>$area_name) {
 		foreach ($deviceIds as $deviceId) {
 	// look for a file for $day and $deviceId
-			$filename = dirname(__FILE__).'/../homeplateftp/ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv";	
+			$filename = dirname(__FILE__).'/../homeplateftp1/ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv";	
 			if (file_exists($filename)) {
 				$handle = fopen($filename, "r+");
 	// line 1			

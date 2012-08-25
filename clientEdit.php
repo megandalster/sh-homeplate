@@ -62,7 +62,7 @@
 			if ($id=="new"){
 				$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$_POST['id'])))));
 				$chain_name =   $_POST['chain_name'];
-				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo") 
+				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo" || $chain_name=="Harris Teeter") 
         			$weight_type="foodtype";
         		else $weight_type = "pounds";
 			}
@@ -105,7 +105,7 @@ function process_form($id)	{
         if ($_POST['days'])
         	$days=implode(',', $_POST['days']);
         else $days="";
-        if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo") 
+        if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo" || $chain_name=="Harris Teeter") 
         	$weight_type="foodtype";
         else $weight_type = "pounds"; 
         
@@ -146,7 +146,7 @@ function process_form($id)	{
 		else {
 				$id = $_POST['old_id'];
 				$chain_name = $_POST['chain_name'];
-				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo") 
+				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo" || $chain_name=="Harris Teeter") 
         			$weight_type="foodtype";
         		else $weight_type = "pounds";
 				$result = delete_dbClients($id);
