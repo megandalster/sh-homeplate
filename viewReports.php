@@ -272,7 +272,7 @@ if($_POST['submitted'])
 	$all_stops = getall_dbWalmartPublixStops_between_dates($_POST['report_area'], $_POST['client_name'], $start_date, $end_date);
 
 	//split all_stops into 5 different arrays - one for each food type
-	$food_types = array("Store", "Meat","Frozen","Bakery","Grocery","Dairy","Produce","Total");
+	$food_types = array("Store", "Meat","Deli","Bakery","Grocery","Dairy","Produce","Total");
 	$row_totals = array();
 	$food_type_totals = array("Totals",0,0,0,0,0,0,0);
 	
