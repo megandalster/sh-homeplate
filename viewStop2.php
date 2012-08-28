@@ -82,7 +82,7 @@
 			<fieldset>
 				<legend><b>Data Entry</b></legend><br />
 				<i>Meat Weight: </i>&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" size="10" name="meat_weight" <?php echo 'value='.$meat_weight?>> lbs.<br />
-				<i>Frozen Weight: </i>&nbsp;<input type="text" size="10" name="frozen_weight" <?php echo 'value='.$frozen_weight?>> lbs.<br />
+				<i>Deli Weight: </i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" size="10" name="frozen_weight" <?php echo 'value='.$frozen_weight?>> lbs.<br />
 				<i>Bakery Weight: </i>&nbsp;<input type="text" size="10" name="bakery_weight" <?php echo 'value='.$bakery_weight?>> lbs.<br />
 				<i>Grocery Weight: </i><input type="text" size="10" name="grocery_weight" <?php echo 'value='.$grocery_weight?>> lbs.<br />
 				<i>Dairy Weight: </i>&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" size="10" name="dairy_weight" <?php echo 'value='.$dairy_weight?>> lbs.<br />
