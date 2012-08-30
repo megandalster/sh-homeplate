@@ -82,7 +82,7 @@ function ftpout($day, $areas) {
 
 function ftpin($day) {
 	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
-	$deviceIds = array("8c5328005a8d7784","1fb439eca4296cba","387a6442e578d02f");
+	$deviceIds = array("8c5328005a8d7784","6b2b51166c2b321f","387a6442e578d02f","bd3eb9c3c3bd44ba","c930db8fe6dccd30","3d28c762d6862027");
 	$yymmdd = date('y-m-d',$day);
 	$day_of_week = date ("D", $day);
 	foreach ($areas as $area=>$area_name) {
@@ -150,7 +150,7 @@ function ftpin($day) {
 				$r->set_status("completed");
 				if (has_nonzero_pickup_weight($r) || has_nonzero_dropoff_weight($r))
 					update_completed_dbRoutes($r);
-				@unlink($filename);  // delete the file after saving its weights
+				// @unlink($filename);  // delete the file after saving its weights
 				// close the file
 				fclose($handle);
 			}
