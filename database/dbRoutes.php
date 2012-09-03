@@ -119,6 +119,32 @@ function insert_completed_dbRoutes($route){
 	mysql_close();
 	return false;
 }
+/* reconstruct completed route's stops as if they are coming from the tablet
+ * 
+ */
+function rebuild_original_stops($r, $type) {
+	if ($type=="pickup") {
+		$originals = array();
+		foreach ($r->get_pickup_stops() as $pickup_id) {
+			$pickup_stop = 	retrieve_dbStops($pickup_id);
+			$pickup_stop_string = $pickup_stop->get_id().",".$pickup_stop->get_total_weight();
+			if (sizeof($pickup_stop->get_items()) > 0) {
+				$itemstring = implode(",",$pickup_stop->get_items());
+				$pickup_stop_string = $pickup_stop_string . "," . $itemstring;
+			}
+			$originals[] = $pickup_stop_string;
+		}
+	}
+	else {
+		$originals = array();
+		foreach ($r->get_dropoff_stops() as $dropoff_id) {
+			$dropoff_stop = retrieve_dbStops($dropoff_id);
+			$dropoff_stop_string = $dropoff_stop->get_id().",".$dropoff_stop->get_total_weight();
+			$originals[] = $dropoff_stop_string;
+		}
+	}
+	return $originals;
+}
 /*
  * remove a route from dbRoutes table and all its stops from the dbStops table.
  * If not there, return false

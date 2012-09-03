@@ -145,5 +145,57 @@ class Route {
     function set_dropoff_stops($dropoff_stops) {
     	$this->dropoff_stops = $dropoff_stops;
     }
+	function merge_notes($notes) {
+		$array_notes = explode(",",$this->notes);
+		$array_notes = array_unique(array_merge($array_notes,array($notes)));
+    	$this->notes = implode(",", $array_notes);
+    }
+    function merge_drivers($drivers) {
+    	$this->drivers = array_unique(array_merge($this->drivers,$drivers));
+    }
+	function merge_pickup_stops($original_pickups, $pickup_stops) {
+    	$this->pickup_stops = $this->special_merge($original_pickups,$pickup_stops);
+    }
+    function merge_dropoff_stops($original_dropoffs, $dropoff_stops) {
+    	$this->dropoff_stops = $this->special_merge($original_dropoffs,$dropoff_stops);
+    }
+    // special merge function for pickup and dropoff stops
+    // if stop2 has data, 
+    //    if stop1 has no data, or there is no comparable stop1, then
+    //        then replace stop1's data by stop2's
+    // otherwise, leave stop1 alone
+    function special_merge($array1, $array2) {
+    	$array3 = $array1;
+    	$originallimit = sizeof($array3);
+    	foreach($array2 as $stop2) {
+    		$stop2array = explode (",",$stop2);
+    		$found = false;
+    		if ($stop2array[1] != 0) {   // stop2 has data, so deal with it
+    			// find a matching stop, if there is one
+    			for ($i=0; $i<$originallimit; $i++) { 
+    				$stop1array = explode (",",$array3[$i]);
+    				// matching stop
+    				if ($stop1array[0] == $stop2array[0]) {
+    				  $found = true;
+    				  if ($stop1array[1] == 0) { // no data there yet
+    				  	$array3[$i] = $stop2;
+    					$found = true;
+    					break;
+    				  }
+    				  else {			// stop1 has data, keep it
+    				  	$found = true;   
+    					break;
+    				  }	
+    				}
+    			} 	
+    			if (!$found) { // we didnt find a match, so append stop2 to the list
+    			    $array3[] = $stop2;
+    			}
+    		}  
+    		else { // stop2 has no data, so skip it	
+    		}
+    	}
+    	return $array3;
+    }
 }
 ?>

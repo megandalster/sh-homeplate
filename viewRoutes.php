@@ -109,10 +109,21 @@ padding:10px 10px 10px 10px;
 			
 			//col 5 : status
 			if ($route->get_status()=="completed") {
+				$first_tablet = $route->get_notes();
+				$j = strpos($first_tablet,","); // see if there's more than one tablet checking in
 				echo "<td align='center'>"."yes"."</td>";
-				$i = strpos($route->get_notes(),";");
-				$times = substr($route->get_notes(),$i+1);
-				echo "<td>".substr($route->get_notes(),0,$i)."</td><td>".$times."</td>";
+				while ($j > 0) {
+					$this_tablet = substr($first_tablet,0,$j);
+					$first_tablet = substr($first_tablet,$j+1);
+					$i = strpos($this_tablet,";");
+					$times = substr($this_tablet,$i+1);
+					echo "<td>".substr($this_tablet,0,$i)."</td><td>".$times."</td>";
+					echo "</tr><tr><td></td><td></td><td></td><td></td><td></td>";
+					$j = strpos($first_tablet,",");
+				}
+				$i = strpos($first_tablet,";");
+				$times = substr($first_tablet,$i+1);
+				echo "<td>".substr($first_tablet,0,$i)."</td><td>".$times."</td>";
 			}
 			else echo "<td align='center'>"."no"."</td><td></td><td></td>";
 
