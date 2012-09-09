@@ -138,7 +138,7 @@ echo '</select>';
 if($_POST['submitted'])
 {
 	$header = array("Second Helpings Truck Weight Report for ");
-	if ($_POST['report_area']!="") $header[] = $areas[$_POST['report_area']]." area, "; 
+	if ($_POST['report_area']!="") $header[] = $areas[$_POST['report_area']]." area"; 
 		else $header[] = " all areas";
 	if ($_POST['report_type']=="publixwalmart") $header[] = ", food type breakdowns";
 		else if ($_POST['report_type']=="pickup") $header[] = ", donors only";

@@ -17,8 +17,8 @@ function update_ftp() {
 	for ($day = $mondaylastweek; $day < $mondaynextweek+604800; $day += 86400) {
 		if ($day > $todayUTC) 
 	  		ftpout($day, $areas); // update ftpout for future days
-	  	if ($day < $todayUTC) 
-	  		ftpin($day);  // grab data from any past days, but not today!
+	  	if ($day <= $todayUTC) 
+	  		ftpin($day);  // grab data from any past days, including today!
 	}
 }
 
@@ -103,7 +103,7 @@ function ftpin($day) {
 				$tabletid = substr($line1[0],13);
 				$notes = $tabletid.";".$line1[5]."-".$line1[6];
 				$r = get_route($id);
-				if (strpos($r->get_notes(),$tabletid) > 0) { // WEIGHTS ALREADY RECORDED FOR THIS TABLET, SKIP IT
+				if ($r && strpos($r->get_notes(),$tabletid) > 0) { // WEIGHTS ALREADY RECORDED FOR THIS TABLET, SKIP IT
 					fclose($handle);
 					continue;
 				}
