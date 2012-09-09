@@ -70,19 +70,11 @@ else
 echo "</td><td valign='top'>";
 foreach ($route->get_pickup_stops() as $pickup_id) {
 	$client_id = substr($pickup_id,12);
-	$client = retrieve_dbClients($client_id);
-	if ($client)
-	  switch ($client->get_weight_type()) {
-		case "foodtype": $pickup_link = "<a href='viewStop2.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
-		break;
-		case "foodtypeboxes": $pickup_link = "<a href='viewStop2.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
-		break;
-		default: $pickup_link = "<a href='viewStop1.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
-	}
-	//if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today)
-	//echo "<input type='checkbox' name='s_pickup[]' value='".$pickup_id."' />".$pickup_link."<br>";
-	//else 
 	$theStop = retrieve_dbStops($routeID.$client_id);
+	if (sizeof($theStop->get_items()) > 0)
+		$pickup_link = "<a href='viewStop2.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
+	else 
+		$pickup_link = "<a href='viewStop1.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
 	echo $pickup_link;
 	if ($theStop->get_total_weight()>0) echo " -- ".$theStop->get_total_weight();
 	echo "<br>";
@@ -90,7 +82,7 @@ foreach ($route->get_pickup_stops() as $pickup_id) {
 echo "</td><td valign='top'>";
 foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	$client_id = substr($dropoff_id,12);
-	$client = retrieve_dbClients($client_id);
+	//$client = retrieve_dbClients($client_id);
 	$dropoff_link = "<a href='viewStop1.php?client_type=recipient&stop_id=".$dropoff_id."'>".$client_id."</a>";
 	//if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today)
 	//echo "<input type='checkbox' name='s_dropoff[]' value='".$dropoff_id."' />".$dropoff_link."<br>";
