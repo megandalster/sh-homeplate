@@ -71,10 +71,22 @@ echo "</td><td valign='top'>";
 foreach ($route->get_pickup_stops() as $pickup_id) {
 	$client_id = substr($pickup_id,12);
 	$theStop = retrieve_dbStops($routeID.$client_id);
-	if (sizeof($theStop->get_items()) > 0)
-		$pickup_link = "<a href='viewStop2.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
-	else 
-		$pickup_link = "<a href='viewStop1.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
+	$client = retrieve_dbClients($client_id);
+	if ($client)
+	  switch ($client->get_weight_type()) {
+		case "foodtype": $pickup_link = "<a href='viewStop2.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
+		break;
+		//case "foodtypeboxes": $pickup_link = "<a href='viewStop2.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
+		//break;
+		default: $pickup_link = "<a href='viewStop1.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
+	}
+	else { // special case for stops created en-route and client isnt in the database
+		$theStop = retrieve_dbStops($routeID.$client_id);
+		if (sizeof($theStop->get_items()) > 0)
+			$pickup_link = "<a href='viewStop2.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
+		else 
+			$pickup_link = "<a href='viewStop1.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
+	}
 	echo $pickup_link;
 	if ($theStop->get_total_weight()>0) echo " -- ".$theStop->get_total_weight();
 	echo "<br>";
@@ -154,7 +166,7 @@ echo('<input type="submit" value="Submit" name="Submit"> to add him/her to the c
 
 }
 else echo "</td></tr></table>";
-if ($route->get_status()!="completed")
+// if ($route->get_status()!="completed")
 	echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
 				'<input type="submit" value="Delete" name="Delete Entry"> to delete this route from the database. ');
 
