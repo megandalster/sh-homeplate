@@ -10,7 +10,7 @@ function update_ftp() {
 	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 	autogenerate_routes();  // be sure we have next 3 weeks worth of routes in database
 	$todayUTC = time();
-	$mondaylastweek = strtotime('last monday', $todayUTC);
+	$mondaylastweek = strtotime('last monday', strtotime('last monday', $todayUTC));
 	$weekfromtodayUTC = $todayUTC+604800;
 	$mondaynextweek = strtotime('last monday', strtotime('tomorrow',$weekfromtodayUTC));
 	// we are mid-week and we want to update any new files that are there
@@ -169,9 +169,9 @@ function ftpin($day) {
 					$r->set_notes($notes);
 					$r->set_status("completed");
 				}
-				if (has_nonzero_pickup_weight($r) || has_nonzero_dropoff_weight($r))
-					update_completed_dbRoutes($r);
-				// @unlink($filename);  // delete the file after saving its weights
+				// if (has_nonzero_pickup_weight($r) || has_nonzero_dropoff_weight($r))
+				update_completed_dbRoutes($r);
+				@unlink($filename);  // delete the file after saving its weights
 				// rewrite the file and close it
 				fclose($handle);
 			}
