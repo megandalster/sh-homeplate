@@ -166,7 +166,7 @@ echo('<input type="submit" value="Submit" name="Submit"> to add him/her to the c
 
 }
 else echo "</td></tr></table>";
-// if ($route->get_status()!="completed")
+if ($route->get_status()!="completed")
 	echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
 				'<input type="submit" value="Delete" name="Delete Entry"> to delete this route from the database. ');
 
