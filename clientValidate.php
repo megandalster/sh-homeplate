@@ -7,9 +7,9 @@
  * by the Free Software Foundation (see <http://www.gnu.org/licenses/).
 */
 
-function validate_form(){
+function validate_form($id){
     $errors = array();
-	if($id=="new" && $_POST['id']==null)    $errors[] = 'Please enter a name';
+	if($id=="new" && (!$_POST['id'] || trim($_POST['id'])==""))    $errors[] = 'Please enter a name';
 	if($_POST['address']==null)             $errors[] = 'Please enter an address';
 	if($_POST['city']==null)                $errors[] = 'Please enter a city';
 	if($_POST['state']==null)               $errors[] = 'Please enter a state';

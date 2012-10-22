@@ -69,9 +69,10 @@ h1 {padding-left: 0px; padding-right:165px;}
 		
 		//they're logged in and session variables are set.
 		echo('<a href="'.$path.'index.php">home</a>');
-		if ($_SESSION['access_level']==0) // guests
+		if ($_SESSION['access_level']==0) { // guests
 		    echo('<a href="volunteerEdit.php?id=new'.'"> | apply </a>');
-		
+			echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$week_later.'"> | reports</a>';	
+		}
 		if($_SESSION['access_level']>=1) // drivers, team captains, and officers 
 		    echo('<a href="'.$path.'viewRoutes.php?area='.$_SESSION['_area'].'&date='.$today.'"> | routes</a>');
 		

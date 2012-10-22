@@ -44,23 +44,22 @@
     <?PHP include('header.php');?>
 	<div id="content">
 <?PHP
-
-    include('clientValidate.php');
+	include('clientValidate.php');
 	if( !array_key_exists('_form_submit', $_POST) )
 	//in this case, the form has not been submitted, so show it
 		include('clientForm.php');
 	else {
 	//in this case, the form has been submitted, so validate it
-		$errors = validate_form(); 	//step one is validation, "errors" array lists problems on the form submitted
+		$errors = validate_form($id); 	//step one is validation, "errors" array lists problems on the form submitted
 		if ($errors) {
 		// display the errors and the form to fix
 			show_errors($errors);
 			if ($_POST['availability']==null)
 			   $avail = "";
 			else $avail = implode(',',$_POST['availability']);
-					
+			$old_id = $id;		
 			if ($id=="new"){
-				$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$_POST['id'])))));
+				$id = trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$_POST['id'])))));
 				$chain_name =   $_POST['chain_name'];
 				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || $chain_name=="BiLo" || $chain_name=="Harris Teeter") 
         			$weight_type="foodtype";
@@ -70,6 +69,7 @@
                                  $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
 								 $_POST['geocoordinates'], $_POST['phone1'], $_POST['phone2'], implode(',',$_POST['days']),
 								 $feed_america, $weight_type, $_POST['notes'] );
+			$id = $old_id;
 			include('clientForm.php');
 		}
 		// this was a successful form submission; update the database and exit
@@ -87,7 +87,7 @@
 function process_form($id)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
 		if ($id=="new"){
-			$id =           trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$_POST['id'])))));
+			$id = trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$_POST['id'])))));
 		}
 		$chain_name =   $_POST['chain_name'];
 		$address =      trim(str_replace('\\\'','\'',htmlentities($_POST['address'])));
@@ -139,6 +139,7 @@ function process_form($id)	{
                     $result = insert_dbClients($newperson);
 					if (!$result)
                         echo ('<p class="error">Unable to add '. $id . ' in the database. <br>Please report this error to the Program Coordinator.');
+					else echo("<p>You have successfully added " .$id. " to the database.</p>");
 				}
 		}
 
