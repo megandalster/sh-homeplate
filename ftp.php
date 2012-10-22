@@ -90,9 +90,6 @@ function ftpin($day) {
 	$day_of_week = date ("D", $day);
 	foreach ($areas as $area=>$area_name) {
 		foreach ($deviceIds as $deviceId) {
-	// get rid of old data
-	//		$filename = dirname(__FILE__).'/../homeplateftp1/ftpout/'.$twoweeksagoyymmdd."-".$area.".csv";
-	//		@unlink($filename);
 	// look for a file for $day and $deviceId
 			$filename = dirname(__FILE__).'/../homeplateftp1/ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv";	
 			if (file_exists($filename)) {

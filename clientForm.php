@@ -31,7 +31,7 @@ else {
 	<input type="hidden" name="_form_submit" value="1">
 <p>(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)
 
-<p>	Name: 
+<p>	Name<span style="font-size:x-small;color:FF0000">*</span>: 
 <?PHP 
 	if ($id=="new") 
 		echo '<input type="text" size="40" name="id" tabindex=1 value="">';
