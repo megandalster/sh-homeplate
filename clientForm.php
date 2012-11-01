@@ -47,6 +47,7 @@ else {
 		echo ('<option value="Harris Teeter"');if ($client->get_chain_name()=='Harris Teeter') echo (' SELECTED'); echo('>Harris Teeter</option>');
 		echo ('<option value="Piggly Wiggly"');if ($client->get_chain_name()=='Piggly Wiggly') echo (' SELECTED'); echo('>Piggly Wiggly</option>');
 		echo ('<option value="Publix"');if ($client->get_chain_name()=='Publix') echo (' SELECTED'); echo('>Publix</option>');
+		echo ('<option value="Target"');if ($client->get_chain_name()=='Target') echo (' SELECTED'); echo('>Target</option>');
 		echo ('<option value="WalMart"');if ($client->get_chain_name()=='WalMart') echo (' SELECTED'); echo('>WalMart</option>');
     	echo('</select>');
 	}
