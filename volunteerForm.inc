@@ -115,11 +115,13 @@ else // $_SESSION['access_level']>=2
 	
 	echo ('&nbsp;&nbsp;Status: ');
     echo('<select name="status">');
-    echo ('<option value=""></option>');
+ //   echo ('<option value=""></option>');
     echo ('<option value="applicant"');if ($person->get_status()=='applicant') echo (' SELECTED'); echo('>applicant</option>');
-    echo ('<option value="active"');if ($person->get_status()=='active') echo (' SELECTED'); echo('>active</option>');
-	echo ('<option value="on-leave"');if ($person->get_status()=='on-leave') echo (' SELECTED'); echo('>on leave</option>');
-	echo ('<option value="former"');if ($person->get_status()=='former') echo (' SELECTED'); echo('>former</option>');
+    if ($_SESSION['access_level'] > 1) {
+      echo ('<option value="active"');if ($person->get_status()=='active') echo (' SELECTED'); echo('>active</option>');
+	  echo ('<option value="on-leave"');if ($person->get_status()=='on-leave') echo (' SELECTED'); echo('>on leave</option>');
+	  echo ('<option value="former"');if ($person->get_status()=='former') echo (' SELECTED'); echo('>former</option>');
+    }
 	echo('</select>');
 	
 	$st = implode(',',$person->get_type());
