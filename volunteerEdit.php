@@ -93,7 +93,8 @@
 function process_form($id, $person)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
 		if ($id=='new') {
-				$first_name = trim(str_replace('\\\'','',htmlentities(trim($_POST['first_name']))));
+			$first_name = trim(str_replace('\\\'', '', htmlentities(str_replace('&', 'and', $_POST['first_name']))));	
+		//    $first_name = trim(str_replace('\\\'','',htmlentities(trim($_POST['first_name']))));
 				$last_name = trim(str_replace('\\\'','\'',htmlentities($_POST['last_name'])));
 				$phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
 				$clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
@@ -194,7 +195,7 @@ function process_form($id, $person)	{
 					$result = insert_dbVolunteers($newperson);
 					update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability(),"deleteandinsert");
 					if (!$result)
-                        echo ('<p class="error">Unable to add " .$first_name." ".$last_name. " in the database. <br>Please report this error to the Program Coordinator.');
+                        echo ('<p class="error">Unable to add "' .$first_name.' '.$last_name. '" to the database. <br>Please report this error to the Program Coordinator.');
 					else if ($_SESSION['access_level']==0)
 							 echo("<p>Your application has been successfully submitted.  We will contact you. Thank you!");
 						 else echo("<p>You have successfully added " .$first_name." ".$last_name. " to the database.</p>");
