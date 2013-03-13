@@ -59,7 +59,8 @@
 			else $avail = implode(',',$_POST['availability']);
 			$old_id = $id;		
 			if ($id=="new"){
-				$id = trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$_POST['id'])))));
+			//	$first_name = trim(str_replace('\\\'', '', htmlentities(str_replace('&', 'and', $_POST['first_name']))));
+				$id = trim(str_replace('\\\'','',htmlentities(str_replace('&','and',str_replace('#',' ',$_POST['id'])))));
 				$chain_name =   $_POST['chain_name'];
 				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || 
 						$chain_name=="BiLo" || $chain_name=="Target" || $chain_name=="Harris Teeter") 
@@ -88,7 +89,7 @@
 function process_form($id)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
 		if ($id=="new"){
-			$id = trim(str_replace('\\\'','',htmlentities(str_replace('\&','and',str_replace('\#',' ',$_POST['id'])))));
+			$id = trim(str_replace('\\\'','',htmlentities(str_replace('&','and',str_replace('#',' ',$_POST['id'])))));
 		}
 		$chain_name =   $_POST['chain_name'];
 		$address =      trim(str_replace('\\\'','\'',htmlentities($_POST['address'])));

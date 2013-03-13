@@ -15,9 +15,9 @@
 
 function connect() {
 	$host = "localhost";
-	$database = "shhomeplateDB";
-	$user = "shhomeplateDB";
-	$password = "shhomeplateDB";
+	$database = "homeplatedb";
+	$user = "homeplatedb";
+	$password = "foodyWr1";
 
 	$connected = mysql_connect($host,$user,$password);
 	if (!$connected) return mysql_error();
