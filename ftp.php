@@ -63,10 +63,14 @@ function ftpout($day, $areas) {
 			}
 			// $dropoff_stops[] = "Other,0";
 	// line 1
-	    	fputcsv($handle, array(
+	    	if ($theDayCaptain) fputcsv($handle, array(
 	    		$yymmdd."-".$area, $area_name, $fulldate, 
 	    		$theDayCaptain->get_first_name() . " " . $theDayCaptain->get_last_name(),
 	    		$theDayCaptain->get_nice_phone1()
+	    		),";");
+            else fputcsv($handle, array(
+	    		$yymmdd."-".$area, $area_name, $fulldate, 
+	    		"no day captain","555-555-5555"
 	    		),";");
 	// line 2		
 			fputcsv($handle, $drivers, ";");
