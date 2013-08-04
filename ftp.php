@@ -87,8 +87,8 @@ function ftpout($day, $areas) {
 function ftpin($day) {
 	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 	$deviceIds = array("8c5328005a8d7784", // allens tablet
-				"6b2b51166c2b321f","387a6442e578d02f","bd3eb9c3c3bd44ba",  //jons 6 tablets
-				"c930db8fe6dccd30","3d28c762d6862027","2fc8453a13e544a8");
+				"6b2b51166c2b321f","387a6442e578d02f","bd3eb9c3c3bd44ba",  //jons 7 tablets
+				"c930db8fe6dccd30","3d28c762d6862027","2fc8453a13e544a8","91ba397615181245");
 	$yymmdd = date('y-m-d',$day);
 	$twoweeksagoyymmdd = date('y-m-d',$day-1209600);
 	$day_of_week = date ("D", $day);
