@@ -155,8 +155,8 @@ function process_form($id, $person)	{
 				//What if they're the last remaining manager account?
 				if(strpos($type,'coordinator')!==false){
 				//They're a manager, we need to check that they can be deleted
-					$coordinators = retrievealltype_dbVolunteers('coordinator');
-					if ($id==$_SESSION['_id'] || !$coordinators || mysql_num_rows($coordinators) <= 1)
+					$coordinators = getonlythose_dbVolunteers('', 'coordinator', '', '', ''); 
+					if ($id==$_SESSION['_id'] || sizeof($coordinators) <= 1)
 						echo('<p class="error">You cannot remove yourself or the last remaining coordinator from the database.</p>');
 					else {
 						$result = delete_dbVolunteers($id);
