@@ -179,6 +179,9 @@ function delete_dbRoutes($r) {
 function get_route($id){
 	connect();
 	$query = 'SELECT * FROM dbRoutes WHERE id = "'.$id.'"';
+	
+	//echo $query . "<br />";
+	
 	$result = mysql_query($query);
 	if ($result==null || mysql_num_rows($result) !== 1) {
 		mysql_close();
@@ -217,7 +220,7 @@ function update_dbRoutes($r) {
 }
 
 /*
- * create a new route for a particular day and area, add it to the dbRoutes table,
+ * create a new route for a particular day and base, add it to the dbRoutes table,
  * and add its stops to the dbStops table
  */
 function make_new_route ($routeID, $teamcaptain_id) {
@@ -239,12 +242,12 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		}
 		$day = date('D',mktime(0,0,0,substr($date,3,2),substr($date,6,2),substr($date,0,2)));
 		
-		// find drivers for this date and area from the dbSchedules table
+		// find drivers for this date and area (aka base) from the dbSchedules table
 		// calculate the week of the month or year, depending on the area
 		$driver_ids = implode(',',get_drivers_scheduled($area, $week, $day));
 
 		// store pickup and dropoff stops for this date and area using the dbClients table
-		$pickup_clients = getall_clients($area, "donor", "", "", array($day));
+		$pickup_clients = getall_clients($area, "donor", "", "", array($day), "");
 		$pickup_ids = "";
 
 		foreach ($pickup_clients as $client)
@@ -256,7 +259,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		$pickup_ids = substr($pickup_ids,1);
 		
 		
-		$dropoff_clients = getall_clients($area, "recipient", "", "", array($day));
+		$dropoff_clients = getall_clients($area, "recipient", "", "", array($day), "");
 		$dropoff_ids = "";
 		
 		foreach ($dropoff_clients as $client) 

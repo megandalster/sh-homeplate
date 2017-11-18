@@ -16,7 +16,8 @@
 
 if($_SESSION['access_level']>=2){
    echo('<p><strong>Client Information Form</strong><br />');
-   echo('Here you can edit or delete a client in the database.</p><p>');
+   echo('Here you can edit or delete a client in the database. ');
+   echo '(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)';
 }
 else {
     echo("<p id=\"error\">You do not have sufficient permissions to edit clients in the database.</p>");
@@ -29,7 +30,6 @@ else {
 <form method="POST">
 	<input type="hidden" name="old_id" value=<?PHP echo("\"".$id."\"");?>>
 	<input type="hidden" name="_form_submit" value="1">
-<p>(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)
 
 <p>	Name<span style="font-size:x-small;color:FF0000">*</span>: 
 <?PHP 
@@ -51,7 +51,14 @@ else {
 		echo ('<option value="WalMart"');if ($client->get_chain_name()=='WalMart') echo (' SELECTED'); echo('>WalMart</option>');
     	echo('</select>');
 	}
-    echo ('<p>Area: ');
+	
+?>
+<p>Email: 
+
+<input type="text" size="40" name="email" name="email" tabindex=3 value="<?= $client->get_email() ?>">
+
+<?php
+    echo ('<p>Base<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="area">');
     echo ('<option value=""></option>');
     echo ('<option value="HHI"');if ($client->get_area()=='HHI') echo (' SELECTED'); echo('>Hilton Head</option>');
@@ -66,12 +73,28 @@ else {
 	echo ('<option value="recipient"');if ($client->get_type()=='recipient') echo (' SELECTED'); echo('>Recipient</option>');
 	echo('</select>');
 
-    
+     echo ('&nbsp;&nbsp;Area<span style="font-size:x-small;color:FF0000">*</span>: ');
+    echo('<select name="deliveryAreaId">');
+    echo ('<option value=""></option>');
+	
+	$deliveryAreas = getall_dbDeliveryAreas();
+	foreach($deliveryAreas as $deliveryArea){
+		echo ('<option value="'); 
+		echo($deliveryArea->get_deliveryAreaId()); 
+		echo('"');
+		if ($client->get_deliveryAreaId()==$deliveryArea->get_deliveryAreaId()) 
+			echo (' SELECTED');
+		 echo('>'); echo($deliveryArea->get_deliveryAreaName()); echo('</option>');
+	}
+	
+	echo('</select>');
 ?>    
     
 <fieldset>
 <legend>Contact Information</legend>
-	<table>		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="40" name="address" tabindex=3 value="<?PHP echo($client->get_address())?>"></td></tr>
+	<table>		
+		<tr><td>Name:</td><td> <input type="text" size="40" name="ContactName" tabindex=2 value="<?PHP echo($client->get_ContactName())?>"></td></tr>
+		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="40" name="address" tabindex=3 value="<?PHP echo($client->get_address())?>"></td></tr>
 		<tr><td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=4 value="<?PHP echo($client->get_city())?>"></td></tr>
 		<tr><td>State, Zip:</td>
 		<td><select name="state" tabindex=5>

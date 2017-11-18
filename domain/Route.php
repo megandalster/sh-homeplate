@@ -183,7 +183,21 @@ class Route {
     					break;
     				  }
     				  else {			// stop1 has data, keep it
-    				  	$found = true;   
+    				  	$found = true;  
+						if($stop1array[1] > 0 || $stop2array[1] > 0){
+							$thisWeight = 0;
+							if($stop1array[1] > 0){
+								$thisWeight  = $thisWeight  + $stop1array[1] ;
+							}
+							if($stop2array[1] > 0){
+								$thisWeight  = $thisWeight  + $stop2array[1] ;
+							}
+							$stop1array[1] = $thisWeight;
+							$array3[$i] = implode(",", $stop1array);
+						}
+						
+						
+						
     					break;
     				  }	
     				}

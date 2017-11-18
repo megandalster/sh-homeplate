@@ -37,7 +37,7 @@
 				$prevweekUTC = $thisUTC - 604800;
 				echo "$areas[$thisArea]</strong>"
 				?>
-				 weekly route summary  (View other areas:
+				 weekly route summary  (View other bases:
 				<?php 
 				foreach ($areas as $area=>$areaName) {
 				   if ($thisArea!=$area)
@@ -62,11 +62,17 @@ padding:10px 10px 10px 10px;
 </tr>
 	<tr>
 		<td> <b> Route * </b> </td>
-		<td> <b> Drivers </b> </td>
+		<td> <b> Crew </b> </td>
 		<td> <b> Pickups </b> </td>
 		<td> <b> Dropoffs </b> </td>
+		
+		<!--
 		<td> <b> Data received from truck? </b> </td>
 		<td> <b> Tablet id </b> </td>
+		-->
+
+		<td> <b> P/U Weight </b> </td>
+		<td> <b> D/O Weight </b> </td>
 		<td> <b> Start-end time </b> </td>
 	</tr>
 	
@@ -107,26 +113,62 @@ padding:10px 10px 10px 10px;
 			//col 4 : dropoffs
 			echo "<td align='center'>".$route->get_num_dropoffs()."</td>";
 			
-			//col 5 : status
+			//col 5 : status Changed to P/U and D/O weights
+			
+			$pickUpWeight = 0;		
+
+echo "<td align='center'>";
+			
+			foreach ($route->get_pickup_stops() as $pickup_id) {
+				$client_id = substr($pickup_id,12);
+
+				//echo "routeID.client_id:". $routeID.$client_id . "<br />";
+				$theStop = retrieve_dbStops($routeID.$client_id);
+				$stopWeight = $theStop->get_total_weight();
+				
+				if($stopWeight > 0){
+					$pickUpWeight += $theStop->get_total_weight();
+				}
+				
+			//	echo $theStop->get_total_weight() . "<br />";
+			}
+			echo $pickUpWeight ."</td>";
+			
+			$dropWeight = 0;			
+			foreach ($route->get_dropoff_stops() as $dropoff_id) {
+				$client_id = substr($dropoff_id,12);
+
+				$theStop = retrieve_dbStops($routeID.$client_id);
+				$stopWeight = $theStop->get_total_weight();
+				if($stopWeight > 0){
+				$dropWeight += $theStop->get_total_weight();
+				}
+			}
+			echo "<td align='center'>".$dropWeight ."</td>";
+			
+			
 			if ($route->get_status()=="completed") {
+			
 				$first_tablet = $route->get_notes();
 				$j = strpos($first_tablet,","); // see if there's more than one tablet checking in
-				echo "<td align='center'>"."yes"."</td>";
+				//echo "<td align='center'>"."yes"."</td>";
 				while ($j > 0) {
 					$this_tablet = substr($first_tablet,0,$j);
 					$first_tablet = substr($first_tablet,$j+1);
 					$i = strpos($this_tablet,";");
 					$times = substr($this_tablet,$i+1);
-					echo "<td>".substr($this_tablet,0,$i)."</td><td>".$times."</td>";
-					echo "</tr><tr><td></td><td></td><td></td><td></td><td></td>";
+					//echo "<td>".substr($this_tablet,0,$i)."</td><td>".$times."</td>";
+					//echo "</tr><tr><td></td><td></td><td></td><td></td><td></td>";
 					$j = strpos($first_tablet,",");
 				}
 				$i = strpos($first_tablet,";");
 				$times = substr($first_tablet,$i+1);
-				echo "<td>".substr($first_tablet,0,$i)."</td><td>".$times."</td>";
+				//echo "<td>".substr($first_tablet,0,$i)."</td><td>".$times."</td>";
+				echo "<td>".$times."</td>";
 			}
-			else echo "<td align='center'>"."no"."</td><td></td><td></td>";
-
+			//else echo "<td align='center'>"."no"."</td><td></td><td></td>";
+			else echo "<td></td>";
+			
 		}
 		// else, use defaults
 		else

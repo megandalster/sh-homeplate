@@ -8,6 +8,9 @@
 */
 	session_start();
 	session_cache_expire(30);
+	
+	include_once('database/dbDeliveryAreas.php');
+	include_once('database/dbClients.php');
 ?>
 <html>
 	<head>
@@ -15,14 +18,17 @@
 			Search for Clients
 		</title>
 		<link rel="stylesheet" href="styles.css" type="text/css" />
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	</head>
 	<body>
 		<div id="container">
 			<?PHP include('header.php');?>
 			<div id="content">
 				<?PHP
+				
 				// display the search form
 					$area = $_GET['area'];
+					$deliveryAreaId = $_GET['deliveryAreaId'];
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
 					echo('<p><a href="'.$path.'clientEdit.php?id=new">Add new donor or recipient</a>');	
@@ -30,7 +36,7 @@
 						echo('<p><strong>Search for donors and recipients:</strong>');
                         
                         if( array_key_exists('s_area', $_POST) ) $area = $_POST['s_area']; //override the GET variable if we just conducted a search
-						echo '<p>Area: <select name="s_area">' .
+						echo '<p>Base: <select name="s_area">' .
 							'<option value="">--all--</option>'; 
                             echo '<option value="HHI"'; if ($area=="HHI") echo " SELECTED"; echo '>Hilton Head</option>' ;
                             echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Bluffton</option>' ;
@@ -44,6 +50,25 @@
                             echo '<option value="recipient"';   if ($type=="recipient") echo " SELECTED"; echo '>Recipient</option>'; 
                         echo '</select>';
                         
+						echo '&nbsp;&nbsp;Area:';
+						 echo('<select name="s_deliveryAreaId">');
+						echo ('<option value="--all--" SELECTED>--all--</option>');
+						
+						$deliveryAreas = getall_dbDeliveryAreas();
+						foreach($deliveryAreas as $deliveryArea){
+							echo ('<option value="'); 
+							echo($deliveryArea->get_deliveryAreaId()); 
+							echo('"');
+							
+							
+							if ($deliveryAreaId==$deliveryArea->get_deliveryAreaId()) //if( !array_key_exists('deliveryAreaId', $_POST) ) 
+								echo (' SELECTED');
+							 echo('>'); echo($deliveryArea->get_deliveryAreaName()); echo('</option>');
+						}
+						
+						echo('</select>');
+											
+						
                         if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
 						echo '&nbsp;&nbsp;Feed America:<select name="s_status">';
                             echo '<option value=""';    if ($status=="")    echo " SELECTED"; echo '>--all--</option>';
@@ -89,6 +114,11 @@
                             $_POST['s_day'][] = ""; // allow "any" day if none checked
                         foreach ($_POST['s_day'] as $day) 
                             $availability[] = $day;
+							
+						if ($_POST['s_deliveryAreaId']=="--all--")
+							$deliveryAreaId = "";
+						else $deliveryAreaId = $_POST['s_deliveryAreaId'];
+						
                         
      					//echo "search criteria: ", $area.$type.$status.$name.$availability[0];
                         
@@ -96,7 +126,7 @@
                         include_once('database/dbClients.php');
      					include_once('domain/Client.php');
 						
-                        $result = getall_clients($area, $type, $status, $name, $availability);
+                        $result = getall_clients($area, $type, $status, $name, $availability, $deliveryAreaId);
 						
                         echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
                             if (!$type) echo "client(s)"; 
@@ -104,20 +134,38 @@
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
 						if ($name!="") echo ' with name like "'.$name.'"';
 						if ($availability[0]!="") echo ' with selected pickup/dropoff days ';
+						if ($deliveryAreaId !="") echo ' in area id: '.$deliveryAreaId;
 						if (sizeof($result)>0) {
 							echo ' (select one for more info).';
-							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
+							echo '<div><table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Contact</strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
+							 $allEmails = array(); // for printing all emails
+							 
 							foreach ($result as $client) {
+							
 								echo ("<tr><td><a href='clientEdit.php?id=" . $client->get_id() ."'>" .
-									$client->get_id() . "</td><td>" . 
-									$client->get_phone1() . "</td><td>");
+									$client->get_id() . "</a></td><td>" . 
+									$client->get_ContactName() . "</td><td>" .
+									$client->get_phone1() . "</td><td>" .
+									$client->get_email() . "</td><td>");
+									
+									$allEmails[] = $client->get_email();
+									
 								foreach($client->get_days() as $availableon)
 									echo ( $availableon . ", ") ;
 								echo "</td></a></tr>";
 							}
 						}
-						echo '</table>';
-						
+						echo '</table></div>';
+						?>
+						<div style="padding:10px;">
+						<input type="button" value="Print List" onclick="showPrintWindow();" />
+						</div>
+						<?PHP
+						 echo "<br/><strong>email these people:</strong> <br/>";
+                        if ($allEmails)
+                          foreach($allEmails as $email)
+                            if ($email!="")
+                              echo $email . ", ";
 					}
 					
 				?>
@@ -126,6 +174,27 @@
 			</div>
 			<?PHP include('footer.inc');?>
 		</div>
+		
+		<script type="text/javascript">
+			function showPrintWindow(){
+				
+				var printWin = window.open('', 'winReport', 'width=690px;height:600px;resizable=1');
+				var html = $("#tblReport").parent().html();
+				
+				printWin.document.open();
+				printWin.document.write("<html><head><title>Print Donor/Recipients</title><style>#tblReport td {border:1px solid black;}</style></head><body>");
+				printWin.document.writeln(html);
+				printWin.document.write('<scr');
+				printWin.document.write('ipt>');
+				printWin.document.writeln('setTimeout("window.print()", 200);');
+				printWin.document.write('</scr');
+				printWin.document.write('ipt>');
+				printWin.document.write('</body>');
+				printWin.document.write('</html>');
+				printWin.document.close();
+				
+			}
+		</script>
 	</body>
 </html>
 

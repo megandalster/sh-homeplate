@@ -66,7 +66,7 @@ else {
  * adds and removes drivers, pick-ups, and drop-offs and
  * returns a message reporting the result
  */
-function process_form($_POST, $route)
+function process_form($_POST_PARAM, $route)
 {
 	/* respond to the POST
 	if($_POST['change_status'] != $route->get_status() && $_POST['change_status']!="")

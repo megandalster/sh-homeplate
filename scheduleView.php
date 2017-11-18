@@ -16,10 +16,29 @@ include_once('domain/Volunteer.php');
 		<title>Master Schedule</title>
 		<!--  Choose a style sheet -->
 		<link rel="stylesheet" href="styles.css" type="text/css"/>
+		
+		<style type="text/css">
+			.calendarDayBox{
+				border: solid 1px #264576;font-size:10px;  padding:0px; width:180px;
+			}
+			
+			.calendarDayBoxHeader{
+				border: solid 1px #c9c9c9;
+				width:60px;
+				font-size:9px;
+				color:#0c0c0c;
+			}
+			
+			.calendarDayBoxData{
+			}
+		</style>
 	</head>
 	<body>
 		<div id="container">
 			<?php include_once("header.php");?>
+			
+
+
 			<div id="content">
 				<?php
 				if ($_SESSION['access_level']<2){
@@ -47,6 +66,7 @@ include_once('domain/Volunteer.php');
 		<?PHP include('footer.inc');?>			
 	</body>
 </html>
+
 
 <?php 
 	/*
@@ -98,9 +118,95 @@ include_once('domain/Volunteer.php');
 		echo ('<tr><td colspan="9" bgcolor="#bbe1d1">');
 			echo ("</td></tr>");
 		echo "</table>";	
-		do_month($area, $groups, $days);
+		//do_month($area, $groups, $days);
+		write_RollingWeeklyView($area, $groups, $days);
 		echo "<br><b>*</b>To change an entry on this schedule, you must <a href='volunteerSearch.php'>edit</a> volunteer records individually.  ";
 		echo "Whenever you change a volunteer's record, this schedule will be automatically updated.";	
+	}
+	
+	function write_RollingWeeklyView($area, $groups, $days){
+		$today = strtotime("today")+1209600;
+		
+		
+		$startDate = date("Y-m-d",strtotime('monday this week'));
+		$thisMonday = date("m",$today);
+		$endDate = date("Y-m-d",strtotime('monday this week +4 weeks -1 day'));
+		
+		$thisMonth=date("m",$startDate);
+		$thisYear = date("Y",strtotime('monday this week'));
+		$thisStartMonday = date("d",$thisMonday);
+		
+		
+		$dayses=array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
+		
+		echo "<p>Advance view beginning Monday " .   date('F', strtotime('monday this week')) . " " . date("d",strtotime('monday this week')) . ", "  . $thisYear . "&nbsp;&nbsp; Odd/Even week</p>";
+		
+		
+		echo "<table border='1'><tr>";
+	
+		foreach ($dayses as $weekHeaderText){
+			echo "<td style='font-weight:bold;'>";
+		  echo $weekHeaderText;
+		  echo "</td>";
+		}
+		echo "</tr>";
+		
+		$currentDate = $startDate;
+		
+		for($w=0; $w <4; $w++){
+			echo "<tr>";
+			for ($x=0; $x<7; $x++){
+			   echo "<td valign='top' class='calendarDayBox'";
+			   if($currentDate == date("Y-m-d",strtotime('now'))){
+				echo " style='background-color:#c0c0c0;'";
+			   }
+			   echo ">";
+			   echo "<div class='calendarDayBoxHeader'>";
+			   echo $currentDate;
+			   echo "</div>";
+			   
+			  
+			   
+			   echo "<div class='calendarDayBoxData'>";
+			
+		
+			
+				$dayCount = date("d",$currentDate);
+			   $shiftID=$thisYear.'-'.$thisMonth.'-'.date("d",mktime(0,0,0,$thisMonth,$dayCount,$thisYear));
+			   
+			   	
+				
+		    	if ($area=="BFT")
+		    		//$week = $groups[floor(($dayCount-1) / 7)];
+		    		$week = substr($groups[floor(($dayCount-1) / 7) + 1],0,1);
+		    	else if (date("W", strtotime($currentDate)) % 2 == 0) 
+		    		$week="even";
+		    	else $week="odd";
+		    
+		    	$driver_ids = get_drivers_scheduled($area, $week, $dayses[$x]);
+				foreach($driver_ids as $driver_id){
+		    		$driver = retrieve_dbVolunteers($driver_id);
+		      		if ($driver)
+		    			echo $driver->get_first_name()." ".$driver->get_last_name()."<br>" ;
+		    		else echo $driver_id;
+		    	}
+				
+			   echo "</div>";
+			   
+			   echo "</td>\n";
+			   
+				
+				//$currentDate = date('d m Y', strtotime($currentDate . ' + 1 day'));
+				
+				$currentDate = date('Y-m-d', strtotime($currentDate. ' + 1 days'));
+				$thisYear = date("Y",$currentDate);
+				$thisMonth=date("m",$currentDate);
+			}
+			echo "</tr>";
+		}
+		
+		
+		echo "</table>";
 	}
 	
 	function do_month($area, $groups, $days) {

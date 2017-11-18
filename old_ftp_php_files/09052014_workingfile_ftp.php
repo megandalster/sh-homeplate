@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
-error_reporting(-1);
-
 include_once 'database/dbVolunteers.php';
 include_once 'database/dbClients.php';
 include_once 'database/dbRoutes.php';
@@ -168,18 +164,21 @@ function ftpout($day, $areas) {
 
 function ftpin($day) {
 	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
-	$deviceIds = array("ab92221e6ada959c",
-				"486e7427693b6422",
-				"5e47d9a9796482da",
-				"a207427fee8357ab", //Added 11/24/2014
-				"49f2420a374c1b0f", //Added 8/18/2015
-				"1f5b811fde353d0",  //Added 9/29/2015
-				"9dba4527e58b85f3", //Added 9/29/2015
-				"4d4365330aa76127", //Added 9/29/2015				
-				"b81b930d5ac05962",
-				"a22f0b9aa9d28df9", //Added 3/3/2016
-				"e029ceac5d51b6b", //Added 3/3/2016
-				"d3065bbe7dd5c4ad"
+	$deviceIds = array("8c5328005a8d7784", // allens tablet
+				"6b2b51166c2b321f","387a6442e578d02f","f17f64f993d2b19b","bd3eb9c3c3bd44ba",  //jons 7 tablets
+				"c930db8fe6dccd30","3d28c762d6862027","2fc8453a13e544a8","91ba397615181245", 
+				"3d741b4a9d4676ff", //dev tablet
+				"43c0cbf7509044e8", //PT dev tablet
+				"3A8E00285AC36131", //New Homeplate tablets
+				"33DF3639D186AC7", 
+				"35866C36A130677C",
+				"908b4dfcee3e90f0",
+				"bea0b2f0390264a4",
+				"300BFECC9D846131",
+				"3D73C3D17FD0043A",
+				"3F385F7EA21C91C2",
+				"95d13979f48f5c7f",
+				"3013FD008A318D10"
 				);
 				
 
@@ -190,23 +189,20 @@ function ftpin($day) {
 	$day_of_week = date ("D", $day);
 	foreach ($areas as $area=>$area_name) {
 		foreach ($deviceIds as $deviceId) {
-		
-		
 	// look for a file for $day and $deviceId
 			//TODO: Refactor for dependency injection
 			//prod path
 			$filename = dirname(__FILE__).'/../homeplateftp1/ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv";	
 			//QA path
-			//$filename = realpath('../../../ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv");		
-			//$filename = dirname(__FILE__) . '/../../../ftpin/' . $yymmdd."-".$area."-".$deviceId.".csv";			
+			//$filename = realpath('../../../ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv");				
 			//dev path
 			//$filename = 'C:\\Projects\\WebApps\\HomePlate\\homeplateftp1\\ftpin\\'.$yymmdd."-".$area."-".$deviceId.".csv";
-			//echo  dirname(__FILE__) . '/../../../ftpin/' . $yymmdd."-".$area."-".$deviceId.".csv"; //; $yymmdd."-".$area."-".$deviceId.".csv" . "<br />";
+			//echo $filename . "<br />";
 			
 			if (file_exists($filename)) {
 				$handle = fopen($filename, "r+");
 				//echo "Processing ftp in file:";
-				
+				//echo $filename . "<br />";
 				
 	// line 1			
 				$line1 = fgetcsv($handle, 0, ";"); 
@@ -214,8 +210,6 @@ function ftpin($day) {
 				$tabletid = substr($line1[0],13);
 				$notes = $tabletid.";".$line1[5]."-".$line1[6];
 				$r = get_route($id);
-				
-				//echo $filename . " route id:" . $id  . "<br />";
 				
 				//echo $r->get_notes() . "  " . $tabletid . " strpos = ". strpos($r->get_notes(),"adam") . "<br />";
 				
@@ -226,8 +220,6 @@ function ftpin($day) {
 					
 				}
 				else{
-				
-				//	echo " WEIGHTS ALREADY RECORDED FOR THIS TABLET, SKIP IT<br />";
 					fclose($handle);
 					continue;
 				}
@@ -236,9 +228,8 @@ function ftpin($day) {
 	// line 2			
 				$drivers = array();
 				$availables = getall_drivers_available($area, $day_of_week);
-				//echo "availables "; //var_dump($availables);
+				//echo "availables "; var_dump($availables);
 				$line2 = fgetcsv($handle, 0, ";");
-				
 				foreach ($line2 as $d) {
 					if (strpos($d,"*")>0)
 					    continue;
@@ -251,32 +242,12 @@ function ftpin($day) {
 					$d_first = substr($d,0,$i);
 					$d_last = substr($d,$i+1);
 					$driver_id = $d;
-					
-					//echo "setting driver stats:" . $av->get_first_name() . "==" . $d_first . " && " . $av->get_last_name() . "==" .  $d_last . ":<br />";
-					if($d_first != 'Other'){
-						$theVol = retrieve_dbVolunteersByName($d_first, $d_last);
-						//echo "updating driver<br />";
-						if ($theVol instanceof Volunteer) {
-							$theVol->set_lastTripDate($yymmdd);
-							$theVol->set_tripCount(($theVol->get_tripCount() + 1));
-							update_dbVolunteers($theVol);
-						}
-						else{
-							//echo  "driver not found:" .  $d_first . " && " .  $d_last . ":<br />";
-						}
-					}		
-							
-					foreach($availables as $av) {
-						
+					foreach($availables as $av) 
 						if ($av->get_first_name() == $d_first && $av->get_last_name() == $d_last) {
 							$driver_id = $av->get_id();
-						
 							break;
 						}
-					}
 					$drivers[] = $driver_id;	
-					
-					
 				}
 				//echo "line 2 = ".$drivers[0].$drivers[1];
 				
@@ -321,9 +292,6 @@ function ftpin($day) {
 				@unlink($filename);  // delete the file after saving its weights
 				// rewrite the file and close it
 				fclose($handle);
-			}
-			else{
-				//echo "file not found in ftpin:" . $filename . "<br />";
 			}
 		}
 	}

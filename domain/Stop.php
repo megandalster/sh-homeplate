@@ -73,6 +73,7 @@ class Stop {
 		return $this->notes;
 	}
 	function get_total_weight() {
+	
 		return $this->total_weight;
 	}
 	function get_date() {
@@ -87,7 +88,11 @@ class Stop {
 		$this->total_weight = 0;
 		foreach($this->items as $item){
 			$i = explode(':',$item);
-			$this->total_weight += $i[1]; 		
+			$itemWeight = $i[1]; 
+			//if(itemWeight > 0){
+			//echo $itemWeight . "<br />"; 
+				$this->total_weight += $itemWeight; 		
+			//}
 		}
 	}
 	

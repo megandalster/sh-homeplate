@@ -14,16 +14,18 @@
  *	@version April 1, 2012
  */
 	session_start();
-	session_cache_expire(30);
+	session_cache_expire(30);		
     include_once('database/dbVolunteers.php');
     include_once('domain/Volunteer.php');
     include_once('database/dbSchedules.php'); 
+	 include_once('database/dbAffiliates.php');
+    include_once('domain/Affiliate.php');
     
 //    include_once('database/dbLog.php');
 	$id = $_GET["id"];
 	if ($id=='new') {
 	 	$person = new Volunteer(null,'new',null,null,null,null,null,null,null,null,"applicant",
-	 	     	null,null,null,null,null,null,null,null,null,null,null,md5("new"));
+	 	     	null,null,null,null,null,null,null,null,null,null,null,md5("new"), 0, null, 'M', null);
 	}
 	else {
 		$person = retrieve_dbVolunteers($id);
@@ -38,6 +40,12 @@
 		<title>
 			Editing <?PHP echo($person->get_first_name()." ".$person->get_last_name());?>
 		</title>
+		
+		 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
 		<link rel="stylesheet" href="styles.css" type="text/css" />
 	</head>
 <body>
@@ -71,7 +79,7 @@
                                  $avail, $_POST['schedule'], $_POST['history'],
                                  $_POST['birthday'],
                                  $_POST['start_date'],
-                                 $_POST['notes'], $_POST['old_pass']);
+                                 $_POST['notes'], $_POST['old_pass'], $_POST['tripCount'], $_POST['lastTripDate'], $_POST['shirtSize'], $_POST['affiliateId']);
 		$errors = validate_form($id); 	//step one is validation.
 									// errors array lists problems on the form submitted
 		if ($errors) {
@@ -132,7 +140,10 @@ function process_form($id, $person)	{
 		$schedule = $_POST['schedule'];
 		$history = $_POST['history'];
 		$pass = $_POST['password'];
-		
+		$shirtSize = $_POST['shirtSize'];
+		$tripCount = $_POST['tripCount'];
+		$lastTripDate = $_POST['lastTripDate'];
+		$affiliateId = $_POST['affiliateId'];
 		//rebuild birthday and start_date strings
 		if($_POST['birthday_Year']=="")
 				$birthday = 'XX-'.$_POST['birthday_Month'].'-'.$_POST['birthday_Day'];
@@ -141,10 +152,11 @@ function process_form($id, $person)	{
 		if (strlen($birthday) < 8) $birthday = '';
 		$start_date = $_POST['startdate_Year'].'-'.$_POST['startdate_Month'].'-'.$_POST['startdate_Day'];
         if (strlen($start_date) < 8) $start_date = '';		
-		$notes = trim(str_replace('\\\'','\'',htmlentities($_POST['my_notes'])));
+		$notes = trim(str_replace('\\\'','\'',htmlentities($_POST['notes'])));
 		$newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
                 		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
-                		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass);
+                		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass,
+						$tripCount, $lastTripDate, $shirtSize, $affiliateId);
         
 	//step two: try to make the deletion, password change, addition, or change
 		if($_POST['deleteMe']=="DELETE"){

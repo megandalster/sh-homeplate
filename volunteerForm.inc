@@ -102,10 +102,51 @@ else // $_SESSION['access_level']>=2
             	select_date($mm,$dd,$yy, "startdate_Month", "startdate_Day", "startdate_Year"); 
         ?>
 		</td></tr>
+		<tr><td>Shirt Size:</td><td>
+		<?PHP 
+		 $shirtSizes = array("S", "M", "L", "XL", "2XL");
+		 
+		 echo('<select name="shirtSize" tabindex="10">');
+		 echo "<option value='" . $shirtSize . "' ";
+		  if($person->get_shirtSize() == '' ) echo("SELECTED");
+                echo ">-- Select Shirt Size --</option>";
+		 
+		 foreach ($shirtSizes as $shirtSize) {
+				echo "<option value='" . $shirtSize . "' ";
+                if($person->get_shirtSize() == $shirtSize ) echo("SELECTED");
+                echo ">" . $shirtSize . "</option>";
+			}
+		echo('</select>');
+		
+		?>
+		</td></tr>
+		
+		<tr><td>Trip Count:</td><td><input type="text" name="tripCount" size="4" tabindex=11 value="<?PHP echo($person->get_tripCount())?>"></td></tr>
+		<tr><td>Last Trip Date:</td><td><!-- echo($person->get_lastTripDate())-->
+		<input type="text"  tabindex=12 id="lastTripDate" name="lastTripDate" value="<?PHP 
+		if ($person->get_lastTripDate() != ''){
+			$time = strtotime($person->get_lastTripDate());
+			$myFormatForView = date("m/d/Y", $time);
+
+			echo($myFormatForView);
+			}
+		?>" size="15" />
+		</td></tr>
 </table>
 </fieldset>
+
+ <script>
+$(function() {
+$( "#lastTripDate" ).datepicker();
+});
+
+
+
+</script>
+
+
 <?PHP
-    echo ('<p>Area<span style="font-size:x-small;color:FF0000">*</span>: ');
+    echo ('<p>Base<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="area">');
     echo ('<option value=""></option>');
     echo ('<option value="HHI"');if ($person->get_area()=='HHI') echo (' SELECTED'); echo('>Hilton Head</option>');
@@ -123,6 +164,22 @@ else // $_SESSION['access_level']>=2
 	  echo ('<option value="former"');if ($person->get_status()=='former') echo (' SELECTED'); echo('>former</option>');
     }
 	echo('</select>');
+	
+	 echo ('<p>Affiliate<span style="font-size:x-small;color:FF0000">*</span>: ');
+    echo('<select name="affiliateId">');
+    echo ('<option value=""></option>');
+	
+	$affiliates = getall_dbAffiliates();
+	foreach($affiliates as $affiliate){
+		echo ('<option value="'); 
+		echo($affiliate->get_affiliateId()); 
+		echo('"');
+		if ($person->get_affiliateId()==$affiliate->get_affiliateId()) 
+		echo (' SELECTED'); echo('>'); echo($affiliate->get_affiliateName()); echo('</option>');
+	}
+    
+	echo('</select>');
+	
 	
 	$st = implode(',',$person->get_type());
     $types = array('driver'=>'Driver', 'helper'=>'Helper', 'teamcaptain'=>'Day Captain', 'sub' => "Sub",
@@ -189,15 +246,19 @@ else // $_SESSION['access_level']>=2
             	$dd = substr($person->get_license_expdate(),6,2);
             	$yy = substr($person->get_license_expdate(),0,2);
           select_date($mm,$dd,$yy, "license_expdate_Month", "license_expdate_Day", "license_expdate_Year");
-	      
+	      /*
 	      echo('<p>Accidents:<br />');
 	      echo('<textarea name="accidents" rows="2" cols="60">');
 	      echo(implode(',',$person->get_accidents()));
 	      echo('</textarea>');
-	     
+	     */
+		 
+		
+		
+		 
 		  echo('<p>Notes:<br />');
 	      echo('<textarea name="notes" rows="2" cols="60">');
-	      echo($_POST['notes']);
+	      echo($person->get_notes());
 	      echo('</textarea>');
 
 		  echo('<input type="hidden" name="schedule" value="'.implode(',',$person->get_schedule()).'">');

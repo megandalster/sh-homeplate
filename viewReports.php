@@ -6,11 +6,29 @@
 
 session_start();
 session_cache_expire(30)
+
+
+
 ?>
 <html>
 <head>
 <title>Reports</title>
 <link rel="stylesheet" href="styles.css" type="text/css" />
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+	function setRadio(textInput, targetValue){
+		if(this.value != ''){
+			$radios = $("input[value='" + targetValue + "']");
+			$radios[0].checked = true;
+		}
+	}
+	
+</script>
+
 </head>
 <body>
 <div id="container"><?php include('header.php');?>
@@ -18,28 +36,117 @@ session_cache_expire(30)
 include_once('database/dbStops.php');
 include_once('domain/Stop.php');
 echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
+
+ include_once('database/dbClients.php');
+  include_once('database/dbDeliveryAreas.php');
+      include_once('domain/DeliveryArea.php');
 ?>
 
 <form method="post" action="">
-<p>Area : <select name="report_area">
+
+
+<div style="float:left;">
+Base : <select name="report_area">
 	<option value="">--all--</option>
-	<option value="HHI">Hilton Head</option>
-	<option value="SUN">Bluffton</option>
-	<option value="BFT">Beaufort</option>
-</select> &nbsp;&nbsp;Report Type : <select name="report_type">
+	<option value="HHI" <?php if($_POST['report_area'] == "HHI"){echo "selected='true'";} ?> >Hilton Head</option>
+	<option value="SUN" <?php if($_POST['report_area'] == "SUN"){echo "selected='true'";} ?>>Bluffton</option>
+	<option value="BFT" <?php if($_POST['report_area'] == "BFT"){echo "selected='true'";} ?>>Beaufort</option>
+</select>
+</div>
+<div style="float:left;padding-left:8px;">
+Area : 
+<?php 
+ echo('<select name="deliveryAreaId">');
+ echo ('<option value="">--all--</option>');
+	
+	$deliveryAreas = getall_dbDeliveryAreas();
+	foreach($deliveryAreas as $deliveryArea){
+		echo ('<option value="'); 
+		echo($deliveryArea->get_deliveryAreaId()); 
+		echo('"');
+		
+		
+		//if ($person->get_deliveryAreaId()==$deliveryArea->get_deliveryAreaId()) 
+		if($_POST['deliveryAreaId'] == $deliveryArea->get_deliveryAreaId())
+			echo (' SELECTED');
+		 echo('>'); echo($deliveryArea->get_deliveryAreaName()); echo('</option>');
+	}
+    
+	echo('</select>');
+?>
+</div>
+
+<div style="float:left;padding-left:8px;">
+Chain : <?php
+echo('<select name="chain_name">');
+    	echo ('<option value=""></option>');
+    	echo ('<option value="BiLo"');if ($_POST['chain_name']=='BiLo') echo (' SELECTED'); echo('>BiLo</option>');
+		echo ('<option value="Food Lion"');if ($_POST['chain_name']=='Food Lion') echo (' SELECTED'); echo('>Food Lion</option>');
+		echo ('<option value="Harris Teeter"');if ($_POST['chain_name']=='Harris Teeter') echo (' SELECTED'); echo('>Harris Teeter</option>');
+		echo ('<option value="Piggly Wiggly"');if ($_POST['chain_name']=='Piggly Wiggly') echo (' SELECTED'); echo('>Piggly Wiggly</option>');
+		echo ('<option value="Publix"');if ($_POST['chain_name']=='Publix') echo (' SELECTED'); echo('>Publix</option>');
+		echo ('<option value="Target"');if ($_POST['chain_name']=='Target') echo (' SELECTED'); echo('>Target</option>');
+		echo ('<option value="WalMart"');if ($_POST['chain_name']=='WalMart') echo (' SELECTED'); echo('>WalMart</option>');
+    	echo('</select>');
+	?>
+</div>
+<div style="float:left;padding-left:8px;">
+Client :
+<?php
+	  if( !array_key_exists('client_name', $_POST) ) $client = ""; else $client = $_POST['client_name'];
+						echo '<select name="client_name">';
+							echo '<option value=""';            if ($client=="")            echo " SELECTED"; echo '>--all--</option>';
+							
+							  $allClients = getall_dbClients();
+							foreach ($allClients as $clientRow) {
+								echo '<option value="';            
+								echo $clientRow->get_id();
+								echo '"';
+								if ($client==$clientRow->get_id())            
+									echo ' SELECTED';
+								echo '>';
+								echo $clientRow->get_id();
+								echo "</option>";
+							}
+                        echo '</select>';
+				?>		
+				
+	</div>
+	
+
+	<div style="clear:both;"></div>
+<div style="padding:10px 0px 0px 8px;">
+Report Type : <select name="report_type">
 	<option value="">All Stops</option>
-	<option value="pickup">Donors Only</option>
-	<option value="dropoff">Recepients Only</option>
-	<option value="publixwalmart">Breakdowns by Food Type</option>
-</select> <br>Single Client Option (type name or leave blank) :
-	<input type="text" name="client_name" value="" />
-<br>
+	<option value="pickup" <?php if($_POST['report_type'] == "pickup"){echo "selected='true'";} ?> >Donors Only</option>
+	<option value="dropoff" <?php if($_POST['report_type'] == "dropoff"){echo "selected='true'";} ?>>Recepients Only</option>
+	<option value="publixwalmart" <?php if($_POST['report_type'] == "publixwalmart"){echo "selected='true'";} ?> >Breakdowns by Food Type</option>
+</select>
+</div>
+
+
+ <script>
+$(function() {
+$( "#dailyDatePicker" ).datepicker();
+$( "#range_Start_DatePicker" ).datepicker();
+$( "#range_End_DatePicker" ).datepicker();
+});
+
+
+
+</script>
+
+<div style="clear:both;"></div>
 
 <fieldset><legend>Select report dates</legend>
-<p><input type="radio" name="report_span" value="weekly" /> Last Week <br>
-<input type="radio" name="report_span" value="daily" />
-Single Day&nbsp;&nbsp; <?php 
+<p><input type="radio" name="report_span" value="weekly" <?php if($_POST['report_span'] == "weekly"){echo "checked='true'";} ?> /> Last Week <br>
+<input type="radio" name="report_span" value="daily" <?php if($_POST['report_span'] == "daily"){echo "checked='true'";} ?> />
+Single Day&nbsp;&nbsp; 
 
+<input type="text" onfocus="setRadio(this, 'daily');" onchange="setRadio(this, 'daily');" id="dailyDatePicker" name="dailyDatePicker" value="<?= $_POST['dailyDatePicker'] ?>" size="15" />
+
+<?php 
+/*
 $months = array ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
 				 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
 $areas = array("SUN"=>"Bluffton","HHI"=>"Hilton Head","BFT"=>"Beaufort");
@@ -69,10 +176,16 @@ for($i = $current_time[year]; $i >= 1990; $i--)
 	echo '<option value="'.$i.'">'.$i.'</option>';
 }
 echo '</select>';
+*/
 ?> <br>
-<input type="radio" name="report_span" value="range" /> Date
-Range&nbsp;&nbsp; <?php 
 
+<input type="radio" name="report_span" value="range" <?php if($_POST['report_span'] == "range"){echo "checked='true'";} ?>  /> Date
+Range&nbsp;&nbsp; 
+<input type="text" onfocus="setRadio(this, 'range');" onchange="setRadio(this, 'range');" id="range_Start_DatePicker" name="range_Start_DatePicker" value="<?= $_POST['range_Start_DatePicker'] ?>" size="15" />
+&nbsp; to 
+<input type="text" onfocus="setRadio(this, 'range');" onchange="setRadio(this, 'range');" id="range_End_DatePicker" name="range_End_DatePicker" value="<?= $_POST['range_End_DatePicker'] ?>" size="15" />
+<?php 
+/*
 // starting month selector
 echo '<select name="range_month_start">';
 foreach($months as $month)
@@ -125,6 +238,7 @@ for($i = $current_time[year]; $i >= 1990; $i--)
 	echo '<option value="'.$i.'">'.$i.'</option>';
 }
 echo '</select>';
+*/
 ?>
 
 </fieldset>
@@ -137,15 +251,28 @@ echo '</select>';
 <?php
 if($_POST['submitted'])
 {
+
+	echo "<div id='dvReport'>";
+	
 	$header = array("Second Helpings Truck Weight Report for ");
-	if ($_POST['report_area']!="") $header[] = $areas[$_POST['report_area']]." area"; 
+	if ($_POST['report_area']!="") $header[] = $areas[$_POST['report_area']]." base "; 
+		else $header[] = " all bases ";
+		
+	if ($_POST['deliveryAreaId']!=""){
+		$deliveryArea = retrieve_dbDeliveryAreas($_POST['deliveryAreaId']);
+		$header[] =  "area: " . $deliveryArea->get_deliveryAreaName();
+	}
 		else $header[] = " all areas";
+		
+	if ($_POST['chain_name']!="") $header[] = " " .  $_POST['chain_name'];
+		else $header[] = " all chains";
+		
 	if ($_POST['report_type']=="publixwalmart") $header[] = ", food type breakdowns";
 		else if ($_POST['report_type']=="pickup") $header[] = ", donors only";
 		else if ($_POST['report_type']=="dropoff") $header[] = ", recipients only";
 		else $header[] = ", donors and recipients";
 	if ($_POST['client_name']!="")
-		$header[] = ", single client '".$_POST['client_name']."' only";
+		$header[] = ",  client '".$_POST['client_name']."' only";
 	$header[] =  ".<br>";
 	if($_POST['report_span'] == "weekly")
 	{
@@ -160,12 +287,14 @@ if($_POST['submitted'])
 
 	else if($_POST['report_span'] == "daily")
 	{
+	/*
 		$month = $_POST['daily_month'];
 		$day = $_POST['daily_day'];
 		$year = $_POST['daily_year'];
 
 		$time = strtotime($month.' '.$day.', '.$year);
-		
+		*/
+		$time = strtotime($_POST['dailyDatePicker']);
 		$start_date = date('y-m-d', $time);
 		$end_date = $start_date;
 		
@@ -173,9 +302,11 @@ if($_POST['submitted'])
 	}	
     else if($_POST['report_span'] == "range")
     {
-		$time = strtotime($_POST['range_day_start'].$_POST['range_month_start'].$_POST['range_year_start']);
-		$endTime = strtotime($_POST['range_day_end'].$_POST['range_month_end'].$_POST['range_year_end']);
-
+		//$time = strtotime($_POST['range_day_start'].$_POST['range_month_start'].$_POST['range_year_start']);
+		//$endTime = strtotime($_POST['range_day_end'].$_POST['range_month_end'].$_POST['range_year_end']);
+		$time = strtotime($_POST['range_Start_DatePicker']);
+		$endTime = strtotime($_POST['range_End_DatePicker']);
+		
 		$start_date = date('y-m-d', $time);
 		$end_date = date('y-m-d', $endTime);
 
@@ -189,7 +320,8 @@ if($_POST['submitted'])
 	
   if ($_POST['report_span']!="" && $_POST['report_type']!="publixwalmart") {
 	// get all stops from database for given area, report type, and date range
-	$all_stops = getall_dbStops_between_dates($_POST['report_area'], $_POST['report_type'], $_POST['client_name'], $start_date, $end_date);
+	$all_stops = getall_dbStops_between_dates($_POST['report_area'], $_POST['report_type'], 
+		$_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name']);
 
 	//split all_stops into 2 different arrays - one for each
 	$pickups = array();
@@ -208,7 +340,7 @@ if($_POST['submitted'])
 	$tw_pickups  = 0;
 	$tw_dropoffs = 0;
 
-	echo '<table><tr>';
+	echo '<table id="tblReport"><tr>';
 
 	if ($_POST['report_type']!="dropoff") {
 			echo "<tr><td><b>Donor</b></td>";
@@ -230,8 +362,20 @@ if($_POST['submitted'])
 		if($pickups[$i] != null)
 		{
 			echo "<td>".$pickups[$i]->get_client_id()."</td>";
-			echo "<td align='right'>".$pickups[$i]->get_total_weight()."</td><td></td>";
-			$tw_pickups += $pickups[$i]->get_total_weight();
+			
+			$totalWeight = $pickups[$i]->get_total_weight();
+			
+			if($totalWeight < 0){
+				echo "<td align='right'>No Items</td><td></td>";
+			}
+			else{
+				echo "<td align='right'>".$pickups[$i]->get_total_weight()."</td><td></td>";
+				
+				$pickUpWeight = $pickups[$i]->get_total_weight();
+				if($pickUpWeight > 0)
+					$tw_pickups += $pickUpWeight;
+			}
+			
 		}
 		else if ($_POST['report_type']!="dropoff")
 		{
@@ -242,8 +386,15 @@ if($_POST['submitted'])
 		if($dropoffs[$i] != null)
 		{
 			echo "<td>".$dropoffs[$i]->get_client_id()."</td>";
-			echo "<td align='right'>".$dropoffs[$i]->get_total_weight()."</td>";
-			$tw_dropoffs += $dropoffs[$i]->get_total_weight();
+			$dropOffTotalWeight = $dropoffs[$i]->get_total_weight();
+			
+			if($dropOffTotalWeight > 0){
+				$tw_dropoffs += $dropoffs[$i]->get_total_weight();
+				echo "<td align='right'>". $dropOffTotalWeight ."</td>";
+			}
+			else{
+				echo "<td align='right'>No Items</td>";
+			}
 		}
 		else if ($_POST['report_type']!="pickup")
 		{
@@ -269,14 +420,14 @@ if($_POST['submitted'])
   else if ($_POST['report_span']!="") 
   {
   	// get all stops from database for given area, report type, and date range
-	$all_stops = getall_dbWalmartPublixStops_between_dates($_POST['report_area'], $_POST['client_name'], $start_date, $end_date);
+	$all_stops = getall_dbWalmartPublixStops_between_dates($_POST['report_area'], $_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name']);
 
 	//split all_stops into 5 different arrays - one for each food type
 	$food_types = array("Store", "Meat","Deli","Bakery","Grocery","Dairy","Produce","Total");
 	$row_totals = array();
 	$food_type_totals = array("Totals",0,0,0,0,0,0,0);
 	
-	echo '<table><tr>';
+	echo '<table  id="tblReport"><tr>';
 	foreach($food_types as $food_type)
 		echo "<td>".$food_type."</td>";
 	echo "</tr>";
@@ -292,7 +443,8 @@ if($_POST['submitted'])
 			$i=0;
 			foreach ($a_stop->get_items() as $an_item) {
 				$item_weight = substr($an_item,strpos($an_item,":")+1);
-				$prev_stop_totals[$i] += $item_weight;
+				if($item_weight > 0)
+					$prev_stop_totals[$i] += $item_weight;
 				$i++;
 			}
 			$prev_stop_totals[6] += $a_stop->get_total_weight();
@@ -320,6 +472,9 @@ if($_POST['submitted'])
 		$i=0;
 		foreach ($a_stop->get_items() as $an_item) {
 				$item_weight = substr($an_item,strpos($an_item,":")+1);
+				if($item_weight < 0)
+					$item_weight = 0;
+				
 				$prev_stop_totals[$i] = $item_weight;
 				$i++;
 		}
@@ -338,6 +493,14 @@ if($_POST['submitted'])
 //	echo "<br>(To get a different view of this report, you may copy and paste it into a spreadsheet on your computer.)";
   	
   }
+  
+?>
+
+</div>
+						<div style="padding:10px;">
+						<input type="button" value="Print List" onclick="showPrintWindow();" />
+						</div>
+						<?PHP
 }
 
 function export_publixwalmart_data($header, $food_types, $row_totals, $food_type_totals ) {
@@ -379,9 +542,32 @@ function export_data($header,$pickups,$dropoffs,$twp,$twd) {
 }
 
 ?> 
-<table></table>
+
+
 </div>
 <?php include('footer.inc');?>
 </div>
+
+<script type="text/javascript">
+			function showPrintWindow(){
+				
+				var printWin = window.open('', 'winReport', 'width=690px;height:600px;resizable=1');
+				var html = $("#tblReport").parent().html();
+				
+				printWin.document.open();
+				printWin.document.write("<html><head><title>Print Donor/Recipients</title><style>#tblReport td {border:1px solid black;}</style></head><body>");
+				printWin.document.writeln(html);
+				printWin.document.write('<scr');
+				printWin.document.write('ipt>');
+				printWin.document.writeln('setTimeout("window.print()", 200);');
+				printWin.document.write('</scr');
+				printWin.document.write('ipt>');
+				printWin.document.write('</body>');
+				printWin.document.write('</html>');
+				printWin.document.close();
+				
+			}
+		</script>
+		
 </body>
 </html>

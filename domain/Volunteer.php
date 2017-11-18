@@ -39,13 +39,16 @@ class Volunteer {
 	private $start_date;   	// format: yy-mm-dd (for applicants, date submitted)
 	private $notes;			// misc notes about this volunteer
 	private $password;     	// password for system access
-
+	private $tripCount; 	//Volunteer trip count
+	private $lastTripDate;	//date volunteer was on truck
+	private $shirtSize;		//Shirt Size: S, M, L, XL, 2XL
+	private $affiliateId;	//associated affiliate
         /**
          * constructor for a Volunteer
          */
     function __construct($last_name, $first_name, $address, $city, $state, $zip, $phone1, $phone2, $email, $type,
                          $status, $area, $license_no, $license_state, $license_expdate, $accidents, $availability, 
-                         $schedule, $history, $birthday, $start_date, $notes, $password){                
+                         $schedule, $history, $birthday, $start_date, $notes, $password, $tripCount, $lastTripDate, $shirtSize, $affiliateId){                
         $this->id = $first_name . $phone1; 
         $this->last_name = $last_name;
         $this->first_name = $first_name;
@@ -56,6 +59,18 @@ class Volunteer {
         $this->phone1 = $phone1;
         $this->phone2 = $phone2;
         $this->email = $email;
+		$this->tripCount = $tripCount;
+		
+		if($lastTripDate != '' && strtotime($lastTripDate)!='0000-00-00'){
+			$this->lastTripDate = date('d-m-Y', strtotime($lastTripDate));
+		}else{
+			$this->lastTripDate = '';			
+		}
+
+		
+		$this->shirtSize = $shirtSize;
+		$this->affiliateId = $affiliateId;
+		
         if ($type == "") 
         	$this->type = array();
         else 
@@ -162,6 +177,23 @@ class Volunteer {
 	function get_password () {
         return $this->password;
     }
+	
+	function get_tripCount(){
+		return $this->tripCount;
+	}
+	
+	function get_lastTripDate(){
+		return $this->lastTripDate;
+	}
+	
+	function get_shirtSize(){
+		return $this->shirtSize;
+	}
+	
+	function get_affiliateId(){
+		return $this->affiliateId;
+	}
+	
 	function get_nice_phone1 () {
     	if (strlen($this->phone1)==10)
     		return substr($this->phone1,0,3)."-".substr($this->phone1,3,3)."-".substr($this->phone1,6);
@@ -193,6 +225,15 @@ class Volunteer {
     function set_password ($new_password) {
         $this->password = $new_password;
     }
-        
+ 
+	function set_lastTripDate($newDate){
+		$this->lastTripDate = $newDate;
+	}
+	
+	function set_tripCount($count){
+		$this->tripCount = $count;
+	}
+	
+	
 }
 ?>

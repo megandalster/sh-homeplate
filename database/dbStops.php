@@ -79,6 +79,11 @@ function retrieve_dbStops ($id) {
     $items = $result_row['items'];
     if ($result_row['items']=="" || $result_row['items']=="Meat:,Frozen:,Bakery:,Grocery:,Dairy:,Produce:")
     	$items = $result_row['weight']; 
+		
+	if($result_row['items'] == "Meat:-1,Frozen:-1,Bakery:-1,Grocery:-1,Dairy:-1,Produce:-1"){
+		$items = 0;
+	}
+	
     $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $items, $result_row['notes']);
 	mysql_close(); 
     return $theStop;   
@@ -102,19 +107,54 @@ function getall_dbStops () {
 }
 
 // Returns all stops within a certain date range.
-function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, $end_date) {
+function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, $end_date, $deliveryAreaId, $chain) {
 	connect();
-	$query = "SELECT route, client, type, SUM(weight), notes FROM dbStops where ".
+	$query = "SELECT route, client, type, SUM(if(weight < 0,0,weight)) as 'SUM(weight)', notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
 			"client like '%".$client_name."%' AND ".
-			"type like '%".$type."%' AND weight > 0 AND ".
-			"date >= '". $start_date . "' AND date <= '". $end_date . "' GROUP BY client";
+			"type like '%".$type."%' AND (weight > 0 OR weight < 0) ";
+			
+			
+		if($deliveryAreaId > 0){
+			$query = $query . " AND client IN (SELECT id from dbClients WHERE deliveryAreaId = " . $deliveryAreaId . ")";
+		}
+			
+		if(!empty($chain)){
+			$query = $query . " AND client IN (SELECT id from dbClients WHERE chain_name = '" . $chain . "')";
+		}
+			
+		$query =  $query . " AND date >= '". $start_date . "' AND date <= '". $end_date . "' GROUP BY client";
+			
+			echo "<!--" . $query . "-->\n";
+			
     $result = mysql_query ($query);
     $theStops = array();
     while ($result_row = mysql_fetch_assoc($result)) {
     	// The total weight of the stop is returned instead of its items for the purpose
     	// of generating reports with each stop's total weight.
-    	$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['SUM(weight)'], $result_row['notes']);
+		$weight = $result_row['SUM(weight)'];
+		$clientName = $result_row['client'];
+		if($area != ''){
+		
+			$query = "SELECT SUM(weight) FROM dbStops ".
+" WHERE client = '" . $clientName . "' AND id LIKE '%". $area  . "%'" .
+" AND weight > 0".
+" AND date >= '". $start_date . "' AND date <= '". $end_date . "' ".
+" GROUP BY client";
+
+//echo "<!--" . $query . "-->\n";
+
+			$weightQueryResult = mysql_query($query);
+			$weight = 0;
+			 while ($weightResult_row = mysql_fetch_assoc($weightQueryResult)) {
+				$thisWeight = $weightResult_row['SUM(weight)'];
+				//if($thisWeight > 0)
+					$weight += $thisWeight;
+				
+			 }
+		}
+		
+    	$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $weight , $result_row['notes']);
         $theStops[] = $theStop;
     }
 	mysql_close();
@@ -122,25 +162,68 @@ function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, 
 }
 
 // Returns all stops within a certain date range.
-function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_date, $end_date) {
+function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_date, $end_date, $deliveryAreaId, $chain) {
 	connect();
 	$query = "SELECT route, client, type, items, notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
 			"client like '%".$client_name."%' AND ".
-			"items like '%:%' AND weight > 0 AND ".
-			"date >= '". $start_date . "' AND date <= '". $end_date . "' ORDER BY client";
+			"items like '%:%' AND weight > 0 ";
+			
+			
+	if($deliveryAreaId > 0){
+			$query = $query . " AND client IN (SELECT id from dbClients WHERE deliveryAreaId = " . $deliveryAreaId . ")";
+		}
+			
+		if(!empty($chain)){
+			$query = $query . " AND client IN (SELECT id from dbClients WHERE chain_name = '" . $chain . "')";
+		}
+		
+		$query = $query . 	" AND date >= '". $start_date . "' AND date <= '". $end_date . "' ORDER BY client";
     $result = mysql_query ($query);
     $theStops = array();
+	
+	
     while ($result_row = mysql_fetch_assoc($result)) {
-    	// The total weight of the stop is returned instead of its items for the purpose
-    	// of generating reports with each stops total weight.
-        $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['items'], $result_row['notes']);
+		//weight tally was here 
+		
+		//echo "<!--" . $result_row['items'] . "-->\n";
+		
+		$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['items'] , $result_row['notes']);
         $theStops[] = $theStop;
     }
 	mysql_close();
     return $theStops; 
 }
 
+
+/*
+<!-- old weight tally -->
+    	// The total weight of the stop is returned instead of its items for the purpose
+    	// of generating reports with each stop's total weight.
+		$weight = $result_row['SUM(weight)'];
+		$clientName = $result_row['client'];
+		if($area != ''){
+		
+			$query = "SELECT SUM(weight) FROM dbStops ".
+" WHERE client = '" . $clientName . "' AND id LIKE '%". $area  . "%'" .
+" AND weight > 0".
+" AND date >= '". $start_date . "' AND date <= '". $end_date . "' ".
+" GROUP BY client";
+
+//echo "<!--" . $query . "-->\n";
+
+			$weightQueryResult = mysql_query($query);
+			$weight = 0;
+			 while ($weightResult_row = mysql_fetch_assoc($weightQueryResult)) {
+				$thisWeight = $weightResult_row['SUM(weight)'];
+				//if($thisWeight > 0)
+					$weight += $thisWeight;
+				
+			 }
+		}
+		
+    	$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $weight , $result_row['notes']);
+		*/
 
 // Update the values of a specified stop by removing it from the DB and then
 // inserting it again.

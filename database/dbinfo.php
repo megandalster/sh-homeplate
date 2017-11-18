@@ -14,15 +14,16 @@
 */
 
 function connect() {
+
 	$host = "localhost";
 	$database = "homeplatedb";
 	$user = "homeplatedb";
-	$password = "foodyWr1";
+	$password = "foodyWr1!";
 
 	$connected = mysql_connect($host,$user,$password);
-	if (!$connected) return mysql_error();
+	if (!$connected) { return mysql_error();}
 	$selected = mysql_select_db($database, $connected);
-	if (!$selected) return mysql_error();
+	if (!$selected) { return mysql_error(); }
 	else return true;
 }
 ?>

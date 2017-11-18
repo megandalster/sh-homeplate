@@ -14,7 +14,7 @@ function validate_form($id){
 	if($_POST['city']==null)                $errors[] = 'Please enter a city';
 	if($_POST['state']==null)               $errors[] = 'Please enter a state';
 	if($_POST['zip'] != null && strlen($_POST['zip'])!=5) $errors[] = 'Please enter a valid zip code';
-	
+	if($_POST['area']==null)               $errors[] = 'Please enter an Area';
 	//if($_POST['days']==null)    		    $errors[] = 'Must have some availabilty';
 	if($_POST['phone1']!=null && !valid_phone($_POST['phone1'])) $errors[] = 'Enter a valid primary phone number (7 or 10 digits)';
 	if($_POST['phone2']!=null && !valid_phone($_POST['phone2'])) $errors[] = 'Enter a valid secondary phone number (7 or 10 digits)';

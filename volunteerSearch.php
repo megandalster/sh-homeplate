@@ -8,13 +8,17 @@
 */
 	session_start();
 	session_cache_expire(30);
-?>
+
+				include_once(dirname(__FILE__).'/database/dbAffiliates.php');
+	?>
+
 <html>
 	<head>
 		<title>
 			Search for People
 		</title>
 		<link rel="stylesheet" href="styles.css" type="text/css" />
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	</head>
 	<body>
 		<div id="container">
@@ -56,6 +60,24 @@
                             echo '<option value="former"';      if ($status=="former")      echo " SELECTED"; echo '>Former</option>';
                         echo '</select>';
                         
+						  if( !array_key_exists('s_affiliate', $_POST) ) $affiliate = ""; else $affiliate = $_POST['s_affiliate'];
+						echo '&nbsp;&nbsp;Affiliate:<select name="s_affiliate">';
+							echo '<option value=""';            if ($affiliate=="")            echo " SELECTED"; echo '>--all--</option>';
+							
+							$allAffiliates = getall_dbAffiliates();
+							foreach ($allAffiliates as $affiliateRow) {
+								echo '<option value="';            
+								echo $affiliateRow->get_affiliateId();
+								echo '"';
+								if ($affiliate==$affiliateRow->get_affiliateId())            
+									echo ' SELECTED';
+								echo '>';
+								echo $affiliateRow->get_affiliateName();
+								echo "</option>";
+							}
+                        echo '</select>';
+                        
+						
 						if( !array_key_exists('s_name', $_POST) ) $name = ""; else $name = $_POST['s_name'];
 						echo '&nbsp;&nbsp;Name: ' ;
 						echo '<input type="text" name="s_name" value="' . $name . '">';
@@ -86,6 +108,7 @@
 						$area = $_POST['s_area'];
 						$type = $_POST['s_type'];
 						$status = $_POST['s_status'];
+						$affiliate = $_POST['s_affiliate'];
                         $name = trim(str_replace('\'','&#39;',htmlentities($_POST['s_name'])));
                         
                         $availability = array();
@@ -100,17 +123,17 @@
                         include_once('database/dbVolunteers.php');
                         include_once('domain/Volunteer.php');
                         
-                        $result = getonlythose_dbVolunteers($area, $type, $status, $name, $availability);  
+                        $result = getonlythose_dbVolunteers($area, $type, $status, $name, $availability, $affiliate);  
 
-						echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
+						echo '<div id="dvReport"><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
                             if (!$type) echo "volunteer(s)"; 
                             else echo $type.'s';
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
 						if ($name!="") echo ' with name like "'.$name.'"';
 						if ($availability[0]!="") echo ' with any of the selected schedule days ';
 						if (sizeof($result)>0) {
-							echo ' (select one for more info).';
-							echo '<p><table> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Schedule</strong></td></tr>';
+							echo ' <div id="dvLinkInfo">(select one for more info).</div>';
+							echo '<table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Schedule</strong></td><td><strong>Cell</strong></td><td><strong>Trips</strong></td><td><strong>Last Dt</strong></td><td><strong>Notes</strong></td></tr>';
                             $allEmails = array(); // for printing all emails
                             foreach ($result as $vol) {
 								echo "<tr><td><a href=volunteerEdit.php?id=".$vol->get_id().">" . 
@@ -119,11 +142,25 @@
 									$vol->get_email() . "</td><td>"; $allEmails[] = $vol->get_email();
 								foreach($vol->get_availability() as $availableon)
 									echo ($availableon . ", ") ;
-								echo "</td></a></tr>";
+								echo "</td></a>";
+								echo "<td>" . $vol->get_phone2() . "</td>";
+								echo "<td>" . $vol->get_tripCount() . "</td>";
+								echo "<td>" . $vol->get_lastTripDate() . "</td>";
+								
+								echo "<td>" . $vol->get_notes() . "</td>";
+								echo "</tr>";
 							}
 						}
 						echo '</table>';
-                        
+                      ?>
+
+					</div>
+						<div style="padding:10px;">
+						<input type="button" value="Print List" onclick="showPrintWindow();" />
+						</div>
+						<?PHP
+						
+						
                         echo "<br/><strong>email these people:</strong> <br/>";
                         if ($allEmails)
                           foreach($allEmails as $email)
@@ -137,6 +174,30 @@
 			</div>
 			<?PHP include('footer.inc');?>
 		</div>
+		
+		
+<script type="text/javascript">
+			function showPrintWindow(){
+				
+				var printWin = window.open('', 'winReport', 'width=690px;height:600px;resizable=1');
+				var html = $("#tblReport").parent().html();
+				
+				printWin.document.open();
+				printWin.document.writeln("<html><head><title>Print Donor/Recipients</title><style>#tblReport td {border:1px solid black;}");			
+				printWin.document.write("#dvLinkInfo{display:none;}</style></head><body>");
+				printWin.document.writeln(html);
+				printWin.document.write('<scr');
+				printWin.document.write('ipt>');
+				printWin.document.writeln('setTimeout("window.print()", 200);');
+				printWin.document.write('</scr');
+				printWin.document.write('ipt>');
+				printWin.document.write('</body>');
+				printWin.document.write('</html>');
+				printWin.document.close();
+				
+			}
+		</script>
+		
 	</body>
 </html>
 

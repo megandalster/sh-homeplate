@@ -32,10 +32,14 @@ class Client {
 							// ("pounds", "foodtype" or "foodtypeboxes")
 	private $notes; 		// notes written by the team captain or coordinator
 	
+	private $email;			//contact email for client
+	private $ContactName;
+	private $deliveryAreaId; //
+	
 	//copied from volunteer class. question about use of "explode" with arrays
 	
 	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $geocoordinates,
-	                        $phone1, $phone2, $days, $feed_america, $weight_type, $notes){                
+	                        $phone1, $phone2, $days, $feed_america, $weight_type, $notes, $email, $ContactName, $deliveryAreaId){                
         $this->id       	= $id;      
         $this->chain_name 	= $chain_name;      
         $this->area 		= $area;      
@@ -44,10 +48,26 @@ class Client {
         $this->city 		= $city;      
         $this->state 		= $state;      
         $this->zip 			= $zip;
+		$this->email		= $email;
+		$this->ContactName = $ContactName;
+		$this->deliveryAreaId = $deliveryAreaId;
+		
+		/*
         if ($weight_type=="")
         	$this->weight_type = "pounds";
         else
 			$this->weight_type	= $weight_type;
+		*/
+		if( $this->type 	== "donor"){
+			$this->weight_type = "foodtype";
+		}
+		else{
+			 if ($weight_type=="")
+        	$this->weight_type = "pounds";
+        else
+			$this->weight_type	= $weight_type;
+		}
+		
         $this->phone1 		= $phone1;
         $this->phone2 		= $phone2;
 
@@ -107,11 +127,31 @@ class Client {
         return $this->feed_america;
     }
     function get_weight_type(){
-    	return $this->weight_type;
+		if($this->get_type() == "donor"){
+			return "foodtype";
+		}
+		else{
+			return "pounds";
+		}
+		
+    	//return $this->weight_type;
     }
     function get_notes(){
         return $this->notes;
     }
+	
+	function get_email(){
+		return $this->email;
+	}
+	
+	function get_ContactName(){
+		return $this->ContactName;
+	}
+	
+	function get_deliveryAreaId(){
+		return $this->deliveryAreaId;
+	}
+	
 	function get_nice_phone1 () {
     	if (strlen($this->phone1)==10)
     		return substr($this->phone1,0,3)."-".substr($this->phone1,3,3)."-".substr($this->phone1,6);

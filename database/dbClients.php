@@ -21,7 +21,7 @@ function create_dbClients(){
 	mysql_query("DROP TABLE IF EXISTS dbClients");
 	$result = mysql_query("CREATE TABLE dbClients (id TEXT NOT NULL, chain_name TEXT, area TEXT, type TEXT, address TEXT, city TEXT, state TEXT,
                             zip TEXT, geocoordinates TEXT, phone1 VARCHAR(12) NOT NULL, phone2 VARCHAR(12), days TEXT, feed_america TEXT, 
-                            weight_type TEXT, notes TEXT)");
+                            weight_type TEXT, notes TEXT, email TEXT)");
 	mysql_close();
 	if(!$result){
 			echo (mysql_error()."Error creating database table dbClients. <br>");
@@ -40,7 +40,8 @@ function retrieve_dbClients($id){
 	$result_row = mysql_fetch_assoc($result);
 	$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
                             $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], 
-                            $result_row['phone2'], $result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes']);
+                            $result_row['phone2'], $result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+							$result_row['ContactName'], $result_row['deliveryAreaId']);
 	mysql_close();
 	return $theClient;
 }
@@ -53,20 +54,24 @@ function getall_dbClients(){
 	while($result_row = mysql_fetch_assoc($result)){
 		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
                             $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], $result_row['phone2'],
-							$result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes']);
+							$result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+							$result_row['ContactName'], $result_row['deliveryAreaId']);
 		$theClients[] = $theClient;
 	}
 	mysql_close();
 	return $theClients;
 }
 
-function getall_clients($area, $type, $status, $name, $availability) {
+function getall_clients($area, $type, $status, $name, $availability, $deliveryAreaId) {
 	connect();
     $query = "SELECT * FROM dbClients WHERE area like '%". $area . "%' ";
             if($type)           $query .= "AND type = '". $type . "' ";
             if($status)         $query .= "AND feed_america = '" . $status . "' ";
+			
             if($name)           $query .= "AND id LIKE '%" . $name ."%' ";
-            if($availability)  { 
+			if($deliveryAreaId)	$query .= "AND deliveryAreaId=" . $deliveryAreaId . " ";
+			
+            if($availability && count($availability) > 0)  { 
             	$query .= "AND (";
             	foreach ($availability as $day)
                 	$query .= "days LIKE '%".$day."%' OR ";
@@ -79,7 +84,8 @@ function getall_clients($area, $type, $status, $name, $availability) {
     while ($result_row = mysql_fetch_assoc($result)) {
         $theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
                             $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], $result_row['phone2'],
-							$result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes']);
+							$result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+							$result_row['ContactName'], $result_row['deliveryAreaId']);
 		$theClients[] = $theClient;
     }
 	mysql_close();
@@ -113,7 +119,17 @@ function insert_dbClients($client){
 				$client->is_feed_america()."','".
 				$client->get_weight_type()."','".
 				$client->get_notes().
-	            "');";
+	            "', '".
+				$client->get_email().
+				"', '".
+				$client->get_ContactName() . 
+				"', '".
+				$client->get_deliveryAreaId() . 
+				"');";
+				/*
+				NOTE: Email was added
+				ALTER TABLE `871334_homeplate`.`dbClients` ADD COLUMN `email` TEXT NULL  AFTER `notes` ;
+			*/
 	$result = mysql_query($query);
 	if (!$result) {
 		echo (mysql_error(). " Unable to insert into dbClients: " . $client->get_id(). "\n");
@@ -148,4 +164,23 @@ function delete_dbClients($id){
 	}
 	return true;
 }
+
+
+function getall_dbClientsForArea($deliveryAreaId){
+	$theQuery = "SELECT * FROM dbClients WHERE deliveryAreaId=" . $deliveryAreaId . " ORDER BY id";
+	
+	connect();
+	$result = mysql_query($theQuery);
+	$theClients = array();
+	while($result_row = mysql_fetch_assoc($result)){
+		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], $result_row['phone2'],
+							$result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+							$result_row['ContactName'], $result_row['deliveryAreaId']);
+		$theClients[] = $theClient;
+	}
+	mysql_close();
+	return $theClients;
+}
+
 ?>

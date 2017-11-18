@@ -168,17 +168,38 @@ function ftpout($day, $areas) {
 
 function ftpin($day) {
 	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
-	$deviceIds = array("ab92221e6ada959c",
+	$deviceIds = array("8c5328005a8d7784", // allens tablet
+				"6b2b51166c2b321f","387a6442e578d02f","f17f64f993d2b19b","bd3eb9c3c3bd44ba",  //jons 7 tablets
+				"c930db8fe6dccd30","3d28c762d6862027","2fc8453a13e544a8","91ba397615181245", 
+				"3d741b4a9d4676ff", //dev tablet
+				"43c0cbf7509044e8", //PT dev tablet
+				"3A8E00285AC36131", //New Homeplate tablets
+				"33DF3639D186AC7", 
+				"35866C36A130677C",
+				"908b4dfcee3e90f0",
+				"bea0b2f0390264a4",
+				"300BFECC9D846131",
+				"3D73C3D17FD0043A",
+				"3F385F7EA21C91C2",
+				"95d13979f48f5c7f",
+				"3013FD008A318D10",
+				"167a036c74b1b492",
+				"3D3FB47075B22A72", //?bogus tablet id?
+				"335F08296E03B6B8", //?bogus tablet id?
+				"d66bb4aa40e073ca",
+				"ab92221e6ada959c", //new tablet id
 				"486e7427693b6422",
 				"5e47d9a9796482da",
-				"a207427fee8357ab", //Added 11/24/2014
-				"49f2420a374c1b0f", //Added 8/18/2015
-				"1f5b811fde353d0",  //Added 9/29/2015
-				"9dba4527e58b85f3", //Added 9/29/2015
-				"4d4365330aa76127", //Added 9/29/2015				
-				"b81b930d5ac05962",
-				"a22f0b9aa9d28df9", //Added 3/3/2016
-				"e029ceac5d51b6b", //Added 3/3/2016
+				"4203b94c00da12f3",
+				"306F69703B092554",
+				"33DF36397D186AC7",
+				"336430502B44E4FF", //new tablet id added 11/24/2014
+				"1ed5e3b37488588", //new android id added 11/24/2014
+				"328878A6F614A7DA", //new tablet id added 11/24/2014
+				"a207427fee8357ab", //new android id added 11/24/2014
+				"34FBAA6A2CFAD3C7", //new android id added 8/12/2015
+				"49f2420a374c1b0f", //new android id added 8/18/2015					
+				"ef553c628b2c11b2",
 				"d3065bbe7dd5c4ad"
 				);
 				
@@ -206,7 +227,7 @@ function ftpin($day) {
 			if (file_exists($filename)) {
 				$handle = fopen($filename, "r+");
 				//echo "Processing ftp in file:";
-				
+				//echo $filename . "<br />";
 				
 	// line 1			
 				$line1 = fgetcsv($handle, 0, ";"); 
@@ -214,8 +235,6 @@ function ftpin($day) {
 				$tabletid = substr($line1[0],13);
 				$notes = $tabletid.";".$line1[5]."-".$line1[6];
 				$r = get_route($id);
-				
-				//echo $filename . " route id:" . $id  . "<br />";
 				
 				//echo $r->get_notes() . "  " . $tabletid . " strpos = ". strpos($r->get_notes(),"adam") . "<br />";
 				
