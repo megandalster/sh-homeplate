@@ -14,20 +14,20 @@
  */
 class Client {
 	private $id;     		// uniquely identifies the donor or recipient
-							// e.g. ÒFood Lion #1698 Laurel BayÓ
-	private $chain_name;	// e.g., ÒFood LionÓ (usually blank)
+							// e.g. 'Food Lion #1698 Laurel Bay'
+	private $chain_name;	// e.g., 'Food Lion' (usually blank)
 	private $area;			// "HHI", "SUN", or "BFT"
 	private $type;			// "donor" or "recipient"
-	private $address;       // street address Ð string
+	private $address;       // street address : string
 	private $city;			// city
-	private $state;			// 2-letter abbrev - usually ÒSCÓ
-	private $zip; 	      	// zip code Ð integer
-	private $geocoordinates; // array pair: [latitude, longitude] for navigation
+	private $state;			// 2-letter abbrev - usually 'SC'
+	private $zip; 	      	// zip code : integer
+	private $county; 		// county
 	private $phone1;		// primary phone
 	private $phone2;		// secondary phone
 	private $days;			// array of days for pick-up or delivery
-							// e.g. [ÒMonÓ, ÒWedÓ]
-	private $feed_america;	// ÒyesÓ or ÒnoÓ
+							// e.g. ['Mon', 'Wed']
+	private $lcfb;			// 'yes' or 'no'
 	private $weight_type;	// variable for how items are recorded: 
 							// ("pounds", "foodtype" or "foodtypeboxes")
 	private $notes; 		// notes written by the team captain or coordinator
@@ -38,8 +38,8 @@ class Client {
 	
 	//copied from volunteer class. question about use of "explode" with arrays
 	
-	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $geocoordinates,
-	                        $phone1, $phone2, $days, $feed_america, $weight_type, $notes, $email, $ContactName, $deliveryAreaId){                
+	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county,
+	                        $phone1, $phone2, $days, $lcfb, $weight_type, $notes, $email, $ContactName, $deliveryAreaId){                
         $this->id       	= $id;      
         $this->chain_name 	= $chain_name;      
         $this->area 		= $area;      
@@ -48,7 +48,10 @@ class Client {
         $this->city 		= $city;      
         $this->state 		= $state;      
         $this->zip 			= $zip;
-		$this->email		= $email;
+        $this->county 		= $county;
+		$this->phone1 		= $phone1;
+        $this->phone2 		= $phone2;
+        $this->email		= $email;
 		$this->ContactName = $ContactName;
 		$this->deliveryAreaId = $deliveryAreaId;
 		
@@ -67,21 +70,14 @@ class Client {
         else
 			$this->weight_type	= $weight_type;
 		}
-		
-        $this->phone1 		= $phone1;
-        $this->phone2 		= $phone2;
-
-        if ($geocoordinates == "")
-		   $this->geocoordinates = array();
-		else
-		   $this->geocoordinates = explode(',',$geocoordinates);
         
         if ($days == "")
 		   $this->days = array();
 		else
 		   $this->days = explode(',',$days);
 		   
-        $this->feed_america	= $feed_america;
+        $this->lcfb	= $lcfb;
+        $this->charity_tracker	= $charity_tracker;
         $this->notes 		= $notes;
         
         
@@ -111,8 +107,8 @@ class Client {
     function get_zip() {
         return $this->zip;
     }
-    function get_geo() {
-        return $this->geocoordinates;
+    function get_county() {
+        return $this->county;
     }
     function get_phone1() {
         return $this->phone1;
@@ -123,8 +119,8 @@ class Client {
     function get_days(){
         return $this->days;
     }
-    function is_feed_america(){
-        return $this->feed_america;
+    function is_lcfb(){
+        return $this->lcfb;
     }
     function get_weight_type(){
 		if($this->get_type() == "donor"){

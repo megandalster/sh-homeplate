@@ -80,8 +80,8 @@
 			}
         	$client = new Client($id, $_POST['chain_name'], $_POST['area'], $_POST['type'], 
                                  $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
-								 $_POST['geocoordinates'], $_POST['phone1'], $_POST['phone2'], implode(',',$_POST['days']),
-								 $feed_america, $weight_type, $_POST['notes'], $_POST['ContactName'], $_POST['deliveryAreaId']);
+								 $_POST['county'], $_POST['phone1'], $_POST['phone2'], implode(',',$_POST['days']),
+								 $lcfb, $weight_type, $_POST['notes'], $_POST['ContactName'], $_POST['deliveryAreaId']);
 			$id = $old_id;
 			include('clientForm.php');
 		}
@@ -158,8 +158,8 @@ function process_form($id)	{
 				if ($dup)
 					echo('<p class="error">Unable to add ' . $id . ' to the database. <br>Another client with the same id is already there.');
 				else {
-					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $geocoordinates,
-	                        $phone1, $phone2, $days, $feed_america, $weight_type, $notes, $email, $ContactName, $deliveryAreaId);
+					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county,
+	                        $phone1, $phone2, $days, $lcfb, $weight_type, $notes, $email, $ContactName, $deliveryAreaId);
                     $result = insert_dbClients($newperson);
 					if (!$result)
                         echo ('<p class="error">Unable to add '. $id . ' in the database. <br>Please report this error to the Program Coordinator.');
@@ -189,8 +189,8 @@ function process_form($id)	{
                 if (!$result)
                    echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');
 				else {
-					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $geocoordinates,
-	                        $phone1, $phone2, $days, $feed_america, $weight_type, $notes, $email, $ContactName, $deliveryAreaId);
+					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county,
+	                        $phone1, $phone2, $days, $lcfb, $weight_type, $notes, $email, $ContactName, $deliveryAreaId);
                 	$result = insert_dbClients($newperson);
 					if (!$result)
                    		echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');

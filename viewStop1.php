@@ -94,8 +94,6 @@
 					$stop1->set_total_weight($total_weight);
 					$stop1->set_notes($driver_notes);
 					update_dbStops($stop1);
-					echo('<div class = "warning"><b>Please check that the weight you submitted is correct before "Returning to Route"</b>
-						</div><br/>');
 				}
 			}
 			

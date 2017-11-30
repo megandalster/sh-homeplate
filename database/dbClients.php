@@ -20,7 +20,7 @@ function create_dbClients(){
 	connect();
 	mysql_query("DROP TABLE IF EXISTS dbClients");
 	$result = mysql_query("CREATE TABLE dbClients (id TEXT NOT NULL, chain_name TEXT, area TEXT, type TEXT, address TEXT, city TEXT, state TEXT,
-                            zip TEXT, geocoordinates TEXT, phone1 VARCHAR(12) NOT NULL, phone2 VARCHAR(12), days TEXT, feed_america TEXT, 
+                            zip TEXT, county TEXT, phone1 VARCHAR(12) NOT NULL, phone2 VARCHAR(12), days TEXT, lcfb TEXT, 
                             weight_type TEXT, notes TEXT, email TEXT)");
 	mysql_close();
 	if(!$result){
@@ -39,8 +39,8 @@ function retrieve_dbClients($id){
 	}
 	$result_row = mysql_fetch_assoc($result);
 	$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
-                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], 
-                            $result_row['phone2'], $result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], 
+                            $result_row['phone2'], $result_row['days'], $result_row['lcfb'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
 							$result_row['ContactName'], $result_row['deliveryAreaId']);
 	mysql_close();
 	return $theClient;
@@ -53,8 +53,8 @@ function getall_dbClients(){
 	$theClients = array();
 	while($result_row = mysql_fetch_assoc($result)){
 		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
-                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], $result_row['phone2'],
-							$result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['phone2'],
+							$result_row['days'], $result_row['lcfb'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
 							$result_row['ContactName'], $result_row['deliveryAreaId']);
 		$theClients[] = $theClient;
 	}
@@ -62,14 +62,14 @@ function getall_dbClients(){
 	return $theClients;
 }
 
-function getall_clients($area, $type, $status, $name, $availability, $deliveryAreaId) {
+function getall_clients($area, $type, $lcfb, $name, $availability, $deliveryAreaId, $county) {
 	connect();
     $query = "SELECT * FROM dbClients WHERE area like '%". $area . "%' ";
             if($type)           $query .= "AND type = '". $type . "' ";
-            if($status)         $query .= "AND feed_america = '" . $status . "' ";
-			
+            if($lcfb)         $query .= "AND lcfb = '" . $lcfb . "' ";
             if($name)           $query .= "AND id LIKE '%" . $name ."%' ";
 			if($deliveryAreaId)	$query .= "AND deliveryAreaId=" . $deliveryAreaId . " ";
+			if($county)	$query .= "AND county='" . $county . "' ";
 			
             if($availability && count($availability) > 0)  { 
             	$query .= "AND (";
@@ -78,13 +78,13 @@ function getall_clients($area, $type, $status, $name, $availability, $deliveryAr
             	$query = substr($query, 0, strlen( $query ) - 4).") ";
             }
             $query .= "ORDER BY id";
-    //print $query;
+    echo "query = ". $query;
     $result = mysql_query ($query);
     $theClients = array();
     while ($result_row = mysql_fetch_assoc($result)) {
         $theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
-                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], $result_row['phone2'],
-							$result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['phone2'],
+							$result_row['days'], $result_row['lcfb'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
 							$result_row['ContactName'], $result_row['deliveryAreaId']);
 		$theClients[] = $theClient;
     }
@@ -112,11 +112,11 @@ function insert_dbClients($client){
 				$client->get_city()."','".
 				$client->get_state()."','".
 				$client->get_zip()."','".
-                implode(',',$client->get_geo())."','".
+                $client->get_county()."','".
 				$client->get_phone1()."','".
 				$client->get_phone2()."','".
 				implode(',',$client->get_days())."','".
-				$client->is_feed_america()."','".
+				$client->is_lcfb()."','".
 				$client->get_weight_type()."','".
 				$client->get_notes().
 	            "', '".
@@ -174,8 +174,8 @@ function getall_dbClientsForArea($deliveryAreaId){
 	$theClients = array();
 	while($result_row = mysql_fetch_assoc($result)){
 		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
-                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['geocoordinates'], $result_row['phone1'], $result_row['phone2'],
-							$result_row['days'], $result_row['feed_america'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['phone2'],
+							$result_row['days'], $result_row['lcfb'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
 							$result_row['ContactName'], $result_row['deliveryAreaId']);
 		$theClients[] = $theClient;
 	}

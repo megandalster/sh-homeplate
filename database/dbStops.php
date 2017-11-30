@@ -107,7 +107,9 @@ function getall_dbStops () {
 }
 
 // Returns all stops within a certain date range.
-function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, $end_date, $deliveryAreaId, $chain) {
+function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, $end_date, $deliveryAreaId, $chain, $county) {
+//	echo "area,type,client_name,start_date,end_date,deliveryareaid,chain,county=".
+//			$area.",".$type.",".$client_name.",".$start_date.",".$end_date.",".$deliveryAreaId.",".$chain.",".$county;
 	connect();
 	$query = "SELECT route, client, type, SUM(if(weight < 0,0,weight)) as 'SUM(weight)', notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
@@ -117,6 +119,10 @@ function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, 
 			
 		if($deliveryAreaId > 0){
 			$query = $query . " AND client IN (SELECT id from dbClients WHERE deliveryAreaId = " . $deliveryAreaId . ")";
+		}
+			
+		if(!empty($county)){
+			$query = $query . " AND client IN (SELECT id from dbClients WHERE county = '" . $county . "')";
 		}
 			
 		if(!empty($chain)){
@@ -162,7 +168,7 @@ function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, 
 }
 
 // Returns all stops within a certain date range.
-function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_date, $end_date, $deliveryAreaId, $chain) {
+function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_date, $end_date, $deliveryAreaId, $chain, $county) {
 	connect();
 	$query = "SELECT route, client, type, items, notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
@@ -170,8 +176,11 @@ function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_
 			"items like '%:%' AND weight > 0 ";
 			
 			
-	if($deliveryAreaId > 0){
+		if($deliveryAreaId > 0){
 			$query = $query . " AND client IN (SELECT id from dbClients WHERE deliveryAreaId = " . $deliveryAreaId . ")";
+		}
+		if($county){
+			$query = $query . " AND client IN (SELECT id from dbClients WHERE county = " . $county . ")";
 		}
 			
 		if(!empty($chain)){

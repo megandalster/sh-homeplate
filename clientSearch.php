@@ -29,79 +29,94 @@
 				// display the search form
 					$area = $_GET['area'];
 					$deliveryAreaId = $_GET['deliveryAreaId'];
+					$deliveryAreas = getall_dbDeliveryAreas();
+					$counties = array("Beaufort", "Jasper", "Hampton");
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
 					echo('<p><a href="'.$path.'clientEdit.php?id=new">Add new donor or recipient</a>');	
 					echo('<form method="post">');
-						echo('<p><strong>Search for donors and recipients:</strong>');
+					echo('<p><strong>Search for donors and recipients:</strong>');
                         
-                        if( array_key_exists('s_area', $_POST) ) $area = $_POST['s_area']; //override the GET variable if we just conducted a search
-						echo '<p>Base: <select name="s_area">' .
+                    if( array_key_exists('s_area', $_POST) ) 
+                    	$area = $_POST['s_area']; //override the GET variable if we just conducted a search
+					echo '<p>Base: <select name="s_area">' .
 							'<option value="">--all--</option>'; 
-                            echo '<option value="HHI"'; if ($area=="HHI") echo " SELECTED"; echo '>Hilton Head</option>' ;
-                            echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Bluffton</option>' ;
-                            echo '<option value="BFT"'; if ($area=="BFT") echo " SELECTED"; echo '>Beaufort</option>';
-						echo '</select>';
+                        echo '<option value="HHI"'; if ($area=="HHI") echo " SELECTED"; echo '>Hilton Head</option>' ;
+                        echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Bluffton</option>' ;
+                        echo '<option value="BFT"'; if ($area=="BFT") echo " SELECTED"; echo '>Beaufort</option>';
+					echo '</select>';
                         
-                        if( !array_key_exists('s_type', $_POST) ) $type = ""; else $type = $_POST['s_type'];
-						echo '&nbsp;&nbsp;Type:<select name="s_type">';
-                            echo '<option value=""';            if ($type=="")          echo " SELECTED"; echo '>--all--</option>'; 
-                            echo '<option value="donor"';       if ($type=="donor")     echo " SELECTED"; echo '>Donor</option>'; 
-                            echo '<option value="recipient"';   if ($type=="recipient") echo " SELECTED"; echo '>Recipient</option>'; 
-                        echo '</select>';
+                    if( !array_key_exists('s_type', $_POST) ) 
+                    	$type = ""; 
+                    else $type = $_POST['s_type'];
+					echo '&nbsp;&nbsp;Donor/Recipient:<select name="s_type">';
+                        echo '<option value=""';            if ($type=="")          echo " SELECTED"; echo '>--all--</option>'; 
+                        echo '<option value="donor"';       if ($type=="donor")     echo " SELECTED"; echo '>Donor</option>'; 
+                        echo '<option value="recipient"';   if ($type=="recipient") echo " SELECTED"; echo '>Recipient</option>'; 
+                    echo '</select>';
                         
-						echo '&nbsp;&nbsp;Area:';
-						 echo('<select name="s_deliveryAreaId">');
+					if( array_key_exists('s_county', $_POST) ) 
+                    	$county = $_POST['s_county']; //override the GET variable if we just conducted a search
+					echo '<p>County: <select name="s_county">' .
+							'<option value="">--all--</option>'; 
+                        echo '<option value="Beaufort"'; if ($county=="Beaufort") echo " SELECTED"; echo '>Beaufort</option>' ;
+                        echo '<option value="Hampton"'; if ($county=="Hampton") echo " SELECTED"; echo '>Hampton</option>' ;
+                        echo '<option value="Jasper"'; if ($county=="Jasper") echo " SELECTED"; echo '>Jasper</option>';
+					echo '</select>';
+					
+					echo '&nbsp;&nbsp;Delivery Area:';
+					echo('<select name="s_deliveryAreaId">');
 						echo ('<option value="--all--" SELECTED>--all--</option>');
-						
-						$deliveryAreas = getall_dbDeliveryAreas();
 						foreach($deliveryAreas as $deliveryArea){
 							echo ('<option value="'); 
 							echo($deliveryArea->get_deliveryAreaId()); 
 							echo('"');
-							
-							
 							if ($deliveryAreaId==$deliveryArea->get_deliveryAreaId()) //if( !array_key_exists('deliveryAreaId', $_POST) ) 
 								echo (' SELECTED');
-							 echo('>'); echo($deliveryArea->get_deliveryAreaName()); echo('</option>');
+							echo('>'); 
+							echo($deliveryArea->get_deliveryAreaName()); 
+							echo('</option>');
 						}
-						
-						echo('</select>');
+					echo('</select>');
 											
-						
-                        if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
-						echo '&nbsp;&nbsp;Feed America:<select name="s_status">';
-                            echo '<option value=""';    if ($status=="")    echo " SELECTED"; echo '>--all--</option>';
-                            echo '<option value="yes"'; if ($status=="yes") echo " SELECTED"; echo '>Yes</option>';
-                            echo '<option value="no"';  if ($status=="no")  echo " SELECTED"; echo '>No</option>';
-                        echo '</select>';
+                    if( !array_key_exists('s_lcfb', $_POST) ) 
+                    	$lcfb = ""; 
+                    else $lcfb = $_POST['s_lcfb'];
+                    
+					echo '&nbsp;&nbsp;LCFB:<select name="s_lcfb">';
+                        echo '<option value=""';    if ($lcfb=="")    echo " SELECTED"; echo '>--all--</option>';
+                        echo '<option value="yes"'; if ($lcfb=="yes") echo " SELECTED"; echo '>Yes</option>';
+                        echo '<option value="no"';  if ($lcfb=="no")  echo " SELECTED"; echo '>No</option>';
+                    echo '</select>';
                         
-                        if( !array_key_exists('s_name', $_POST) ) $name = ""; else $name = $_POST['s_name'];
-						echo '&nbsp;&nbsp;Name: ' ;
-						echo '<input type="text" name="s_name" value="' . $name . '">';
+                    if( !array_key_exists('s_name', $_POST) )
+                    	$name = ""; 
+                    else $name = $_POST['s_name'];
+					echo '&nbsp;&nbsp;Name: ' ;
+					echo '<input type="text" name="s_name" value="' . $name . '">';
                         
-						echo '<fieldset>';
+					echo '<fieldset>';
 						echo '<legend>Pickup/Dropoff:</legend>';
 						echo '<p id="s_day">Day:&nbsp;&nbsp;&nbsp;&nbsp;';
-                            if( array_key_exists('s_day', $_POST) ){
+                        if( array_key_exists('s_day', $_POST) ){
                                 foreach($days as $day=>$dayname){
                                   echo '<label><input type="checkbox" name="s_day[]" value="'.$day.'"'; 
                                   if (in_array($day, $_POST['s_day'])) 
                                     echo " CHECKED"; echo' />'.$day.'</label>&nbsp;&nbsp;';
                                 }
-                            }
-                            else{
+                        }
+                        else{
                                 foreach($days as $day=>$dayname){
                                   echo '<label><input type="checkbox" name="s_day[]" value="'.$day.'" />'.$day.'</label>&nbsp;&nbsp;';
                                 }
-                            }
-						echo '</fieldset>';
-						echo('<p><input type="hidden" name="s_submitted" value="1"><input type="submit" name="Search" value="Search">');
-						echo('</form></p>');
-                        
+                        }
+					echo '</fieldset>';
+					
+					echo('<p><input type="hidden" name="s_submitted" value="1"><input type="submit" name="Search" value="Search">');
+					echo('</form></p>');    
 					
 				// if user hit "Search"  button, query the database and display the results
-					if( array_key_exists('s_submitted', $_POST) ){
+				if( array_key_exists('s_submitted', $_POST) ){
 						if ($_POST['s_area']=="--all--")
 							$area = "";
 						else $area = $_POST['s_area'];
@@ -115,18 +130,21 @@
                         foreach ($_POST['s_day'] as $day) 
                             $availability[] = $day;
 							
-						if ($_POST['s_deliveryAreaId']=="--all--")
+						if ($_POST['s_deliveryAreaId']=="--all--") 
 							$deliveryAreaId = "";
 						else $deliveryAreaId = $_POST['s_deliveryAreaId'];
+						if ($_POST['s_county']=="--all--")
+							$county = "";
+						else $county = $_POST['s_county'];
 						
+     					//echo "search criteria: ", $area.$type.$status.$name.$availability[0].$deliveryAreaId;
                         
-     					//echo "search criteria: ", $area.$type.$status.$name.$availability[0];
-                        
-                        // now go after the volunteers that fit the search criteria
+                        // now go after the clients that fit the search criteria
+                        include_once('database/dbDeliveryAreas.php');
                         include_once('database/dbClients.php');
      					include_once('domain/Client.php');
-						
-                        $result = getall_clients($area, $type, $status, $name, $availability, $deliveryAreaId);
+						echo "<br>searching for county: ".$county;
+                        $result = getall_clients($area, $type, $lcfb, $name, $availability, $deliveryAreaId, $county);
 						
                         echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
                             if (!$type) echo "client(s)"; 
@@ -134,7 +152,9 @@
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
 						if ($name!="") echo ' with name like "'.$name.'"';
 						if ($availability[0]!="") echo ' with selected pickup/dropoff days ';
-						if ($deliveryAreaId !="") echo ' in area id: '.$deliveryAreaId;
+						if ($county!="") echo ' in county: '.$county;
+						if ($deliveryAreaId !="") echo ' in delivery area: '.retrieve_dbDeliveryAreas($deliveryAreaId)->get_deliveryAreaName();
+						if ($lcfb!="") echo ' with LCFB =  '.$lcfb;
 						if (sizeof($result)>0) {
 							echo ' (select one for more info).';
 							echo '<div><table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Contact</strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
@@ -155,7 +175,7 @@
 								echo "</td></a></tr>";
 							}
 						}
-						echo '</table></div>';
+						echo '</table>';
 						?>
 						<div style="padding:10px;">
 						<input type="button" value="Print List" onclick="showPrintWindow();" />
@@ -166,12 +186,11 @@
                           foreach($allEmails as $email)
                             if ($email!="")
                               echo $email . ", ";
-					}
+				}
 					
 				?>
 				<!-- below is the footer that we're using currently-->
-				
-			</div>
+			</div></div>
 			<?PHP include('footer.inc');?>
 		</div>
 		

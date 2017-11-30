@@ -25,7 +25,7 @@ class testClient extends UnitTestCase {
         //$this->assertTrue(1 == 1);
                  
         //tests the 'is_type' function
-        $this->assertTrue($client->is_feed_america() == True);
+        $this->assertTrue($client->is_lcfb() == True);
       
                  
         echo ("testClient complete\n");

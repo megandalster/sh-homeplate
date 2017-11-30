@@ -53,7 +53,7 @@
 	$grocery_weight = isset($_POST["grocery_weight"]) ? $_POST["grocery_weight"] : $stop1->get_item_weight(3);
 	$dairy_weight = isset($_POST["dairy_weight"]) ? $_POST["dairy_weight"] : $stop1->get_item_weight(4);
 	$produce_weight = isset($_POST["produce_weight"]) ? $_POST["produce_weight"] : $stop1->get_item_weight(5);
-	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : $stop1->get_total_weight();
+	$total_weight = $stop1->get_total_weight();
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : $stop1->get_notes();
 		
 ?>
@@ -87,20 +87,20 @@
 				<i>Grocery Weight: </i><input type="text" size="10" name="grocery_weight" <?php echo 'value='.$grocery_weight?>> lbs.<br />
 				<i>Dairy Weight: </i>&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" size="10" name="dairy_weight" <?php echo 'value='.$dairy_weight?>> lbs.<br />
 				<i>Produce Weight: </i><input type="text" size="10" name="produce_weight" <?php echo 'value='.$produce_weight?>> lbs.<br /><br />	
-				<i>Total Weight: </i>&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" size="10" name="total_weight" <?php echo 'value='.$total_weight?>> lbs.	
+				<i>Total Weight: <?php echo $total_weight?> lbs.	
 			
 			<br><br><i>Additional notes:</i><br />
 			<textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>
 			
-			<!-- A hidden variable that, when submitted, is used to display submitted values and update the databases -->	
 			<input type = "hidden" name = "submitted" value = "true"/>	
-			<br><br><input type="submit" value="Submit"/>&nbsp;&nbsp;<i>Hit the Submit button to save these weights and notes.</i>
+			<br><br><input type="submit" value="Submit" name="Submit"/>&nbsp;&nbsp;double-click <i>Submit</i> to re-total and save these weights and notes.
+		
 			</fieldset>
 			</form><br />
 			
 			<?php 
 			// If values have been submitted, then validate and update the database if valid
-			if (isset($_POST['submitted'])){
+			if (isset($_POST['Submit'])){
 				$errors = false;
 				$tw = 0;
 				if ($meat_weight!="" && preg_match('/[0-9]+/',$meat_weight,$matches)==0 || $matches[0]!=$meat_weight) {  // validate as a number
@@ -138,15 +138,13 @@
 					$stop1->set_item(3, "Grocery:".$grocery_weight);
 					$stop1->set_item(4, "Dairy:".$dairy_weight);
 					$stop1->set_item(5, "Produce:".$produce_weight);
-					$stop1->set_total_weight($total_weight);
+					$stop1->set_total_weight($tw);
 					$stop1->set_notes($driver_notes);
 					update_dbStops($stop1);
-					echo('<div class = "warning"><b>Please check that the weights you submitted are correct before "Returning to Route"</b>
-						</div><br/>');
 				}
 			}
 			// The link to return to the current route.
-			echo '<a href="editRoute.php?routeID='.$routeID.'"><big>Return to Route</big></a><br><br>';
+			echo '<a href="editRoute.php?routeID='.$routeID.'">Return to Route</a>';
 			echo '</div>';
 			include('footer.inc');
 			?>

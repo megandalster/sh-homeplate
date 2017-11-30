@@ -62,9 +62,9 @@ padding:10px 10px 10px 10px;
 </tr>
 	<tr>
 		<td> <b> Route * </b> </td>
-		<td> <b> Crew </b> </td>
-		<td> <b> Pickups </b> </td>
-		<td> <b> Dropoffs </b> </td>
+		<td align='right'> <b> Crew </b> </td>
+		<td align='right'> <b> P/U </b> </td>
+		<td align='right'> <b> D/O </b> </td>
 		
 		<!--
 		<td> <b> Data received from truck? </b> </td>
@@ -73,6 +73,7 @@ padding:10px 10px 10px 10px;
 
 		<td> <b> P/U Weight </b> </td>
 		<td> <b> D/O Weight </b> </td>
+		<td> <b> Balance </b> </td>
 		<td> <b> Start-end time </b> </td>
 	</tr>
 	
@@ -105,20 +106,18 @@ padding:10px 10px 10px 10px;
 		{	
 			//col 2 : drivers
 			$volunteers = $route->get_drivers();
-			echo "<td align='center'>".sizeof($volunteers)."</td>";
+			echo "<td align='right'>".sizeof($volunteers)."</td>";
 			
 			//col 3 : pickups
-			echo "<td align='center'>".$route->get_num_pickups()."</td>";
+			echo "<td align='right'>".$route->get_num_pickups()."</td>";
 			
 			//col 4 : dropoffs
-			echo "<td align='center'>".$route->get_num_dropoffs()."</td>";
-			
-			//col 5 : status Changed to P/U and D/O weights
+			echo "<td align='right'>".$route->get_num_dropoffs()."</td>";
+
+		  	//col 5 : status Changed to P/U and D/O weights
 			
 			$pickUpWeight = 0;		
-
-echo "<td align='center'>";
-			
+			echo "<td align='center'>";
 			foreach ($route->get_pickup_stops() as $pickup_id) {
 				$client_id = substr($pickup_id,12);
 
@@ -145,7 +144,7 @@ echo "<td align='center'>";
 				}
 			}
 			echo "<td align='center'>".$dropWeight ."</td>";
-			
+			echo "<td align='center'>".($pickUpWeight - $dropWeight) ."</td>";
 			
 			if ($route->get_status()=="completed") {
 			
@@ -165,9 +164,8 @@ echo "<td align='center'>";
 				$times = substr($first_tablet,$i+1);
 				//echo "<td>".substr($first_tablet,0,$i)."</td><td>".$times."</td>";
 				echo "<td>".$times."</td>";
-			}
-			//else echo "<td align='center'>"."no"."</td><td></td><td></td>";
-			else echo "<td></td>";
+		  }
+		  else echo "<td></td>";
 			
 		}
 		// else, use defaults
@@ -183,7 +181,7 @@ echo "<td align='center'>";
 			echo "<td></td>";
 			
 			//col 5 : status
-			echo "<td></td><td></td><td></td>";
+			echo "<td></td><td></td><td></td><td></td>";
 		}
 		
 		// end row

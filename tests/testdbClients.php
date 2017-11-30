@@ -31,7 +31,7 @@ class testdbClients extends UnitTestCase {
 		$this->assertEqual(retrieve_dbClients($client1->get_id())->get_phone1(), "2077253500");
 		$this->assertEqual(retrieve_dbClients($client1->get_id())->get_phone2(), null);
 		$this->assertEqual(retrieve_dbClients($client1->get_id())->get_days(), array("Mon","Wed"));
-		$this->assertEqual(retrieve_dbClients($client1->get_id())->is_feed_america(), True);
+		$this->assertEqual(retrieve_dbClients($client1->get_id())->is_lcfb(), True);
 		$this->assertEqual(retrieve_dbClients($client1->get_id())->get_weight_type(), "pounds");
 		$this->assertEqual(retrieve_dbClients($client1->get_id())->get_notes(), "This is a test case");
 		

@@ -1,13 +1,15 @@
 <?php
 
 /*
- *  Our copyright notice
- */
+ * Copyright 2012 by Hartley Brody, Richardo Hopkins, Nicholas Wetzel, and Allen 
+ * Tucker.  This program is part of Homeplate, which is free software.  It comes 
+ * with absolutely no warranty.  You can redistribute and/or modify it under the 
+ * terms of the GNU Public License as published by the Free Software Foundation recepients
+ * (see <http://www.gnu.org/licenses/).
+*/
 
 session_start();
 session_cache_expire(30)
-
-
 
 ?>
 <html>
@@ -53,6 +55,15 @@ Base : <select name="report_area">
 	<option value="BFT" <?php if($_POST['report_area'] == "BFT"){echo "selected='true'";} ?>>Beaufort</option>
 </select>
 </div>
+<div style="float:left;padding-left:8px;">
+County : <select name="report_county">
+	<option value="">--all--</option>
+	<option value="Beaufort" <?php if($_POST['report_county'] == "Beaufort"){echo "selected='true'";} ?> >Beaufort</option>
+	<option value="Hampton" <?php if($_POST['report_county'] == "Hampton"){echo "selected='true'";} ?>>Hampton</option>
+	<option value="Jasper" <?php if($_POST['report_county'] == "Jasper"){echo "selected='true'";} ?>>Jasper</option>
+</select>
+</div>
+
 <div style="float:left;padding-left:8px;">
 Area : 
 <?php 
@@ -119,7 +130,7 @@ Client :
 Report Type : <select name="report_type">
 	<option value="">All Stops</option>
 	<option value="pickup" <?php if($_POST['report_type'] == "pickup"){echo "selected='true'";} ?> >Donors Only</option>
-	<option value="dropoff" <?php if($_POST['report_type'] == "dropoff"){echo "selected='true'";} ?>>Recepients Only</option>
+	<option value="dropoff" <?php if($_POST['report_type'] == "dropoff"){echo "selected='true'";} ?>>Recipients Only</option>
 	<option value="publixwalmart" <?php if($_POST['report_type'] == "publixwalmart"){echo "selected='true'";} ?> >Breakdowns by Food Type</option>
 </select>
 </div>
@@ -131,116 +142,22 @@ $( "#dailyDatePicker" ).datepicker();
 $( "#range_Start_DatePicker" ).datepicker();
 $( "#range_End_DatePicker" ).datepicker();
 });
-
-
-
 </script>
 
 <div style="clear:both;"></div>
 
 <fieldset><legend>Select report dates</legend>
-<p><input type="radio" name="report_span" value="weekly" <?php if($_POST['report_span'] == "weekly"){echo "checked='true'";} ?> /> Last Week <br>
+<p><input type="radio" name="report_span" value="monthly" <?php if($_POST['report_span'] == "monthly"){echo "checked='true'";} ?> /> Last Month <br>
+<input type="radio" name="report_span" value="weekly" <?php if($_POST['report_span'] == "weekly"){echo "checked='true'";} ?> /> Last Week <br>
 <input type="radio" name="report_span" value="daily" <?php if($_POST['report_span'] == "daily"){echo "checked='true'";} ?> />
 Single Day&nbsp;&nbsp; 
-
 <input type="text" onfocus="setRadio(this, 'daily');" onchange="setRadio(this, 'daily');" id="dailyDatePicker" name="dailyDatePicker" value="<?= $_POST['dailyDatePicker'] ?>" size="15" />
-
-<?php 
-/*
-$months = array ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
-				 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
-$areas = array("SUN"=>"Bluffton","HHI"=>"Hilton Head","BFT"=>"Beaufort");
-
-// month selector
-echo '<select name="daily_month">';
-foreach($months as $month)
-{
-	echo '<option value="'.$month.'">'.$month.'</option>';
-}
-echo '</select>&nbsp;';
-
-$current_time = getdate(time());
-
-// day selector
-echo '<select name="daily_day">';
-for($i = 1; $i <=31; $i++)
-{
-	echo '<option value="'.$i.'">'.$i.'</option>';
-}
-echo '</select>';
-
-// year selector
-echo '<select name="daily_year">';
-for($i = $current_time[year]; $i >= 1990; $i--)
-{
-	echo '<option value="'.$i.'">'.$i.'</option>';
-}
-echo '</select>';
-*/
-?> <br>
-
+<br>
 <input type="radio" name="report_span" value="range" <?php if($_POST['report_span'] == "range"){echo "checked='true'";} ?>  /> Date
 Range&nbsp;&nbsp; 
 <input type="text" onfocus="setRadio(this, 'range');" onchange="setRadio(this, 'range');" id="range_Start_DatePicker" name="range_Start_DatePicker" value="<?= $_POST['range_Start_DatePicker'] ?>" size="15" />
 &nbsp; to 
 <input type="text" onfocus="setRadio(this, 'range');" onchange="setRadio(this, 'range');" id="range_End_DatePicker" name="range_End_DatePicker" value="<?= $_POST['range_End_DatePicker'] ?>" size="15" />
-<?php 
-/*
-// starting month selector
-echo '<select name="range_month_start">';
-foreach($months as $month)
-{
-	echo '<option value="'.$month.'">'.$month.'</option>';
-}
-echo '</select>&nbsp;';
-
-// starting day selector
-echo '<select name="range_day_start">';
-for($i = 1; $i <=31; $i++)
-{
-	echo '<option value="'.$i.'">'.$i.'</option>';
-}
-echo '</select>';
-
-$current_time = getdate(time());
-
-// starting year selector
-echo '<select name="range_year_start">';
-for($i = $current_time[year]; $i >= 1990; $i--)
-{
-	echo '<option value="'.$i.'">'.$i.'</option>';
-}
-echo '</select>&nbsp; to ';
-
-
-// end month selector
-echo '<select name="range_month_end">';
-foreach($months as $month)
-{
-	echo '<option value="'.$month.'">'.$month.'</option>';
-}
-echo '</select>&nbsp;';
-
-// end day selector
-echo '<select name="range_day_end">';
-for($i = 1; $i <=31; $i++)
-{
-	echo '<option value="'.$i.'">'.$i.'</option>';
-}
-echo '</select>';
-
-$current_time = getdate(time());
-
-// end year selector
-echo '<select name="range_year_end">';
-for($i = $current_time[year]; $i >= 1990; $i--)
-{
-	echo '<option value="'.$i.'">'.$i.'</option>';
-}
-echo '</select>';
-*/
-?>
-
 </fieldset>
 
 
@@ -251,21 +168,23 @@ echo '</select>';
 <?php
 if($_POST['submitted'])
 {
-
+	$bases = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 	echo "<div id='dvReport'>";
 	
 	$header = array("Second Helpings Truck Weight Report for ");
-	if ($_POST['report_area']!="") $header[] = $areas[$_POST['report_area']]." base "; 
+	if ($_POST['report_area']!="") $header[] = " base: ".$bases[$_POST['report_area']]; 
 		else $header[] = " all bases ";
+	if ($_POST['report_county']!="") $header[] = ", county: ".$_POST['report_county'];
+		else $header[] = ", all counties ";
 		
 	if ($_POST['deliveryAreaId']!=""){
 		$deliveryArea = retrieve_dbDeliveryAreas($_POST['deliveryAreaId']);
-		$header[] =  "area: " . $deliveryArea->get_deliveryAreaName();
+		$header[] =  ", delivery area: " . $deliveryArea->get_deliveryAreaName();
 	}
-		else $header[] = " all areas";
+		else $header[] = ", all delivery areas";
 		
-	if ($_POST['chain_name']!="") $header[] = " " .  $_POST['chain_name'];
-		else $header[] = " all chains";
+	if ($_POST['chain_name']!="") $header[] = ", chain: " .  $_POST['chain_name'];
+		else $header[] = ", all chains";
 		
 	if ($_POST['report_type']=="publixwalmart") $header[] = ", food type breakdowns";
 		else if ($_POST['report_type']=="pickup") $header[] = ", donors only";
@@ -274,7 +193,17 @@ if($_POST['submitted'])
 	if ($_POST['client_name']!="")
 		$header[] = ",  client '".$_POST['client_name']."' only";
 	$header[] =  ".<br>";
-	if($_POST['report_span'] == "weekly")
+	if($_POST['report_span'] == "monthly")
+	{
+		$time = strtotime('first day of last month');
+		$endTime = strtotime('last day of last month');
+
+		$start_date = date('y-m-d', $time);
+		$end_date = date('y-m-d', $endTime);
+
+		$header[] =  "Month beginning ".date('F j, Y', $time) . " and ending " . date('F j, Y', $endTime);
+	}
+	else if($_POST['report_span'] == "weekly")
 	{
 		$time = strtotime('last monday', strtotime('tomorrow',time())) - 604800;
 		$endTime = $time + 518400;
@@ -287,13 +216,6 @@ if($_POST['submitted'])
 
 	else if($_POST['report_span'] == "daily")
 	{
-	/*
-		$month = $_POST['daily_month'];
-		$day = $_POST['daily_day'];
-		$year = $_POST['daily_year'];
-
-		$time = strtotime($month.' '.$day.', '.$year);
-		*/
 		$time = strtotime($_POST['dailyDatePicker']);
 		$start_date = date('y-m-d', $time);
 		$end_date = $start_date;
@@ -302,8 +224,6 @@ if($_POST['submitted'])
 	}	
     else if($_POST['report_span'] == "range")
     {
-		//$time = strtotime($_POST['range_day_start'].$_POST['range_month_start'].$_POST['range_year_start']);
-		//$endTime = strtotime($_POST['range_day_end'].$_POST['range_month_end'].$_POST['range_year_end']);
 		$time = strtotime($_POST['range_Start_DatePicker']);
 		$endTime = strtotime($_POST['range_End_DatePicker']);
 		
@@ -321,7 +241,7 @@ if($_POST['submitted'])
   if ($_POST['report_span']!="" && $_POST['report_type']!="publixwalmart") {
 	// get all stops from database for given area, report type, and date range
 	$all_stops = getall_dbStops_between_dates($_POST['report_area'], $_POST['report_type'], 
-		$_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name']);
+		$_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name'], $_POST['report_county']);
 
 	//split all_stops into 2 different arrays - one for each
 	$pickups = array();
@@ -410,17 +330,13 @@ if($_POST['submitted'])
 	if ($_POST['report_type']!="pickup")
 		echo "<td><b>Totals</b></td><td align='right'>".$tw_dropoffs."</td>";
 	echo "</tr>";
-
 	echo "</table>";
-	//$start = date('F j, Y',mktime(0,0,0,substr($start_date,3,2),substr($start_date,6,2),substr($start_date,0,2)));
-	//$end = date('F j, Y',mktime(0,0,0,substr($end_date,3,2),substr($end_date,6,2),substr($end_date,0,2)));
-//	export_data($header, $pickups, $dropoffs,$tw_pickups,$tw_dropoffs);
-//	echo "<br>(To get a different view of this report, you may copy and paste it into a spreadsheet on your computer.)";
   }
   else if ($_POST['report_span']!="") 
   {
   	// get all stops from database for given area, report type, and date range
-	$all_stops = getall_dbWalmartPublixStops_between_dates($_POST['report_area'], $_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name']);
+	$all_stops = getall_dbWalmartPublixStops_between_dates($_POST['report_area'], 
+			$_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name'], $_POST['report_county']);
 
 	//split all_stops into 5 different arrays - one for each food type
 	$food_types = array("Store", "Meat","Deli","Bakery","Grocery","Dairy","Produce","Total");
@@ -486,12 +402,7 @@ if($_POST['submitted'])
 	foreach ($food_type_totals as $food_type_total)
 		echo "<td align='right'>".$food_type_total."</td>";
 	echo "</tr>";
-
 	echo "</table>";
-	
-//	export_publixwalmart_data($header, $food_types, $row_totals, $food_type_totals);
-//	echo "<br>(To get a different view of this report, you may copy and paste it into a spreadsheet on your computer.)";
-  	
   }
   
 ?>
