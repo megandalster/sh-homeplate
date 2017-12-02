@@ -16,20 +16,6 @@
 include_once(dirname(__FILE__).'/../domain/Client.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
 
-function create_dbClients(){
-	connect();
-	mysql_query("DROP TABLE IF EXISTS dbClients");
-	$result = mysql_query("CREATE TABLE dbClients (id TEXT NOT NULL, chain_name TEXT, area TEXT, type TEXT, address TEXT, city TEXT, state TEXT,
-                            zip TEXT, county TEXT, phone1 VARCHAR(12) NOT NULL, phone2 VARCHAR(12), days TEXT, lcfb TEXT, 
-                            weight_type TEXT, notes TEXT, email TEXT)");
-	mysql_close();
-	if(!$result){
-			echo (mysql_error()."Error creating database table dbClients. <br>");
-			return false;
-	}
-	return true;
-}
-
 function retrieve_dbClients($id){
 	connect();
 	$result=mysql_query("SELECT * FROM dbClients WHERE id  = '".$id."'");
@@ -39,9 +25,10 @@ function retrieve_dbClients($id){
 	}
 	$result_row = mysql_fetch_assoc($result);
 	$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
-                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], 
-                            $result_row['phone2'], $result_row['days'], $result_row['lcfb'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
-							$result_row['ContactName'], $result_row['deliveryAreaId']);
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['address2'],
+                            $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
+                            $result_row['phone2'], $result_row['days'], $result_row['lcfb'], $result_row['chartrkr'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+							$result_row['email2'], $result_row['ContactName'], $result_row['ContactName2'], $result_row['deliveryAreaId']);
 	mysql_close();
 	return $theClient;
 }
@@ -53,9 +40,10 @@ function getall_dbClients(){
 	$theClients = array();
 	while($result_row = mysql_fetch_assoc($result)){
 		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
-                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['phone2'],
-							$result_row['days'], $result_row['lcfb'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
-							$result_row['ContactName'], $result_row['deliveryAreaId']);
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['address2'],
+                            $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
+                            $result_row['phone2'], $result_row['days'], $result_row['lcfb'], $result_row['chartrkr'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+							$result_row['email2'], $result_row['ContactName'], $result_row['ContactName2'], $result_row['deliveryAreaId']);
 		$theClients[] = $theClient;
 	}
 	mysql_close();
@@ -78,14 +66,14 @@ function getall_clients($area, $type, $lcfb, $name, $availability, $deliveryArea
             	$query = substr($query, 0, strlen( $query ) - 4).") ";
             }
             $query .= "ORDER BY id";
-    echo "query = ". $query;
     $result = mysql_query ($query);
     $theClients = array();
     while ($result_row = mysql_fetch_assoc($result)) {
         $theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
-                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['phone2'],
-							$result_row['days'], $result_row['lcfb'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
-							$result_row['ContactName'], $result_row['deliveryAreaId']);
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['address2'],
+                            $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], $result_row['phone2'], 
+                            $result_row['days'], $result_row['lcfb'], $result_row['chartrkr'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+							$result_row['email2'], $result_row['ContactName'], $result_row['ContactName2'], $result_row['deliveryAreaId']);
 		$theClients[] = $theClient;
     }
 	mysql_close();
@@ -114,22 +102,23 @@ function insert_dbClients($client){
 				$client->get_zip()."','".
                 $client->get_county()."','".
 				$client->get_phone1()."','".
+				$client->get_address2()."','".
+				$client->get_city2()."','".
+				$client->get_state2()."','".
+				$client->get_zip2()."','".
+                $client->get_county2()."','".
 				$client->get_phone2()."','".
 				implode(',',$client->get_days())."','".
-				$client->is_lcfb()."','".
+				$client->get_lcfb()."','".
+				$client->get_chartrkr()."','".
 				$client->get_weight_type()."','".
-				$client->get_notes().
-	            "', '".
-				$client->get_email().
-				"', '".
-				$client->get_ContactName() . 
-				"', '".
+				$client->get_notes()."','".
+				$client->get_email()."','".
+				$client->get_email2()."','".
+				$client->get_ContactName() ."','".
+				$client->get_ContactName2() ."','".
 				$client->get_deliveryAreaId() . 
 				"');";
-				/*
-				NOTE: Email was added
-				ALTER TABLE `871334_homeplate`.`dbClients` ADD COLUMN `email` TEXT NULL  AFTER `notes` ;
-			*/
 	$result = mysql_query($query);
 	if (!$result) {
 		echo (mysql_error(). " Unable to insert into dbClients: " . $client->get_id(). "\n");
@@ -174,9 +163,10 @@ function getall_dbClientsForArea($deliveryAreaId){
 	$theClients = array();
 	while($result_row = mysql_fetch_assoc($result)){
 		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
-                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['phone2'],
-							$result_row['days'], $result_row['lcfb'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
-							$result_row['ContactName'], $result_row['deliveryAreaId']);
+                            $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['address2'],
+                            $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
+                            $result_row['phone2'], $result_row['days'], $result_row['lcfb'], $result_row['chartrkr'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
+							$result_row['email2'], $result_row['ContactName'], $result_row['ContactName2'], $result_row['deliveryAreaId']);
 		$theClients[] = $theClient;
 	}
 	mysql_close();

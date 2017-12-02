@@ -25,7 +25,7 @@
 	$id = $_GET["id"];
 	if ($id=='new') {
 	 	$person = new Volunteer(null,'new',null,null,null,null,null,null,null,null,"applicant",
-	 	     	null,null,null,null,null,null,null,null,null,null,null,md5("new"), 0, null, 'M', null);
+	 	     	null,null,null,null,null,null,null,null,null,null,null,md5("new"), 0, null, null, null, 'M', null);
 	}
 	else {
 		$person = retrieve_dbVolunteers($id);
@@ -79,7 +79,8 @@
                                  $avail, $_POST['schedule'], $_POST['history'],
                                  $_POST['birthday'],
                                  $_POST['start_date'],
-                                 $_POST['notes'], $_POST['old_pass'], $_POST['tripCount'], $_POST['lastTripDate'], $_POST['shirtSize'], $_POST['affiliateId']);
+                                 $_POST['notes'], $_POST['old_pass'], $_POST['tripCount'], $_POST['lastTripDate'], 
+								 $_POST['volunteerTrainingDate'], $_POST['driverTrainingDate'], $_POST['shirtSize'], $_POST['affiliateId']);
 		$errors = validate_form($id); 	//step one is validation.
 									// errors array lists problems on the form submitted
 		if ($errors) {
@@ -143,6 +144,12 @@ function process_form($id, $person)	{
 		$shirtSize = $_POST['shirtSize'];
 		$tripCount = $_POST['tripCount'];
 		$lastTripDate = $_POST['lastTripDate'];
+		$volunteerTrainingDate = substr($_POST['volunteerTrainingDate'],8,2)."-".substr($_POST['volunteerTrainingDate'],0,2)."-".
+								substr($_POST['volunteerTrainingDate'],3,2);
+		if (strlen($volunteerTrainingDate) < 8) $volunteerTrainingDate = '';
+		$driverTrainingDate = substr($_POST['driverTrainingDate'],8,2)."-".substr($_POST['driverTrainingDate'],0,2)."-".
+								substr($_POST['driverTrainingDate'],3,2);
+		if (strlen($driverTrainingDate) < 8) $driverTrainingDate = '';
 		$affiliateId = $_POST['affiliateId'];
 		//rebuild birthday and start_date strings
 		if($_POST['birthday_Year']=="")
@@ -150,13 +157,13 @@ function process_form($id, $person)	{
 		else
 				$birthday = $_POST['birthday_Year'].'-'.$_POST['birthday_Month'].'-'.$_POST['birthday_Day'];
 		if (strlen($birthday) < 8) $birthday = '';
-		$start_date = $_POST['startdate_Year'].'-'.$_POST['startdate_Month'].'-'.$_POST['startdate_Day'];
+		$start_date = substr($_POST['startDate'],8,2)."-".substr($_POST['startDate'],0,2)."-".substr($_POST['startDate'],3,2);
         if (strlen($start_date) < 8) $start_date = '';		
 		$notes = trim(str_replace('\\\'','\'',htmlentities($_POST['notes'])));
 		$newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
                 		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
                 		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass,
-						$tripCount, $lastTripDate, $shirtSize, $affiliateId);
+						$tripCount, $lastTripDate, $volunteerTrainingDate, $driverTrainingDate, $shirtSize, $affiliateId);
         
 	//step two: try to make the deletion, password change, addition, or change
 		if($_POST['deleteMe']=="DELETE"){

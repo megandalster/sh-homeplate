@@ -24,7 +24,9 @@
 	$id = $_GET["id"];
 	$chain_name = "";
 	if ($id=='new') {
-	 	$client = new Client(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null, null, null, null);
+	 	$client = new Client(null,null,null,null,null,null,null,null,null,null,
+	 			             null,null,null,null,null,null,null,null,null,null,
+	 			             null,null,null,null,null,null);
 	}
 	else {
 		$client = retrieve_dbClients($id);
@@ -65,12 +67,6 @@
 			//	$first_name = trim(str_replace('\\\'', '', htmlentities(str_replace('&', 'and', $_POST['first_name']))));
 				$id = trim(str_replace('\\\'','',htmlentities(str_replace('&','and',str_replace('#',' ',$_POST['id'])))));
 				$chain_name =   $_POST['chain_name'];
-				/*
-				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || 
-						$chain_name=="BiLo" || $chain_name=="Target" || $chain_name=="Harris Teeter") 
-        			$weight_type="foodtype";
-        		else $weight_type = "pounds";
-				*/
 				if($_POST['type'] == "donor"){
 					$weight_type="foodtype";
 				}
@@ -79,9 +75,10 @@
 				}
 			}
         	$client = new Client($id, $_POST['chain_name'], $_POST['area'], $_POST['type'], 
-                                 $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
-								 $_POST['county'], $_POST['phone1'], $_POST['phone2'], implode(',',$_POST['days']),
-								 $lcfb, $weight_type, $_POST['notes'], $_POST['ContactName'], $_POST['deliveryAreaId']);
+                                 $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['county'], $_POST['phone1'], 
+        						 $_POST['address2'], $_POST['city2'], $_POST['state2'], $_POST['zip2'], $_POST['county2'], $_POST['phone2'], 
+        						 implode(',',$_POST['days']), $lcfb, $chartrkr, $weight_type, $_POST['notes'], 
+        						 $_POST['email'],$_POST['email2'],$_POST['ContactName'], $_POST['ContactName2'], $_POST['deliveryAreaId']);
 			$id = $old_id;
 			include('clientForm.php');
 		}
@@ -99,45 +96,43 @@
 */
 function process_form($id)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
-		if ($id=="new"){
-			$id = trim(str_replace('\\\'','',htmlentities(str_replace('&','and',str_replace('#',' ',$_POST['id'])))));
-		}
+	if ($id=="new"){
+		$id = trim(str_replace('\\\'','',htmlentities(str_replace('&','and',str_replace('#',' ',$_POST['id'])))));
+	}
 		$chain_name =    trim(str_replace('\\\'','\'',htmlentities($_POST['chain_name'])));
 		$address =      trim(str_replace('\\\'','\'',htmlentities($_POST['address'])));
 		$city =         trim(str_replace('\\\'','\'',htmlentities($_POST['city'])));
 		$state =        trim(htmlentities($_POST['state']));
 		$zip =          trim(htmlentities($_POST['zip']));
+		$county =          trim(htmlentities($_POST['county']));
+		$county2 = $county;  // assume both contacts are in the same county
         $email =          trim(htmlentities($_POST['email']));
 		$phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
 		$clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
+		$address2 =      trim(str_replace('\\\'','\'',htmlentities($_POST['address2'])));
+		$city2 =         trim(str_replace('\\\'','\'',htmlentities($_POST['city2'])));
+		$state2 =        trim(htmlentities($_POST['state2']));
+		$zip2 =          trim(htmlentities($_POST['zip2']));
+        $email2 =          trim(htmlentities($_POST['email2']));
 		$phone2 = trim(str_replace(' ','',htmlentities($_POST['phone2'])));
 		$clean_phone2 = preg_replace("/[^0-9]/", "", $phone2);
 		$ContactName = trim(htmlentities($_POST['ContactName']));
+		$ContactName2 = trim(htmlentities($_POST['ContactName2']));
 		$deliveryAreaId = $_POST['deliveryAreaId'];
         $type = $_POST['type'];
         $area = $_POST['area'];
         if ($_POST['days'])
         	$days=implode(',', $_POST['days']);
         else $days="";
-		
-		/*
-        if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || 
-        		$chain_name=="BiLo" || $chain_name=="Target" || $chain_name=="Harris Teeter") 
-        	$weight_type="foodtype";
-        else $weight_type = "pounds"; 
-        */
 		if($type == "donor"){
 			$weight_type="foodtype";
 		}
 		else{
 			$weight_type = "pounds"; 
 		}
-		
+		$lcfb = $_POST['lcfb'];
+		$chartrkr = $_POST['chartrkr'];
         $notes = $_POST['notes'];
-        
-        // if ($_POST['availability'] != null)
-			// $availability=implode(',', $_POST['availability']);
-		// else $availability = "";
 
         //step two: try to make the deletion, addition, or change
 		if($_POST['deleteMe']=="DELETE"){
@@ -158,8 +153,9 @@ function process_form($id)	{
 				if ($dup)
 					echo('<p class="error">Unable to add ' . $id . ' to the database. <br>Another client with the same id is already there.');
 				else {
-					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county,
-	                        $phone1, $phone2, $days, $lcfb, $weight_type, $notes, $email, $ContactName, $deliveryAreaId);
+					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
+	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $days, $lcfb, $chartrkr, $weight_type, $notes, 
+							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId);
                     $result = insert_dbClients($newperson);
 					if (!$result)
                         echo ('<p class="error">Unable to add '. $id . ' in the database. <br>Please report this error to the Program Coordinator.');
@@ -171,32 +167,19 @@ function process_form($id)	{
 		else {
 				$id = $_POST['old_id'];
 				$chain_name = $_POST['chain_name'];
-				
-				/*
-				if ($chain_name=="WalMart" || $chain_name=="Publix" || $chain_name=="Food Lion" || 
-						$chain_name=="BiLo" || $chain_name=="Target" || $chain_name=="Harris Teeter") 
-        			$weight_type="foodtype";
-        		else $weight_type = "pounds";
-				*/
 				if($type == "donor"){
 					$weight_type="foodtype";
 				}
 				else{
 					$weight_type = "pounds"; 
 				}
-		
-				$result = delete_dbClients($id);
+				$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
+	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $days, $lcfb, $chartrkr, $weight_type, $notes, 
+							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId);
+				$result = insert_dbClients($newperson);
                 if (!$result)
-                   echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');
-				else {
-					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county,
-	                        $phone1, $phone2, $days, $lcfb, $weight_type, $notes, $email, $ContactName, $deliveryAreaId);
-                	$result = insert_dbClients($newperson);
-					if (!$result)
-                   		echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');
-					else echo("<p>You have successfully updated " .$id. " in the database.</p>");
-//					add_log_entry('<a href=\"viewPerson.php?id='.$id.'\">'.$first_name.' '.$last_name.'</a>\'s database entry has been updated.');
-				}
+                   	echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');
+				else echo("<p>You have successfully updated " .$id. " in the database.</p>");
 		}
 }
 ?>

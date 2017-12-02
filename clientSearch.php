@@ -143,7 +143,7 @@
                         include_once('database/dbDeliveryAreas.php');
                         include_once('database/dbClients.php');
      					include_once('domain/Client.php');
-						echo "<br>searching for county: ".$county;
+						
                         $result = getall_clients($area, $type, $lcfb, $name, $availability, $deliveryAreaId, $county);
 						
                         echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';

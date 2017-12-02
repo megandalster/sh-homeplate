@@ -24,7 +24,7 @@ class Volunteer {
 	private $phone1; 		// primary phone (may be a cell)
 	private $phone2; 		// alternate phone (may be a cell)
     private $email; 		// email address as a string
-	private $type;   		// array of "driver", "helper", ÒteamcaptainÓ, ÒcoordinatorÓ, "associate", "boardmember"
+	private $type;   		// array of "driver", "helper", ï¿½teamcaptainï¿½, ï¿½coordinatorï¿½, "associate", "boardmember"
     private $status;   		// "applicant", "active", "on-leave", or "former"
     private $area;			// "HHI", "SUN", or "BFT"
 	private $license_no;  		// drivers license no.
@@ -32,15 +32,17 @@ class Volunteer {
 	private $license_expdate; 	// expiration date yy-mm-dd
 	private $accidents;     // array of accidents (past 3 years)
 							// each entry shows "date:nature:fatalities:injuries"
-	private $availability; 	// array of day-week pairs; e.g. ÒMon:1Ó, ÒThu:4Ó, ÒNYÓ
-	private $schedule;     	// array of scheduled shifts; e.g.,  [ÒMon:1Ó, ÒWed:2Ó]
-	private $history;      	// array of recent routes worked; e.g., [Ò11-03-12Ó]
+	private $availability; 	// array of day-week pairs; e.g. ï¿½Mon:1ï¿½, ï¿½Thu:4ï¿½, ï¿½NYï¿½
+	private $schedule;     	// array of scheduled shifts; e.g.,  [ï¿½Mon:1ï¿½, ï¿½Wed:2ï¿½]
+	private $history;      	// array of recent routes worked; e.g., [ï¿½11-03-12ï¿½]
 	private $birthday;     	// format: yy-mm-dd
 	private $start_date;   	// format: yy-mm-dd (for applicants, date submitted)
 	private $notes;			// misc notes about this volunteer
 	private $password;     	// password for system access
 	private $tripCount; 	//Volunteer trip count
-	private $lastTripDate;	//date volunteer was on truck
+	private $lastTripDate;	//date volunteer was on last truck
+	private $volunteerTrainingDate;	//date when trained as a volunteer
+	private $driverTrainingDate;    // date when trained as a driver
 	private $shirtSize;		//Shirt Size: S, M, L, XL, 2XL
 	private $affiliateId;	//associated affiliate
         /**
@@ -48,7 +50,8 @@ class Volunteer {
          */
     function __construct($last_name, $first_name, $address, $city, $state, $zip, $phone1, $phone2, $email, $type,
                          $status, $area, $license_no, $license_state, $license_expdate, $accidents, $availability, 
-                         $schedule, $history, $birthday, $start_date, $notes, $password, $tripCount, $lastTripDate, $shirtSize, $affiliateId){                
+                         $schedule, $history, $birthday, $start_date, $notes, $password, $tripCount, $lastTripDate, 
+    					 $volunteerTrainingDate, $driverTrainingDate, $shirtSize, $affiliateId){                
         $this->id = $first_name . $phone1; 
         $this->last_name = $last_name;
         $this->first_name = $first_name;
@@ -62,12 +65,12 @@ class Volunteer {
 		$this->tripCount = $tripCount;
 		
 		if($lastTripDate != '' && strtotime($lastTripDate)!='0000-00-00'){
-			$this->lastTripDate = date('d-m-Y', strtotime($lastTripDate));
+			$this->lastTripDate = date('m-d-Y', strtotime($lastTripDate));
 		}else{
 			$this->lastTripDate = '';			
 		}
-
-		
+		$this->volunteerTrainingDate = $volunteerTrainingDate;
+		$this->driverTrainingDate = $driverTrainingDate;
 		$this->shirtSize = $shirtSize;
 		$this->affiliateId = $affiliateId;
 		
@@ -186,6 +189,12 @@ class Volunteer {
 		return $this->lastTripDate;
 	}
 	
+	function get_volunteerTrainingDate(){
+		return $this->volunteerTrainingDate;
+	}
+	function get_driverTrainingDate(){
+		return $this->driverTrainingDate;
+	}
 	function get_shirtSize(){
 		return $this->shirtSize;
 	}
@@ -230,6 +239,12 @@ class Volunteer {
 		$this->lastTripDate = $newDate;
 	}
 	
+	function set_volunteerTrainingDate($newDate){
+		$this->volunteerTrainingDate = $newDate;
+	}
+	function set_driverTrainingDate($newDate){
+		$this->driverTrainingDate = $newDate;
+	}
 	function set_tripCount($count){
 		$this->tripCount = $count;
 	}

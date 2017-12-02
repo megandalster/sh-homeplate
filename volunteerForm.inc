@@ -16,7 +16,7 @@
 if ($_SESSION['access_level']==0) {
     echo('<p><strong>New Volunteer Application Form</strong><br />');
 	echo('Please provide some basic information about yourself and your interests in Second Helpings.' .
-		 ' When you are finished, hit <b>Submit</b> at the bottom of this page.');
+		 ' When you are finished, hit <b>Submit</b> at the bottom of this page. (<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)');
 }
 else if($_SESSION['access_level']==1)
     if ($_SESSION['_id']!=$person->get_id()){
@@ -28,16 +28,16 @@ else if($_SESSION['access_level']==1)
 	else {
 		echo('<p><strong>Volunteer Information Form</strong><br />');
 	    echo('Here you can edit your own information in the database.' .
-	    	 '<br>When you are finished, hit <b>Submit</b> at the bottom of this page.');
+	    	 '<br>When you are finished, hit <b>Submit</b> at the bottom of this page. (<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)');
 	}
 else // $_SESSION['access_level']>=2
 	if ($id=='new') {
 	  echo('<p><strong>Volunteer Input Form</strong><br />');
-	  echo('Here you can add a new volunteer to the database. </p>');
+	  echo('Here you can add a new volunteer to the database. (<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)</p>');
     }
     else {
 	   echo('<p><strong>Volunteer Information Form</strong><br />');
-	   echo('Here you can edit, delete, or reset the password for a volunteer.</p><p>');
+	   echo('Here you can edit, delete, or reset the password for a volunteer. (<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)</p>');
     }
 
 ?>
@@ -45,7 +45,6 @@ else // $_SESSION['access_level']>=2
 	<input type="hidden" name="old_id" value=<?PHP echo("\"".$id."\"");?>>
 	<input type="hidden" name="old_pass" value=<?PHP echo("\"".$person->get_password()."\"");?>>
 	<input type="hidden" name="_form_submit" value="1">
-<p>(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)
 
 <p>	<?php 
 	if ($id=="new") {
@@ -57,25 +56,28 @@ else // $_SESSION['access_level']>=2
 ?>
 <fieldset>
 <legend>Basic Information</legend>
-	<table>		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="40" name="address" tabindex=3 value="<?PHP echo($person->get_address())?>"></td></tr>
-		<tr><td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=4 value="<?PHP echo($person->get_city())?>"></td></tr>
-		<tr><td>State, Zip<span style="font-size:x-small;color:FF0000">*</span>:</td>
-		<td><select name="state" tabindex=5>
-		<?PHP
-
-			$states = array("AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA",
+	<table>	<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td>
+				<td> <input type="text" size="30" name="address" tabindex=3 value="<?PHP echo($person->get_address())?>"></td>
+				<td>City<span style="font-size:x-small;color:FF0000">*</span>:</td>
+				<td> <input type="text" name="city" tabindex=4 value="<?PHP echo($person->get_city())?>"></td>
+				<td>State<span style="font-size:x-small;color:FF0000">*</span>:</td>
+				<td><select name="state" tabindex=5>
+					<?PHP
+						$states = array("AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA",
 					        "KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM",
 					        "NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA",
 					        "WV","WI","WY");
-			foreach ($states as $st) {
-				echo "<option value='" . $st . "' ";
-                if($person->get_state() == $st ) echo("SELECTED");
-                else if ($id == "new" && $st =="SC") echo("SELECTED");
-                echo ">" . $st . "</option>";
-			}
-		?>
-		</select>,
-		<input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($person->get_zip())?>"></td></tr>
+						foreach ($states as $st) {
+							echo "<option value='" . $st . "' ";
+                			if($person->get_state() == $st ) echo("SELECTED");
+                			else if ($id == "new" && $st =="SC") echo("SELECTED");
+                			echo ">" . $st . "</option>";
+						}
+					?>
+					</select>
+				<td>Zip<span style="font-size:x-small;color:FF0000">*</span>:</td>
+				<td><input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($person->get_zip())?>"></td>
+			</tr>
 		<tr>
 		<?php 
 			if ($id=="new")
@@ -84,7 +86,7 @@ else // $_SESSION['access_level']>=2
 				echo '<td>Primary Phone:</td><td>'.$person->get_phone1().'</td>';
 		?>
 		<td>Cell Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo $person->get_phone2()?>"></td></tr>
-		<tr><td>Email:</td><td><input type="text" name="email" size="40" tabindex=9 value="<?PHP echo($person->get_email())?>"></td></tr>
+		<tr><td>Email:</td><td><input type="text" name="email" size="30" tabindex=9 value="<?PHP echo($person->get_email())?>"></td></tr>
 
 
        <tr><td>Birthday:</td><td>
@@ -93,20 +95,20 @@ else // $_SESSION['access_level']>=2
             	$dd = substr($person->get_birthday(),6,2);
             	$yy = substr($person->get_birthday(),0,2);
             	select_date($mm,$dd,$yy, "birthday_Month", "birthday_Day", "birthday_Year");
-            ?>
-        </td><td>Start Date:</td><td>
-		<?PHP 
-            	$mm = substr($person->get_start_date(),3,2);
-            	$dd = substr($person->get_start_date(),6,2);
-            	$yy = substr($person->get_start_date(),0,2);
-            	select_date($mm,$dd,$yy, "startdate_Month", "startdate_Day", "startdate_Year"); 
-        ?>
+             
+            echo '<td>Start Date: </td><td><input type="text" tabindex=10 id="startDate" name="startDate" value="';
+				if ($person->get_start_date() != ''){
+					$time = strtotime($person->get_start_date());
+					echo date("m/d/Y", $time);
+				}
+				echo '">';
+		?>
 		</td></tr>
 		<tr><td>Shirt Size:</td><td>
 		<?PHP 
 		 $shirtSizes = array("S", "M", "L", "XL", "2XL");
 		 
-		 echo('<select name="shirtSize" tabindex="10">');
+		 echo('<select name="shirtSize" tabindex="11">');
 		 echo "<option value='" . $shirtSize . "' ";
 		  if($person->get_shirtSize() == '' ) echo("SELECTED");
                 echo ">-- Select Shirt Size --</option>";
@@ -121,34 +123,47 @@ else // $_SESSION['access_level']>=2
 		?>
 		</td></tr>
 		
-		<tr><td>Trip Count:</td><td><input type="text" name="tripCount" size="4" tabindex=11 value="<?PHP echo($person->get_tripCount())?>"></td></tr>
-		<tr><td>Last Trip Date:</td><td><!-- echo($person->get_lastTripDate())-->
-		<input type="text"  tabindex=12 id="lastTripDate" name="lastTripDate" value="<?PHP 
-		if ($person->get_lastTripDate() != ''){
-			$time = strtotime($person->get_lastTripDate());
-			$myFormatForView = date("m/d/Y", $time);
-
-			echo($myFormatForView);
-			}
-		?>" size="15" />
+		<tr><td>Trip Count: </td><td><input type="text" name="tripCount" size="4" tabindex=11 value="<?PHP echo($person->get_tripCount())?>"></td>
+		<?PHP 	echo '<td>Last Trip Date: </td><td><input type="text" tabindex=12 id="lastTripDate" name="lastTripDate" value="';
+				if ($person->get_lastTripDate() != ''){
+					$time = strtotime($person->get_lastTripDate());
+					echo date("m/d/Y", $time);
+				}
+				echo '">';
+		?>
 		</td></tr>
+		
+		<tr>
+		<?PHP 	echo '<td>Volunteer Training: </td><td><input type="text" tabindex=13 id="volunteerTrainingDate" name="volunteerTrainingDate" value="';
+				if ($person->get_volunteerTrainingDate() != ''){
+					$time = strtotime($person->get_volunteerTrainingDate());
+					echo date("m/d/Y", $time);
+				}
+				echo '">';
+			 	echo '<td>Driver Training: </td><td><input type="text" tabindex=14 id="driverTrainingDate" name="driverTrainingDate" value="';
+				if ($person->get_driverTrainingDate() != ''){
+					$time = strtotime($person->get_driverTrainingDate());
+					echo date("m/d/Y", $time);
+				}
+				echo '">';
+		?>
+		</tr>
 </table>
 </fieldset>
 
  <script>
 $(function() {
 $( "#lastTripDate" ).datepicker();
+$( "#startDate" ).datepicker();
+$( "#volunteerTrainingDate" ).datepicker();
+$( "#driverTrainingDate" ).datepicker();
 });
-
-
-
 </script>
-
 
 <?PHP
     echo ('<p>Base<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="area">');
-    echo ('<option value=""></option>');
+ //   echo ('<option value=""></option>');
     echo ('<option value="HHI"');if ($person->get_area()=='HHI') echo (' SELECTED'); echo('>Hilton Head</option>');
     echo ('<option value="SUN"');if ($person->get_area()=='SUN') echo (' SELECTED'); echo('>Bluffton</option>');
 	echo ('<option value="BFT"');if ($person->get_area()=='BFT') echo (' SELECTED'); echo('>Beaufort</option>');
@@ -165,7 +180,7 @@ $( "#lastTripDate" ).datepicker();
     }
 	echo('</select>');
 	
-	 echo ('<p>Affiliate<span style="font-size:x-small;color:FF0000">*</span>: ');
+	 echo ('&nbsp;&nbsp;Affiliate<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="affiliateId">');
     echo ('<option value=""></option>');
 	
@@ -300,10 +315,10 @@ function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
             echo '>' . $i . ' </option>'; 
 		}
 		echo "</select>";
-        // handles a year range of 90 years, from today+10 to today-80
+        // handles a year range of 80 years, from today to today-80
 		echo '<select name='.$year_name.'><option value=""></option>';
-		$start_year = date("Y")+10;
-        for ($i = $start_year; $i >= ($start_year-90); $i--){
+		$start_year = date("Y");
+        for ($i = $start_year; $i >= ($start_year-80); $i--){
          	echo '<option value='.substr($i,2,2); 
          	if($year==substr($i,2,2)) 
          		echo(' SELECTED'); 

@@ -39,25 +39,32 @@ else {
 	
 	if ($id=="new" || $client->get_type() == "donor") {
 		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Chain Name: ');
-    
 		echo('<select name="chain_name">');
-    	echo ('<option value=""></option>');
-    	echo ('<option value="BiLo"');if ($client->get_chain_name()=='BiLo') echo (' SELECTED'); echo('>BiLo</option>');
+		echo ('<option value=""></option>');
+		echo ('<option value="BiLo"');if ($client->get_chain_name()=='BiLo') echo (' SELECTED'); echo('>BiLo</option>');
 		echo ('<option value="Food Lion"');if ($client->get_chain_name()=='Food Lion') echo (' SELECTED'); echo('>Food Lion</option>');
 		echo ('<option value="Harris Teeter"');if ($client->get_chain_name()=='Harris Teeter') echo (' SELECTED'); echo('>Harris Teeter</option>');
 		echo ('<option value="Piggly Wiggly"');if ($client->get_chain_name()=='Piggly Wiggly') echo (' SELECTED'); echo('>Piggly Wiggly</option>');
 		echo ('<option value="Publix"');if ($client->get_chain_name()=='Publix') echo (' SELECTED'); echo('>Publix</option>');
 		echo ('<option value="Target"');if ($client->get_chain_name()=='Target') echo (' SELECTED'); echo('>Target</option>');
 		echo ('<option value="WalMart"');if ($client->get_chain_name()=='WalMart') echo (' SELECTED'); echo('>WalMart</option>');
-    	echo('</select>');
+		echo('</select>');
+	}
+	if ($id=="new" || $client->get_type() == "recipient") {
+		echo ('&nbsp;&nbsp;&nbsp;&nbsp;LCFB: ');
+		echo('<select name="lcfb">');
+		echo ('<option value=""></option>');
+		echo ('<option value="yes"');if ($client->get_lcfb()=='yes') echo (' SELECTED'); echo('>Yes</option>');
+		echo ('<option value="no"');if ($client->get_lcfb()=='no') echo (' SELECTED'); echo('>No</option>');
+		echo('</select>');
+		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Charity Tracker: ');
+		echo('<select name="chartrkr">');
+		echo ('<option value=""></option>');
+		echo ('<option value="yes"');if ($client->get_chartrkr()=='yes') echo (' SELECTED'); echo('>Yes</option>');
+		echo ('<option value="no"');if ($client->get_chartrkr()=='no') echo (' SELECTED'); echo('>No</option>');
+		echo('</select>');
 	}
 	
-?>
-<p>Email: 
-
-<input type="text" size="40" name="email" name="email" tabindex=3 value="<?= $client->get_email() ?>">
-
-<?php
     echo ('<p>Base<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="area">');
     echo ('<option value=""></option>');
@@ -73,7 +80,15 @@ else {
 	echo ('<option value="recipient"');if ($client->get_type()=='recipient') echo (' SELECTED'); echo('>Recipient</option>');
 	echo('</select>');
 
-     echo ('&nbsp;&nbsp;Area<span style="font-size:x-small;color:FF0000">*</span>: ');
+    echo ('&nbsp;&nbsp;County: ');
+    echo('<select name="county">');
+    echo ('<option value=""></option>');
+    echo ('<option value="Beaufort"');if ($client->get_county()=='Beaufort') echo (' SELECTED'); echo('>Beaufort</option>');
+    echo ('<option value="Hampton"');if ($client->get_county()=='Hampton') echo (' SELECTED'); echo('>Hampton</option>');
+	echo ('<option value="Jasper"');if ($client->get_county()=='Jasper') echo (' SELECTED'); echo('>Jasper</option>');
+	echo('</select>');
+	
+	echo ('&nbsp;&nbsp;Area<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="deliveryAreaId">');
     echo ('<option value=""></option>');
 	
@@ -91,12 +106,15 @@ else {
 ?>    
     
 <fieldset>
-<legend>Contact Information</legend>
+<legend>Food Contact</legend>
 	<table>		
-		<tr><td>Name:</td><td> <input type="text" size="40" name="ContactName" tabindex=2 value="<?PHP echo($client->get_ContactName())?>"></td></tr>
-		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="40" name="address" tabindex=3 value="<?PHP echo($client->get_address())?>"></td></tr>
-		<tr><td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=4 value="<?PHP echo($client->get_city())?>"></td></tr>
-		<tr><td>State, Zip:</td>
+		<tr><td>Name:</td><td> <input type="text" size="30" name="ContactName" tabindex=2 value="<?PHP echo($client->get_ContactName())?>"></td>
+		    <td>Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo $client->get_phone1()?>"></td>
+		    <td>Email:</td><td> <input type="text" size="30" name="email" name="email" tabindex=3 value="<?= $client->get_email() ?>"></td>
+		</tr>
+		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="30" name="address" tabindex=3 value="<?PHP echo($client->get_address())?>"></td>
+		<td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=4 value="<?PHP echo($client->get_city())?>"></td>
+		<td>State, Zip:</td>
 		<td><select name="state" tabindex=5>
 		<?PHP
 
@@ -104,6 +122,7 @@ else {
 					        "KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM",
 					        "NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA",
 					        "WV","WI","WY");
+			echo "<option value=''></option>";
 			foreach ($states as $st) {
 				echo "<option value='" . $st . "' ";
                 if($client->get_state() == $st ) echo("SELECTED");
@@ -112,16 +131,44 @@ else {
 			}
 		?>
 		</select>,
-		<input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($client->get_zip())?>"></td></tr>
-		<tr><td>Primary Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo $client->get_phone1()?>"></td>
-		<td>Alternate Phone:</td><td><input type="text" name="phone2" MAXLENGTH=12 tabindex=8 value="<?PHP echo $client->get_phone2()?>"></td></tr>
+		<input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($client->get_zip())?>">
 
-</table>
+	</td></tr>
+	</table>
 </fieldset>
 
-</p>
+<fieldset>
+<legend>Administrative Contact</legend>
+	<table>		
+		<tr><td>Name:</td><td> <input type="text" size="30" name="ContactName2" tabindex=2 value="<?PHP echo($client->get_ContactName2())?>"></td>
+		    <td>Phone:</td><td> <input type="text" name="phone2" MAXLENGTH=12 tabindex=7 value="<?PHP echo $client->get_phone2()?>"></td>
+		    <td>Email:</td><td> <input type="text" size="30" name="email" name="email2" tabindex=3 value="<?= $client->get_email2() ?>"></td>
+		</tr>
+		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="30" name="address2" tabindex=3 value="<?PHP echo($client->get_address2())?>"></td>
+		<td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city2" tabindex=4 value="<?PHP echo($client->get_city2())?>"></td>
+		<td>State, Zip:</td>
+		<td><select name="state2" tabindex=5>
+		<?PHP
+
+			$states = array("AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA",
+					        "KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM",
+					        "NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA",
+					        "WV","WI","WY");
+			echo "<option value=''></option>";
+			foreach ($states as $st) {
+				echo "<option value='" . $st . "' ";
+                if($client->get_state2() == $st ) echo("SELECTED");
+                else if ($id == "new" && $st =="SC") echo("SELECTED");
+                echo ">" . $st . "</option>";
+			}
+		?>
+		</select>,
+		<input type="text" name="zip2" size="5" tabindex=6 value="<?PHP echo($client->get_zip2())?>"></td></tr>
+	</table>
+</fieldset>
+
 <fieldset id="availability">
-<legend>Pickup/Dropoff:</strong></legend>
+<legend>Pickup/Dropoff:</legend>
 	<table>
 	<tr>
 		<td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>

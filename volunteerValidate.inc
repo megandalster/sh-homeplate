@@ -28,8 +28,6 @@ function validate_form($id){
 	else
 		$birthday = $_POST['DateOfBirth_Year'].'-'.$_POST['DateOfBirth_Month'].'-'.$_POST['DateOfBirth_Day'];
 	if (strlen($birthday)>2 && strlen($birthday)<8) $errors[] = 'Please select a valid birthday';
-	$start_date = $_POST['DateOfStart_Year'].'-'.$_POST['DateOfStart_Month'].'-'.$_POST['DateOfStart_Day'];
-	if (strlen($start_date)>2 && strlen($start_date)<8) $errors[] = 'Please select a valid start date';
 	return $errors;
 }
 

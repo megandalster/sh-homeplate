@@ -29,26 +29,12 @@ function getall_dbAffiliateVolunteers($affiliateId){
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
 							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
 							$result_row['start_date'], $result_row['notes'], $result_row['password'],
-							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['ShirtSize'], $result_row['affiliateId']);
+							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],
+							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
 	mysql_close();
 	return $theVols;
-}
-
-function create_dbVolunteers(){
-	connect();
-	mysql_query("DROP TABLE IF EXISTS dbVolunteers");
-	$result = mysql_query("CREATE TABLE dbVolunteers (id TEXT NOT NULL, last_name TEXT, first_name TEXT, address TEXT, city TEXT, state TEXT, zip TEXT, 
-							phone1 VARCHAR(12) NOT NULL, phone2 VARCHAR(12), email TEXT, type TEXT, status TEXT, area TEXT, license_no TEXT, license_state TEXT, 
-							license_expdate TEXT, accidents TEXT, availability TEXT, schedule TEXT, history TEXT, birthday TEXT,
-							start_date TEXT, notes TEXT, password TEXT)");
-	mysql_close();
-	if(!$result){
-			echo (mysql_error()."Error creating database dbVolunteers. \n");
-			return false;
-	}
-	return true;
 }
 
 function retrieve_dbVolunteers($id){
@@ -59,15 +45,12 @@ function retrieve_dbVolunteers($id){
 			return false;
 	}
 	$result_row = mysql_fetch_assoc($result);
-	
-	
-	
 	$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
 							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
 							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
 							$result_row['start_date'], $result_row['notes'], $result_row['password'],
-							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['ShirtSize'], $result_row['affiliateId']);
+							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],$result_row['ShirtSize'], $result_row['affiliateId']);
 							
 							
 	mysql_close();
@@ -90,7 +73,8 @@ function retrieve_dbVolunteersByName($first_name, $last_name){
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
 							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
 							$result_row['start_date'], $result_row['notes'], $result_row['password'],
-							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['ShirtSize'], $result_row['affiliateId']);
+							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],
+							$result_row['ShirtSize'], $result_row['affiliateId']);
 							
 							
 	mysql_close();
@@ -109,7 +93,8 @@ function getall_dbVolunteers(){
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
 							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
 							$result_row['start_date'], $result_row['notes'], $result_row['password'],
-							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['ShirtSize'], $result_row['affiliateId']);
+							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],
+							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
 	mysql_close();
@@ -119,12 +104,17 @@ function getall_dbVolunteers(){
 
 
 // retrieve only those volunteers that match the criteria given in the arguments
-function getonlythose_dbVolunteers($area, $type, $status, $name, $availability, $affiliateId) {
+function getonlythose_dbVolunteers($area, $types, $status, $name, $availability, $affiliateId) {
 	connect();
 	$query = "SELECT * FROM dbVolunteers WHERE area like '%".$area. "%'" .  
-	       " AND type LIKE '%".$type."%'" . 
-			 " AND status LIKE '%".$status."%'" . 
+	         " AND status LIKE '%".$status."%'" . 
 			 " AND (first_name LIKE '%".$name."%' OR last_name LIKE '%".$name."%')" ;
+	if ($types[0]!="")  { 
+            $query .= "AND (";
+            foreach ($types as $type)
+                $query .= "type LIKE '%".$type."%' OR ";
+            $query = substr($query, 0, strlen( $query ) - 4).") ";
+	}
 	if ($availability[0]!="")  { 
             $query .= "AND (";
             foreach ($availability as $day)
@@ -147,7 +137,8 @@ function getonlythose_dbVolunteers($area, $type, $status, $name, $availability, 
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
 							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
 							$result_row['start_date'], $result_row['notes'], $result_row['password'], 
-							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['ShirtSize'], $result_row['affiliateId']);
+							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],
+							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
 	mysql_close();
@@ -165,7 +156,8 @@ function get_team_captains ($area, $day) {
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
 							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
 							$result_row['start_date'], $result_row['notes'], $result_row['password'],
-							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['ShirtSize'], $result_row['affiliateId']);
+							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],
+							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
 	mysql_close();
@@ -186,7 +178,8 @@ function get_all_crew($area){
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
 							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
 							$result_row['start_date'], $result_row['notes'], $result_row['password'],
-							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['ShirtSize'], $result_row['affiliateId']);
+							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],
+							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
 	mysql_close();
@@ -204,7 +197,8 @@ function  getall_drivers_available($area, $day) {
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
 							$result_row['accidents'], $result_row['availability'], $result_row['schedule'], $result_row['history'], $result_row['birthday'],
 							$result_row['start_date'], $result_row['notes'], $result_row['password'],
-							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['ShirtSize'], $result_row['affiliateId']);
+							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],
+							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
 	mysql_close();
@@ -273,6 +267,8 @@ function insert_dbVolunteers($volunteer){
 				$volunteer->get_password()."',".
 				$tripCount .",".
 				$lastTripDate.",'".
+				$volunteer->get_volunteerTrainingDate()."','".
+				$volunteer->get_driverTrainingDate()."','".
 				$volunteer->get_shirtSize()."',".
 				$affiliateId .
 	            ");";
@@ -354,6 +350,8 @@ function insert_dbVolunteersTest($volunteer){
 				$volunteer->get_password()."',".
 				$tripCount .",".
 				$lastTripDate.",'".
+				$volunteer->get_volunteerTrainingDate()."','".
+				$volunteer->get_driverTrainingDate()."','".
 				$volunteer->get_shirtSize()."',".
 				$affiliateId .
 	            ");";

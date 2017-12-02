@@ -23,23 +23,30 @@ class Client {
 	private $state;			// 2-letter abbrev - usually 'SC'
 	private $zip; 	      	// zip code : integer
 	private $county; 		// county
-	private $phone1;		// primary phone
-	private $phone2;		// secondary phone
+	private $phone1;		// food contact phone
+	private $address2;      // street address : string
+	private $city2;			// city
+	private $state2;			// 2-letter abbrev - usually 'SC'
+	private $zip2; 	      	// zip code : integer
+	private $county2; 		// county
+	private $phone2;		// administrative contact phone
 	private $days;			// array of days for pick-up or delivery
 							// e.g. ['Mon', 'Wed']
 	private $lcfb;			// 'yes' or 'no'
+	private $chartrkr;		// 'yes' or 'no'
 	private $weight_type;	// variable for how items are recorded: 
 							// ("pounds", "foodtype" or "foodtypeboxes")
 	private $notes; 		// notes written by the team captain or coordinator
 	
-	private $email;			//contact email for client
-	private $ContactName;
+	private $email;			// email for food contact
+	private $email2;		// email for administrative contact
+	private $ContactName;	// food contact
+	private $ContactName2;  // administrative contact
 	private $deliveryAreaId; //
 	
-	//copied from volunteer class. question about use of "explode" with arrays
-	
-	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county,
-	                        $phone1, $phone2, $days, $lcfb, $weight_type, $notes, $email, $ContactName, $deliveryAreaId){                
+	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
+	                        $address2, $city2, $state2, $zip2, $county2, $phone2, 
+							$days, $lcfb, $chartrkr, $weight_type, $notes, $email, $email2, $ContactName, $ContactName2, $deliveryAreaId){                
         $this->id       	= $id;      
         $this->chain_name 	= $chain_name;      
         $this->area 		= $area;      
@@ -50,17 +57,18 @@ class Client {
         $this->zip 			= $zip;
         $this->county 		= $county;
 		$this->phone1 		= $phone1;
-        $this->phone2 		= $phone2;
+        $this->address2 	= $address2;      
+        $this->city2 		= $city2;      
+        $this->state2 		= $state2;      
+        $this->zip2 		= $zip2;
+        $this->county2 		= $county2;
+		$this->phone2 		= $phone2;
         $this->email		= $email;
+        $this->email2		= $email2;
 		$this->ContactName = $ContactName;
+		$this->ContactName2 = $ContactName2;
 		$this->deliveryAreaId = $deliveryAreaId;
 		
-		/*
-        if ($weight_type=="")
-        	$this->weight_type = "pounds";
-        else
-			$this->weight_type	= $weight_type;
-		*/
 		if( $this->type 	== "donor"){
 			$this->weight_type = "foodtype";
 		}
@@ -77,10 +85,8 @@ class Client {
 		   $this->days = explode(',',$days);
 		   
         $this->lcfb	= $lcfb;
-        $this->charity_tracker	= $charity_tracker;
-        $this->notes 		= $notes;
-        
-        
+        $this->chartrkr	= $chartrkr;
+        $this->notes = $notes;
     }
     //getter functions
     function get_id() {
@@ -113,14 +119,32 @@ class Client {
     function get_phone1() {
         return $this->phone1;
     }
+	function get_address2() {
+        return $this->address2;
+    }
+    function get_city2() {
+        return $this->city2;
+    }
+    function get_state2() {
+        return $this->state2;
+    }
+    function get_zip2() {
+        return $this->zip2;
+    }
+    function get_county2() {
+        return $this->county2;
+    }
     function get_phone2() {
         return $this->phone2;
     }
     function get_days(){
         return $this->days;
     }
-    function is_lcfb(){
+    function get_lcfb(){
         return $this->lcfb;
+    }
+    function get_chartrkr(){
+    	return $this->chartrkr;
     }
     function get_weight_type(){
 		if($this->get_type() == "donor"){
@@ -139,23 +163,20 @@ class Client {
 	function get_email(){
 		return $this->email;
 	}
-	
+	function get_email2(){
+		return $this->email2;
+	}
 	function get_ContactName(){
 		return $this->ContactName;
+	}
+
+	function get_ContactName2(){
+		return $this->ContactName2;
 	}
 	
 	function get_deliveryAreaId(){
 		return $this->deliveryAreaId;
 	}
-	
-	function get_nice_phone1 () {
-    	if (strlen($this->phone1)==10)
-    		return substr($this->phone1,0,3)."-".substr($this->phone1,3,3)."-".substr($this->phone1,6);
-    	else if (strlen($this->phone1)==7)
-    		return substr($this->phone1,0,3)."-".substr($this->phone1,3);
-    	else return $this->phone1;
-    }
-    //setter functions ... can be added later as needed
         
 }
 ?>
