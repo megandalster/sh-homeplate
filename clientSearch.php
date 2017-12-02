@@ -157,22 +157,30 @@
 						if ($lcfb!="") echo ' with LCFB =  '.$lcfb;
 						if (sizeof($result)>0) {
 							echo ' (select one for more info).';
-							echo '<div><table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Contact</strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
+							echo '<div><table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Contact (F/A) </strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
 							 $allEmails = array(); // for printing all emails
 							 
 							foreach ($result as $client) {
-							
+								if ($client->get_ContactName()=="") $cn="";
+									else $cn = $client->get_ContactName() . " (F)";
 								echo ("<tr><td><a href='clientEdit.php?id=" . $client->get_id() ."'>" .
 									$client->get_id() . "</a></td><td>" . 
-									$client->get_ContactName() . "</td><td>" .
+									$cn ."</td><td>" .
 									$client->get_phone1() . "</td><td>" .
 									$client->get_email() . "</td><td>");
-									
-									$allEmails[] = $client->get_email();
-									
+									$allEmails[] = $client->get_email();	
 								foreach($client->get_days() as $availableon)
 									echo ( $availableon . ", ") ;
-								echo "</td></a></tr>";
+								echo "</td></tr>"; 
+								if ($client->get_ContactName2()!="") {
+									echo ("<tr><td></td><td>" .
+										$client->get_ContactName2() ." (A)</td><td>" .
+										$client->get_phone2() . "</td><td>" .
+										$client->get_email2() . "</td><td>");
+									
+									$allEmails[] = $client->get_email2();
+									echo "</td></tr>";
+								}
 							}
 						}
 						echo '</table>';

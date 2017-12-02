@@ -148,9 +148,9 @@ if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 	echo "<input type='submit' name='remove_dropoff' value='Remove checked' />";
 	*/
 	echo "</td><tr><td>";
-	echo "Select a volunteer:<br>";
+	echo "Add Volunteer:<br>";
 	//$drivers = getall_drivers_available(substr($route->get_id(),9,3),substr($route->get_day(),0,3));
-$drivers = get_all_crew(substr($route->get_id(),9));
+	$drivers = get_all_crew(substr($route->get_id(),9));
 
 	
 if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
@@ -163,10 +163,10 @@ if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 		echo('>'.$name.'</option>');
 	}
 	echo('</select>');
-/*
+
 	echo "</td><td>";
 	echo "Add Pick-up:<br>";
-	$pickups = getall_clients(substr($route->get_id(),9,3), "donor", "", "", "");
+	$pickups = getall_clients(substr($route->get_id(),9,3), "donor", "", "", "","","");
 	echo('<select name="add_pickup">');
 	echo ('<option value=""></option>');
 	foreach ($pickups as $pickup) {
@@ -180,7 +180,7 @@ if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 
 	echo "</td><td>";
 	echo "Add Drop-off:<br>";
-	$dropoffs = getall_clients(substr($route->get_id(),9,3), "recipient", "", "", "");
+	$dropoffs = getall_clients(substr($route->get_id(),9,3), "recipient", "", "", "","","");
 	echo('<select name="add_dropoff">');
 	echo ('<option value=""></option>');
 	foreach ($dropoffs as $dropoff) {
@@ -191,11 +191,11 @@ if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today) {
 		}
 	}
 	echo('</select>');
-	*/
+	
 }
-echo '</td>';
-echo('<td colspan="2"> and hit <input type="hidden" name="submitted" value="1">');
-echo('<input type="submit" value="Submit" name="Submit"> to add him/her to the crew.</td></tr></table>');
+echo '</td></tr>';
+echo('<tr><td colspan="2"> Hit <input type="hidden" name="submitted" value="1">');
+echo('<input type="submit" value="Submit" name="Submit"> to add Volunteer, Pick-up, or Drop-off.</td></tr></table>');
 
 }
 else echo "</td></tr></table>";

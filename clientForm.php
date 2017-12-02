@@ -28,13 +28,20 @@ else {
 
 ?>
 <form method="POST">
+<script>
+$(function() {
+	$( "#survey_date" ).datepicker();
+	$( "#visit_date" ).datepicker();
+	$( "#foodsafe_date" ).datepicker();
+});
+</script>
 	<input type="hidden" name="old_id" value=<?PHP echo("\"".$id."\"");?>>
 	<input type="hidden" name="_form_submit" value="1">
 
 <p>	Name<span style="font-size:x-small;color:FF0000">*</span>: 
 <?PHP 
 	if ($id=="new") 
-		echo '<input type="text" size="40" name="id" tabindex=1 value="">';
+		echo '<input type="text" size="35" name="id" tabindex=1 value="">';
 	else echo $client->get_id();
 	
 	if ($id=="new" || $client->get_type() == "donor") {
@@ -57,41 +64,63 @@ else {
 		echo ('<option value="yes"');if ($client->get_lcfb()=='yes') echo (' SELECTED'); echo('>Yes</option>');
 		echo ('<option value="no"');if ($client->get_lcfb()=='no') echo (' SELECTED'); echo('>No</option>');
 		echo('</select>');
-		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Charity Tracker: ');
+		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Char Trkr: ');
 		echo('<select name="chartrkr">');
 		echo ('<option value=""></option>');
 		echo ('<option value="yes"');if ($client->get_chartrkr()=='yes') echo (' SELECTED'); echo('>Yes</option>');
 		echo ('<option value="no"');if ($client->get_chartrkr()=='no') echo (' SELECTED'); echo('>No</option>');
 		echo('</select>');
 	}
-	
-    echo ('<p>Base<span style="font-size:x-small;color:FF0000">*</span>: ');
+	echo "<table><tr><td></td>";
+	if ($id=="new" || $client->get_type() == "recipient") {
+		echo '<td>Survey: <input type="text" id="survey_date" name="survey_date" size="10" value="';
+		if ($client->get_survey_date() != ''){
+			$time = strtotime($client->get_survey_date());
+			echo date("m/d/Y", $time);
+		}
+		echo '"></td>';
+		echo '<td>Visit: <input type="text" id="visit_date" name="visit_date" size="10" value="';
+		if ($client->get_survey_date() != ''){
+			$time = strtotime($client->get_visit_date());
+			echo date("m/d/Y", $time);
+		}
+		echo '"></td>';
+		echo '<td>Food Safe: <input type="text" id="foodsafe_date" name="foodsafe_date" size="10" value="';
+		if ($client->get_survey_date() != ''){
+			$time = strtotime($client->get_foodsafe_date());
+			echo date("m/d/Y", $time);
+		}
+		echo '"></td>';
+		echo '<td>Number Served: <input type="text" id="number" name="number_served" size="5" value="'.
+					$client->get_number_served(). '"></td>';
+		echo "</tr>";
+	}
+    echo ('<tr><td>Base<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="area">');
     echo ('<option value=""></option>');
     echo ('<option value="HHI"');if ($client->get_area()=='HHI') echo (' SELECTED'); echo('>Hilton Head</option>');
     echo ('<option value="SUN"');if ($client->get_area()=='SUN') echo (' SELECTED'); echo('>Bluffton</option>');
 	echo ('<option value="BFT"');if ($client->get_area()=='BFT') echo (' SELECTED'); echo('>Beaufort</option>');
-	echo('</select>');
+	echo('</select></td>');
 	
-	echo ('&nbsp;&nbsp;Type: ');
+	echo ('<td>Type<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="type">');
     echo ('<option value=""></option>');
 	echo ('<option value="donor"');if ($client->get_type()=='donor') echo (' SELECTED'); echo('>Donor</option>');
 	echo ('<option value="recipient"');if ($client->get_type()=='recipient') echo (' SELECTED'); echo('>Recipient</option>');
-	echo('</select>');
+	echo('</select></td>');
 
-    echo ('&nbsp;&nbsp;County: ');
+    echo ('<td>County: ');
     echo('<select name="county">');
     echo ('<option value=""></option>');
     echo ('<option value="Beaufort"');if ($client->get_county()=='Beaufort') echo (' SELECTED'); echo('>Beaufort</option>');
     echo ('<option value="Hampton"');if ($client->get_county()=='Hampton') echo (' SELECTED'); echo('>Hampton</option>');
 	echo ('<option value="Jasper"');if ($client->get_county()=='Jasper') echo (' SELECTED'); echo('>Jasper</option>');
-	echo('</select>');
+	echo('</select></td>');
 	
-	echo ('&nbsp;&nbsp;Area<span style="font-size:x-small;color:FF0000">*</span>: ');
+	echo ('<td>Area<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="deliveryAreaId">');
     echo ('<option value=""></option>');
-	
 	$deliveryAreas = getall_dbDeliveryAreas();
 	foreach($deliveryAreas as $deliveryArea){
 		echo ('<option value="'); 
@@ -101,8 +130,9 @@ else {
 			echo (' SELECTED');
 		 echo('>'); echo($deliveryArea->get_deliveryAreaName()); echo('</option>');
 	}
+	echo('</select></td>');
 	
-	echo('</select>');
+	echo "</tr></table>";
 ?>    
     
 <fieldset>
@@ -144,8 +174,8 @@ else {
 		    <td>Phone:</td><td> <input type="text" name="phone2" MAXLENGTH=12 tabindex=7 value="<?PHP echo $client->get_phone2()?>"></td>
 		    <td>Email:</td><td> <input type="text" size="30" name="email" name="email2" tabindex=3 value="<?= $client->get_email2() ?>"></td>
 		</tr>
-		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="30" name="address2" tabindex=3 value="<?PHP echo($client->get_address2())?>"></td>
-		<td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city2" tabindex=4 value="<?PHP echo($client->get_city2())?>"></td>
+		<tr><td>Address:</td><td> <input type="text" size="30" name="address2" tabindex=3 value="<?PHP echo($client->get_address2())?>"></td>
+		<td>City:</td><td> <input type="text" name="city2" tabindex=4 value="<?PHP echo($client->get_city2())?>"></td>
 		<td>State, Zip:</td>
 		<td><select name="state2" tabindex=5>
 		<?PHP

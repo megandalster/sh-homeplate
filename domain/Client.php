@@ -42,11 +42,17 @@ class Client {
 	private $email2;		// email for administrative contact
 	private $ContactName;	// food contact
 	private $ContactName2;  // administrative contact
-	private $deliveryAreaId; //
+	private $deliveryAreaId;// for recipients
+	private $survey_date;	//		last date surveyed
+	private $visit_date;	//		last date visited
+	private $foodsafe_date;	//		last date food safety inspection
+	private $number_served;	//		number of people served 
+	// 
 	
 	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
 	                        $address2, $city2, $state2, $zip2, $county2, $phone2, 
-							$days, $lcfb, $chartrkr, $weight_type, $notes, $email, $email2, $ContactName, $ContactName2, $deliveryAreaId){                
+							$days, $lcfb, $chartrkr, $weight_type, $notes, $email, $email2, $ContactName, $ContactName2, $deliveryAreaId, 
+							$survey_date, $visit_date, $foodsafe_date, $number_served){                
         $this->id       	= $id;      
         $this->chain_name 	= $chain_name;      
         $this->area 		= $area;      
@@ -68,6 +74,10 @@ class Client {
 		$this->ContactName = $ContactName;
 		$this->ContactName2 = $ContactName2;
 		$this->deliveryAreaId = $deliveryAreaId;
+		$this->survey_date	= $survey_date;
+		$this->visit_date	= $visit_date;
+		$this->foodsafe_date= $foodsafe_date;
+		$this->number_served= $number_served;
 		
 		if( $this->type 	== "donor"){
 			$this->weight_type = "foodtype";
@@ -153,8 +163,6 @@ class Client {
 		else{
 			return "pounds";
 		}
-		
-    	//return $this->weight_type;
     }
     function get_notes(){
         return $this->notes;
@@ -176,6 +184,18 @@ class Client {
 	
 	function get_deliveryAreaId(){
 		return $this->deliveryAreaId;
+	}
+	function get_survey_date(){
+		return $this->survey_date;
+	}
+	function get_visit_date(){
+		return $this->visit_date;
+	}
+	function get_foodsafe_date(){
+		return $this->foodsafe_date;
+	}
+	function get_number_served(){
+		return $this->number_served;
 	}
         
 }

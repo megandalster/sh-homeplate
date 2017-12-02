@@ -26,7 +26,7 @@
 	if ($id=='new') {
 	 	$client = new Client(null,null,null,null,null,null,null,null,null,null,
 	 			             null,null,null,null,null,null,null,null,null,null,
-	 			             null,null,null,null,null,null);
+	 			             null,null,null,null,null,null,null,null,null,null);
 	}
 	else {
 		$client = retrieve_dbClients($id);
@@ -42,6 +42,9 @@
 		<title>
 			Editing Client
 		</title>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="styles.css" type="text/css" />
 	</head>
 <body>
@@ -64,7 +67,6 @@
 			else $avail = implode(',',$_POST['availability']);
 			$old_id = $id;		
 			if ($id=="new"){
-			//	$first_name = trim(str_replace('\\\'', '', htmlentities(str_replace('&', 'and', $_POST['first_name']))));
 				$id = trim(str_replace('\\\'','',htmlentities(str_replace('&','and',str_replace('#',' ',$_POST['id'])))));
 				$chain_name =   $_POST['chain_name'];
 				if($_POST['type'] == "donor"){
@@ -78,7 +80,8 @@
                                  $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['county'], $_POST['phone1'], 
         						 $_POST['address2'], $_POST['city2'], $_POST['state2'], $_POST['zip2'], $_POST['county2'], $_POST['phone2'], 
         						 implode(',',$_POST['days']), $lcfb, $chartrkr, $weight_type, $_POST['notes'], 
-        						 $_POST['email'],$_POST['email2'],$_POST['ContactName'], $_POST['ContactName2'], $_POST['deliveryAreaId']);
+        						 $_POST['email'],$_POST['email2'],$_POST['ContactName'], $_POST['ContactName2'], $_POST['deliveryAreaId'],
+        						$_POST['survey_date'], $_POST['visit_date'], $_POST['foodsafe_date'], $_POST['number_served']);
 			$id = $old_id;
 			include('clientForm.php');
 		}
@@ -119,6 +122,13 @@ function process_form($id)	{
 		$ContactName = trim(htmlentities($_POST['ContactName']));
 		$ContactName2 = trim(htmlentities($_POST['ContactName2']));
 		$deliveryAreaId = $_POST['deliveryAreaId'];
+		$survey_date = substr($_POST['survey_date'],8,2)."-".substr($_POST['survey_date'],0,2)."-".substr($_POST['survey_date'],3,2);
+		if (strlen($survey_date) < 8) $survey_date = '';
+		$visit_date = substr($_POST['visit_date'],8,2)."-".substr($_POST['visit_date'],0,2)."-".substr($_POST['visit_date'],3,2);
+		if (strlen($visit_date) < 8) $visit_date = '';
+		$foodsafe_date = substr($_POST['foodsafe_date'],8,2)."-".substr($_POST['foodsafe_date'],0,2)."-".substr($_POST['foodsafe_date'],3,2);
+		if (strlen($foodsafe_date) < 8) $foodsafe_date = '';
+		$number_served = $_POST['number_served'];
         $type = $_POST['type'];
         $area = $_POST['area'];
         if ($_POST['days'])
@@ -155,7 +165,7 @@ function process_form($id)	{
 				else {
 					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
 	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $days, $lcfb, $chartrkr, $weight_type, $notes, 
-							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId);
+							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId, $survey_date, $visit_date, $foodsafe_date, $number_served);
                     $result = insert_dbClients($newperson);
 					if (!$result)
                         echo ('<p class="error">Unable to add '. $id . ' in the database. <br>Please report this error to the Program Coordinator.');
@@ -175,7 +185,7 @@ function process_form($id)	{
 				}
 				$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
 	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $days, $lcfb, $chartrkr, $weight_type, $notes, 
-							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId);
+							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId, $survey_date, $visit_date, $foodsafe_date, $number_served);
 				$result = insert_dbClients($newperson);
                 if (!$result)
                    	echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');

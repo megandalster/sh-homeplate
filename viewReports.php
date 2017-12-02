@@ -132,6 +132,7 @@ Report Type : <select name="report_type">
 	<option value="pickup" <?php if($_POST['report_type'] == "pickup"){echo "selected='true'";} ?> >Donors Only</option>
 	<option value="dropoff" <?php if($_POST['report_type'] == "dropoff"){echo "selected='true'";} ?>>Recipients Only</option>
 	<option value="publixwalmart" <?php if($_POST['report_type'] == "publixwalmart"){echo "selected='true'";} ?> >Breakdowns by Food Type</option>
+	<option value="clientdetail" <?php if($_POST['report_type'] == "clientdetail"){echo "selected='true'";} ?> >Client Detail</option>
 </select>
 </div>
 
@@ -171,7 +172,15 @@ if($_POST['submitted'])
 	$bases = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 	echo "<div id='dvReport'>";
 	
-	$header = array("Second Helpings Truck Weight Report for ");
+	if ($_POST['report_type'] == "clientdetail") {
+		$header = array("Second Helpings Client Detail Report on ".date('F j, Y', time()). " for ");
+		if ($_POST['report_area']!="") $header[] = " base: ".$bases[$_POST['report_area']];
+		else $header[] = " all bases ";
+		if ($_POST['report_county']!="") $header[] = ", county: ".$_POST['report_county'];
+		else $header[] = ", all counties ";
+	}
+	else {	
+		$header = array("Second Helpings Truck Weight Report for ");
 	if ($_POST['report_area']!="") $header[] = " base: ".$bases[$_POST['report_area']]; 
 		else $header[] = " all bases ";
 	if ($_POST['report_county']!="") $header[] = ", county: ".$_POST['report_county'];
@@ -183,15 +192,15 @@ if($_POST['submitted'])
 	}
 		else $header[] = ", all delivery areas";
 		
-	if ($_POST['chain_name']!="") $header[] = ", chain: " .  $_POST['chain_name'];
-		else $header[] = ", all chains";
-		
-	if ($_POST['report_type']=="publixwalmart") $header[] = ", food type breakdowns";
-		else if ($_POST['report_type']=="pickup") $header[] = ", donors only";
-		else if ($_POST['report_type']=="dropoff") $header[] = ", recipients only";
-		else $header[] = ", donors and recipients";
 	if ($_POST['client_name']!="")
 		$header[] = ",  client '".$_POST['client_name']."' only";
+	else {
+		if ($_POST['chain_name']!="") $header[] = ", chain: " .  $_POST['chain_name'];	
+		if ($_POST['report_type']=="publixwalmart") $header[] = ", food type breakdowns";
+			else if ($_POST['report_type']=="pickup") $header[] = ", donors only";
+			else if ($_POST['report_type']=="dropoff" || $_POST['report_type']=="clientdetail") $header[] = ", recipients only";
+			else $header[] = ", donors and recipients";
+	}
 	$header[] =  ".<br>";
 	if($_POST['report_span'] == "monthly")
 	{
@@ -233,12 +242,34 @@ if($_POST['submitted'])
 		$header[] =  date('F j, Y', $time) . " to " . date('F j, Y', $endTime);
 		
 	}
-	else $header[] = "-- no dates selected --";
+	else $header[] = "";
+	}
 	echo "<hr /><br><b>";
 	foreach ($header as $piece) echo $piece;
 	echo "</b><br><br>";
 	
-  if ($_POST['report_span']!="" && $_POST['report_type']!="publixwalmart") {
+	if ($_POST['report_type']=="clientdetail"){
+		echo '<table id="clientDetail">';
+		echo "<tr><td><b>Recipient</b></td><td><b>LCFB</b></td><td><b>Charity Trkr</b></td><td><b>Survey Date</b></td><td><b>Visit Date</b></td>".
+				"<td><b>Food Safe Date</b></td><td><b># Served</b></td>";
+		echo "</tr>";
+		 
+		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "", "", $_POST['report_county']);
+		$totalServed = 0;
+		foreach ($allClients as $client) {
+			$totalServed += $client->get_number_served();
+			echo '<tr>';
+			echo '<td>'.$client->get_id().'</td><td>'.$client->get_lcfb().'</td><td>'.$client->get_chartrkr().'</td><td>'.$client->get_survey_date().
+			'</td><td>'.$client->get_visit_date().'</td>'.'<td>'.$client->get_foodsafe_date().'</td><td>'.$client->get_number_served().'</td>';
+			echo "</tr>";
+		}
+		echo '<tr>';
+		echo '<td><b>Total</b></td><td></td><td></td><td></td><td></td><td></td><td>'.$totalServed.'</td>';
+		echo "</tr></table>";
+	  echo "</div>";
+	}
+	
+  	else if ($_POST['report_span']!="" && $_POST['report_type']!="publixwalmart") {
 	// get all stops from database for given area, report type, and date range
 	$all_stops = getall_dbStops_between_dates($_POST['report_area'], $_POST['report_type'], 
 		$_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name'], $_POST['report_county']);
@@ -331,7 +362,13 @@ if($_POST['submitted'])
 		echo "<td><b>Totals</b></td><td align='right'>".$tw_dropoffs."</td>";
 	echo "</tr>";
 	echo "</table>";
+
+	echo '</div>
+	<div style="padding:10px;">
+	<input type="button" value="Print List" onclick="showPrintWindow();" />
+	</div>';
   }
+  
   else if ($_POST['report_span']!="") 
   {
   	// get all stops from database for given area, report type, and date range
@@ -404,14 +441,10 @@ if($_POST['submitted'])
 	echo "</tr>";
 	echo "</table>";
   }
-  
-?>
-
-</div>
-						<div style="padding:10px;">
-						<input type="button" value="Print List" onclick="showPrintWindow();" />
-						</div>
-						<?PHP
+  echo '</div>
+  <div style="padding:10px;">
+  <input type="button" value="Print List" onclick="showPrintWindow();" />
+  </div>';
 }
 
 function export_publixwalmart_data($header, $food_types, $row_totals, $food_type_totals ) {

@@ -121,7 +121,7 @@ function process_form($_POST_PARAM, $route)
 		$driver = retrieve_dbVolunteers($_POST['add_driver']);
 		return ("New crew member added: ". $driver->get_first_name() . " " . $driver->get_last_name());
 	}
-	/*
+	
 	// add a new pick up to the route
 	if ($_POST['add_pickup']) {
 		delete_dbRoutes($route);
@@ -136,7 +136,7 @@ function process_form($_POST_PARAM, $route)
 		insert_dbRoutes($route);
 		return ("New dropoff added: ". substr($_POST['add_dropoff'],12));
 	}
-	*/
+	
 	else if($_POST['deleteMe']=="DELETE"){
 		delete_dbRoutes($route);
 		return ("Route deleted: ". $route->get_area() . " " . $route->get_day());
