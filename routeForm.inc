@@ -23,7 +23,7 @@ if($_SESSION['access_level']==1 && substr($route->get_id(),0,8)==$today) {
 else if ($_SESSION['access_level']>=2) {
 	echo('<p><strong>Route Information Form</strong><br />');
 	if (substr($route->get_id(),0,8)>$today)
-		echo('You can make last-minute changes to this crew at the bottom of this form.</p><p>');
+		echo('You can make last-minute changes to this route at the bottom of this form.</p><p>');
 }
 // for all other situations, the route cannot viewed.
 // else {
