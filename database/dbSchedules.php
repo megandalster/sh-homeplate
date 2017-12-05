@@ -24,14 +24,15 @@ include_once(dirname(__FILE__).'/../domain/ScheduleEntry.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
 
 function create_dbSchedules(){
-	connect();
-	mysql_query("DROP TABLE IF EXISTS dbSchedules");
-	$result = mysql_query("CREATE TABLE dbSchedules (id TEXT NOT NULL, area TEXT, drivers TEXT, notes TEXT)");
-	mysql_close();
+	$con=connect();
+	mysqli_query($con,"DROP TABLE IF EXISTS dbSchedules");
+	$result = mysqli_query($con,"CREATE TABLE dbSchedules (id TEXT NOT NULL, area TEXT, drivers TEXT, notes TEXT)");
 	if(!$result){
-			echo (mysql_error()."Error creating database table dbSchedules. \n");
+			echo (mysqli_error($con)."Error creating database table dbSchedules. \n");
+			mysqli_close($con);
 			return false;
 	}
+	mysqli_close($con);
 	// populate the table 
 	$areas = array("HHI","SUN");
 	$weekly_groups = array("odd","even");
@@ -52,29 +53,29 @@ function create_dbSchedules(){
 }
 
 function retrieve_dbSchedules($area, $id){
-	connect();
-	$result=mysql_query("SELECT * FROM dbSchedules WHERE id  = '".$id."' AND area = '".$area."'");
-	if(mysql_num_rows($result) !== 1){
-			mysql_close();
+	$con=connect();
+	$result=mysqli_query($con,"SELECT * FROM dbSchedules WHERE id  = '".$id."' AND area = '".$area."'");
+	if(mysqli_num_rows($result) !== 1){
+			mysqli_close($con);
 			return false;
 	}
-	$result_row = mysql_fetch_assoc($result);
+	$result_row = mysqli_fetch_assoc($result);
 	$theScheduleEntry = new ScheduleEntry($result_row['area'], $result_row['id'], $result_row['drivers'], $result_row['notes']);
 
-	mysql_close();
+	mysqli_close($con);
 	return $theScheduleEntry;
 }
 
 
 function getall_dbSchedules(){
-	connect();
-	$result = mysql_query("SELECT * FROM dbSchedules ORDER BY last_name,first_name");
+	$con=connect();
+	$result = mysqli_query($con,"SELECT * FROM dbSchedules ORDER BY last_name,first_name");
 	$theScheduleEntries = array();
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theScheduleEntry = new ScheduleEntry($result_row['area'], $result_row['id'], $result_row['drivers'], $result_row['notes']);
 		$theScheduleEntries[] = $theScheduleEntry;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theScheduleEntries;
 }
 // insert_dbSchedules works as an update.  That is, if the entry is already there, it is replaced
@@ -83,12 +84,12 @@ function insert_dbSchedules($scheduleentry){
 	if(! $scheduleentry instanceof ScheduleEntry){
 		return false;
 	}
-	connect();
+	$con=connect();
 	$query = "SELECT * FROM dbSchedules WHERE id = '" . $scheduleentry->get_id() ."' AND area = '".$scheduleentry->get_area()."'";
-	$result = mysql_query($query);
-	if (mysql_num_rows($result) != 0) {
+	$result = mysqli_query($con,$query);
+	if (mysqli_num_rows($result) != 0) {
 		delete_dbSchedules ($scheduleentry->get_area(), $scheduleentry->get_id());
-		connect();
+		$con=connect();
 	}
 	$query = "INSERT INTO dbSchedules VALUES ('".
 				$scheduleentry->get_id()."','" .
@@ -96,13 +97,13 @@ function insert_dbSchedules($scheduleentry){
 				implode(',',$scheduleentry->get_drivers())."','".
 				$scheduleentry->get_notes().
 	            "');";
-	$result = mysql_query($query);
+	$result = mysqli_query($con,$query);
 	if (!$result) {
-		echo (mysql_error(). " Unable to insert into dbSchedules: " . $scheduleentry->get_area().$scheduleentry->get_id(). "\n");
-		mysql_close();
+		echo (mysqli_error($con). " Unable to insert into dbSchedules: " . $scheduleentry->get_area().$scheduleentry->get_id(). "\n");
+		mysqli_close($con);
 		return false;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return true;
 	
 }
@@ -116,30 +117,32 @@ function update_dbSchedules($scheduleentry){
 		return insert_dbSchedules($scheduleentry);
 	}
 	else {
-		echo (mysql_error()."unable to update dbSchedules table: ".$scheduleentry->get_area().$scheduleentry->get_id());
+		$con=connect();
+		echo (mysqli_error($con)."unable to update dbSchedules table: ".$scheduleentry->get_area().$scheduleentry->get_id());
+		mysqli_close($con);
 		return false;
 	}
 }
 
 function delete_dbSchedules($area, $id){
-	connect();
-	$result = mysql_query("DELETE FROM dbSchedules WHERE id ='".$id."' AND area = '".$area."'");
-	mysql_close();
+	$con=connect();
+	$result = mysqli_query($con,"DELETE FROM dbSchedules WHERE id ='".$id."' AND area = '".$area."'");
+	mysqli_close($con);
 	if (!$result) {
-		echo (mysql_error()." unable to delete from dbSchedules: ".$area.$id);
+		echo (mysqli_error($con)." unable to delete from dbSchedules: ".$area.$id);
 		return false;
 	}
 	return true;
 }
 //  retrieve an array of driver id's
 function get_drivers_scheduled($area, $week, $day) {
-	connect();
-	$result = mysql_query("SELECT * FROM dbSchedules WHERE id='" .
+	$con=connect();
+	$result = mysqli_query($con,"SELECT * FROM dbSchedules WHERE id='" .
 		$day.":".$week."' AND area='".$area."'");
-	if ($result_row = mysql_fetch_assoc($result))
+	if ($result_row = mysqli_fetch_assoc($result))
 		$theDrivers = explode(',',$result_row['drivers']);
 	else $theDrivers = array();
-	mysql_close();
+	mysqli_close($con);
 	return $theDrivers;
 }
 function get_total_openings($area, $week, $day) {
@@ -175,14 +178,14 @@ function add_driver ($area, $week, $day, $driver_id) {
 	else return false;
 }
 function get_all_foradriver($area, $driver_id){
-	connect();
-	$result = mysql_query("SELECT * FROM dbSchedules WHERE area = '".$area."' AND drivers LIKE '%".$driver_id."%' ");
+	$con=connect();
+	$result = mysqli_query($con,"SELECT * FROM dbSchedules WHERE area = '".$area."' AND drivers LIKE '%".$driver_id."%' ");
 	$theScheduleEntries = array();
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theScheduleEntry = new ScheduleEntry($result_row['area'], $result_row['id'], $result_row['drivers'], $result_row['notes']);
 		$theScheduleEntries[] = $theScheduleEntry;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theScheduleEntries;
 }
 // update all schedules with the changed availability of a particular driver

@@ -16,27 +16,28 @@
 include_once(dirname(__FILE__).'/dbinfo.php');
 
 function create_dbDevices() {
-    connect();
-    mysql_query("DROP TABLE IF EXISTS dbDevices");
-    $result = mysql_query("CREATE TABLE dbDevices (id TEXT NOT NULL, status TEXT NOT NULL, 
+    $con=connect();
+    mysqli_query("DROP TABLE IF EXISTS dbDevices");
+    $result = mysqli_query($con,"CREATE TABLE dbDevices (id TEXT NOT NULL, status TEXT NOT NULL, 
     												route TEXT NOT NULL, nickname TEXT)");
-    mysql_close();
     if (!$result) {
-        echo mysql_error() . "Error creating dbDevices table. <br>";
+        echo mysqli_error($con) . "Error creating dbDevices table. <br>";
+        mysqli_close($con);
         return false;
     }
+    mysqli_close($con);
     return true;
 }
 
 function insert_dbDevices ($id, $status, $route, $nickname){
     
-    connect();
+    $con=connect();
 
 	$query = "SELECT * FROM dbDevices WHERE id = '" . $id() . "'";
-    $result = mysql_query($query);
-    if (mysql_num_rows($result) != 0) {
+    $result = mysqli_query($con,$query);
+    if (mysqli_num_rows($result) != 0) {
         delete_dbDevices ($month->get_id());
-        connect();
+        $con=connect();
     }
 
     $query = "INSERT INTO dbDevices VALUES ('".
@@ -44,33 +45,34 @@ function insert_dbDevices ($id, $status, $route, $nickname){
                 $status."','".
                 $route."','".
                 $nickname."');";
-    $result = mysql_query($query);
+    $result = mysqli_query($con,$query);
     if (!$result) {
-        echo (mysql_error(). " unable to insert into dbDevices: " . $month->get_id(). "\n");
-        mysql_close();
+        echo (mysqli_error($con). " unable to insert into dbDevices: " . $month->get_id(). "\n");
+        mysqli_close($con);
         return false;
     }
-    mysql_close();
+    mysqli_close($con);
     return true;
 }
                 
 function retrieve_dbDevices ($id) {
-	connect();
+	$con=connect();
     $query = "SELECT * FROM dbDevices WHERE id = '".$id."'";
-    $result = mysql_query ($query);
-    if (mysql_num_rows($result) !== 1){
-    	mysql_close();
+    $result = mysqli_query ($con,$query);
+    if (mysqli_num_rows($result) !== 1){
+    	mysqli_close($con);
         return false;
     }
-    $result_row = mysql_fetch_assoc($result);
+    $result_row = mysqli_fetch_assoc($result);
+    mysqli_close($con);
     return $result_row;   
 }
 function getall_dbDevices () {
-    connect();
+    $con=connect();
     $query = "SELECT * FROM dbDevices ORDER BY id";
-    $result = mysql_query ($query);
+    $result = mysqli_query ($con,$query);
     $theDevices = array();
-    while ($result_row = mysql_fetch_assoc($result)) {
+    while ($result_row = mysqli_fetch_assoc($result)) {
         $theDevices[] = $result_row;
     }
     return $theDevices; 
@@ -81,18 +83,18 @@ function update_dbDevices ($id, $status, $route, $nickname) {
 	if (delete_dbDevices($id))
 	   return insert_dbDevices($id, $status, $route, $nickname);
 	else {
-	   echo (mysql_error()."unable to update dbDevices table: ".$id);
+	   echo (mysqli_error($con)."unable to update dbDevices table: ".$id);
 	   return false;
 	}
 }
 
 function delete_dbDevices($id) {
-	connect();
+	$con=connect();
     $query="DELETE FROM dbDevices WHERE id=\"".$id."\"";
-	$result=mysql_query($query);
-	mysql_close();
+	$result=mysqli_query($con,$query);
+	mysqli_close();
 	if (!$result) {
-		echo (mysql_error()." unable to delete from dbDevices: ".$id);
+		echo (mysqli_error($con)." unable to delete from dbDevices: ".$id);
 		return false;
 	}
     return true;

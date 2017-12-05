@@ -22,15 +22,16 @@ include_once(dirname(__FILE__).'/dbinfo.php');
 
 // Create the DB stops table with the necessary column values.
 function create_dbStops() {
-    connect();
-    mysql_query("DROP TABLE IF EXISTS dbStops");
-    $result = mysql_query("CREATE TABLE dbStops (id TEXT NOT NULL, route TEXT NOT NULL, client TEXT NOT NULL, 
+    $con=connect();
+    mysqli_query($con,"DROP TABLE IF EXISTS dbStops");
+    $result = mysqli_query($con,"CREATE TABLE dbStops (id TEXT NOT NULL, route TEXT NOT NULL, client TEXT NOT NULL, 
      											 type TEXT NOT NULL, items TEXT, weight TEXT, date TEXT, notes TEXT)");
-    mysql_close();
     if (!$result) {
-        echo mysql_error() . "Error creating dbStops table. <br>";
+        echo mysqli_error($con) . "Error creating dbStops table. <br>";
+        mysqli_close($con);
         return false;
     }
+    mysqli_close($con);
     return true;
 }
 
@@ -39,13 +40,13 @@ function insert_dbStops ($stop){
     if (! $stop instanceof Stop) {
         return false;
     }
-    connect();
+    $con=connect();
 
 	$query = "SELECT * FROM dbStops WHERE id = '" . $stop->get_id() . "'";
-    $result = mysql_query($query);
-    if (mysql_num_rows($result) != 0) {
+    $result = mysqli_query($con,$query);
+    if (mysqli_num_rows($result) != 0) {
         delete_dbStops ($stop->get_id());
-        connect();
+        $con=connect();
     }
     $query = "INSERT INTO dbStops VALUES ('".
                 $stop->get_id()."','" .
@@ -56,26 +57,26 @@ function insert_dbStops ($stop){
                 $stop->get_total_weight()."','".
                 $stop->get_date()."','".
                 $stop->get_notes()."');";
-    $result = mysql_query($query);
+    $result = mysqli_query($con,$query);
     if (!$result) {
-        echo (mysql_error(). " unable to insert into dbStops: " . $stop->get_id(). "\n");
-        mysql_close();
+        echo (mysqli_error($con). " unable to insert into dbStops: " . $stop->get_id(). "\n");
+        mysqli_close($con);
         return false;
     }
-    mysql_close();
+    mysqli_close($con);
     return true;
 }
 
 // Retrieve a stop from the DB by passing the stop ID.
 function retrieve_dbStops ($id) {
-	connect();
+	$con=connect();
     $query = "SELECT * FROM dbStops WHERE id = '".$id."'";
-    $result = mysql_query ($query);
-    if (mysql_num_rows($result) !== 1){
-    	mysql_close();
+    $result = mysqli_query ($con,$query);
+    if (mysqli_num_rows($result) !== 1){
+    	mysqli_close($con);
         return false;
     }
-    $result_row = mysql_fetch_assoc($result);
+    $result_row = mysqli_fetch_assoc($result);
     $items = $result_row['items'];
     if ($result_row['items']=="" || $result_row['items']=="Meat:,Frozen:,Bakery:,Grocery:,Dairy:,Produce:")
     	$items = $result_row['weight']; 
@@ -85,24 +86,24 @@ function retrieve_dbStops ($id) {
 	}
 	
     $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $items, $result_row['notes']);
-	mysql_close(); 
+	mysqli_close($con); 
     return $theStop;   
 }
 
 // Return all stops from the DB.
 function getall_dbStops () {
-    connect();
+    $con=connect();
     $query = "SELECT * FROM dbStops ORDER BY id";
-    $result = mysql_query ($query);
+    $result = mysqli_query ($con,$query);
     $theStops = array();
-    while ($result_row = mysql_fetch_assoc($result)) {
+    while ($result_row = mysqli_fetch_assoc($result)) {
     	$items = $result_row['items'];
     	if ($result_row['items']=="")
     		$items = $result_row['weight'];
         $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $items, $result_row['notes']);
         $theStops[] = $theStop;
     }
-	mysql_close();
+	mysqli_close($con);
     return $theStops; 
 }
 
@@ -110,7 +111,7 @@ function getall_dbStops () {
 function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, $end_date, $deliveryAreaId, $chain, $county) {
 //	echo "area,type,client_name,start_date,end_date,deliveryareaid,chain,county=".
 //			$area.",".$type.",".$client_name.",".$start_date.",".$end_date.",".$deliveryAreaId.",".$chain.",".$county;
-	connect();
+	$con=connect();
 	$query = "SELECT route, client, type, SUM(if(weight < 0,0,weight)) as 'SUM(weight)', notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
 			"client like '%".$client_name."%' AND ".
@@ -133,9 +134,9 @@ function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, 
 			
 			echo "<!--" . $query . "-->\n";
 			
-    $result = mysql_query ($query);
+    $result = mysqli_query ($con,$query);
     $theStops = array();
-    while ($result_row = mysql_fetch_assoc($result)) {
+    while ($result_row = mysqli_fetch_assoc($result)) {
     	// The total weight of the stop is returned instead of its items for the purpose
     	// of generating reports with each stop's total weight.
 		$weight = $result_row['SUM(weight)'];
@@ -150,9 +151,9 @@ function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, 
 
 //echo "<!--" . $query . "-->\n";
 
-			$weightQueryResult = mysql_query($query);
+			$weightQueryResult = mysqli_query($con,$query);
 			$weight = 0;
-			 while ($weightResult_row = mysql_fetch_assoc($weightQueryResult)) {
+			 while ($weightResult_row = mysqli_fetch_assoc($weightQueryResult)) {
 				$thisWeight = $weightResult_row['SUM(weight)'];
 				//if($thisWeight > 0)
 					$weight += $thisWeight;
@@ -163,13 +164,13 @@ function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, 
     	$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $weight , $result_row['notes']);
         $theStops[] = $theStop;
     }
-	mysql_close();
+	mysqli_close($con);
     return $theStops; 
 }
 
 // Returns all stops within a certain date range.
 function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_date, $end_date, $deliveryAreaId, $chain, $county) {
-	connect();
+	$con=connect();
 	$query = "SELECT route, client, type, items, notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
 			"client like '%".$client_name."%' AND ".
@@ -188,11 +189,11 @@ function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_
 		}
 		
 		$query = $query . 	" AND date >= '". $start_date . "' AND date <= '". $end_date . "' ORDER BY client";
-    $result = mysql_query ($query);
+    $result = mysqli_query ($con,$query);
     $theStops = array();
 	
 	
-    while ($result_row = mysql_fetch_assoc($result)) {
+    while ($result_row = mysqli_fetch_assoc($result)) {
 		//weight tally was here 
 		
 		//echo "<!--" . $result_row['items'] . "-->\n";
@@ -200,39 +201,9 @@ function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_
 		$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['items'] , $result_row['notes']);
         $theStops[] = $theStop;
     }
-	mysql_close();
+	mysqli_close($con);
     return $theStops; 
 }
-
-
-/*
-<!-- old weight tally -->
-    	// The total weight of the stop is returned instead of its items for the purpose
-    	// of generating reports with each stop's total weight.
-		$weight = $result_row['SUM(weight)'];
-		$clientName = $result_row['client'];
-		if($area != ''){
-		
-			$query = "SELECT SUM(weight) FROM dbStops ".
-" WHERE client = '" . $clientName . "' AND id LIKE '%". $area  . "%'" .
-" AND weight > 0".
-" AND date >= '". $start_date . "' AND date <= '". $end_date . "' ".
-" GROUP BY client";
-
-//echo "<!--" . $query . "-->\n";
-
-			$weightQueryResult = mysql_query($query);
-			$weight = 0;
-			 while ($weightResult_row = mysql_fetch_assoc($weightQueryResult)) {
-				$thisWeight = $weightResult_row['SUM(weight)'];
-				//if($thisWeight > 0)
-					$weight += $thisWeight;
-				
-			 }
-		}
-		
-    	$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $weight , $result_row['notes']);
-		*/
 
 // Update the values of a specified stop by removing it from the DB and then
 // inserting it again.
@@ -244,20 +215,23 @@ if (! $stop instanceof Stop) {
 	if (delete_dbStops($stop->get_id()))
 	   return insert_dbStops($stop);
 	else {
-	   echo (mysql_error()."unable to update dbStops table: ".$stop->get_id());
+	   $con=connect();
+	   echo (mysqli_error($con)."unable to update dbStops table: ".$stop->get_id());
+	   mysqli_close($con);
 	   return false;
 	}
 }
 
 // Remove a stop and all of its values from the DB.
 function delete_dbStops($id) {
-	connect();
+	$con=connect();
     $query="DELETE FROM dbStops WHERE id=\"".$id."\"";
-	$result=mysql_query($query);
-	mysql_close();
+	$result=mysqli_query($con,$query);
 	if (!$result) {
-		echo (mysql_error()." unable to delete from dbStops: ".$id);
+		echo (mysqli_error($con)." unable to delete from dbStops: ".$id);
+		mysqli_close($con);
 		return false;
 	}
+	mysqli_close($con);
     return true;
 }

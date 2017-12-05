@@ -25,15 +25,17 @@ include_once(dirname(__FILE__).'/dbinfo.php');
   * message - text
   */
 function create_dbLog(){
-	connect();
-	mysql_query("DROP TABLE IF EXISTS dbLog");
+	$con=connect();
+	mysqli_query($con,"DROP TABLE IF EXISTS dbLog");
 	//NOTE: primary key set to id.  id is text in the form: yy-mm-dd
-	$result=mysql_query("CREATE TABLE dbLog (id INT(3) NOT NULL AUTO_INCREMENT,time TEXT, message TEXT, PRIMARY KEY(id))");
-	mysql_close();
+	$result=mysqli_query($con,"CREATE TABLE dbLog (id INT(3) NOT NULL AUTO_INCREMENT,time TEXT, message TEXT, PRIMARY KEY(id))");
+	
 	if(!$result) {
-		echo mysql_error();
+		echo mysqli_error($con);
+		mysqli_close($con);
 		return false;
 	}
+	mysqli_close($con);
 	return true;
 }
 
@@ -42,25 +44,25 @@ function create_dbLog(){
  */
 function add_log_entry($message){
 	$time=time();
-	connect();
+	$con=connect();
 	$query = "INSERT INTO dbLog (time, message) VALUES (\"".$time."\",\"".$message."\")";
-	$result=mysql_query($query);
+	$result=mysqli_query($con,$query);
 	if(!$result){
-		echo mysql_error();
+		echo mysqli_error($con);
 	}
-	mysql_close();
+	mysqli_close($con);
 }
 
 /**
  * deletes a log entry
  */
 function delete_log_entry($id){
-	connect();
+	$con=connect();
 	$query="DELETE FROM dbLog WHERE id=\"".$id."\"";
-	$result=mysql_query($query);
+	$result=mysqli_query($con,$query);
 	if(!$result)
-		echo mysql_error();
-   mysql_close();
+		echo mysqli_error($con);
+   mysqli_close($con);
 }
 
 /**
@@ -68,30 +70,30 @@ function delete_log_entry($id){
  * @param $ids an array of log ids
  */
 function delete_log_entries($ids) {
-	connect();
+	$con=connect();
 	for($i=0;$i<count($ids);++$i) {
 		$query="DELETE FROM dbLog WHERE id=\"".$ids[$i]."\"";
-		$result=mysql_query($query);
+		$result=mysqli_query($con,$query);
 		if(!$result)
-			echo mysql_error();
+			echo mysqli_error($con);
 	}
-	mysql_close();
+	mysqli_close($con);
 }
 /**
  * returns all entries in the log, sorted by timestamp
  * @return returns array of id, time, and text
  */
 function get_full_log(){
-	connect();
+	$con=connect();
 	$query="SELECT * FROM dbLog ORDER BY time DESC";
-	$result=mysql_query($query);
-	mysql_close();
+	$result=mysqli_query($con,$query);
+	mysqli_close($con);
 	if(!$result) {
 		die("error getting log");
 	}
 	else{
-		for($i=0;$i<mysql_num_rows($result);++$i) {
-			$result_row=mysql_fetch_assoc($result);
+		for($i=0;$i<mysqli_num_rows($result);++$i) {
+			$result_row=mysqli_fetch_assoc($result);
 			if($result_row) {
 				$log[]=array($result_row['id'],date("n/j/y g:ia",$result_row['time']),$result_row['message']);
 			}

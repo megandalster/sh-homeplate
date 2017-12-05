@@ -17,44 +17,45 @@ include_once(dirname(__FILE__).'/../domain/DeliveryArea.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
 
 function create_dbDeliveryAreas(){
-	connect();
-	mysql_query("DROP TABLE IF EXISTS dbDeliveryAreas");
-	$result = mysql_query("CREATE TABLE dbDeliveryAreas (id TEXT NOT NULL, last_name TEXT, first_name TEXT, address TEXT, city TEXT, state TEXT, zip TEXT, 
+	$con=connect();
+	mysqli_query($con,"DROP TABLE IF EXISTS dbDeliveryAreas");
+	$result = mysqli_query($con,"CREATE TABLE dbDeliveryAreas (id TEXT NOT NULL, last_name TEXT, first_name TEXT, address TEXT, city TEXT, state TEXT, zip TEXT, 
 							phone1 VARCHAR(12) NOT NULL, phone2 VARCHAR(12), email TEXT, type TEXT, status TEXT, area TEXT, license_no TEXT, license_state TEXT, 
 							license_expdate TEXT, accidents TEXT, availability TEXT, schedule TEXT, history TEXT, birthday TEXT,
 							start_date TEXT, notes TEXT, password TEXT)");
-	mysql_close();
 	if(!$result){
-			echo (mysql_error()."Error creating database dbDeliveryAreas. \n");
+			echo (mysqli_error($con)."Error creating database dbDeliveryAreas. \n");
+			mysqli_close($con);
 			return false;
 	}
+	mysqli_close($con);
 	return true;
 }
 
 function retrieve_dbDeliveryAreas($id){
-	connect();
-	$result=mysql_query("SELECT * FROM dbDeliveryAreas WHERE deliveryAreaId  = '".$id."'");
-	if(mysql_num_rows($result) !== 1){
-			mysql_close();
+	$con=connect();
+	$result=mysqli_query($con,"SELECT * FROM dbDeliveryAreas WHERE deliveryAreaId  = '".$id."'");
+	if(mysqli_num_rows($result) !== 1){
+			mysqli_close($con);
 			return false;
 	}
-	$result_row = mysql_fetch_assoc($result);
+	$result_row = mysqli_fetch_assoc($result);
 	$theAffiliate = new DeliveryArea($result_row['deliveryAreaId'], $result_row['deliveryAreaName']);
 							
 							
-	mysql_close();
+	mysqli_close($con);
 	return $theAffiliate;
 }
 
 function getall_dbDeliveryAreas(){
-	connect();
-	$result = mysql_query("SELECT * FROM dbDeliveryAreas ORDER BY deliveryAreaName");
+	$con=connect();
+	$result = mysqli_query($con,"SELECT * FROM dbDeliveryAreas ORDER BY deliveryAreaName");
 	$theAffiliates = array();
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theAffiliate = new DeliveryArea($result_row['deliveryAreaId'], $result_row['deliveryAreaName']);
 		$theAffiliates[] = $theAffiliate;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theAffiliates;
 }
 
@@ -62,25 +63,25 @@ function insert_dbDeliveryAreas($deliveryArea){
 	if(! $deliveryArea instanceof DeliveryArea){
 		return false;
 	}
-	connect();
+	$con=connect();
 	$query = "SELECT * FROM dbDeliveryAreas WHERE deliveryAreaId = '" . $deliveryArea->get_deliveryAreaId() . "'";
-	$result = mysql_query($query);
-	if (mysql_num_rows($result) != 0) {
+	$result = mysqli_query($con,$query);
+	if (mysqli_num_rows($result) != 0) {
 		delete_dbDeliveryAreas ($deliveryArea->get_deliveryAreaId());
-		connect();
+		$con=connect();
 	}
 	
 	
 	$query = "INSERT INTO dbDeliveryAreas (deliveryAreaName) VALUES ('".
 				$deliveryArea->get_deliveryAreaName().				
 	            "');";
-	$result = mysql_query($query);
+	$result = mysqli_query($con,$query);
 	if (!$result) {
-		echo (mysql_error(). " Unable to insert into dbDeliveryAreas: " . $deliveryArea->get_deliveryAreaId(). "\n");
-		mysql_close();
+		echo (mysqli_error($con). " Unable to insert into dbDeliveryAreas: " . $deliveryArea->get_deliveryAreaId(). "\n");
+		mysqli_close($con);
 		return false;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return true;
 	
 }
@@ -93,17 +94,19 @@ function update_dbDeliveryAreas($deliveryArea){
 	if (delete_dbDeliveryAreas($deliveryArea->get_deliveryAreaId()))
 	return insert_dbDeliveryAreas($deliveryArea);
 	else {
-		echo (mysql_error()."unable to update dbDeliveryAreas table: ".$deliveryArea->get_deliveryAreaId());
+		$con=connect();
+		echo (mysqli_error($con)."unable to update dbDeliveryAreas table: ".$deliveryArea->get_deliveryAreaId());
+		mysqli_close($con);
 		return false;
 	}
 }
 
 function delete_dbDeliveryAreas($id){
-	connect();
-	$result = mysql_query("DELETE FROM dbDeliveryAreas WHERE deliveryAreaId =\"".$id."\"");
-	mysql_close();
+	$con=connect();
+	$result = mysqli_query($con,"DELETE FROM dbDeliveryAreas WHERE deliveryAreaId =\"".$id."\"");
+	mysqli_close($con);
 	if (!$result) {
-		echo (mysql_error()." unable to delete from dbDeliveryAreas: ".$id);
+		echo (mysqli_error($con)." unable to delete from dbDeliveryAreas: ".$id);
 		return false;
 	}
 	return true;
@@ -112,18 +115,18 @@ function delete_dbDeliveryAreas($id){
 
 // retrieve only those volunteers that match the criteria given in the arguments
 function getonlythose_dbDeliveryAreas($name) {
-	connect();
+	$con=connect();
 	$query = "SELECT * FROM dbDeliveryAreas WHERE deliveryAreaName like '%".$name. "%'" ;
 	
     $query .= " ORDER BY deliveryAreaName";
-	$result = mysql_query($query);
+	$result = mysqli_query($con,$query);
 	$theVols = array();
 		
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theVol = new DeliveryArea($result_row['deliveryAreaId'], $result_row['deliveryAreaName']);
 		$theVols[] = $theVol;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theVols;
 }
 

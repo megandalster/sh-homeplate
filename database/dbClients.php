@@ -17,13 +17,13 @@ include_once(dirname(__FILE__).'/../domain/Client.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
 
 function retrieve_dbClients($id){
-	connect();
-	$result=mysql_query("SELECT * FROM dbClients WHERE id  = '".$id."'");
-	if(mysql_num_rows($result) !== 1){
-			mysql_close();
+	$con=connect();
+	$result=mysqli_query($con,"SELECT * FROM dbClients WHERE id  = '".$id."'");
+	if(mysqli_num_rows($result) !== 1){
+			mysqli_close($con);
 			return false;
 	}
-	$result_row = mysql_fetch_assoc($result);
+	$result_row = mysqli_fetch_assoc($result);
 	$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
                             $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['address2'],
                             $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
@@ -31,16 +31,16 @@ function retrieve_dbClients($id){
 							$result_row['email2'], $result_row['ContactName'], $result_row['ContactName2'], $result_row['deliveryAreaId'],
 							$result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['number_served']
 							);
-	mysql_close();
+	mysqli_close($con);
 	return $theClient;
 }
 
 
 function getall_dbClients(){
-	connect();
-	$result = mysql_query("SELECT * FROM dbClients ORDER BY id");
+	$con=connect();
+	$result = mysqli_query($con,"SELECT * FROM dbClients ORDER BY id");
 	$theClients = array();
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
                             $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['address2'],
                             $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
@@ -50,12 +50,12 @@ function getall_dbClients(){
 							);
 		$theClients[] = $theClient;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theClients;
 }
 
 function getall_clients($area, $type, $lcfb, $name, $availability, $deliveryAreaId, $county) {
-	connect();
+	$con=connect();
     $query = "SELECT * FROM dbClients WHERE area like '%". $area . "%' ";
             if($type)           $query .= "AND type = '". $type . "' ";
             if($lcfb)         $query .= "AND lcfb = '" . $lcfb . "' ";
@@ -70,9 +70,9 @@ function getall_clients($area, $type, $lcfb, $name, $availability, $deliveryArea
             	$query = substr($query, 0, strlen( $query ) - 4).") ";
             }
             $query .= "ORDER BY id";
-    $result = mysql_query ($query);
+    $result = mysqli_query ($con,$query);
     $theClients = array();
-    while ($result_row = mysql_fetch_assoc($result)) {
+    while ($result_row = mysqli_fetch_assoc($result)) {
         $theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
                             $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['address2'],
                             $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
@@ -82,7 +82,7 @@ function getall_clients($area, $type, $lcfb, $name, $availability, $deliveryArea
 							);
 		$theClients[] = $theClient;
     }
-	mysql_close();
+	mysqli_close($con);
     return $theClients; 
 }
 
@@ -90,12 +90,12 @@ function insert_dbClients($client){
 	if(! $client instanceof Client){
 		return false;
 	}
-	connect();
+	$con=connect();
 	$query = "SELECT * FROM dbClients WHERE id = '" . $client->get_id() . "'";
-	$result = mysql_query($query);
-	if (mysql_num_rows($result) != 0) {
+	$result = mysqli_query($con,$query);
+	if (mysqli_num_rows($result) != 0) {
 		delete_dbClients ($client->get_id());
-		connect();
+		$con=connect();
 	}
 	$query = "INSERT INTO dbClients VALUES ('".
 				$client->get_id()."','" .
@@ -129,13 +129,13 @@ function insert_dbClients($client){
 				$client->get_foodsafe_date() ."','".
 				$client->get_number_served() .
 				"');";
-	$result = mysql_query($query);
+	$result = mysqli_query($con,$query);
 	if (!$result) {
-		echo (mysql_error(). " Unable to insert into dbClients: " . $client->get_id(). "\n");
-		mysql_close();
+		echo (mysqli_error($con). " Unable to insert into dbClients: " . $client->get_id(). "\n");
+		mysqli_close($con);
 		return false;
 	}
-	mysql_close();
+	mysqli_close();
 	return true;
 	
 }
@@ -148,17 +148,18 @@ function update_dbClients($client){
 	if (delete_dbClients($client->get_id()))
 	return insert_dbClients($client);
 	else {
-		echo (mysql_error()."unable to update dbClients table: ".$client->get_id());
+		$con=connect();
+		echo (mysqli_error($con)."unable to update dbClients table: ".$client->get_id());
 		return false;
 	}
 }
 
 function delete_dbClients($id){
-	connect();
-	$result = mysql_query("DELETE FROM dbClients WHERE id =\"".$id."\"");
-	mysql_close();
+	$con=connect();
+	$result = mysqli_query($con,"DELETE FROM dbClients WHERE id =\"".$id."\"");
+	mysqli_close($con);
 	if (!$result) {
-		echo (mysql_error()." unable to delete from dbClients: ".$id);
+		echo (mysqli_error($con)." unable to delete from dbClients: ".$id);
 		return false;
 	}
 	return true;
@@ -168,10 +169,10 @@ function delete_dbClients($id){
 function getall_dbClientsForArea($deliveryAreaId){
 	$theQuery = "SELECT * FROM dbClients WHERE deliveryAreaId=" . $deliveryAreaId . " ORDER BY id";
 	
-	connect();
-	$result = mysql_query($theQuery);
+	$con=connect();
+	$result = mysqli_query($con,$theQuery);
 	$theClients = array();
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theClient = new Client($result_row['id'], $result_row['chain_name'], $result_row['area'], $result_row['type'], $result_row['address'],
                             $result_row['city'], $result_row['state'], $result_row['zip'], $result_row['county'], $result_row['phone1'], $result_row['address2'],
                             $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
@@ -181,7 +182,7 @@ function getall_dbClientsForArea($deliveryAreaId){
 							);
 		$theClients[] = $theClient;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theClients;
 }
 

@@ -18,12 +18,12 @@ include_once(dirname(__FILE__).'/dbinfo.php');
 
 
 function getall_dbAffiliateVolunteers($affiliateId){
-	connect();
+	$con=connect();
 	$theQuery = "SELECT * FROM dbVolunteers WHERE affiliateId=" . $affiliateId . " ORDER BY last_name";
 	
-	$result = mysql_query($theQuery);
+	$result = mysqli_query($con,$theQuery);
 	$theVols = array();
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
 							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
@@ -33,18 +33,18 @@ function getall_dbAffiliateVolunteers($affiliateId){
 							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theVols;
 }
 
 function retrieve_dbVolunteers($id){
-	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE id  = '".$id."'");
-	if(mysql_num_rows($result) !== 1){
-			mysql_close();
+	$con=connect();
+	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE id  = '".$id."'");
+	if(mysqli_num_rows($result) !== 1){
+			mysqli_close($con);
 			return false;
 	}
-	$result_row = mysql_fetch_assoc($result);
+	$result_row = mysqli_fetch_assoc($result);
 	$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
 							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
@@ -53,18 +53,18 @@ function retrieve_dbVolunteers($id){
 							$result_row['TripCount'], $result_row['LastTripDate'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],$result_row['ShirtSize'], $result_row['affiliateId']);
 							
 							
-	mysql_close();
+	mysqli_close($con);
 	return $theVol;
 }
 
 function retrieve_dbVolunteersByName($first_name, $last_name){
-	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE first_name='" . $first_name . "' AND last_name='" . $last_name . "'");
-	if(mysql_num_rows($result) !== 1){
-			mysql_close();
+	$con=connect();
+	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE first_name='" . $first_name . "' AND last_name='" . $last_name . "'");
+	if(mysqli_num_rows($result) !== 1){
+			mysqli_close($con);
 			return false;
 	}
-	$result_row = mysql_fetch_assoc($result);
+	$result_row = mysqli_fetch_assoc($result);
 	
 	
 	
@@ -77,17 +77,17 @@ function retrieve_dbVolunteersByName($first_name, $last_name){
 							$result_row['ShirtSize'], $result_row['affiliateId']);
 							
 							
-	mysql_close();
+	mysqli_close($con);
 	return $theVol;
 }
 
 
 
 function getall_dbVolunteers(){
-	connect();
-	$result = mysql_query("SELECT * FROM dbVolunteers ORDER BY last_name");
+	$con=connect();
+	$result = mysqli_query($con,"SELECT * FROM dbVolunteers ORDER BY last_name");
 	$theVols = array();
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
 							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
@@ -97,7 +97,7 @@ function getall_dbVolunteers(){
 							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theVols;
 }
 
@@ -105,7 +105,7 @@ function getall_dbVolunteers(){
 
 // retrieve only those volunteers that match the criteria given in the arguments
 function getonlythose_dbVolunteers($area, $types, $status, $name, $availability, $affiliateId) {
-	connect();
+	$con=connect();
 	$query = "SELECT * FROM dbVolunteers WHERE area like '%".$area. "%'" .  
 	         " AND status LIKE '%".$status."%'" . 
 			 " AND (first_name LIKE '%".$name."%' OR last_name LIKE '%".$name."%')" ;
@@ -127,11 +127,11 @@ function getonlythose_dbVolunteers($area, $types, $status, $name, $availability,
 	}
 	
     $query .= " ORDER BY last_name";
-	$result = mysql_query($query);
+	$result = mysqli_query($con,$query);
 	$theVols = array();
 		
 		
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
 							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
@@ -141,16 +141,16 @@ function getonlythose_dbVolunteers($area, $types, $status, $name, $availability,
 							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theVols;
 }
 
 function get_team_captains ($area, $day) {
-	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE type LIKE '%teamcaptain%' AND availability LIKE '%".$day."%' AND area  = '".$area."'");
+	$con=connect();
+	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE type LIKE '%teamcaptain%' AND availability LIKE '%".$day."%' AND area  = '".$area."'");
 	
 	$theVols = array();	
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
 							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
@@ -160,19 +160,19 @@ function get_team_captains ($area, $day) {
 							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theVols;
 }
 
 function get_all_crew($area){
 	
-	connect();
+	$con=connect();
 	$sql = "SELECT * FROM dbVolunteers WHERE  area  = '".$area."' AND (type LIKE '%driver%' OR type LIKE '%helper%' OR type LIKE '%sub%') ORDER BY last_name, first_name";
 	
-	$result=mysql_query($sql);
+	$result=mysqli_query($con,$sql);
 	
 	$theVols = array();	
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
 							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
@@ -182,16 +182,16 @@ function get_all_crew($area){
 							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theVols;
 }
 
 function  getall_drivers_available($area, $day) {
-	connect();
-	$result=mysql_query("SELECT * FROM dbVolunteers WHERE status='active' AND area  = '".$area."' AND availability LIKE '%".$day."%' ORDER BY last_name, first_name");
+	$con=connect();
+	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE status='active' AND area  = '".$area."' AND availability LIKE '%".$day."%' ORDER BY last_name, first_name");
 	
 	$theVols = array();	
-	while($result_row = mysql_fetch_assoc($result)){
+	while($result_row = mysqli_fetch_assoc($result)){
 		$theVol = new Volunteer($result_row['last_name'], $result_row['first_name'], $result_row['address'], $result_row['city'], $result_row['state'],
 							$result_row['zip'], $result_row['phone1'], $result_row['phone2'], $result_row['email'], $result_row['type'], $result_row['status'],
 							$result_row['area'], $result_row['license_no'], $result_row['license_state'], $result_row['license_expdate'],
@@ -201,7 +201,7 @@ function  getall_drivers_available($area, $day) {
 							$result_row['ShirtSize'], $result_row['affiliateId']);
 		$theVols[] = $theVol;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return $theVols;
 }
 
@@ -210,12 +210,12 @@ function insert_dbVolunteers($volunteer){
 	if(! $volunteer instanceof Volunteer){
 		return false;
 	}
-	connect();
+	$con=connect();
 	$query = "SELECT * FROM dbVolunteers WHERE id = '" . $volunteer->get_id() . "'";
-	$result = mysql_query($query);
-	if (mysql_num_rows($result) != 0) {
+	$result = mysqli_query($con,$query);
+	if (mysqli_num_rows($result) != 0) {
 		delete_dbVolunteers ($volunteer->get_id());
-		connect();
+		$con=connect();
 	}
 	
 	$lastTripDate = $volunteer->get_lastTripDate();
@@ -242,10 +242,10 @@ function insert_dbVolunteers($volunteer){
 	
 	$query = "INSERT INTO dbVolunteers VALUES ('".
 				$volunteer->get_id()."','" .
-				mysql_real_escape_string($volunteer->get_last_name())."','".
-				mysql_real_escape_string($volunteer->get_first_name())."','".
-				mysql_real_escape_string($volunteer->get_address())."','".
-				mysql_real_escape_string($volunteer->get_city())."','".
+				mysqli_real_escape_string($con,$volunteer->get_last_name())."','".
+				mysqli_real_escape_string($con,$volunteer->get_first_name())."','".
+				mysqli_real_escape_string($con,$volunteer->get_address())."','".
+				mysqli_real_escape_string($con,$volunteer->get_city())."','".
 				$volunteer->get_state()."','".
 				$volunteer->get_zip()."','".
 				$volunteer->get_phone1()."','".
@@ -263,7 +263,7 @@ function insert_dbVolunteers($volunteer){
 				implode(',',$volunteer->get_history())."','".
 				$volunteer->get_birthday()."','".
 				$volunteer->get_start_date()."','".
-				mysql_real_escape_string($volunteer->get_notes())."','".
+				mysqli_real_escape_string($con,$volunteer->get_notes())."','".
 				$volunteer->get_password()."',".
 				$tripCount .",".
 				$lastTripDate.",'".
@@ -275,98 +275,13 @@ function insert_dbVolunteers($volunteer){
 				
 				//echo $query . "<br />";
 				
-	$result = mysql_query($query);
+	$result = mysqli_query($query);
 	if (!$result) {
-		echo (mysql_error(). " Unable to insert into dbVolunteers: " . $volunteer->get_id(). "\n");
-		mysql_close();
+		echo (mysqli_error($con). " Unable to insert into dbVolunteers: " . $volunteer->get_id(). "\n");
+		mysqli_close($con);
 		return false;
 	}
-	mysql_close();
-	return true;
-	
-}
-
-
-function insert_dbVolunteersTest($volunteer){
-	if(! $volunteer instanceof Volunteer){
-		return false;
-	}
-	/*
-	connect();
-	$query = "SELECT * FROM dbVolunteers WHERE id = '" . $volunteer->get_id() . "'";
-	$result = mysql_query($query);
-	if (mysql_num_rows($result) != 0) {
-		delete_dbVolunteers ($volunteer->get_id());
-		connect();
-	}
-	*/
-	
-	$lastTripDate = $volunteer->get_lastTripDate();
-	
-	if($lastTripDate != ''){
-	$lastTripDate = "'" .  $lastTripDate . "'";
-	}
-	else{
-		$lastTripDate = "NULL";
-	}
-	
-	//echo $lastTripDate . "<br />";
-	
-	$tripCount = "NULL";
-	
-	if($volunteer->get_tripCount() != ""){
-		$tripCount = $volunteer->get_tripCount();
-	}
-	
-	$affiliateId = "NULL";
-	if($volunteer->get_affiliateId() != ""){
-		$affiliateId =$volunteer->get_affiliateId();
-	}
-	
-	$query = "INSERT INTO dbVolunteers VALUES ('".
-				$volunteer->get_id()."','" .
-				mysql_real_escape_string($volunteer->get_last_name())."','".
-				mysql_real_escape_string($volunteer->get_first_name())."','".
-				mysql_real_escape_string($volunteer->get_address())."','".
-				mysql_real_escape_string($volunteer->get_city())."','".
-				$volunteer->get_state()."','".
-				$volunteer->get_zip()."','".
-				$volunteer->get_phone1()."','".
-				$volunteer->get_phone2()."','".
-				mysql_real_escape_string($volunteer->get_email())."','".
-				implode(',',$volunteer->get_type())."','".
-				$volunteer->get_status()."','".
-				$volunteer->get_area()."','".
-				$volunteer->get_license_no()."','".
-				$volunteer->get_license_state()."','".
-				$volunteer->get_license_expdate()."','".
-				implode(',',$volunteer->get_accidents())."','".
-				implode(',',$volunteer->get_availability())."','".
-				implode(',',$volunteer->get_schedule())."','".
-				implode(',',$volunteer->get_history())."','".
-				$volunteer->get_birthday()."','".
-				$volunteer->get_start_date()."','".
-				mysql_real_escape_string($volunteer->get_notes())."','".
-				$volunteer->get_password()."',".
-				$tripCount .",".
-				$lastTripDate.",'".
-				$volunteer->get_volunteerTrainingDate()."','".
-				$volunteer->get_driverTrainingDate()."','".
-				$volunteer->get_shirtSize()."',".
-				$affiliateId .
-	            ");";
-				
-				
-		
-	echo "Query:". $query . "<br />";
-	$result = mysql_query($query);
-	if (!$result) {
-		echo (mysql_error(). " Unable to insert into dbVolunteers: " . $volunteer->get_id(). "\n");
-		mysql_close();
-		return false;
-	}
-	mysql_close();
-
+	mysqli_close($con);
 	return true;
 	
 }
@@ -379,19 +294,20 @@ function update_dbVolunteers($volunteer){
 	if (delete_dbVolunteers($volunteer->get_id()))
 	return insert_dbVolunteers($volunteer);
 	else {
-		echo (mysql_error()."unable to update dbVolunteers table: ".$volunteer->get_id());
+		$con=connect();
+		echo (mysqli_error($con)."unable to update dbVolunteers table: ".$volunteer->get_id());
 		return false;
 	}
 }
 
 function delete_dbVolunteers($id){
-	connect();
-	$result = mysql_query("DELETE FROM dbVolunteers WHERE id =\"".$id."\"");
-	mysql_close();
+	$con=connect();
+	$result = mysqli_query($con,"DELETE FROM dbVolunteers WHERE id =\"".$id."\"");
 	if (!$result) {
-		echo (mysql_error()." unable to delete from dbVolunteers: ".$id);
+		echo (mysqli_error($con)." unable to delete from dbVolunteers: ".$id);
 		return false;
 	}
+	mysqli_close($con);
 	return true;
 }
 

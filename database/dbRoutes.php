@@ -20,15 +20,16 @@ include_once(dirname(__FILE__).'/dbSchedules.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
 
 function create_dbRoutes() {
-	connect();
-	mysql_query("DROP TABLE IF EXISTS dbRoutes");
-	$result = mysql_query("CREATE TABLE dbRoutes(id TEXT NOT NULL, drivers TEXT, teamcaptain_id TEXT, " .
+	$con=connect();
+	mysqli_query($con,"DROP TABLE IF EXISTS dbRoutes");
+	$result = mysqli_query($con,"CREATE TABLE dbRoutes(id TEXT NOT NULL, drivers TEXT, teamcaptain_id TEXT, " .
 				"pickup_stops TEXT, dropoff_stops TEXT, status TEXT, notes TEXT)");
-	mysql_close();
 	if(!$result){
-		echo (mysql_error()."Error creating database table dbRoutes. \n");
+		echo (mysqli_error($con)."Error creating database table dbRoutes. \n");
+		mysqli_close($con);
 		return false;
 	}
+	mysqli_close($con);
 	return true;
 }
 /*
@@ -37,12 +38,12 @@ function create_dbRoutes() {
  */
 function insert_dbRoutes($route){
         if(! $route instanceof Route) die("Error: insert_dbRoutes type mismatch");
-        connect();
+        $con=connect();
         $query = "SELECT * FROM dbRoutes WHERE id = '".$route->get_id()."'";
-        $result = mysql_query($query);
+        $result = mysqli_query($con,$query);
         //if there's no entry for this id, add it
-        if ($result == null || mysql_num_rows($result) == 0) {
-                mysql_query('INSERT INTO dbRoutes VALUES("'.
+        if ($result == null || mysqli_num_rows($result) == 0) {
+                mysqli_query($con,'INSERT INTO dbRoutes VALUES("'.
                 $route->get_id().'","'.
                 implode(',', $route->get_drivers()).'","'.
                 $route->get_teamcaptain_id().'","'.
@@ -51,7 +52,7 @@ function insert_dbRoutes($route){
                 $route->get_status().'","'.
                 $route->get_notes().
                      '");');
-                mysql_close();
+                mysqli_close($con);
                 foreach ($route->get_pickup_stops() as $pickup_id) {
                         $pickup_stop = new Stop ($route->get_id(), substr($pickup_id,12), "pickup", "", "");
                         insert_dbStops($pickup_stop);
@@ -62,7 +63,7 @@ function insert_dbRoutes($route){
                 }
                 return true;
         }
-        mysql_close();
+        mysqli_close($con);
         return false;
 }
 /*
@@ -72,12 +73,12 @@ function insert_dbRoutes($route){
  */
 function insert_completed_dbRoutes($route){
 	if(! $route instanceof Route) die("Error: insert_dbRoutes type mismatch");
-	connect();
+	$con=connect();
 	$query = "SELECT * FROM dbRoutes WHERE id = '".$route->get_id()."'";
-	$result = mysql_query($query);
-	mysql_close();
+	$result = mysqli_query($con,$query);
+	mysqli_close($con);
 	//if there's no entry for this id, add it
-	if ($result == null || mysql_num_rows($result) == 0) {
+	if ($result == null || mysqli_num_rows($result) == 0) {
 		$pickupids = array();
 		foreach ($route->get_pickup_stops() as $stop_data) {
 				$stop_data = substr($stop_data,12);
@@ -103,8 +104,8 @@ function insert_completed_dbRoutes($route){
 				$dropoffids[] = $route->get_id().$stop_id;
 		}
 		$route->set_dropoff_stops($dropoffids);
-		connect();
-		mysql_query('INSERT INTO dbRoutes VALUES("'.
+		$con=connect();
+		mysqli_query($con,'INSERT INTO dbRoutes VALUES("'.
                 $route->get_id().'","'.
                 implode(',', $route->get_drivers()).'","'.
                 $route->get_teamcaptain_id().'","'.
@@ -113,10 +114,10 @@ function insert_completed_dbRoutes($route){
                 $route->get_status().'","'.
                 $route->get_notes().
                      '");');
-		mysql_close();
+		mysqli_close($con);
 		return true;
 	}
-	mysql_close();
+	mysqli_close($con);
 	return false;
 }
 /* reconstruct completed route's stops as if they are coming from the tablet
@@ -150,16 +151,16 @@ function rebuild_original_stops($r, $type) {
  * If not there, return false
  */
 function delete_dbRoutes($r) {
-	connect();
+	$con=connect();
 	$query = 'SELECT * FROM dbRoutes WHERE id = "'. $r->get_id() . '"';
-	$result = mysql_query($query);
-	if ($result==null || mysql_num_rows($result) == 0) {
-		mysql_close();
+	$result = mysqli_query($query);
+	if ($result==null || mysqli_num_rows($result) == 0) {
+		mysqli_close();
 		return false;
 	}
 	$query='DELETE FROM dbRoutes WHERE id = "'.$r->get_id().'"';
-	$result=mysql_query($query);
-	mysql_close();
+	$result=mysqli_query($query);
+	mysqli_close();
 	foreach ($r->get_pickup_stops() as $pickup_id) {
 		$i = strpos($pickup_id,",");
 		if ($i>0) $pickup_id = substr($pickup_id,0,$i);
@@ -177,17 +178,18 @@ function delete_dbRoutes($r) {
  * if not in table, return false
  */
 function get_route($id){
-	connect();
+	$con=connect();
 	$query = 'SELECT * FROM dbRoutes WHERE id = "'.$id.'"';
 	
 	//echo $query . "<br />";
 	
-	$result = mysql_query($query);
-	if ($result==null || mysql_num_rows($result) !== 1) {
-		mysql_close();
+	$result = mysqli_query($con,$query);
+	if ($result==null || mysqli_num_rows($result) !== 1) {
+		mysqli_close($con);
 		return false;
 	}
-	$result_row = mysql_fetch_assoc($result);
+	
+	$result_row = mysqli_fetch_assoc($result);
 	$theRoute = new Route($result_row['id'],
 	$result_row['drivers'],
 	$result_row['teamcaptain_id'],
@@ -195,7 +197,7 @@ function get_route($id){
 	$result_row['dropoff_stops'],
 	$result_row['status'],
 	$result_row['notes']);
-	mysql_close();
+	mysqli_close($con);
 	return $theRoute;
 }
 /*
