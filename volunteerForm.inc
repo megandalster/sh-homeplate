@@ -157,6 +157,7 @@ $( "#lastTripDate" ).datepicker();
 $( "#startDate" ).datepicker();
 $( "#volunteerTrainingDate" ).datepicker();
 $( "#driverTrainingDate" ).datepicker();
+$( "#license_expdate" ).datepicker();
 });
 </script>
 
@@ -247,7 +248,7 @@ $( "#driverTrainingDate" ).datepicker();
 		  echo('<p>License no: ');
 	      echo('<input type="text" name="license_no" value="'.$person->get_license_no().'">');
 	   
-	      echo('<br>License state: <select name="license_state" tabindex=5>');
+	      echo('&nbsp;&nbsp;License state: <select name="license_state" tabindex=5>');
 	      foreach ($states as $st) {
 				echo "<option value='" . $st . "' ";
                 if($person->get_license_state() == $st ) echo("SELECTED");
@@ -257,19 +258,12 @@ $( "#driverTrainingDate" ).datepicker();
 	      echo('</select>');
 	   
 	      echo('&nbsp;&nbsp;License Expiration: ');
-	      		$mm = substr($person->get_license_expdate(),3,2);
-            	$dd = substr($person->get_license_expdate(),6,2);
-            	$yy = substr($person->get_license_expdate(),0,2);
-          select_date($mm,$dd,$yy, "license_expdate_Month", "license_expdate_Day", "license_expdate_Year");
-	      /*
-	      echo('<p>Accidents:<br />');
-	      echo('<textarea name="accidents" rows="2" cols="60">');
-	      echo(implode(',',$person->get_accidents()));
-	      echo('</textarea>');
-	     */
-		 
-		
-		
+          echo '<input type="text" id="license_expdate" name="license_expdate" value="';
+          if ($person->get_license_expdate() != ''){
+          	$time = strtotime($person->get_license_expdate());
+          	echo date("m/d/Y", $time);
+          }
+          echo '">';
 		 
 		  echo('<p>Notes:<br />');
 	      echo('<textarea name="notes" rows="2" cols="60">');

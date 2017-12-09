@@ -24,7 +24,7 @@
 //    include_once('database/dbLog.php');
 	$id = $_GET["id"];
 	if ($id=='new') {
-	 	$person = new Volunteer(null,'new',null,null,null,null,null,null,null,null,"applicant",
+	 	$person = new Volunteer(null,'new',null,null,null,null,null,null,null,null,"active",
 	 	     	null,null,null,null,null,null,null,null,null,null,null,md5("new"), 0, null, null, null, 'M', null);
 	}
 	else {
@@ -130,8 +130,9 @@ function process_form($id, $person)	{
         $area = $_POST['area'];
         $license_no = $_POST['license_no'];
         $license_state = $_POST['license_state'];
-        $license_expdate = $_POST['license_expdate_Year'].'-'.$_POST['license_expdate_Month'].'-'.$_POST['license_expdate_Day'];
-        if (strlen($license_expdate) < 8) $license_expdate = '';
+        $license_expdate = substr($_POST['license_expdate'],8,2)."-".substr($_POST['license_expdate'],0,2)."-".
+								substr($_POST['license_expdate'],3,2);
+		if (strlen($license_expdate) < 8) $license_expdate = '';
         $accidents = trim(str_replace('\\\'','\'',htmlentities($_POST['accidents'])));
         if ($_POST['availability'] != null)
 			$availability=implode(',', $_POST['availability']);
@@ -223,16 +224,19 @@ function process_form($id, $person)	{
 
 		// try to replace an existing person in the database by removing and adding
 		else {
+			
 				$id = $_POST['old_id'];
 				$result = delete_dbVolunteers($id);
-                if (!$result)
-                   echo ('<p class="error">Unable to update ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');
+                if (!$result) { 
+                   echo ('<p class="error">Unable to delete ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');
+                }
 				else {
 					$result = insert_dbVolunteers($newperson);
                 	update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability(),"deleteandinsert");
 					
-                	if (!$result)
+                	if (!$result) {
                    		echo ('<p class="error">Unable to update ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');
+					}
 					else echo("<p>You have successfully updated " .$first_name." ".$last_name. " in the database.</p>");
 //					add_log_entry('<a href=\"viewPerson.php?id='.$id.'\">'.$first_name.' '.$last_name.'</a>\'s database entry has been updated.');
 				}

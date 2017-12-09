@@ -275,9 +275,10 @@ function insert_dbVolunteers($volunteer){
 				
 				//echo $query . "<br />";
 				
-	$result = mysqli_query($query);
+	$result = mysqli_query($con,$query);
 	if (!$result) {
 		echo (mysqli_error($con). " Unable to insert into dbVolunteers: " . $volunteer->get_id(). "\n");
+		echo "<p>new person = "; var_dump($volunteer);
 		mysqli_close($con);
 		return false;
 	}
@@ -296,6 +297,7 @@ function update_dbVolunteers($volunteer){
 	else {
 		$con=connect();
 		echo (mysqli_error($con)."unable to update dbVolunteers table: ".$volunteer->get_id());
+		mysqli_close($con);
 		return false;
 	}
 }
@@ -305,6 +307,7 @@ function delete_dbVolunteers($id){
 	$result = mysqli_query($con,"DELETE FROM dbVolunteers WHERE id =\"".$id."\"");
 	if (!$result) {
 		echo (mysqli_error($con)." unable to delete from dbVolunteers: ".$id);
+		mysqli_close($con);
 		return false;
 	}
 	mysqli_close($con);

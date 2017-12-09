@@ -124,7 +124,7 @@
                         foreach ($_POST['s_day'] as $day) 
                         	$availability[] = $day;
                         
-                        echo "search criteria: ", $area.$searchtypes[0].$status.$name.$availability[0];
+                        //echo "search criteria: ", $area.$searchtypes[0].$status.$name.$availability[0];
                         
                         // now go after the volunteers that fit the search criteria
                         include_once('database/dbVolunteers.php');
