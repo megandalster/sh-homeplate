@@ -4,7 +4,7 @@
  * Tucker.  This program is part of Homeplate, which is free software.  It comes 
  * with absolutely no warranty.  You can redistribute and/or modify it under the 
  * terms of the GNU Public License as published by the Free Software Foundation 
- * (see <http://www.gnu.org/licenses/).
+ * (see <http://www.gnu.org/licenses/). 
 */
 
 /*
@@ -16,7 +16,7 @@ class Route {
 	private $id;			// String: "yy-mm-dd-area" serves as a unique id 
 							// for the route.  e.g. 11-12-29-HHI
  	private $drivers;       // array of driver id's scheduled for this route,
-							// e.g. ["malcom1234567890", Òsandi8437891234Ó]
+							// e.g. ["malcom1234567890", ï¿½sandi8437891234ï¿½]
 							// for a completed route, an array of the driver
 							// names who rode on the truck that day
 	private $teamcaptain_id;

@@ -53,7 +53,7 @@
 	$grocery_weight = isset($_POST["grocery_weight"]) ? $_POST["grocery_weight"] : $stop1->get_item_weight(3);
 	$dairy_weight = isset($_POST["dairy_weight"]) ? $_POST["dairy_weight"] : $stop1->get_item_weight(4);
 	$produce_weight = isset($_POST["produce_weight"]) ? $_POST["produce_weight"] : $stop1->get_item_weight(5);
-	$total_weight = $stop1->get_total_weight();
+	$total_weight = $meat_weight+$frozen_weight+$bakery_weight+$grocery_weight+$dairy_weight+$produce_weight;
 	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : $stop1->get_notes();
 		
 ?>
@@ -93,7 +93,7 @@
 			<textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>
 			
 			<input type = "hidden" name = "submitted" value = "true"/>	
-			<br><br><input type="submit" value="Submit" name="Submit"/>&nbsp;&nbsp;double-click <i>Submit</i> to re-total and save these weights and notes.
+			<br><br><input type="submit" value="Submit" name="Submit"/>&nbsp;&nbsp;Hit <i>Submit</i> to re-total and save these weights and notes.
 		
 			</fieldset>
 			</form><br />
@@ -133,7 +133,7 @@
 				if (!$errors) {
 					$stop1->remove_all_items();
 					$stop1->set_item(0, "Meat:".$meat_weight);
-					$stop1->set_item(1, "Frozen:".$frozen_weight);
+					$stop1->set_item(1, "Deli:".$frozen_weight);
 					$stop1->set_item(2, "Bakery:".$bakery_weight);
 					$stop1->set_item(3, "Grocery:".$grocery_weight);
 					$stop1->set_item(4, "Dairy:".$dairy_weight);

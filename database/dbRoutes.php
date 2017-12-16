@@ -153,13 +153,13 @@ function rebuild_original_stops($r, $type) {
 function delete_dbRoutes($r) {
 	$con=connect();
 	$query = 'SELECT * FROM dbRoutes WHERE id = "'. $r->get_id() . '"';
-	$result = mysqli_query($query);
+	$result = mysqli_query($con,$query);
 	if ($result==null || mysqli_num_rows($result) == 0) {
 		mysqli_close();
 		return false;
 	}
 	$query='DELETE FROM dbRoutes WHERE id = "'.$r->get_id().'"';
-	$result=mysqli_query($query);
+	$result=mysqli_query($con,$query);
 	mysqli_close();
 	foreach ($r->get_pickup_stops() as $pickup_id) {
 		$i = strpos($pickup_id,",");

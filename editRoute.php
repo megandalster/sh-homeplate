@@ -46,19 +46,17 @@ if(! $route)
 if($_POST['_form_submit'] == 1)
 {
 	$message = process_form($_POST, $route);
-//	echo '<br><fieldset><legend>Change Summary</legend>';
 	echo "<p>".$message;
-//	echo '</fieldset><br>';
+	include('routeForm.inc');
 }
-if ($_POST['deleteMe']=="DELETE") {
-	echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Click here to update and return to routes.</a>";
+else if ($_POST['deleteMe']=="DELETE") {
+	echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Return to routes.</a>";
 	echo('</div></div>');
 	include('footer.inc');
 	echo('</body></html>');
 }
 else {
 	include('routeForm.inc');
-	
 }
 
 /**
@@ -90,7 +88,7 @@ function process_form($_POST_PARAM, $route)
 		update_dbRoutes($route);
 		return ("Drivers removed: ". substr($selected, 2));
 	}
-	/*
+
 	// remove a pick up from the route
 	if($_POST['remove_pickup']){
 		$selected = "";
@@ -113,7 +111,7 @@ function process_form($_POST_PARAM, $route)
 		insert_dbRoutes($route);
 		return ("Dropoffs removed: ". substr($selected, 2));
 	}
-	*/
+
 	// add a new driver to the route
 	else if ($_POST['add_driver']) {
 		$route->add_driver($_POST['add_driver']);
@@ -124,16 +122,16 @@ function process_form($_POST_PARAM, $route)
 	
 	// add a new pick up to the route
 	if ($_POST['add_pickup']) {
-		delete_dbRoutes($route);
+	//	delete_dbRoutes($route);
 		$route->add_pick_up($_POST['add_pickup']);
-		insert_dbRoutes($route);
+		echo "update_dbRoutes returns: "; update_dbRoutes($route);
 		return ("New pickup added: ". substr($_POST['add_pickup'],12));
 	}
 	// add a new drop off to the route
 	if ($_POST['add_dropoff']) {
-		delete_dbRoutes($route);
+	//	delete_dbRoutes($route);
 		$route->add_drop_off($_POST['add_dropoff']);
-		insert_dbRoutes($route);
+		update_dbRoutes($route);
 		return ("New dropoff added: ". substr($_POST['add_dropoff'],12));
 	}
 	

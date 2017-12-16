@@ -67,14 +67,13 @@ class Stop {
         	$i = explode(':',$item);
         	$item_weights[] = $i[1];
 		}
-        return $item_weights[$index];
+		return $item_weights[$index]==""?0:$item_weights[$index];
 	}
 	function get_notes(){
 		return $this->notes;
 	}
 	function get_total_weight() {
-	
-		return $this->total_weight;
+	    return $this->total_weight==""?0:$this->total_weight;
 	}
 	function get_date() {
 		return substr($this->id,0,8);

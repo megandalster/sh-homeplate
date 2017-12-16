@@ -16,7 +16,7 @@ session_cache_expire(30)
 <head>
 <title>Reports</title>
 <link rel="stylesheet" href="styles.css" type="text/css" />
- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
@@ -30,6 +30,26 @@ session_cache_expire(30)
 	}
 	
 </script>
+<script type="text/javascript">
+			function showPrintWindow(){
+				
+				var printWin = window.open('', 'winReport', 'width=690px;height:600px;resizable=1');
+				var html = $("#tblReport").parent().html();
+				
+				printWin.document.open();
+				printWin.document.write("<html><head><title>Print Donor/Recipients</title><style>#tblReport td {border:1px solid black;}</style></head><body>");
+				printWin.document.writeln(html);
+				printWin.document.write('<scr');
+				printWin.document.write('ipt>');
+				printWin.document.writeln('setTimeout("window.print()", 200);');
+				printWin.document.write('</scr');
+				printWin.document.write('ipt>');
+				printWin.document.write('</body>');
+				printWin.document.write('</html>');
+				printWin.document.close();
+				
+			}
+		</script>
 
 </head>
 <body>
@@ -167,6 +187,11 @@ Range&nbsp;&nbsp;
 	name="Generate " value="Generate Report"></form>
 
 <?php
+function pretty($date) {
+    if ($date=="") return "";
+    else 
+        return substr($date,3,5)."-20".substr($date,0,2);
+}
 if($_POST['submitted'])
 {
 	$bases = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
@@ -259,14 +284,15 @@ if($_POST['submitted'])
 		foreach ($allClients as $client) {
 			$totalServed += $client->get_number_served();
 			echo '<tr>';
-			echo '<td>'.$client->get_id().'</td><td>'.$client->get_lcfb().'</td><td>'.$client->get_chartrkr().'</td><td>'.$client->get_survey_date().
-			'</td><td>'.$client->get_visit_date().'</td>'.'<td>'.$client->get_foodsafe_date().'</td><td>'.$client->get_number_served().'</td>';
+			echo '<td>'.$client->get_id().'</td><td>'.$client->get_lcfb().'</td><td>'.$client->get_chartrkr().'</td><td align="right">'.
+			pretty($client->get_survey_date()).'</td><td align="right">'.pretty($client->get_visit_date()).'</td>'.'<td align="right">'.
+			pretty($client->get_foodsafe_date()).'</td><td align="right">'.$client->get_number_served().'</td>';
 			echo "</tr>";
 		}
 		echo '<tr>';
 		echo '<td><b>Total</b></td><td></td><td></td><td></td><td></td><td></td><td>'.$totalServed.'</td>';
 		echo "</tr></table>";
-	  echo "</div>";
+
 	}
 	
   	else if ($_POST['report_span']!="" && $_POST['report_type']!="publixwalmart") {
@@ -363,10 +389,6 @@ if($_POST['submitted'])
 	echo "</tr>";
 	echo "</table>";
 
-	echo '</div>
-	<div style="padding:10px;">
-	<input type="button" value="Print List" onclick="showPrintWindow();" />
-	</div>';
   }
   
   else if ($_POST['report_span']!="") 
@@ -441,10 +463,10 @@ if($_POST['submitted'])
 	echo "</tr>";
 	echo "</table>";
   }
-  echo '</div>
-  <div style="padding:10px;">
-  <input type="button" value="Print List" onclick="showPrintWindow();" />
-  </div>';
+  echo '<div style="padding:10px;">
+	<input type="button" value="Print List" onclick="showPrintWindow();" />
+	</div>';
+  
 }
 
 function export_publixwalmart_data($header, $food_types, $row_totals, $food_type_totals ) {
@@ -487,31 +509,8 @@ function export_data($header,$pickups,$dropoffs,$twp,$twd) {
 
 ?> 
 
-
 </div>
-<?php include('footer.inc');?>
 </div>
-
-<script type="text/javascript">
-			function showPrintWindow(){
-				
-				var printWin = window.open('', 'winReport', 'width=690px;height:600px;resizable=1');
-				var html = $("#tblReport").parent().html();
-				
-				printWin.document.open();
-				printWin.document.write("<html><head><title>Print Donor/Recipients</title><style>#tblReport td {border:1px solid black;}</style></head><body>");
-				printWin.document.writeln(html);
-				printWin.document.write('<scr');
-				printWin.document.write('ipt>');
-				printWin.document.writeln('setTimeout("window.print()", 200);');
-				printWin.document.write('</scr');
-				printWin.document.write('ipt>');
-				printWin.document.write('</body>');
-				printWin.document.write('</html>');
-				printWin.document.close();
-				
-			}
-		</script>
-		
+<?php include('footer.inc');?>		
 </body>
 </html>
