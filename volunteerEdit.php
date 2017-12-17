@@ -130,8 +130,7 @@ function process_form($id, $person)	{
         $area = $_POST['area'];
         $license_no = $_POST['license_no'];
         $license_state = $_POST['license_state'];
-        $license_expdate = substr($_POST['license_expdate'],8,2)."-".substr($_POST['license_expdate'],0,2)."-".
-								substr($_POST['license_expdate'],3,2);
+        $license_expdate = $_POST['expdate_Year'].'-'.$_POST['expdate_Month'].'-'.$_POST['expdate_Day'];
 		if (strlen($license_expdate) < 8) $license_expdate = '';
         $accidents = trim(str_replace('\\\'','\'',htmlentities($_POST['accidents'])));
         if ($_POST['availability'] != null)

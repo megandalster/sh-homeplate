@@ -157,7 +157,6 @@ $( "#lastTripDate" ).datepicker();
 $( "#startDate" ).datepicker();
 $( "#volunteerTrainingDate" ).datepicker();
 $( "#driverTrainingDate" ).datepicker();
-$( "#license_expdate" ).datepicker();
 });
 </script>
 
@@ -258,14 +257,12 @@ $( "#license_expdate" ).datepicker();
 	      echo('</select>');
 	   
 	      echo('&nbsp;&nbsp;License Expiration: ');
-          echo '<input type="text" id="license_expdate" name="license_expdate" value="';
-          if ($person->get_license_expdate() != ''){
-          	$time = strtotime($person->get_license_expdate());
-          	echo date("m/d/Y", $time);
-          }
-          echo '">';
-		 
-		  echo('<p>Notes:<br />');
+          $mm = substr($person->get_license_expdate(),3,2);
+          $dd = substr($person->get_license_expdate(),6,2);
+          $yy = substr($person->get_license_expdate(),0,2);
+          select_date($mm,$dd,$yy, "expdate_Month", "expdate_Day", "expdate_Year");
+          
+          echo('<p>Notes:<br />');
 	      echo('<textarea name="notes" rows="2" cols="60">');
 	      echo($person->get_notes());
 	      echo('</textarea>');
@@ -312,7 +309,7 @@ function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
         // handles a year range of 80 years, from today to today-80
 		echo '<select name='.$year_name.'><option value=""></option>';
 		$start_year = date("Y");
-        for ($i = $start_year; $i >= ($start_year-80); $i--){
+        for ($i = $start_year+5; $i >= ($start_year-75); $i--){
          	echo '<option value='.substr($i,2,2); 
          	if($year==substr($i,2,2)) 
          		echo(' SELECTED'); 

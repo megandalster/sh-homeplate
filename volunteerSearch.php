@@ -18,14 +18,12 @@
 			Search for People
 		</title>
 		<link rel="stylesheet" href="styles.css" type="text/css" />
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	</head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript">
 			function showPrintWindow(){
 				
 				var printWin = window.open('', 'winReport', 'width=690px;height:600px;resizable=1');
-				var html = $("#tblReport").parent().html();
-				
+				var html = $("#tblReport").parent().html();	
 				printWin.document.open();
 				printWin.document.writeln("<html><head><title>Print Donor/Recipients</title><style>#tblReport td {border:1px solid black;}");			
 				printWin.document.write("#dvLinkInfo{display:none;}</style></head><body>");
@@ -37,10 +35,10 @@
 				printWin.document.write('ipt>');
 				printWin.document.write('</body>');
 				printWin.document.write('</html>');
-				printWin.document.close();
-				
+				printWin.document.close();	
 			}
 		</script>
+		</head>
 	<body>
 		<div id="container">
 			<?PHP include('header.php');?>
