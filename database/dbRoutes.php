@@ -53,13 +53,17 @@ function insert_dbRoutes($route){
                 $route->get_notes().
                      '");');
                 mysqli_close($con);
-                foreach ($route->get_pickup_stops() as $pickup_id) {
-                        $pickup_stop = new Stop ($route->get_id(), substr($pickup_id,12), "pickup", "", "");
+                foreach ($route->get_pickup_stops() as $pickup_id) { // if stop is in db, leave it alone. Otherwise make a new one
+                	if (!retrieve_dbStops($pickup_id)){
+                        $pickup_stop = new Stop ($route->get_id(), substr($pickup_id,12), "pickup", "0", "");
                         insert_dbStops($pickup_stop);
+                	}
                 }
                 foreach ($route->get_dropoff_stops() as $dropoff_id) {
-                        $dropoff_stop = new Stop ($route->get_id(), substr($dropoff_id,12), "dropoff", "", "");
+                	if (!retrieve_dbStops($dropoff_id)){
+                        $dropoff_stop = new Stop ($route->get_id(), substr($dropoff_id,12), "dropoff", "0", "");
                         insert_dbStops($dropoff_stop);
+                	}
                 }
                 return true;
         }
@@ -174,6 +178,22 @@ function delete_dbRoutes($r) {
 	return true;
 }
 /*
+ * remove a route from dbRoutes table but leave its stops in the database -- preprae for a mild update
+ */
+function mild_delete_dbRoutes($r) {
+	$con=connect();
+	$query = 'SELECT * FROM dbRoutes WHERE id = "'. $r->get_id() . '"';
+	$result = mysqli_query($con,$query);
+	if ($result==null || mysqli_num_rows($result) == 0) {
+		mysqli_close();
+		return false;
+	}
+	$query='DELETE FROM dbRoutes WHERE id = "'.$r->get_id().'"';
+	$result=mysqli_query($con,$query);
+	mysqli_close();
+	return true;
+}
+/*
  * @return a single row from dbRoutes table matching a particular id.
  * if not in table, return false
  */
@@ -211,12 +231,12 @@ function update_completed_dbRoutes($r) {
 	else return false;
 }
 /*
- * @update a row by deleting it and then adding it again
+ * update an existing route by adding one or more new stops
  */
-function update_dbRoutes($r) {
+function mild_update_dbRoutes($r) {
 	if (! $r instanceof Route)
 	die ("Invalid argument for update_dbRoutes");
-	if (delete_dbRoutes($r))
+	if (mild_delete_dbRoutes($r))
 		return insert_dbRoutes($r);
 	else return false;
 }
@@ -254,7 +274,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 
 		foreach ($pickup_clients as $client)
 		{
-			$pickup_stop = new Stop ($routeID, $client->get_id(), "pickup", "", "");
+			$pickup_stop = new Stop ($routeID, $client->get_id(), "pickup", "0", "");
 			$pickup_ids .= ",".$pickup_stop->get_id();
 			insert_dbStops($pickup_stop);
 		}
@@ -266,7 +286,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		
 		foreach ($dropoff_clients as $client) 
 		{
-			$dropoff_stop = new Stop ($routeID, $client->get_id(), "dropoff", "", "");
+			$dropoff_stop = new Stop ($routeID, $client->get_id(), "dropoff", "0", "");
 			$dropoff_ids .= ",".$dropoff_stop->get_id();
 			insert_dbStops($dropoff_stop);
 		}

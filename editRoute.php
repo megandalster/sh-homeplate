@@ -64,78 +64,29 @@ else {
  * adds and removes drivers, pick-ups, and drop-offs and
  * returns a message reporting the result
  */
-function process_form($_POST_PARAM, $route)
+function process_form($_POST_PARAM, &$route)
 {
-	/* respond to the POST
-	if($_POST['change_status'] != $route->get_status() && $_POST['change_status']!="")
-	{
-		$route->change_status($_POST['change_status']);
-		update_dbRoutes($route);
-		return ("Status changed to ". $_POST['change_status'].".");
-	}
-	*/
-	// remove a driver from the route
-	if($_POST['remove_driver']){
-		$selected = "";
-		foreach($_POST['s_driver'] as $driver_id) {
-			$driver = retrieve_dbVolunteers($driver_id);
-			if ($driver)
-	    		$name = $driver->get_first_name() . ' ' . $driver->get_last_name();
-			else $name = $driver_id;
-			$selected .= ", ".$name;
-			$route->remove_driver($driver_id);
-		}
-		update_dbRoutes($route);
-		return ("Drivers removed: ". substr($selected, 2));
-	}
-
-	// remove a pick up from the route
-	if($_POST['remove_pickup']){
-		$selected = "";
-		delete_dbRoutes($route);
-		foreach($_POST['s_pickup'] as $pickup_id) {
-			$selected .= ", ".substr($pickup_id,12);
-			$route->remove_pick_up($pickup_id);
-		}
-		insert_dbRoutes($route);
-		return ("Pickups removed: ". substr($selected, 2));
-	}
-	// remove a drop off from the route
-	if($_POST['remove_dropoff']){
-		$selected = "";
-		delete_dbRoutes($route);
-		foreach($_POST['s_dropoff'] as $dropoff_id) {
-			$selected .= ", ".substr($dropoff_id,12);
-			$route->remove_drop_off($dropoff_id);
-		}
-		insert_dbRoutes($route);
-		return ("Dropoffs removed: ". substr($selected, 2));
-	}
-
 	// add a new driver to the route
-	else if ($_POST['add_driver']) {
+	if ($_POST['add_driver']) {
 		$route->add_driver($_POST['add_driver']);
-		update_dbRoutes($route);
+		mild_update_dbRoutes($route);
 		$driver = retrieve_dbVolunteers($_POST['add_driver']);
 		return ("New crew member added: ". $driver->get_first_name() . " " . $driver->get_last_name());
 	}
-	
 	// add a new pick up to the route
 	if ($_POST['add_pickup']) {
-	//	delete_dbRoutes($route);
+		echo 'doing a mild update with '.substr($_POST['add_pickup'],12);
 		$route->add_pick_up($_POST['add_pickup']);
-		echo "update_dbRoutes returns: "; update_dbRoutes($route);
+		mild_update_dbRoutes($route);
 		return ("New pickup added: ". substr($_POST['add_pickup'],12));
 	}
 	// add a new drop off to the route
 	if ($_POST['add_dropoff']) {
-	//	delete_dbRoutes($route);
 		$route->add_drop_off($_POST['add_dropoff']);
-		update_dbRoutes($route);
+		mild_update_dbRoutes($route);
 		return ("New dropoff added: ". substr($_POST['add_dropoff'],12));
 	}
-	
-	else if($_POST['deleteMe']=="DELETE"){
+	if($_POST['deleteMe']=="DELETE"){
 		delete_dbRoutes($route);
 		return ("Route deleted: ". $route->get_area() . " " . $route->get_day());
 	}

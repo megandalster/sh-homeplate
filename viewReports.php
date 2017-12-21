@@ -30,26 +30,6 @@ session_cache_expire(30)
 	}
 	
 </script>
-<script type="text/javascript">
-			function showPrintWindow(){
-				
-				var printWin = window.open('', 'winReport', 'width=690px;height:600px;resizable=1');
-				var html = $("#tblReport").parent().html();
-				
-				printWin.document.open();
-				printWin.document.write("<html><head><title>Print Donor/Recipients</title><style>#tblReport td {border:1px solid black;}</style></head><body>");
-				printWin.document.writeln(html);
-				printWin.document.write('<scr');
-				printWin.document.write('ipt>');
-				printWin.document.writeln('setTimeout("window.print()", 200);');
-				printWin.document.write('</scr');
-				printWin.document.write('ipt>');
-				printWin.document.write('</body>');
-				printWin.document.write('</html>');
-				printWin.document.close();
-				
-			}
-		</script>
 
 </head>
 <body>
@@ -507,8 +487,26 @@ function export_data($header,$pickups,$dropoffs,$twp,$twd) {
 	fclose($handle);	
 }
 
-?> 
-
+?>
+<script type="text/javascript">
+			function showPrintWindow(){
+				
+				var printWin = window.open('', 'winReport', 'width=690px;height:600px;resizable=1');
+				var html = $("#tblReport").parent().html();
+				
+				printWin.document.open();
+				printWin.document.write("<html><head><title>Print Donor/Recipients</title><style>#tblReport td {border:1px solid black;}</style></head><body>");
+				printWin.document.write(html);
+				printWin.document.write('<scr');
+				printWin.document.write('ipt>');
+				printWin.document.writeln('setTimeout("window.print()", 200);');
+				printWin.document.write('</scr');
+				printWin.document.write('ipt>');
+				printWin.document.write('</body>');
+				printWin.document.write('</html>');
+				printWin.document.close();
+			}
+</script>
 </div>
 </div>
 <?php include('footer.inc');?>		

@@ -101,7 +101,7 @@ function update_dbAffiliates($affiliate){
 
 function delete_dbAffiliates($id){
 	$con=connect();
-	$result = mysqli_query("DELETE FROM dbAffiliates WHERE affiliateId =\"".$id."\"");
+	$result = mysqli_query($con,"DELETE FROM dbAffiliates WHERE affiliateId =\"".$id."\"");
 	mysqli_close($con);
 	if (!$result) {
 		echo (mysqli_error($con)." unable to delete from dbAffiliates: ".$id);

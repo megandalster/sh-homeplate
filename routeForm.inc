@@ -64,23 +64,9 @@ foreach ($route->get_drivers() as $driver_id) {
 	if ($driver)
 	    $name = $driver->get_first_name() . ' ' . $driver->get_last_name();
 	else $name = $driver_id;
-	if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */)
-	echo "<input type='checkbox' name='s_driver[]' value='".$driver_id."'>".$name."<br>";
-	else echo $name."<br>";
+	echo $name."<br>";
 }
 
-/*
-$crewMembers = get_all_crew(substr($route->get_id(),9));
-foreach ($crewMembers as $driver) {
-  
-	if ($driver)
-	    $name = $driver->get_first_name() . ' ' . $driver->get_last_name();
-	else $name = $driver_id;
-	if ($_SESSION['access_level']>=2 && substr($route->get_id(),0,8)>$today)
-	echo "<input type='checkbox' name='s_driver[]' value='".$driver_id."'>".$name."<br>";
-	else echo $name."<br>";
-  }
-  */
 echo "</td><td valign='top'>";
 
 $totalPickUpWeight = 0;
@@ -103,10 +89,7 @@ foreach ($route->get_pickup_stops() as $pickup_id) {
 			$pickup_link = "<a href='viewStop2.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
 		else 
 			$pickup_link = "<a href='viewStop1.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
-	}
-	if ($_SESSION['access_level']>=2 /*&& substr($route->get_id(),0,8)>$today*/)
-	    echo "<input type='checkbox' name='s_pickup[]' value='".$pickup_id."' />".$pickup_link;
-	else 
+	} 
 	echo $pickup_link;
 	if ($theStop->get_total_weight()>0){
 		echo " -- ".$theStop->get_total_weight();
@@ -123,10 +106,7 @@ $totalDropoffWeight = 0;
 foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	$client_id = substr($dropoff_id,12);
 	//$client = retrieve_dbClients($client_id);
-	$dropoff_link = "<a href='viewStop1.php?client_type=recipient&stop_id=".$dropoff_id."'>".$client_id."</a>";
-	if ($_SESSION['access_level']>=2 /*&& substr($route->get_id(),0,8)>$today*/)
-	echo "<input type='checkbox' name='s_dropoff[]' value='".$dropoff_id."' />".$dropoff_link;
-	else 
+	$dropoff_link = "<a href='viewStop1.php?client_type=recipient&stop_id=".$dropoff_id."'>".$client_id."</a>"; 
 	echo $dropoff_link;
 	$theStop = retrieve_dbStops($routeID.$client_id);
 	if ($theStop->get_total_weight()>0) echo " -- ".$theStop->get_total_weight();
@@ -138,17 +118,7 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	echo "<p style='text-align:right;'><strong>Total Weight: " . $totalDropoffWeight . "</strong><p>";
 if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */) {
 	echo "</td><tr><td>";
-	if (sizeof($route->get_drivers())>0)
-	echo "<input type='submit' name='remove_driver' value='Remove checked' />";
 	
-	echo "</td><td>";
-	if ($route->get_num_pickups()>0)
-	echo "<input type='submit' name='remove_pickup' value='Remove checked' />";
-	echo "</td><td>";
-	if ($route->get_num_dropoffs()>0)
-	echo "<input type='submit' name='remove_dropoff' value='Remove checked' />";
-	
-	echo "</td><tr><td>";
 	echo "Add Volunteer:<br>";
 	//$drivers = getall_drivers_available(substr($route->get_id(),9,3),substr($route->get_day(),0,3));
 	$drivers = get_all_crew(substr($route->get_id(),9));
@@ -158,11 +128,11 @@ if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */) {
 	echo('<select name="add_driver">');
 	echo ('<option value=""></option>');
 	foreach ($drivers as $driver)
-	if (!in_array($driver->get_id(),$route->get_drivers())) {
+	  if (!in_array($driver->get_id(),$route->get_drivers())) {
 		$name = $driver->get_last_name().', '.$driver->get_first_name();
 		echo ('<option value="'.$driver->get_id().'"');
 		echo('>'.$name.'</option>');
-	}
+	  }
 	echo('</select>');
 
 	echo "</td><td>";
@@ -197,10 +167,9 @@ if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */) {
 echo '</td></tr>';
 echo('<tr><td colspan="2"> Hit <input type="hidden" name="submitted" value="1">');
 echo('<input type="submit" value="Submit" name="Submit"> to add Volunteer, Pick-up, or Drop-off (one at a time).</td></tr></table>');
-
 }
 else echo "</td></tr></table>";
-  if ($route->get_status()!="completed")
+if ($route->get_status()!="completed")
 	echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
 				'<input type="submit" value="Delete" name="Delete Entry"> to delete this route from the database. ');
 

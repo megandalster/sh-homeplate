@@ -4,7 +4,7 @@
  * Tucker.  This program is part of Homeplate, which is free software.  It comes 
  * with absolutely no warranty.  You can redistribute and/or modify it under the 
  * terms of the GNU Public License as published by the Free Software Foundation 
- * (see <http://www.gnu.org/licenses/).
+ * (see <http://www.gnu.org/licenses/). new Stop
 */
 
 /*
@@ -39,7 +39,7 @@ class Stop {
 		} 
         else {
         	$this->items = array();
-        	$this->total_weight = $items;
+        	$this->total_weight = $items==""?0:$items;
         }
         $this->notes = $notes;
 	}
