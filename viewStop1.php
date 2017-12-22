@@ -80,7 +80,7 @@
 			
 			<!-- A hidden variable that, when submitted, is used to display submitted values and update the databases -->	
 			<br><input type = "hidden" name = "submitted" value = "true"/>		
-			<br><input type="submit" value="Submit"/>&nbsp;&nbsp;<i>Hit the Submit button to save this weight and notes.</i>
+			<br><input type="submit" value="Save"/>&nbsp;&nbsp;<i>Hit Save to save this weight and notes.</i>
 			</fieldset>
 			</form><br />
 			

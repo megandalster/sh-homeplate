@@ -93,7 +93,7 @@
 			<textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>
 			
 			<input type = "hidden" name = "submitted" value = "true"/>	
-			<br><br><input type="submit" value="Submit" name="Submit"/>&nbsp;&nbsp;Hit <i>Submit</i> to re-total and save these weights and notes.
+			<br><br><input type="submit" value="Save" name="Submit"/>&nbsp;&nbsp;Hit <i>Save</i> to re-total and save these weights and notes.
 		
 			</fieldset>
 			</form><br />
