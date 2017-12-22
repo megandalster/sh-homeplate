@@ -139,13 +139,13 @@ $(function() {
 <legend>Food Contact</legend>
 	<table>		
 		<tr><td>Name:</td><td> <input type="text" size="30" name="ContactName" tabindex=2 value="<?PHP echo($client->get_ContactName())?>"></td>
-		    <td>Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="<?PHP echo $client->get_phone1()?>"></td>
-		    <td>Email:</td><td> <input type="text" size="30" name="email" name="email" tabindex=3 value="<?= $client->get_email() ?>"></td>
+		    <td>Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=3 value="<?PHP echo $client->get_phone1()?>"></td>
+		    <td>Email:</td><td> <input type="text" size="30" name="email" tabindex=4 value="<?PHP echo $client->get_email() ?>"></td>
 		</tr>
-		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="30" name="address" tabindex=3 value="<?PHP echo($client->get_address())?>"></td>
-		<td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=4 value="<?PHP echo($client->get_city())?>"></td>
+		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="30" name="address" tabindex=5 value="<?PHP echo($client->get_address())?>"></td>
+		<td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=6 value="<?PHP echo($client->get_city())?>"></td>
 		<td>State, Zip:</td>
-		<td><select name="state" tabindex=5>
+		<td><select name="state" tabindex=7>
 		<?PHP
 
 			$states = array("AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA",
@@ -161,7 +161,7 @@ $(function() {
 			}
 		?>
 		</select>,
-		<input type="text" name="zip" size="5" tabindex=6 value="<?PHP echo($client->get_zip())?>">
+		<input type="text" name="zip" size="5" tabindex=8 value="<?PHP echo($client->get_zip())?>">
 
 	</td></tr>
 	</table>
@@ -170,14 +170,14 @@ $(function() {
 <fieldset>
 <legend>Administrative Contact</legend>
 	<table>		
-		<tr><td>Name:</td><td> <input type="text" size="30" name="ContactName2" tabindex=2 value="<?PHP echo($client->get_ContactName2())?>"></td>
-		    <td>Phone:</td><td> <input type="text" name="phone2" MAXLENGTH=12 tabindex=7 value="<?PHP echo $client->get_phone2()?>"></td>
-		    <td>Email:</td><td> <input type="text" size="30" name="email" name="email2" tabindex=3 value="<?= $client->get_email2() ?>"></td>
+		<tr><td>Name:</td><td> <input type="text" size="30" name="ContactName2" tabindex=9 value="<?PHP echo($client->get_ContactName2())?>"></td>
+		    <td>Phone:</td><td> <input type="text" name="phone2" MAXLENGTH=12 tabindex=10 value="<?PHP echo $client->get_phone2()?>"></td>
+		    <td>Email:</td><td> <input type="text" size="30" name="email2" tabindex=11 value="<?PHP echo $client->get_email2() ?>"></td>
 		</tr>
-		<tr><td>Address:</td><td> <input type="text" size="30" name="address2" tabindex=3 value="<?PHP echo($client->get_address2())?>"></td>
-		<td>City:</td><td> <input type="text" name="city2" tabindex=4 value="<?PHP echo($client->get_city2())?>"></td>
+		<tr><td>Address:</td><td> <input type="text" size="30" name="address2" tabindex=12 value="<?PHP echo($client->get_address2())?>"></td>
+		<td>City:</td><td> <input type="text" name="city2" tabindex=13 value="<?PHP echo($client->get_city2())?>"></td>
 		<td>State, Zip:</td>
-		<td><select name="state2" tabindex=5>
+		<td><select name="state2" tabindex=14>
 		<?PHP
 
 			$states = array("AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA",
@@ -193,7 +193,7 @@ $(function() {
 			}
 		?>
 		</select>,
-		<input type="text" name="zip2" size="5" tabindex=6 value="<?PHP echo($client->get_zip2())?>"></td></tr>
+		<input type="text" name="zip2" size="5" tabindex=15 value="<?PHP echo($client->get_zip2())?>"></td></tr>
 	</table>
 </fieldset>
 

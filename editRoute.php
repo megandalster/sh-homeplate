@@ -66,21 +66,20 @@ else {
  */
 function process_form($_POST_PARAM, &$route)
 {
-	// add a new driver to the route
+	// add a new driver to the route, but don't disturb weights on existing stops
 	if ($_POST['add_driver']) {
 		$route->add_driver($_POST['add_driver']);
 		mild_update_dbRoutes($route);
 		$driver = retrieve_dbVolunteers($_POST['add_driver']);
 		return ("New crew member added: ". $driver->get_first_name() . " " . $driver->get_last_name());
 	}
-	// add a new pick up to the route
+	// add a new pick up to the route, but don't disturb weights on existing stops
 	if ($_POST['add_pickup']) {
-		echo 'doing a mild update with '.substr($_POST['add_pickup'],12);
 		$route->add_pick_up($_POST['add_pickup']);
 		mild_update_dbRoutes($route);
 		return ("New pickup added: ". substr($_POST['add_pickup'],12));
 	}
-	// add a new drop off to the route
+	// add a new drop off to the route, but don't disturb weights on existing stops
 	if ($_POST['add_dropoff']) {
 		$route->add_drop_off($_POST['add_dropoff']);
 		mild_update_dbRoutes($route);
