@@ -33,6 +33,7 @@ $(function() {
 	$( "#survey_date" ).datepicker();
 	$( "#visit_date" ).datepicker();
 	$( "#foodsafe_date" ).datepicker();
+	$( "#pestctrl_date" ).datepicker();
 });
 </script>
 	<input type="hidden" name="old_id" value=<?PHP echo("\"".$id."\"");?>>
@@ -71,8 +72,9 @@ $(function() {
 		echo ('<option value="no"');if ($client->get_chartrkr()=='no') echo (' SELECTED'); echo('>No</option>');
 		echo('</select>');
 	}
-	echo "<table><tr><td></td>";
+	echo "<table>";
 	if ($id=="new" || $client->get_type() == "recipient") {
+		echo "<tr>";
 		echo '<td>Survey: <input type="text" id="survey_date" name="survey_date" size="10" value="';
 		if ($client->get_survey_date() != ''){
 			$time = strtotime($client->get_survey_date());
@@ -80,18 +82,24 @@ $(function() {
 		}
 		echo '"></td>';
 		echo '<td>Visit: <input type="text" id="visit_date" name="visit_date" size="10" value="';
-		if ($client->get_survey_date() != ''){
+		if ($client->get_visit_date() != ''){
 			$time = strtotime($client->get_visit_date());
 			echo date("m/d/Y", $time);
 		}
 		echo '"></td>';
 		echo '<td>Food Safe: <input type="text" id="foodsafe_date" name="foodsafe_date" size="10" value="';
-		if ($client->get_survey_date() != ''){
+		if ($client->get_foodsafe_date() != ''){
 			$time = strtotime($client->get_foodsafe_date());
 			echo date("m/d/Y", $time);
 		}
 		echo '"></td>';
-		echo '<td>Number Served: <input type="text" id="number" name="number_served" size="5" value="'.
+		echo '<td>Pest Ctrl: <input type="text" id="pestctrl_date" name="pestctrl_date" size="10" value="';
+		if ($client->get_pestctrl_date() != ''){
+			$time = strtotime($client->get_pestctrl_date());
+			echo date("m/d/Y", $time);
+		}
+		echo '"></td>';
+				echo '<td>Number Served: <input type="text" id="number" name="number_served" size="5" value="'.
 					$client->get_number_served(). '"></td>';
 		echo "</tr>";
 	}

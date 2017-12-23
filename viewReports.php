@@ -256,7 +256,7 @@ if($_POST['submitted'])
 	if ($_POST['report_type']=="clientdetail"){
 		echo '<table id="clientDetail">';
 		echo "<tr><td><b>Recipient</b></td><td><b>LCFB</b></td><td><b>Charity Trkr</b></td><td><b>Survey Date</b></td><td><b>Visit Date</b></td>".
-				"<td><b>Food Safe Date</b></td><td><b># Served</b></td>";
+				"<td><b>Food Safe Date</b></td><td><b>Pest Ctrl Date</b></td><td><b># Served</b></td>";
 		echo "</tr>";
 		 
 		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "", "", $_POST['report_county']);
@@ -266,7 +266,7 @@ if($_POST['submitted'])
 			echo '<tr>';
 			echo '<td>'.$client->get_id().'</td><td>'.$client->get_lcfb().'</td><td>'.$client->get_chartrkr().'</td><td align="right">'.
 			pretty($client->get_survey_date()).'</td><td align="right">'.pretty($client->get_visit_date()).'</td>'.'<td align="right">'.
-			pretty($client->get_foodsafe_date()).'</td><td align="right">'.$client->get_number_served().'</td>';
+			pretty($client->get_foodsafe_date()).'</td><td align="right">'.pretty($client->get_pestctrl_date()).'</td><td align="right">'.$client->get_number_served().'</td>';
 			echo "</tr>";
 		}
 		echo '<tr>';

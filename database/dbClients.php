@@ -29,7 +29,8 @@ function retrieve_dbClients($id){
                             $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
                             $result_row['phone2'], $result_row['days'], $result_row['lcfb'], $result_row['chartrkr'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
 							$result_row['email2'], $result_row['ContactName'], $result_row['ContactName2'], $result_row['deliveryAreaId'],
-							$result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['number_served']
+							$result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], 
+							$result_row['pestctrl_date'], $result_row['number_served']
 							);
 	mysqli_close($con);
 	return $theClient;
@@ -46,7 +47,8 @@ function getall_dbClients(){
                             $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
                             $result_row['phone2'], $result_row['days'], $result_row['lcfb'], $result_row['chartrkr'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
 							$result_row['email2'], $result_row['ContactName'], $result_row['ContactName2'], $result_row['deliveryAreaId'],
-							$result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['number_served']
+							$result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'],
+							$result_row['pestctrl_date'], $result_row['number_served']
 							);
 		$theClients[] = $theClient;
 	}
@@ -78,8 +80,9 @@ function getall_clients($area, $type, $lcfb, $name, $availability, $deliveryArea
                             $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
                             $result_row['phone2'], $result_row['days'], $result_row['lcfb'], $result_row['chartrkr'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
 							$result_row['email2'], $result_row['ContactName'], $result_row['ContactName2'], $result_row['deliveryAreaId'],
-							$result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['number_served']
-							);
+        					$result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'],
+        					$result_row['pestctrl_date'], $result_row['number_served']
+        					);
 		$theClients[] = $theClient;
     }
 	mysqli_close($con);
@@ -127,6 +130,7 @@ function insert_dbClients($client){
 				$client->get_survey_date() ."','".
 				$client->get_visit_date() ."','".
 				$client->get_foodsafe_date() ."','".
+				$client->get_pestctrl_date() ."','".
 				$client->get_number_served() .
 				"');";
 	$result = mysqli_query($con,$query);
@@ -178,7 +182,8 @@ function getall_dbClientsForArea($deliveryAreaId){
                             $result_row['city2'], $result_row['state2'], $result_row['zip2'], $result_row['county2'], 
                             $result_row['phone2'], $result_row['days'], $result_row['lcfb'], $result_row['chartrkr'], $result_row['weight_type'], $result_row['notes'],  $result_row['email'],
 							$result_row['email2'], $result_row['ContactName'], $result_row['ContactName2'], $result_row['deliveryAreaId'],
-							$result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['number_served']
+							$result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], 
+							$result_row['pestctrl_date'],$result_row['number_served']
 							);
 		$theClients[] = $theClient;
 	}

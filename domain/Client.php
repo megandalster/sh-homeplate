@@ -46,13 +46,14 @@ class Client {
 	private $survey_date;	//		last date surveyed
 	private $visit_date;	//		last date visited
 	private $foodsafe_date;	//		last date food safety inspection
+	private $pestctrl_date; //		last date pest control inspection
 	private $number_served;	//		number of people served 
 	// 
 	
 	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
 	                        $address2, $city2, $state2, $zip2, $county2, $phone2, 
 							$days, $lcfb, $chartrkr, $weight_type, $notes, $email, $email2, $ContactName, $ContactName2, $deliveryAreaId, 
-							$survey_date, $visit_date, $foodsafe_date, $number_served){                
+							$survey_date, $visit_date, $foodsafe_date, $pestctrl_date, $number_served){                
         $this->id       	= $id;      
         $this->chain_name 	= $chain_name;      
         $this->area 		= $area;      
@@ -77,6 +78,7 @@ class Client {
 		$this->survey_date	= $survey_date;
 		$this->visit_date	= $visit_date;
 		$this->foodsafe_date= $foodsafe_date;
+		$this->pestctrl_date= $pestctrl_date;
 		$this->number_served= $number_served;
 		
 		if( $this->type 	== "donor"){
@@ -193,6 +195,9 @@ class Client {
 	}
 	function get_foodsafe_date(){
 		return $this->foodsafe_date;
+	}
+	function get_pestctrl_date(){
+		return $this->pestctrl_date;
 	}
 	function get_number_served(){
 		return $this->number_served;
