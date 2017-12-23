@@ -503,7 +503,8 @@ function export_data($header,$pickups,$dropoffs,$twp,$twd) {
 				printWin.document.write('</scr');
 				printWin.document.write('ipt>');
 				printWin.document.write('</body>');
-				printWin.document.write('</html>');
+				printWin.document.write('</ht>');   
+				printWin.document.write('<ml>');   
 				printWin.document.close();
 			}
 </script>
