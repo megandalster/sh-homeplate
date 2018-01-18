@@ -18,8 +18,8 @@ session_cache_expire(30)
 <link rel="stylesheet" href="styles.css" type="text/css" />
 <link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery-ui.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 
 <script type="text/javascript">
 	function setRadio(textInput, targetValue){
@@ -47,7 +47,7 @@ echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
 <form method="post" action="">
 
 
-<div style="float:left;">
+<div style="float:left;padding-left:8px;">
 Base : <select name="report_area">
 	<option value="">--all--</option>
 	<option value="HHI" <?php if($_POST['report_area'] == "HHI"){echo "selected='true'";} ?> >Hilton Head</option>
@@ -102,7 +102,7 @@ echo('<select name="chain_name">');
 	?>
 </div>
 <div style="float:left;padding-left:8px;">
-Client :
+Donor/Recipient :
 <?php
 	  if( !array_key_exists('client_name', $_POST) ) $client = ""; else $client = $_POST['client_name'];
 						echo '<select name="client_name">';
@@ -148,7 +148,8 @@ $( "#range_End_DatePicker" ).datepicker();
 <div style="clear:both;"></div>
 
 <fieldset><legend>Select report dates</legend>
-<p><input type="radio" name="report_span" value="monthly" <?php if($_POST['report_span'] == "monthly"){echo "checked='true'";} ?> /> Last Month <br>
+<p><input type="radio" name="report_span" value="yearly" <?php if($_POST['report_span'] == "yearly"){echo "checked='true'";} ?> /> Last Year <br>
+<input type="radio" name="report_span" value="monthly" <?php if($_POST['report_span'] == "monthly"){echo "checked='true'";} ?> /> Last Month <br>
 <input type="radio" name="report_span" value="weekly" <?php if($_POST['report_span'] == "weekly"){echo "checked='true'";} ?> /> Last Week <br>
 <input type="radio" name="report_span" value="daily" <?php if($_POST['report_span'] == "daily"){echo "checked='true'";} ?> />
 Single Day&nbsp;&nbsp; 
@@ -178,7 +179,7 @@ if($_POST['submitted'])
 	echo "<div id='dvReport'>";
 	
 	if ($_POST['report_type'] == "clientdetail") {
-		$header = array("Second Helpings Client Detail Report on ".date('F j, Y', time()). " for ");
+		$header = array("Second Helpings Client Report on ".date('F j, Y', time()). " for ");
 		if ($_POST['report_area']!="") $header[] = " base: ".$bases[$_POST['report_area']];
 		else $header[] = " all bases ";
 		if ($_POST['report_county']!="") $header[] = ", county: ".$_POST['report_county'];
@@ -207,6 +208,16 @@ if($_POST['submitted'])
 			else $header[] = ", donors and recipients";
 	}
 	$header[] =  ".<br>";
+	if($_POST['report_span'] == "yearly")
+	{
+	    $time = strtotime('last year January 1st');
+	    $endTime = strtotime('last year December 31st');
+	    
+	    $start_date = date('y-m-d', $time);
+	    $end_date = date('y-m-d', $endTime);
+	    
+	    $header[] =  "Year beginning ".date('F j, Y', $time) . " and ending " . date('F j, Y', $endTime);
+	}
 	if($_POST['report_span'] == "monthly")
 	{
 		$time = strtotime('first day of last month');
@@ -254,9 +265,9 @@ if($_POST['submitted'])
 	echo "</b><br><br>";
 	
 	if ($_POST['report_type']=="clientdetail"){
-		echo '<table id="clientDetail">';
-		echo "<tr><td><b>Recipient</b></td><td><b>LCFB</b></td><td><b>Charity Trkr</b></td><td><b>Survey Date</b></td><td><b>Visit Date</b></td>".
-				"<td><b>Food Safe Date</b></td><td><b>Pest Ctrl Date</b></td><td><b># Served</b></td>";
+		echo '<table id="tblReport">';
+		echo "<tr><td><b>Recipient</b></td><td><b>LCFB</b></td><td><b>Charity Trkr</b></td><td><b>Apply Dt</b></td><td><b>Visit Dt</b></td>".
+				"<td><b>Food Safe Dt</b></td><td><b>Pest Ctrl Dt</b></td><td><b>Served/Wk</b></td>";
 		echo "</tr>";
 		 
 		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "", "", $_POST['report_county']);
@@ -270,7 +281,7 @@ if($_POST['submitted'])
 			echo "</tr>";
 		}
 		echo '<tr>';
-		echo '<td><b>Total</b></td><td></td><td></td><td></td><td></td><td></td><td>'.$totalServed.'</td>';
+		echo '<td><b>Total</b></td><td></td><td></td><td></td><td></td><td></td><td></td><td align="right">'.$totalServed.'</td>';
 		echo "</tr></table>";
 
 	}

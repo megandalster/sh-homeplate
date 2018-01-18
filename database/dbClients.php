@@ -139,7 +139,7 @@ function insert_dbClients($client){
 		mysqli_close($con);
 		return false;
 	}
-	mysqli_close();
+	mysqli_close($con);
 	return true;
 	
 }
