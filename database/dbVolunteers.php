@@ -9,7 +9,7 @@
 
 /*
 * dbVolunteers class for Homeplate
-* @author Alllen Tucker
+* @author Allen Tucker
 * @version February 27, 2012
 */
 
@@ -218,19 +218,7 @@ function insert_dbVolunteers($volunteer){
 		$con=connect();
 	}
 	
-	$lastTripDate = $volunteer->get_lastTripDate();
-	
-	if($lastTripDate != ''){
-		$phpdate = strtotime( $lastTripDate );
-		$mysqldate = date( 'Y-m-d H:i:s', $phpdate );
-	$lastTripDate = "'" . $mysqldate   . "'";
-	}
-	else{
-		$lastTripDate = "NULL";
-	}
-	
-	$tripCount = "NULL";
-	
+	$tripCount = "NULL";	
 	if($volunteer->get_tripCount() != ""){
 		$tripCount = $volunteer->get_tripCount();
 	}
@@ -265,8 +253,8 @@ function insert_dbVolunteers($volunteer){
 				$volunteer->get_start_date()."','".
 				mysqli_real_escape_string($con,$volunteer->get_notes())."','".
 				$volunteer->get_password()."',".
-				$tripCount .",".
-				$lastTripDate.",'".
+				$tripCount .",'".
+				$volunteer->get_lastTripDate()."','".
 				$volunteer->get_volunteerTrainingDate()."','".
 				$volunteer->get_driverTrainingDate()."','".
 				$volunteer->get_shirtSize()."',".

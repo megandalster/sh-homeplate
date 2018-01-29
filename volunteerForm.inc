@@ -131,7 +131,7 @@ else // $_SESSION['access_level']>=2
 				}
 				echo '">';
 		?>
-		</td></tr>
+		</tr>
 		
 		<tr>
 		<?PHP 	echo '<td>Volunteer Training: </td><td><input type="text" tabindex=13 id="volunteerTrainingDate" name="volunteerTrainingDate" value="';

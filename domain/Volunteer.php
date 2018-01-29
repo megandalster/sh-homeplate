@@ -64,11 +64,7 @@ class Volunteer {
         $this->email = $email;
 		$this->tripCount = $tripCount;
 		
-		if($lastTripDate != '' && strtotime($lastTripDate)!='0000-00-00'){
-			$this->lastTripDate = date('m-d-Y', strtotime($lastTripDate));
-		}else{
-			$this->lastTripDate = '';			
-		}
+		$this->lastTripDate = $lastTripDate;
 		$this->volunteerTrainingDate = $volunteerTrainingDate;
 		$this->driverTrainingDate = $driverTrainingDate;
 		$this->shirtSize = $shirtSize;

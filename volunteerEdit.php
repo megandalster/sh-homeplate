@@ -143,7 +143,9 @@ function process_form($id, $person)	{
 		$pass = $_POST['password'];
 		$shirtSize = $_POST['shirtSize'];
 		$tripCount = $_POST['tripCount'];
-		$lastTripDate = $_POST['lastTripDate'];
+		$lastTripDate = substr($_POST['lastTripDate'],8,2)."-".substr($_POST['lastTripDate'],0,2)."-".
+		  		substr($_POST['lastTripDate'],3,2);
+		if (strlen($lastTripDate) < 8) $lastTripDate = '';
 		$volunteerTrainingDate = substr($_POST['volunteerTrainingDate'],8,2)."-".substr($_POST['volunteerTrainingDate'],0,2)."-".
 								substr($_POST['volunteerTrainingDate'],3,2);
 		if (strlen($volunteerTrainingDate) < 8) $volunteerTrainingDate = '';
