@@ -13,6 +13,10 @@
 			Weekly Route View
 		</title>
 		<link rel="stylesheet" href="styles.css" type="text/css" />
+		<link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+		
 	</head>
 	<body>
 		<div id="container">
@@ -29,8 +33,10 @@
 				<?php
 				$areas = array("HHI"=>"Hilton Head", "SUN"=> "Bluffton", "BFT" => "Beaufort");
 				$thisArea = $_GET['area'];
-				$thisDay = $_GET['date'];
-				$today = date('y-m-d');
+				
+			    $today = date('y-m-d');
+			    $thisDay = $_GET['date'];
+			
 				$todayUTC = time();
 				$thisUTC = mktime(0,0,0,substr($thisDay,3,2),substr($thisDay,6,2),substr($thisDay,0,2));
 				$nextweekUTC = $thisUTC + 604800;
@@ -52,13 +58,29 @@ td
 padding:10px 10px 10px 10px;
 }
 </style>
+<script>
+$(function() {
+$( "#weekDatePicker" ).datepicker();
+});
+</script>
 <tr>
 <?php
-				echo "<td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$prevweekUTC)."><< Previous</a></td>";
-				$mondaythisweek = strtotime('last monday', strtotime('tomorrow',$thisUTC));
-				echo "<td colspan='2'><strong>Week of ".date('F j, Y', $mondaythisweek)."</strong></td>";
-				echo "<td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">Next >></a></td>";
-				?>
+	echo "<td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$prevweekUTC)."><< Previous</a></td>";
+	$mondaythisweek = strtotime('last monday', strtotime('tomorrow',$thisUTC));
+	echo "<td colspan='2'><strong>Week of ".date('F j, Y', $mondaythisweek)."</strong></td>";
+	echo "<td><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">Next >></a></td>"; 
+?>
+<form method="post" action="">
+	<td colspan="3"><strong>(Another week: </strong>
+	<input type="text" onfocus="setRadio(this, 'weekDatePicker');" onchange="setRadio(this, 'weekDatePicker');" id="weekDatePicker" name="weekDatePicker" value="<?= $_POST['weekDatePicker'] ?>" size="10" />
+    <input type="hidden" name="submitted" value="1"><input type="submit" name="submit" value="submit and wait 5 sec...">
+</form>
+<?php 
+if ($_POST['submitted'])
+    $go_date = substr($_POST['weekDatePicker'],8,2).'-'.substr($_POST['weekDatePicker'],0,2).'-'.substr($_POST['weekDatePicker'],3,2);
+else $go_date = date('y-m-d',$thisUTC);
+    echo '<td><a href=viewRoutes.php?area='.$thisArea.'&date='.$go_date.'>... GO)</a></td>'; 
+?>
 </tr>
 	<tr>
 		<td> <b> Route * </b> </td>

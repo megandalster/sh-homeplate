@@ -48,7 +48,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 		$permission_array['clientEdit.php']=2;
 		$permission_array['volunteerSearch.php']=2;
 		// $permission_array['volunteerEdit.php']=2;
-		$permission_array['viewReports.php']=2;
+		$permission_array['viewReports.php']=0;
 		
 		//Check if they're at a valid page for their access level.
 		$current_page = substr($_SERVER['PHP_SELF'],1);
@@ -66,7 +66,6 @@ h1 {padding-left: 0px; padding-right:165px;}
 		
 		$today=date("y-m-d");
 		$week_later = date("y-m-d", strtotime("+1 week"));
-		
 		//they're logged in and session variables are set.
 		echo('<a href="'.$path.'index.php">home</a>');
 		if ($_SESSION['access_level']==0) { // guests
