@@ -172,7 +172,7 @@ echo('<input type="submit" value="Submit" name="Submit"> to add Volunteer, Pick-
 else echo "</td></tr></table>";
 if ($route->get_status()!="completed")
 	echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
-				'<input type="submit" value="Delete" name="Delete Entry"> to delete this route from the database. ');
+				'<input type="submit" value="Refresh" name="Delete Entry"> to refresh this route in the database. ');
 
 echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Return to routes.</a>";
 echo('</div></div>');
