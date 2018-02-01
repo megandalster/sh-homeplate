@@ -164,7 +164,7 @@ function delete_dbRoutes($r) {
 	}
 	$query='DELETE FROM dbRoutes WHERE id = "'.$r->get_id().'"';
 	$result=mysqli_query($con,$query);
-	mysqli_close();
+	mysqli_close($con);
 	foreach ($r->get_pickup_stops() as $pickup_id) {
 		$i = strpos($pickup_id,",");
 		if ($i>0) $pickup_id = substr($pickup_id,0,$i);
