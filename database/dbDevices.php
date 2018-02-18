@@ -19,7 +19,7 @@ function create_dbDevices() {
     $con=connect();
     mysqli_query("DROP TABLE IF EXISTS dbDevices");
     $result = mysqli_query($con,"CREATE TABLE dbDevices (id TEXT NOT NULL, status TEXT NOT NULL, 
-    												route TEXT NOT NULL, nickname TEXT)");
+    								base TEXT, owner TEXT, date_activated TEXT, notes TEXT)");
     if (!$result) {
         echo mysqli_error($con) . "Error creating dbDevices table. <br>";
         mysqli_close($con);
@@ -29,11 +29,11 @@ function create_dbDevices() {
     return true;
 }
 
-function insert_dbDevices ($id, $status, $route, $nickname){
+function insert_dbDevices ($device){
     
     $con=connect();
 
-	$query = "SELECT * FROM dbDevices WHERE id = '" . $id() . "'";
+	$query = "SELECT * FROM dbDevices WHERE id = '" . $device_get_id() . "'";
     $result = mysqli_query($con,$query);
     if (mysqli_num_rows($result) != 0) {
         delete_dbDevices ($month->get_id());
@@ -41,10 +41,12 @@ function insert_dbDevices ($id, $status, $route, $nickname){
     }
 
     $query = "INSERT INTO dbDevices VALUES ('".
-                $id."','" . 
-                $status."','".
-                $route."','".
-                $nickname."');";
+                $device_get_id()."','" . 
+                $device_get_status()."','".
+                $device_get_base()."','".
+                $device_get_owner()."','".
+                $device_get_date_activated()."','".
+                $device_get_notes()."');";
     $result = mysqli_query($con,$query);
     if (!$result) {
         echo (mysqli_error($con). " unable to insert into dbDevices: " . $month->get_id(). "\n");
@@ -65,7 +67,7 @@ function retrieve_dbDevices ($id) {
     }
     $result_row = mysqli_fetch_assoc($result);
     mysqli_close($con);
-    return $result_row;   
+    return new Device($result_row[0],$result_row[1],$result_row[2],$result_row[3],$result_row[4],$result_row[5]);   
 }
 function getall_dbDevices () {
     $con=connect();
@@ -73,15 +75,15 @@ function getall_dbDevices () {
     $result = mysqli_query ($con,$query);
     $theDevices = array();
     while ($result_row = mysqli_fetch_assoc($result)) {
-        $theDevices[] = $result_row;
+        $theDevices[] = new Device($result_row[0],$result_row[1],$result_row[2],$result_row[3],$result_row[4],$result_row[5]);
     }
     return $theDevices; 
 }
 
-function update_dbDevices ($id, $status, $route, $nickname) {
+function update_dbDevices ($device) {
 
-	if (delete_dbDevices($id))
-	   return insert_dbDevices($id, $status, $route, $nickname);
+	if (delete_dbDevices($device->get_id()))
+	   return insert_dbDevices($device);
 	else {
 	   echo (mysqli_error($con)."unable to update dbDevices table: ".$id);
 	   return false;

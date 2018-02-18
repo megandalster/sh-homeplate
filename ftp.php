@@ -169,21 +169,25 @@ function ftpout($day, $areas) {
 function ftpin($day) {
 	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 	$deviceIds = array("ab92221e6ada959c",
-				"486e7427693b6422",
-				"5e47d9a9796482da",
-				"a207427fee8357ab", //Added 11/24/2014
-				"49f2420a374c1b0f", //Added 8/18/2015
-				"1f5b811fde353d0",  //Added 9/29/2015
-				"9dba4527e58b85f3", //Added 9/29/2015
-				"4d4365330aa76127", //Added 9/29/2015				
-				"b81b930d5ac05962",
-				"a22f0b9aa9d28df9", //Added 3/3/2016
-				"e029ceac5d51b6b", //Added 3/3/2016
-				"d3065bbe7dd5c4ad"
-				);
-				
-
-
+	    "486e7427693b6422",
+	    "532c5d0e6f5aca9d", // Added 1/9/18
+	    "4c05048923e042aa", // Added 2/8/18
+	    "cf5c1ab761188ac6", // Added 2/8/18
+	    "3e1195faad76f5c4", // Added 2/8/18
+	    "95191c10a7c74541", // Added 2/8/18
+	    "95d13979f48f5c7f", // Added 2/17/18
+	    "1158af9cff2a211c", // Added 2.17/18
+	    "5e47d9a9796482da",
+	    "a207427fee8357ab", //Added 11/24/2014
+	    "49f2420a374c1b0f", //Added 8/18/2015
+	    "1f5b811fde353d0",  //Added 9/29/2015
+	    "9dba4527e58b85f3", //Added 9/29/2015
+	    "4d4365330aa76127", //Added 9/29/2015
+	    "b81b930d5ac05962",
+	    "a22f0b9aa9d28df9", //Added 3/3/2016
+	    "e029ceac5d51b6b", //Added 3/3/2016
+	    "d3065bbe7dd5c4ad"
+	);
 
 	$yymmdd = date('y-m-d',$day);
 	$twoweeksagoyymmdd = date('y-m-d',$day-1209600);

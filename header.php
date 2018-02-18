@@ -85,7 +85,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 	    //	echo '<a href="'.$path.'log.php"> | log</a>';
 	    }
 	 //   echo('<a href="'.$path.'help.php?helpPage='.$current_page.'" target="_BLANK"> | help</a>');
-	//	echo('<a href="'.$path.'about.php"> | about</a>');
+	    echo('<a href="'.$path.'deviceSearch.php"> | tablets</a>');
 		echo('<a href="'.$path.'logout.php"> | logout</a>');
 	}
 ?>
