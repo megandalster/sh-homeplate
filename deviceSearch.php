@@ -10,7 +10,8 @@
 	session_cache_expire(30);
 	
 	include_once('database/dbDevices.php');
-//	include_once('domain/Device.php');
+	include_once('domain/Device.php');
+	echo "we are here";
 ?>
 <html>
 	<head>
@@ -25,11 +26,12 @@
 			<?PHP include('header.php');?>
 			<div id="content">
 				<?PHP	
+				
 					// display the search form
 					$allDevices = getall_dbDevices();
-			        echo('<p><a href="'.$path.'deviceEdit.php?id=new">Add new tablet</a>');	
-					echo('<form method="post">');
-					echo('<p><strong>Here are the tablets currently registered with Homeplate:</strong>');
+			        echo('<p><a href="'.$path.'deviceEdit.php?id=new">Add new tablet</a>');
+			        echo "we are here";
+//					echo('<p><strong>Here are the tablets currently registered with Homeplate:</strong>');
 					echo "<table> <tr><td>id</td><td>status</td><td>base</td><td>owner</td><td>date activated</td><td>notes</td></tr>";
 					
 					foreach ($allDevices as $device) {
@@ -41,11 +43,9 @@
 					    echo "<td>".$device->get_notes()."</td></tr>";  
 					}
                     echo "</table>";  
-               
-			?>
-						
-						
-				<!-- below is the footer that we're using currently-->
+              
+			?>	
+			<!-- below is the footer that we're using currently-->
 			</div>
 			<?PHP include('footer.inc');?>
 		</div>

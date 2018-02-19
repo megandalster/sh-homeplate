@@ -21,23 +21,23 @@
 	$id = $_GET["id"];
 	$chain_name = "";
 	if ($id=='new') {
-	 	$client = new Client(null,null,null,null,null,null,null,null,null,null,
+	 	$device = new device(null,null,null,null,null,null,null,null,null,null,
 	 			             null,null,null,null,null,null,null,null,null,null,
 	 			             null,null,null,null,null,null,null,null,null,null,null);
 	}
 	else {
-		$client = retrieve_dbClients($id);
-		if (!$client) {
-	         echo('<p id="error">Error: there\'s no client with this id in the database</p>'. $id);
+		$device = retrieve_dbDevices($id);
+		if (!$device) {
+	         echo('<p id="error">Error: there\'s no device with this id in the database</p>'. $id);
 		     die();
         }
-        $chain_name = $client->get_chain_name();  
+        $chain_name = $device->get_chain_name();  
 	}
 ?>
 <html>
 	<head>
 		<title>
-			Editing Client
+			Editing device
 		</title>
 		<link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -49,10 +49,10 @@
     <?PHP include('header.php');?>
 	<div id="content">
 <?PHP
-	include('clientValidate.php');
+	include('deviceValidate.php');
 	if( !array_key_exists('_form_submit', $_POST) )
 	//in this case, the form has not been submitted, so show it
-		include('clientForm.php');
+		include('deviceForm.php');
 	else {
 	//in this case, the form has been submitted, so validate it
 		$errors = validate_form($id); 	//step one is validation, "errors" array lists problems on the form submitted
@@ -73,7 +73,7 @@
 					$weight_type = "pounds";
 				}
 			}
-        	$client = new Client($id, $_POST['chain_name'], $_POST['area'], $_POST['type'], 
+        	$device = new device($id, $_POST['chain_name'], $_POST['area'], $_POST['type'], 
                                  $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['county'], $_POST['phone1'], 
         						 $_POST['address2'], $_POST['city2'], $_POST['state2'], $_POST['zip2'], $_POST['county2'], $_POST['phone2'], 
         						 implode(',',$_POST['days']), $lcfb, $chartrkr, $weight_type, $_POST['notes'], 
@@ -81,7 +81,7 @@
         						$_POST['survey_date'], $_POST['visit_date'], $_POST['foodsafe_date'], 
         						$_POST['pestctrl_date'],$_POST['number_served']);
 			$id = $old_id;
-			include('clientForm.php');
+			include('deviceForm.php');
 		}
 		// this was a successful form submission; update the database and exit
 		else
@@ -146,35 +146,35 @@ function process_form($id)	{
 
         //step two: try to make the deletion, addition, or change
 		if($_POST['deleteMe']=="DELETE"){
-			$result = retrieve_dbClients($id);
+			$result = retrieve_dbDevices($id);
 			if (!$result)
 				echo('<p>Unable to delete. ' . $id . ' is not in the database. <br>Please report this error to the Program Coordinator.');
 			else {
-                $result = delete_dbClients($id);
+                $result = delete_dbDevices($id);
                 echo("<p>You have successfully removed " . $id . " from the database.</p>");
 					
             }
 		}
 
-		// try to add a new client to the database
+		// try to add a new device to the database
 		else if ($_POST['old_id']=='new') {
 				//check if there's already an entry
-				$dup = retrieve_dbClients($id);
+				$dup = retrieve_dbDevices($id);
 				if ($dup)
-					echo('<p class="error">Unable to add ' . $id . ' to the database. <br>Another client with the same id is already there.');
+					echo('<p class="error">Unable to add ' . $id . ' to the database. <br>Another device with the same id is already there.');
 				else {
-					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
+					$newperson = new device($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
 	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $days, $lcfb, $chartrkr, $weight_type, $notes, 
 							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId, $survey_date, $visit_date, 
 							$foodsafe_date, $pestctrl_date, $number_served);
-                    $result = insert_dbClients($newperson);
+                    $result = insert_dbDevices($newperson);
 					if (!$result)
                         echo ('<p class="error">Unable to add '. $id . ' in the database. <br>Please report this error to the Program Coordinator.');
 					else echo("<p>You have successfully added " .$id. " to the database.</p>");
 				}
 		}
 
-		// try to replace an existing client in the database by removing and adding
+		// try to replace an existing device in the database by removing and adding
 		else {
 				$id = $_POST['old_id'];
 				$chain_name = $_POST['chain_name'];
@@ -184,11 +184,11 @@ function process_form($id)	{
 				else{
 					$weight_type = "pounds"; 
 				}
-				$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
+				$newperson = new device($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
 	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $days, $lcfb, $chartrkr, $weight_type, $notes, 
 							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId, $survey_date, $visit_date, 
 						    $foodsafe_date, $pestctrl_date, $number_served);
-				$result = insert_dbClients($newperson);
+				$result = insert_dbDevices($newperson);
                 if (!$result)
                    	echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');
 				else echo("<p>You have successfully updated " .$id. " in the database.</p>");

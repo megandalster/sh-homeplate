@@ -14,15 +14,12 @@
  */
 class Device {
     private $id;		    // 16-digit device id, such as "532c5d0e6f5aca9d"
-    private $status;    // active, inactive, or not functioning (broken or retired)
+    private $status;    // active, inactive, or out of service (broken or retired)
     private $base;      //  where is the device being used (HH, Bluffton, Beaufort, or Office)
     private $owner;     // who is responsible for it
     private $date_activated;	// date placed in service with Homeplate
     private $notes;	    // any other notes about the device -- model, screen size, etc.
     
-    /**
-     * constructor for a Device
-     */
     function __construct($id, $status, $base, $owner, $date_activated, $notes){
         $this->id = $id;
         $this->status = $status;
