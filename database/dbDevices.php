@@ -14,6 +14,7 @@
  */
 
 include_once(dirname(__FILE__).'/dbinfo.php');
+include_once(dirname(__FILE__).'/../domain/Device.php');
 
 function create_dbDevices() {
     $con=connect();

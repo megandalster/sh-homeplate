@@ -16,7 +16,7 @@
 	session_start();
 	session_cache_expire(30);
     include_once('database/dbDevices.php');
-    include_once('domain/Device.php');
+//    include_once('domain/Device.php');
 	
 	$id = $_GET["id"];
 	$chain_name = "";
