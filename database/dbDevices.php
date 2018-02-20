@@ -10,25 +10,11 @@
 /*
  * dbDevices module -- keeps track of Android devices in use by SH Homeplate trucks
  * @author Allen Tucker
- * @version August 22, 2012
+ * @version February 22, 2018
  */
 
 include_once(dirname(__FILE__).'/dbinfo.php');
 include_once(dirname(__FILE__).'/../domain/Device.php');
-
-function create_dbDevices() {
-    $con=connect();
-    mysqli_query("DROP TABLE IF EXISTS dbDevices");
-    $result = mysqli_query($con,"CREATE TABLE dbDevices (id TEXT NOT NULL, status TEXT NOT NULL, 
-    								base TEXT, owner TEXT, date_activated TEXT, notes TEXT)");
-    if (!$result) {
-        echo mysqli_error($con) . "Error creating dbDevices table. <br>";
-        mysqli_close($con);
-        return false;
-    }
-    mysqli_close($con);
-    return true;
-}
 
 function insert_dbDevices ($device){
     
@@ -102,3 +88,4 @@ function delete_dbDevices($id) {
 	}
     return true;
 }
+?>

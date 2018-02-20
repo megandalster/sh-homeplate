@@ -26,7 +26,7 @@ class Device {
         $this->base = $base;
         $this->owner = $owner;
         $this->date_activated = $date_activated;
-        $this->id = $id;
+        $this->notes = $notes;
     }
     
     // getter functions
