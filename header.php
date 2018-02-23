@@ -76,6 +76,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 		    echo('<a href="'.$path.'viewRoutes.php?area='.$_SESSION['_area'].'&date='.$today.'"> | routes</a>');
 		
 	    if($_SESSION['access_level']>=2) { // team captains and board members
+	    	echo('<a href="'.$path.'deviceSearch.php"> | tablets</a>');
 	    	echo('<a href="'.$path.'scheduleView.php?area='.$_SESSION['_area'].'"> | master schedules</a>');	
 	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
 			echo('<a href="'.$path.'affiliateSearch.php"> | affiliates</a>');
@@ -85,7 +86,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 	    //	echo '<a href="'.$path.'log.php"> | log</a>';
 	    }
 	 //   echo('<a href="'.$path.'help.php?helpPage='.$current_page.'" target="_BLANK"> | help</a>');
-	    echo('<a href="'.$path.'deviceSearch.php"> | tablets</a>');
+	    
 		echo('<a href="'.$path.'logout.php"> | logout</a>');
 	}
 ?>

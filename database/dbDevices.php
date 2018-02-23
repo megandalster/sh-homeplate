@@ -16,41 +16,26 @@
 include_once(dirname(__FILE__).'/dbinfo.php');
 include_once(dirname(__FILE__).'/../domain/Device.php');
 
-function create_dbDevices() {
-    $con=connect();
-    mysqli_query("DROP TABLE IF EXISTS dbDevices");
-    $result = mysqli_query($con,"CREATE TABLE dbDevices (id TEXT NOT NULL, status TEXT NOT NULL, 
-    								base TEXT, owner TEXT, date_activated TEXT, notes TEXT)");
-    if (!$result) {
-        echo mysqli_error($con) . "Error creating dbDevices table. <br>";
-        mysqli_close($con);
-        return false;
-    }
-    mysqli_close($con);
-    return true;
-}
-
 function insert_dbDevices ($device){
     
     $con=connect();
 
-	$query = "SELECT * FROM dbDevices WHERE id = '" . $device_get_id() . "'";
+	$query = "SELECT * FROM dbDevices WHERE id = '" . $device->get_id() . "'";
     $result = mysqli_query($con,$query);
     if (mysqli_num_rows($result) != 0) {
-        delete_dbDevices ($month->get_id());
+        delete_dbDevices ($device->get_id());
         $con=connect();
     }
-
     $query = "INSERT INTO dbDevices VALUES ('".
-                $device_get_id()."','" . 
-                $device_get_status()."','".
-                $device_get_base()."','".
-                $device_get_owner()."','".
-                $device_get_date_activated()."','".
-                $device_get_notes()."');";
+                $device->get_id()."','" . 
+                $device->get_status()."','".
+                $device->get_base()."','".
+                $device->get_owner()."','".
+                $device->get_date_activated()."','".
+                $device->get_notes()."');";
     $result = mysqli_query($con,$query);
     if (!$result) {
-        echo (mysqli_error($con). " unable to insert into dbDevices: " . $month->get_id(). "\n");
+        echo (mysqli_error($con). " unable to insert into dbDevices: " . $device->get_id(). "\n");
         mysqli_close($con);
         return false;
     }
@@ -68,7 +53,8 @@ function retrieve_dbDevices ($id) {
     }
     $result_row = mysqli_fetch_assoc($result);
     mysqli_close($con);
-    return new Device($result_row[0],$result_row[1],$result_row[2],$result_row[3],$result_row[4],$result_row[5]);   
+    return new Device($result_row['id'],$result_row['status'],$result_row['base'],
+    		$result_row['owner'],$result_row['date_activated'],$result_row['notes']);
 }
 function getall_dbDevices () {
     $con=connect();
@@ -76,10 +62,22 @@ function getall_dbDevices () {
     $result = mysqli_query ($con,$query);
     $theDevices = array();
     while ($result_row = mysqli_fetch_assoc($result)) {
-        $theDevices[] = new Device($result_row[0],$result_row[1],$result_row[2],$result_row[3],$result_row[4],$result_row[5]);
+    	$theDevices[] = new Device($result_row['id'],$result_row['status'],$result_row['base'],
+    			$result_row['owner'],$result_row['date_activated'],$result_row['notes']);
     }
     return $theDevices; 
 }
+function getall_dbDeviceIds () {
+	$con=connect();
+	$query = "SELECT * FROM dbDevices ORDER BY id";
+	$result = mysqli_query ($con,$query);
+	$theDeviceIds = array();
+	while ($result_row = mysqli_fetch_assoc($result)) {
+		$theDeviceIds[] = $result_row['id'];
+	}
+	return $theDeviceIds;
+}
+
 
 function update_dbDevices ($device) {
 

@@ -21,18 +21,18 @@
 		<div id="container">
 			<?PHP include('header.php');?>
 			<div id="content">
-				<?PHP	
-				include_once(dirname(__FILE__).'/domain/Device.php');
-				include_once(dirname(__FILE__).'/database/dbDevices.php');
+				<?PHP
+				include_once('domain/Device.php');
+				include_once('database/dbDevices.php');
 					// display the search form
-					$allDevices = getall_dbDevices();
-			        echo('<p><a href=deviceEdit.php?id=new">Add new tablet</a>');
-			        echo "we are here";
-					echo('<p><strong>Here are the tablets currently registered with Homeplate:</strong>');
-					echo "<table> <tr><td>id</td><td>status</td><td>base</td><td>owner</td><td>date activated</td><td>notes</td></tr>";
-					
+				$allDevices = getall_dbDevices();
+					echo('<p><a href="deviceEdit.php?id=new">Add new tablet</a>');
+			        echo('<p>Here are the tablets currently registered with Homeplate:<p>');
+					echo "<table> <tr><td>id</td><td>status</td><td>base</td><td>owner</td>
+									<td>date activated</td><td>notes</td></tr>";
+			//	echo "allDevices = ";var_dump($allDevices);	
 					foreach ($allDevices as $device) {
-					    echo "<tr><td><a href=deviceEdit.php?id=" . $device->get_id() ."></td>"; 
+					    echo "<tr><td><a href='deviceEdit.php?id=" . $device->get_id() ."'>".$device->get_id()."</a></td>"; 
 					    echo "<td>".$device->get_status()."</td>";  
 					    echo "<td>".$device->get_base()."</td>";  
 					    echo "<td>".$device->get_owner()."</td>";  

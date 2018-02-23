@@ -7,6 +7,7 @@ error_reporting(-1);
 include_once 'database/dbVolunteers.php';
 include_once 'database/dbClients.php';
 include_once 'database/dbRoutes.php';
+include_once 'database/dbDevices.php';
 include_once 'database/dbStops.php';
 include_once 'domain/Route.php';
 include_once 'domain/Stop.php';
@@ -18,14 +19,14 @@ function update_ftp() {
 	$mondaylastweek = strtotime('last monday', strtotime('last monday', $todayUTC));
 	$weekfromtodayUTC = $todayUTC+604800;
 	$mondaynextweek = strtotime('last monday', strtotime('tomorrow',$weekfromtodayUTC));
+	
+	$deviceIds = getall_dbDeviceIds();
 	// we are mid-week and we want to update any new files that are there
 	for ($day = $mondaylastweek; $day < $mondaynextweek+604800; $day += 86400) {
-
-	
-		//if ($day > $todayUTC) 
+		// if ($day > $todayUTC) 
 	  		ftpout($day, $areas); // update ftpout for future days
 	  	if ($day <= $todayUTC) 
-	  		ftpin($day);  // grab data from any past days, including today!
+	  		ftpin($day,$deviceIds);  // grab data from any past days, including today!
 	}
 }
 
@@ -166,29 +167,8 @@ function ftpout($day, $areas) {
 
 
 
-function ftpin($day) {
+function ftpin($day,$deviceIds) {
 	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
-	$deviceIds = array("ab92221e6ada959c",
-	    "486e7427693b6422",
-	    "532c5d0e6f5aca9d", // Added 1/9/18
-	    "4c05048923e042aa", // Added 2/8/18
-	    "cf5c1ab761188ac6", // Added 2/8/18
-	    "3e1195faad76f5c4", // Added 2/8/18
-	    "95191c10a7c74541", // Added 2/8/18
-	    "95d13979f48f5c7f", // Added 2/17/18
-	    "1158af9cff2a211c", // Added 2.17/18
-	    "5e47d9a9796482da",
-	    "a207427fee8357ab", //Added 11/24/2014
-	    "49f2420a374c1b0f", //Added 8/18/2015
-	    "1f5b811fde353d0",  //Added 9/29/2015
-	    "9dba4527e58b85f3", //Added 9/29/2015
-	    "4d4365330aa76127", //Added 9/29/2015
-	    "b81b930d5ac05962",
-	    "a22f0b9aa9d28df9", //Added 3/3/2016
-	    "e029ceac5d51b6b", //Added 3/3/2016
-	    "d3065bbe7dd5c4ad"
-	);
-
 	$yymmdd = date('y-m-d',$day);
 	$twoweeksagoyymmdd = date('y-m-d',$day-1209600);
 	$day_of_week = date ("D", $day);
@@ -334,10 +314,5 @@ function ftpin($day) {
 }
 
 //$mytime=$today = strtotime("today")+1209600; //mktime(9, 23, 33, 8, 31, 2013);
-/*
-$currentDate =strtotime('12/22/2013'); //date("y-m-d",strtotime('now'));
-echo $currentDate;
-ftpin($currentDate);
-echo "echo base";
-*/
+
 ?>
