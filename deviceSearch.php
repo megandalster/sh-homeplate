@@ -32,7 +32,7 @@
 									<td>date activated</td><td>notes</td></tr>";
 			//	echo "allDevices = ";var_dump($allDevices);	
 					foreach ($allDevices as $device) {
-					    echo "<tr><td><a href='deviceEdit.php?id=" . $device->get_id() ."'>".$device->get_id()."</a></td>"; 
+					    echo "<tr><td><a href='deviceEdit.php?id=" . $device->get_id() ."'>".substr($device->get_id(),0,4)."..."."</a></td>"; 
 					    echo "<td>".$device->get_status()."</td>";  
 					    echo "<td>".$device->get_base()."</td>";  
 					    echo "<td>".$device->get_owner()."</td>";  
