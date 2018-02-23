@@ -10,7 +10,7 @@
 /*
  * dbDevices module -- keeps track of Android devices in use by SH Homeplate trucks
  * @author Allen Tucker
- * @version August 22, 2012
+ * @version February 22, 2018
  */
 
 include_once(dirname(__FILE__).'/dbinfo.php');
@@ -100,3 +100,4 @@ function delete_dbDevices($id) {
 	}
     return true;
 }
+?>

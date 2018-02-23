@@ -30,7 +30,6 @@
 			        echo('<p>Here are the tablets currently registered with Homeplate:<p>');
 					echo "<table> <tr><td>id</td><td>status</td><td>base</td><td>owner</td>
 									<td>date activated</td><td>notes</td></tr>";
-			//	echo "allDevices = ";var_dump($allDevices);	
 					foreach ($allDevices as $device) {
 					    echo "<tr><td><a href='deviceEdit.php?id=" . $device->get_id() ."'>".substr($device->get_id(),0,4)."..."."</a></td>"; 
 					    echo "<td>".$device->get_status()."</td>";  
@@ -40,13 +39,11 @@
 					    echo "<td>".$device->get_notes()."</td></tr>";  
 					}
                     echo "</table>";  
-              
 			?>	
 			<!-- below is the footer that we're using currently-->
 			</div>
 			<?PHP include('footer.inc');?>
 		</div>
-		
 	</body>
 </html>
 
