@@ -31,15 +31,18 @@ else {
 <script>
 $(function() {
 	$( "#date_activated" ).datepicker();
+	$( "#last_used" ).datepicker();
 });
 </script>
 	<input type="hidden" name="old_id" value=<?PHP echo("\"".$id."\"");?>>
 	<input type="hidden" name="_form_submit" value="1">
 
-<p>	Tablet id:   
+<p>	Tablet id:
 <?PHP 
-	if ($id=="new") 
-		echo '<input type="text" size="35" name="id" tabindex=1 value="">';
+	if ($id=="new") {
+		echo ' <span style="font-size:x-small;color:FF0000">*</span><input type="text" size="35" name="id" tabindex=1 value="">';
+		echo '<br>&nbsp;&nbsp;&nbsp;retype: <span style="font-size:x-small;color:FF0000">*</span><input type="text" size="35" name="id_retype" tabindex=1 value="">';
+	}
 	else echo $id;
 	
 		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Status: ');
@@ -49,7 +52,7 @@ $(function() {
 		echo ('<option value="inactive"');if ($device->get_status()=='inactive') echo (' SELECTED'); echo('>inactive</option>');
 		echo ('<option value="out of service"');if ($device->get_status()=='out of service') echo (' SELECTED'); echo('>out of service</option>');
 		echo('</select>');
-		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Base: ');
+		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Location: ');
 		echo('<select name="base">');
 		echo ('<option value=""></option>');
 		echo ('<option value="Hilton Head"');if ($device->get_base()=='Hilton Head') echo (' SELECTED'); echo('>Hilton Head</option>');
@@ -63,6 +66,9 @@ $(function() {
 		
 		echo '<p>Date Activated: <input type="text" id="date_activated" name="date_activated" size="10" value="';
 		echo $device->get_date_activated();
+		echo '">';
+		echo '&nbsp;&nbsp;&nbsp;Date Last Used: <input type="text" id="last_used" name="last_used" size="10" value="';
+		echo $device->get_last_used();
 		echo '"></p>';
 		echo '<p>Notes: <input type="text" id="notes" name="notes" size="50" value="'.
 				$device->get_notes(). '"></p>';

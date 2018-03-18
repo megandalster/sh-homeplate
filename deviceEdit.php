@@ -53,13 +53,17 @@
 		$old_id=$id;
 		if ($old_id=="new"){
 			$id = trim(str_replace('\\\'','',htmlentities(str_replace('&','and',str_replace('#',' ',$_POST['id'])))));
+			$id_retype = trim(str_replace('\\\'','',htmlentities(str_replace('&','and',str_replace('#',' ',$_POST['id_retype'])))));
 		}
-		$errors = validate_form($id,$old_id); 	//step one is validation, "errors" array lists problems on the form submitted
+		else $id_retype="";
+		$errors = validate_form($id,$old_id,$id_retype); 	//step one is validation, "errors" array lists problems on the form submitted
 		if ($errors) {
 		// display the errors and the form to fix
 			show_errors($errors);
+			if ($old_id=="new")
+				$id = "new";
         	$device = new Device($id, $_POST['status'], $_POST['base'], 
-                                 $_POST['owner'], $_POST['date_activated'], $_POST['notes']);
+        			$_POST['owner'], $_POST['date_activated'], $_POST['last_used'], $_POST['notes']);
 			include('deviceForm.php');
 		}
 		// this was a successful form submission; update the database and exit
@@ -80,6 +84,7 @@ function process_form($id,$old_id)	{
 		$base =      $_POST['base'];
 		$owner =     $_POST['owner'];
 		$date_activated =  $_POST['date_activated'];
+		$last_used =  $_POST['last_used'];
 		$notes = $_POST['notes'];
 
         //step two: try to make the deletion, addition, or change
@@ -101,7 +106,7 @@ function process_form($id,$old_id)	{
 				if ($dup)
 					echo('<p class="error">Unable to add ' . $id . ' to the database. <br>Another device with the same id is already there.');
 				else {
-					$newdevice = new Device($id, $status, $base, $owner, $date_activated, $notes);
+					$newdevice = new Device($id, $status, $base, $owner, $date_activated, $last_used, $notes);
                     $result = insert_dbDevices($newdevice);
 					if (!$result)
                         echo ('<p class="error">Unable to add '. $id . ' in the database. <br>Please report this error to the Program Coordinator.');
@@ -111,23 +116,33 @@ function process_form($id,$old_id)	{
 
 		// try to replace an existing device in the database by removing and adding
 		else {
-				$newdevice = new Device($id, $status, $base, $owner, $date_activated, $notes);
+			$newdevice = new Device($id, $status, $base, $owner, $date_activated, $last_used, $notes);
 				$result = insert_dbDevices($newdevice);
                 if (!$result)
                    	echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');
 				else echo("<p>You have successfully updated " .$id. " in the database.</p>");
 		}
 }
-function validate_form($id,$old_id){
+function validate_form($id,$old_id,$id_retype){
 	$errors = array();
-	if($old_id=="new" && (!$_POST['id'] || trim($_POST['id'])==""))    $errors[] = 'Please enter a valid device id';
-	
+	if($old_id=="new"){
+		if (!$_POST['id'] || trim($_POST['id'])=="")    $errors[] = 'Please enter a valid device id';
+		if ($id!=$id_retype) $errors[] = "id and retype do not match";
+	}
 	if(!$errors)
 		return "";
 		else
 			return $errors;
 }
-
+function show_errors($e){
+	//this function should display all of our errors.
+	echo('<div class="warning">');
+	echo('<ul>');
+	foreach($e as $error){
+		echo("<li><strong><font color=\"red\">".$error."</font></strong></li>\n");
+	}
+	echo("</ul></div></p>");
+}
 ?>
     </div>
     <?PHP include('footer.inc');?>		

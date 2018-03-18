@@ -16,14 +16,16 @@ class Device {
     private $base;		//  where is the device being used (HH, Bluffton, Beaufort, or Office)
     private $owner;		// who is responsible for it
     private $date_activated;	// date placed in service with Homeplate
+    private $last_used;	// date last used
     private $notes;		// any other notes about the device -- model, screen size, etc.
 
-    function __construct($id, $status, $base, $owner, $date_activated, $notes){
+    function __construct($id, $status, $base, $owner, $date_activated, $last_used, $notes){
         $this->id = $id;
         $this->status = $status;
         $this->base = $base;
         $this->owner = $owner;
         $this->date_activated = $date_activated;
+        $this->last_used = $last_used;
         $this->notes = $notes;
     }
    
@@ -43,9 +45,18 @@ class Device {
     function get_date_activated() {
         return $this->date_activated;
     }
+    function get_last_used() {
+    	return $this->last_used;
+    }
     function get_notes() {
         return $this->notes;
     }
-
+    function set_base($b) {
+    	$this->base = $b;
+    }
+    function set_last_used($last_used) {
+    	$this->last_used = $last_used;
+    }
+    
 }
 ?>

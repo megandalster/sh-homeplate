@@ -10,6 +10,7 @@ include_once 'database/dbRoutes.php';
 include_once 'database/dbDevices.php';
 include_once 'database/dbStops.php';
 include_once 'domain/Route.php';
+include_once 'domain/Device.php';
 include_once 'domain/Stop.php';
 
 function update_ftp() {
@@ -19,14 +20,13 @@ function update_ftp() {
 	$mondaylastweek = strtotime('last monday', strtotime('last monday', $todayUTC));
 	$weekfromtodayUTC = $todayUTC+604800;
 	$mondaynextweek = strtotime('last monday', strtotime('tomorrow',$weekfromtodayUTC));
-	
-	$deviceIds = getall_dbDeviceIds();
+	$devices = getall_dbDevices();
 	// we are mid-week and we want to update any new files that are there
 	for ($day = $mondaylastweek; $day < $mondaynextweek+604800; $day += 86400) {
-		// if ($day > $todayUTC) 
+	    // if ($day > $todayUTC) 
 	  		ftpout($day, $areas); // update ftpout for future days
 	  	if ($day <= $todayUTC) 
-	  		ftpin($day,$deviceIds);  // grab data from any past days, including today!
+	  		ftpin($day,$devices);  // grab data from any past days, including today!
 	}
 }
 
@@ -167,18 +167,17 @@ function ftpout($day, $areas) {
 
 
 
-function ftpin($day,$deviceIds) {
+function ftpin($day,$devices) {
 	$areas = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 	$yymmdd = date('y-m-d',$day);
 	$twoweeksagoyymmdd = date('y-m-d',$day-1209600);
 	$day_of_week = date ("D", $day);
 	foreach ($areas as $area=>$area_name) {
-		foreach ($deviceIds as $deviceId) {
-		
+		foreach ($devices as $device) {
+			$deviceId = $device->get_id();
 		
 	// look for a file for $day and $deviceId
-			//TODO: Refactor for dependency injection
-			//prod path
+			
 			$filename = dirname(__FILE__).'/../homeplateftp1/ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv";	
 			//QA path
 			//$filename = realpath('../../../ftpin/'.$yymmdd."-".$area."-".$deviceId.".csv");		
@@ -195,15 +194,22 @@ function ftpin($day,$deviceIds) {
 	// line 1			
 				$line1 = fgetcsv($handle, 0, ";"); 
 				$id = substr($line1[0],0,12);
-				$tabletid = substr($line1[0],13);
-				$notes = $tabletid.";".$line1[5]."-".$line1[6];
+				$date = substr($id,0,8);
+				$base = substr($id,9,3);
+				echo "date, base = ".$date." ".$base;
+				if ($date>$device->get_last_used()) {
+					$device->set_last_used($date);
+					$device->set_base($base);
+					update_dbDevices($device);
+				}
+				$notes = $deviceId.";".$line1[5]."-".$line1[6];
 				$r = get_route($id);
 				
 				//echo $filename . " route id:" . $id  . "<br />";
 				
 				//echo $r->get_notes() . "  " . $tabletid . " strpos = ". strpos($r->get_notes(),"adam") . "<br />";
 				
-				$pos = strpos($r->get_notes(),$tabletid);
+				$pos = strpos($r->get_notes(),$deviceId);
 
 				
 				if ($pos === false) { // WEIGHTS ALREADY RECORDED FOR THIS TABLET, SKIP IT

@@ -32,6 +32,7 @@ function insert_dbDevices ($device){
                 $device->get_base()."','".
                 $device->get_owner()."','".
                 $device->get_date_activated()."','".
+                $device->get_last_used()."','".
                 $device->get_notes()."');";
     $result = mysqli_query($con,$query);
     if (!$result) {
@@ -54,7 +55,7 @@ function retrieve_dbDevices ($id) {
     $result_row = mysqli_fetch_assoc($result);
     mysqli_close($con);
     return new Device($result_row['id'],$result_row['status'],$result_row['base'],
-    		$result_row['owner'],$result_row['date_activated'],$result_row['notes']);
+    		$result_row['owner'],$result_row['date_activated'],$result_row['last_used'],$result_row['notes']);
 }
 function getall_dbDevices () {
     $con=connect();
@@ -63,7 +64,7 @@ function getall_dbDevices () {
     $theDevices = array();
     while ($result_row = mysqli_fetch_assoc($result)) {
     	$theDevices[] = new Device($result_row['id'],$result_row['status'],$result_row['base'],
-    			$result_row['owner'],$result_row['date_activated'],$result_row['notes']);
+    			$result_row['owner'],$result_row['date_activated'],$result_row['last_used'],$result_row['notes']);
     }
     return $theDevices; 
 }
@@ -77,8 +78,6 @@ function getall_dbDeviceIds () {
 	}
 	return $theDeviceIds;
 }
-
-
 function update_dbDevices ($device) {
 
 	if (delete_dbDevices($device->get_id()))
@@ -88,16 +87,21 @@ function update_dbDevices ($device) {
 	   return false;
 	}
 }
-
 function delete_dbDevices($id) {
 	$con=connect();
     $query="DELETE FROM dbDevices WHERE id=\"".$id."\"";
 	$result=mysqli_query($con,$query);
-	mysqli_close();
+	mysqli_close($con);
 	if (!$result) {
 		echo (mysqli_error($con)." unable to delete from dbDevices: ".$id);
 		return false;
 	}
     return true;
+}
+function pretty($date) {
+	echo "we are here";
+	if (strlen($date)==8)
+		return substr($date,3,2)."/".substr($date,6,2)."/20".substr($date,0,2);
+	else return "";
 }
 ?>
