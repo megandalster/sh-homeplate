@@ -196,7 +196,6 @@ function ftpin($day,$devices) {
 				$id = substr($line1[0],0,12);
 				$date = substr($id,0,8);
 				$base = substr($id,9,3);
-				echo "date, base = ".$date." ".$base;
 				if ($date>$device->get_last_used()) {
 					$device->set_last_used($date);
 					$device->set_base($base);
