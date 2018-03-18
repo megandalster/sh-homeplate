@@ -99,7 +99,6 @@ function delete_dbDevices($id) {
     return true;
 }
 function pretty($date) {
-	echo "we are here";
 	if (strlen($date)==8)
 		return substr($date,3,2)."/".substr($date,6,2)."/20".substr($date,0,2);
 	else return "";

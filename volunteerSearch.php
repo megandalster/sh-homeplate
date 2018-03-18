@@ -160,7 +160,9 @@
 						if ($availability[0]!="") echo ' with the above Schedule days ';
 						if (sizeof($result)>0) {
 							echo ' <div id="dvLinkInfo">(select one for more info).</div>';
-							echo '<table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Schedule</strong></td><td><strong>Cell</strong></td><td><strong>Trips</strong></td><td><strong>Last Date</strong></td><td><strong>Notes</strong></td></tr>';
+							echo '<table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td>
+								<td><strong>E-mail</strong></td><td><strong>Schedule</strong></td>
+								<td><strong>Trips</strong></td><td><strong>Last Date</strong></td><td><strong>Notes</strong></td></tr>';
                             $allEmails = array(); // for printing all emails
                             foreach ($result as $vol) {
                             	echo "<tr><td><a href=volunteerEdit.php?id=".$vol->get_id().">" . 
@@ -170,9 +172,8 @@
 								foreach($vol->get_availability() as $availableon)
 									echo ($availableon . ", ") ;
 								echo "</td></a>";
-								echo "<td>" . $vol->get_phone2() . "</td>";
 								echo "<td>" . $vol->get_tripCount() . "</td>";
-								echo "<td>" . $vol->get_lastTripDate() . "</td>";
+								echo "<td>" . pretty($vol->get_lastTripDate()) . "</td>";
 								
 								echo "<td>" . $vol->get_notes() . "</td>";
 								echo "</tr>";
