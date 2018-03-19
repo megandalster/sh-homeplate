@@ -91,10 +91,11 @@ foreach ($route->get_pickup_stops() as $pickup_id) {
 			$pickup_link = "<a href='viewStop1.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
 	} 
 	echo $pickup_link;
-	if ($theStop->get_total_weight()>0){
+	//var_dump($theStop); echo "routeid, clientid = ".$routeID.", ".$client_id;
+	if ($theStop && $theStop->get_total_weight()>0){
 		echo " -- ".$theStop->get_total_weight();
 		$totalPickUpWeight += $theStop->get_total_weight();
-		}	
+	}	
 	echo "<br>";
 	
 }
@@ -109,8 +110,10 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	$dropoff_link = "<a href='viewStop1.php?client_type=recipient&stop_id=".$dropoff_id."'>".$client_id."</a>"; 
 	echo $dropoff_link;
 	$theStop = retrieve_dbStops($routeID.$client_id);
-	if ($theStop->get_total_weight()>0) echo " -- ".$theStop->get_total_weight();
-	$totalDropoffWeight += $theStop->get_total_weight();
+	if ($theStop && $theStop->get_total_weight()>0) { 
+		echo " -- ".$theStop->get_total_weight();
+		$totalDropoffWeight += $theStop->get_total_weight();
+	}
 	echo "<br>";
 	
 }

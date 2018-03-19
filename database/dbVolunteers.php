@@ -302,7 +302,7 @@ function delete_dbVolunteers($id){
 	return true;
 }
 
-function pretty($date) {
+function pretty1($date) {
 	if (strlen($date)==8)
 		return substr($date,3,2)."/".substr($date,6,2)."/20".substr($date,0,2);
 		else return "";

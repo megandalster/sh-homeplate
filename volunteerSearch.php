@@ -173,7 +173,7 @@
 									echo ($availableon . ", ") ;
 								echo "</td></a>";
 								echo "<td>" . $vol->get_tripCount() . "</td>";
-								echo "<td>" . pretty($vol->get_lastTripDate()) . "</td>";
+								echo "<td>" . pretty1($vol->get_lastTripDate()) . "</td>";
 								
 								echo "<td>" . $vol->get_notes() . "</td>";
 								echo "</tr>";
