@@ -16,8 +16,13 @@
 
 if($_SESSION['access_level']>=2){
    echo('<p><strong>Tablet Information Form</strong><br />');
-   echo('Here you can edit or delete a tablet in the database. ');
-   echo '(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)';
+   if ($id=="new") {
+   		echo('Here you can add a new tablet to the database. ');
+   		echo ('(For instructions on initializing a new Android tablet for Homeplate, go <a href="https://drive.google.com/file/d/1r4hb1tpGa3eCSsP1x08YnqsBZk5dYuCX/view?usp=sharing" 
+					target="_blank">here.</a>)');
+   }
+   else echo('Here you can edit or delete a tablet in the database. ');
+   echo '<br>(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)';
 }
 else {
     echo("<p id=\"error\">You do not have sufficient permissions to edit tablets in the database.</p>");
@@ -64,7 +69,7 @@ $(function() {
 		echo '<p>Owner: <input type="text" id="owner" name="owner" value="'.
 				$device->get_owner(). '"></p>';
 		
-		echo '<p>Date Activated: <input type="text" id="date_activated" name="date_activated" size="10" value="';
+		echo '<p>Date Activated: <span style="font-size:x-small;color:FF0000">*</span><input type="text" id="date_activated" name="date_activated" size="10" value="';
 		echo $device->get_date_activated();
 		echo '">';
 		echo '&nbsp;&nbsp;&nbsp;Date Last Used: <input type="text" id="last_used" name="last_used" size="10" value="';

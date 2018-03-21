@@ -20,7 +20,7 @@
 	
 	$id = $_GET["id"];
 	if ($id=='new') {
-	 	$device = new Device(null,null,null,null,null,null);
+	 	$device = new Device(null,null,null,null,null,null,null);
 	}
 	else {
 		$device = retrieve_dbDevices($id);
@@ -45,9 +45,10 @@
     <?PHP include('header.php');?>
 	<div id="content">
 <?PHP
-	if( !array_key_exists('_form_submit', $_POST) )
+	if( !array_key_exists('_form_submit', $_POST) ) {
 	//in this case, the form has not been submitted, so show it
 		include('deviceForm.php');
+	}
 	else {
 	//in this case, the form has been submitted, so validate it
 		$old_id=$id;
@@ -128,6 +129,7 @@ function validate_form($id,$old_id,$id_retype){
 	if($old_id=="new"){
 		if (!$_POST['id'] || trim($_POST['id'])=="")    $errors[] = 'Please enter a valid device id';
 		if ($id!=$id_retype) $errors[] = "id and retype do not match";
+		if (!$_POST['date_activated'] || trim($_POST['date_activated'])=="")  $errors[] = 'Please enter a date activated';
 	}
 	if(!$errors)
 		return "";
