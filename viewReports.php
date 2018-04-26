@@ -184,6 +184,10 @@ if($_POST['submitted'])
 		else $header[] = " all bases ";
 		if ($_POST['report_county']!="") $header[] = ", county: ".$_POST['report_county'];
 		else $header[] = ", all counties ";
+		if ($_POST['deliveryAreaId']!=""){
+		    $deliveryArea = retrieve_dbDeliveryAreas($_POST['deliveryAreaId']);
+		    $header[] =  ", delivery area: " . $deliveryArea->get_deliveryAreaName();
+		}
 	}
 	else {	
 		$header = array("Second Helpings Truck Weight Report for ");
@@ -191,7 +195,6 @@ if($_POST['submitted'])
 		else $header[] = " all bases ";
 	if ($_POST['report_county']!="") $header[] = ", county: ".$_POST['report_county'];
 		else $header[] = ", all counties ";
-		
 	if ($_POST['deliveryAreaId']!=""){
 		$deliveryArea = retrieve_dbDeliveryAreas($_POST['deliveryAreaId']);
 		$header[] =  ", delivery area: " . $deliveryArea->get_deliveryAreaName();
@@ -270,7 +273,7 @@ if($_POST['submitted'])
 				"<td><b>Food Safe Dt</b></td><td><b>Pest Ctrl Dt</b></td><td><b>Served/Wk</b></td>";
 		echo "</tr>";
 		 
-		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "", "", $_POST['report_county']);
+		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "", $_POST['deliveryAreaId'], $_POST['report_county']);
 		$totalServed = 0;
 		foreach ($allClients as $client) {
 			$totalServed += $client->get_number_served();

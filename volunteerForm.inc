@@ -306,10 +306,10 @@ function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
             echo '>' . $i . ' </option>'; 
 		}
 		echo "</select>";
-        // handles a year range of 80 years, from today to today-80
+        // handles a year range of 80 years, from today+10 to today-80
 		echo '<select name='.$year_name.'><option value=""></option>';
 		$start_year = date("Y");
-        for ($i = $start_year+5; $i >= ($start_year-75); $i--){
+        for ($i = $start_year+10; $i >= ($start_year-80); $i--){
          	echo '<option value='.substr($i,2,2); 
          	if($year==substr($i,2,2)) 
          		echo(' SELECTED'); 

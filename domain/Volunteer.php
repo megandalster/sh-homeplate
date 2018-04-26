@@ -199,12 +199,12 @@ class Volunteer {
 		return $this->affiliateId;
 	}
 	
-	function get_nice_phone1 () {
-    	if (strlen($this->phone1)==10)
-    		return substr($this->phone1,0,3)."-".substr($this->phone1,3,3)."-".substr($this->phone1,6);
-    	else if (strlen($this->phone1)==7)
-    		return substr($this->phone1,0,3)."-".substr($this->phone1,3);
-    	else return $this->phone1;
+	function nice_phone ($phone) {
+	    if (strlen($phone)==10)
+	        return substr($phone,0,3)."-".substr($phone,3,3)."-".substr($phone,6);
+	    else if (strlen($phone)==7)
+	             return substr($phone,0,3)."-".substr($phone,3);
+	         else return $phone;
     }
 	//returns true if the person has type $t
     function is_type($t){

@@ -128,7 +128,7 @@ function ftpout($day, $areas) {
 	    	if ($theDayCaptain) fputcsv($handle, array(
 	    		$yymmdd."-".$area, $area_name, $fulldate, 
 	    		$theDayCaptain->get_first_name() . " " . $theDayCaptain->get_last_name(),
-	    		$theDayCaptain->get_nice_phone1()
+	    		$theDayCaptain->nice_phone($theDayCaptain->get_phone1()),
 	    		),";");
             else fputcsv($handle, array(
 	    		$yymmdd."-".$area, $area_name, $fulldate, 

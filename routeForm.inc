@@ -141,7 +141,7 @@ if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */) {
 
 	echo "</td><td>";
 	echo "Add Pick-up:<br>";
-	$pickups = getall_clients(substr($route->get_id(),9,3), "donor", "", "", "","","");
+	$pickups = getall_clients("", "donor", "", "", "","","");
 	echo('<select name="add_pickup">');
 	echo ('<option value=""></option>');
 	foreach ($pickups as $pickup) {
@@ -155,7 +155,7 @@ if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */) {
 
 	echo "</td><td>";
 	echo "Add Drop-off:<br>";
-	$dropoffs = getall_clients(substr($route->get_id(),9,3), "recipient", "", "", "","","");
+	$dropoffs = getall_clients("", "recipient", "", "", "","","");
 	echo('<select name="add_dropoff">');
 	echo ('<option value=""></option>');
 	foreach ($dropoffs as $dropoff) {
