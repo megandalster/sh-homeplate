@@ -94,7 +94,7 @@ else // $_SESSION['access_level']>=2
             	$mm = substr($person->get_birthday(),3,2);
             	$dd = substr($person->get_birthday(),6,2);
             	$yy = substr($person->get_birthday(),0,2);
-            	select_date($mm,$dd,$yy, "birthday_Month", "birthday_Day", "birthday_Year");
+            	select_date($mm,$dd,$yy, "birthday_Month", "birthday_Day", "birthday_Year",date("Y")-90, date("Y")-18);
              
             echo '<td>Start Date: </td><td><input type="text" tabindex=10 id="startDate" name="startDate" value="';
 				if ($person->get_start_date() != ''){
@@ -260,7 +260,8 @@ $( "#driverTrainingDate" ).datepicker();
           $mm = substr($person->get_license_expdate(),3,2);
           $dd = substr($person->get_license_expdate(),6,2);
           $yy = substr($person->get_license_expdate(),0,2);
-          select_date($mm,$dd,$yy, "expdate_Month", "expdate_Day", "expdate_Year");
+          $start_year = date("Y");
+          select_date($mm,$dd,$yy, "expdate_Month", "expdate_Day", "expdate_Year",$start_year, $start_year+10);
           
           echo('<p>Notes:<br />');
 	      echo('<textarea name="notes" rows="2" cols="60">');
@@ -286,7 +287,7 @@ $( "#driverTrainingDate" ).datepicker();
 		?>
 
 <?PHP
-function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
+function &select_date($month, $day, $year, $month_name, $day_name, $year_name,$start_year, $end_year) {
 		$months = array('','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
         echo('<select name='.$month_name.'><option value=""></option>');
 		echo('');
@@ -306,10 +307,9 @@ function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
             echo '>' . $i . ' </option>'; 
 		}
 		echo "</select>";
-        // handles a year range of 80 years, from today+10 to today-80
+        // handles a year range
 		echo '<select name='.$year_name.'><option value=""></option>';
-		$start_year = date("Y");
-        for ($i = $start_year+10; $i >= ($start_year-80); $i--){
+        for ($i = $end_year; $i >= $start_year; $i--){
          	echo '<option value='.substr($i,2,2); 
          	if($year==substr($i,2,2)) 
          		echo(' SELECTED'); 
