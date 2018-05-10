@@ -170,7 +170,7 @@ function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, 
 
 // Returns all stops within a certain date range.
 function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_date, $end_date, $deliveryAreaId, $chain, $county) {
-	$con=connect();
+    $con=connect();
 	$query = "SELECT route, client, type, items, notes FROM dbStops where ".
 			"route like '%".$area."%' AND ".
 			"client like '%".$client_name."%' AND ".
@@ -181,7 +181,7 @@ function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_
 			$query = $query . " AND client IN (SELECT id from dbClients WHERE deliveryAreaId = " . $deliveryAreaId . ")";
 		}
 		if($county){
-			$query = $query . " AND client IN (SELECT id from dbClients WHERE county = " . $county . ")";
+			$query = $query . " AND client IN (SELECT id from dbClients WHERE county = '" . $county . "')";
 		}
 			
 		if(!empty($chain)){
