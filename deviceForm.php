@@ -18,7 +18,7 @@ if($_SESSION['access_level']>=2){
    echo('<p><strong>Tablet Information Form</strong><br />');
    if ($id=="new") {
    		echo('Here you can register a new tablet for Homeplate. ');
-   		echo ('(For instructions on initializing a new Android tablet for Homeplate, go <a href="https://drive.google.com/file/d/1r4hb1tpGa3eCSsP1x08YnqsBZk5dYuCX/view?usp=sharing" 
+   		echo ('(For instructions on initializing a new Android tablet for Homeplate, go <a href="https://drive.google.com/file/d/1rohNRQkixpGd2bkNvn5f7TNRFJD9dme0/view?usp=sharing" 
 					target="_blank">here.</a>)');
    }
    else echo('Here you can edit or delete a tablet in the database. ');
