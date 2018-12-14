@@ -40,8 +40,9 @@ include_once('domain/Stop.php');
 echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
 
  include_once('database/dbClients.php');
-  include_once('database/dbDeliveryAreas.php');
-      include_once('domain/DeliveryArea.php');
+ include_once('database/dbVolunteers.php');
+ include_once('database/dbDeliveryAreas.php');
+ include_once('domain/DeliveryArea.php');
 ?>
 
 <form method="post" action="">
@@ -133,6 +134,7 @@ Report Type : <select name="report_type">
 	<option value="dropoff" <?php if($_POST['report_type'] == "dropoff"){echo "selected='true'";} ?>>Recipients Only</option>
 	<option value="publixwalmart" <?php if($_POST['report_type'] == "publixwalmart"){echo "selected='true'";} ?> >Breakdowns by Food Type</option>
 	<option value="clientdetail" <?php if($_POST['report_type'] == "clientdetail"){echo "selected='true'";} ?> >Client Detail</option>
+	<option value="volunteerdates" <?php if($_POST['report_type'] == "volunteerdates"){echo "selected='true'";} ?> >Volunteer Dates</option>
 </select>
 </div>
 
@@ -170,15 +172,21 @@ Range&nbsp;&nbsp;
 <?php
 function pretty($date) {
     if ($date=="") return "";
-    else 
+    else if ($date<"30")
         return substr($date,3,5)."-20".substr($date,0,2);
+    else return substr($date,3,5)."-19".substr($date,0,2);
 }
 if($_POST['submitted'])
 {
 	$bases = array("HHI"=>"Hilton Head", "SUN"=>"Bluffton", "BFT"=>"Beaufort");
 	echo "<div id='dvReport'>";
 	
-	if ($_POST['report_type'] == "clientdetail") {
+	if ($_POST['report_type'] == "volunteerdates") {
+	    $header = array("Second Helpings Volunteer Dates Report on ".date('F j, Y', time()). " for ");
+	    if ($_POST['report_area']!="") $header[] = " base: ".$bases[$_POST['report_area']];
+	    else $header[] = " all bases ";
+	}
+	else if ($_POST['report_type'] == "clientdetail") {
 		$header = array("Second Helpings Client Report on ".date('F j, Y', time()). " for ");
 		if ($_POST['report_area']!="") $header[] = " base: ".$bases[$_POST['report_area']];
 		else $header[] = " all bases ";
@@ -267,13 +275,31 @@ if($_POST['submitted'])
 	foreach ($header as $piece) echo $piece;
 	echo "</b><br><br>";
 	
-	if ($_POST['report_type']=="clientdetail"){
+	if ($_POST['report_type']=="volunteerdates"){
+	    $allvolunteers = getonlythose_dbVolunteers($_POST['report_area'], "", "", "", "", "");
+	    echo sizeof($allvolunteers). " volunteers found";
+	    echo '<table id="tblReport">';
+	    echo "<tr><td><b>Name</b></td><td><b>Birth Date</b></td><td><b>Start Date</b></td><td><b>Vol Trn</b></td><td><b>Triver Trn</b></td>".
+	   	    "<td align='right'><b>License #</b></td><td><b>Expire Dt</b></td><td><b>Status</b></td>";
+	    echo "</tr>";
+	    
+	    foreach ($allvolunteers as $volunteer) {
+	        echo '<tr>';
+	        echo '<td>'.$volunteer->get_last_name().", ".$volunteer->get_first_name().'</td><td>'.pretty($volunteer->get_birthday()).'</td><td>'.
+	   	        pretty($volunteer->get_start_date()).'</td><td align="right">'.pretty($volunteer->get_volunteerTrainingDate()).'</td><td align="right">'.pretty($volunteer->get_driverTrainingDate()).'</td>'.'<td align="right">'.
+	   	        $volunteer->get_license_no().'</td><td align="right">'.pretty($volunteer->get_license_expdate()).'</td><td align="right">'.$volunteer->get_status().'</td>';
+	   	        echo "</tr>";
+	    }
+	    echo "</table>";
+	    
+	}
+	else if ($_POST['report_type']=="clientdetail"){
 		echo '<table id="tblReport">';
 		echo "<tr><td><b>Recipient</b></td><td><b>LCFB</b></td><td><b>Charity Trkr</b></td><td><b>Apply Dt</b></td><td><b>Visit Dt</b></td>".
 				"<td><b>Food Safe Dt</b></td><td><b>Pest Ctrl Dt</b></td><td><b>Served/Wk</b></td>";
 		echo "</tr>";
 		 
-		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "", $_POST['deliveryAreaId'], $_POST['report_county']);
+		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "","","", $_POST['deliveryAreaId'], $_POST['report_county']);
 		$totalServed = 0;
 		foreach ($allClients as $client) {
 			$totalServed += $client->get_number_served();
@@ -288,7 +314,6 @@ if($_POST['submitted'])
 		echo "</tr></table>";
 
 	}
-	
   	else if ($_POST['report_span']!="" && $_POST['report_type']!="publixwalmart") {
 	// get all stops from database for given area, report type, and date range
 	$all_stops = getall_dbStops_between_dates($_POST['report_area'], $_POST['report_type'], 

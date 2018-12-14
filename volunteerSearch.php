@@ -62,7 +62,8 @@
 						echo '</select>';
                         
                         if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
-						echo '&nbsp;&nbsp;Status:<select name="s_status">';
+                        echo '&nbsp;&nbsp;Status:<select name="s_status">'.
+                            '<option value="">--all--</option>';
 							echo '<option value="active"';      if ($status=="active")      echo " SELECTED"; echo '>Active</option>';
 							echo '<option value="applicant"';   if ($status=="applicant")   echo " SELECTED"; echo '>Applicant</option>';
                             echo '<option value="on-leave"';    if ($status=="on-leave")    echo " SELECTED"; echo '>On Leave</option>';
@@ -161,7 +162,7 @@
 						if (sizeof($result)>0) {
 							echo ' <div id="dvLinkInfo">(select one for more info).</div>';
 							echo '<table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td>
-								<td><strong>Cell</strong></td><td><strong>E-mail</strong></td><td><strong>Schedule</strong></td>
+								<td><strong>Cell</strong></td><td><strong>E-mail</strong></td><td><strong>Status</strong></td><td><strong>Schedule</strong></td>
 								<td><strong>Trips</strong></td><td><strong>Last Date</strong></td></tr>';
                             $allEmails = array(); // for printing all emails
                             foreach ($result as $vol) {
@@ -169,7 +170,9 @@
 									$vol->get_last_name() .  ", " . $vol->get_first_name() . "</td><td>" . 
 									$vol->nice_phone($vol->get_phone1()) . "</td><td>" . 
 									$vol->nice_phone($vol->get_phone2()) . "</td><td>" .
-									$vol->get_email() . "</td><td>"; $allEmails[] = $vol->get_email();
+									$vol->get_email() . "</td><td>" . 
+									$vol->get_status() . "</td><td>"; 
+									$allEmails[] = $vol->get_email();
 								foreach($vol->get_availability() as $availableon)
 									echo ($availableon . ", ") ;
 								echo "</td></a>";

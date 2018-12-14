@@ -40,7 +40,7 @@ function getall_dbAffiliateVolunteers($affiliateId){
 function retrieve_dbVolunteers($id){
 	$con=connect();
 	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE id  = '".$id."'");
-	if(mysqli_num_rows($result) !== 1){
+	if(!$result || mysqli_num_rows($result) !== 1){
 			mysqli_close($con);
 			return false;
 	}
@@ -59,8 +59,8 @@ function retrieve_dbVolunteers($id){
 
 function retrieve_dbVolunteersByName($first_name, $last_name){
 	$con=connect();
-	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE first_name='" . $first_name . "' AND last_name='" . $last_name . "'");
-	if(mysqli_num_rows($result) !== 1){
+	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE first_name='" . $first_name . "' AND last_name='" . $last_name . "' ORDER BY last_name");
+	if($result && mysqli_num_rows($result) !== 1){
 			mysqli_close($con);
 			return false;
 	}
@@ -147,7 +147,7 @@ function getonlythose_dbVolunteers($area, $types, $status, $name, $availability,
 
 function get_team_captains ($area, $day) {
 	$con=connect();
-	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE type LIKE '%teamcaptain%' AND availability LIKE '%".$day."%' AND area  = '".$area."'");
+	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE type LIKE '%teamcaptain%' AND availability LIKE '%".$day."%' AND area  = '".$area."' ORDER BY last_name");
 	
 	$theVols = array();	
 	while($result_row = mysqli_fetch_assoc($result)){
@@ -167,7 +167,7 @@ function get_team_captains ($area, $day) {
 function get_all_crew($area){
 	
 	$con=connect();
-	$sql = "SELECT * FROM dbVolunteers WHERE  area  = '".$area."' AND (type LIKE '%driver%' OR type LIKE '%helper%' OR type LIKE '%sub%') ORDER BY last_name, first_name";
+	$sql = "SELECT * FROM dbVolunteers WHERE  area  = '".$area."' AND (type LIKE '%driver%' OR type LIKE '%helper%' OR type LIKE '%sub%') ORDER BY last_name";
 	
 	$result=mysqli_query($con,$sql);
 	
@@ -188,7 +188,7 @@ function get_all_crew($area){
 
 function  getall_drivers_available($area, $day) {
 	$con=connect();
-	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE status='active' AND area  = '".$area."' AND availability LIKE '%".$day."%' ORDER BY last_name, first_name");
+	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE status='active' AND area  = '".$area."' AND availability LIKE '%".$day."%' ORDER BY last_name");
 	
 	$theVols = array();	
 	while($result_row = mysqli_fetch_assoc($result)){

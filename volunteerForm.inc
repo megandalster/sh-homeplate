@@ -216,7 +216,7 @@ $( "#driverTrainingDate" ).datepicker();
     $oddeven = array ('odd', 'even');
     $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
     $person_availability = implode(',',$person->get_availability());
-    if ($person->get_area()=="BFT" || $_SESSION['area']=="BFT")
+    if ($person->get_area()=="BFT" || $person->get_area()=="HHI")
     	foreach ($weeks as $weekno => $weekvalue) {
        		echo ('<tr><td>'. $weekvalue . '</td>');
        		foreach ($days as $day) {
@@ -228,7 +228,7 @@ $( "#driverTrainingDate" ).datepicker();
        		echo ('</tr>');
     	}
     else {
-       foreach ($oddeven as $weekno) {
+       foreach ($oddeven as $weekno) {  // Bluffton is odd-even
        	  echo ('<tr><td>'. $weekno . '</td>');
        	  foreach ($days as $day) {
        	  	$realkey = $day. ":". $weekno;;

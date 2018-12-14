@@ -24,8 +24,8 @@
 	$id = $_GET["id"];
 	$chain_name = "";
 	if ($id=='new') {
-	 	$client = new Client(null,null,null,null,null,null,null,null,null,null,
-	 			             null,null,null,null,null,null,null,null,null,null,
+	 	$client = new Client(null,null,null,null,null,null,null,null,null,null,null,
+	 			             null,null,null,null,null,null,null,null,null,null,null,
 	 			             null,null,null,null,null,null,null,null,null,null,null);
 	}
 	else {
@@ -79,10 +79,10 @@
         	$client = new Client($id, $_POST['chain_name'], $_POST['area'], $_POST['type'], 
                                  $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['county'], $_POST['phone1'], 
         						 $_POST['address2'], $_POST['city2'], $_POST['state2'], $_POST['zip2'], $_POST['county2'], $_POST['phone2'], 
-        						 implode(',',$_POST['days']), $lcfb, $chartrkr, $weight_type, $_POST['notes'], 
-        						 $_POST['email'],$_POST['email2'],$_POST['ContactName'], $_POST['ContactName2'], $_POST['deliveryAreaId'],
-        						$_POST['survey_date'], $_POST['visit_date'], $_POST['foodsafe_date'], 
-        						$_POST['pestctrl_date'],$_POST['number_served']);
+        	                     implode(',',$_POST['daysHHI']), implode(',',$_POST['daysSUN']), implode(',',$_POST['daysBFT']), 
+        	                     $lcfb, $chartrkr, $weight_type, $_POST['notes'], $_POST['email'],$_POST['email2'],$_POST['ContactName'], 
+        	                     $_POST['ContactName2'], $_POST['deliveryAreaId'],$_POST['survey_date'], $_POST['visit_date'], $_POST['foodsafe_date'], 
+        						 $_POST['pestctrl_date'],$_POST['number_served']);
 			$id = $old_id;
 			include('clientForm.php');
 		}
@@ -134,10 +134,16 @@ function process_form($id)	{
 		$number_served = $_POST['number_served'];
         $type = $_POST['type'];
         $area = $_POST['area'];
-        if ($_POST['days'])
-        	$days=implode(',', $_POST['days']);
-        else $days="";
-		if($type == "donor"){
+        if ($_POST['daysHHI'])
+        	$daysHHI=implode(',', $_POST['daysHHI']);
+        else $daysHHI="";
+        if ($_POST['daysSUN'])
+            $daysSUN=implode(',', $_POST['daysSUN']);
+        else $daysSUN="";
+        if ($_POST['daysBFT'])
+            $daysBFT=implode(',', $_POST['daysBFT']);
+        else $daysBFT="";
+        if($type == "donor"){
 			$weight_type="foodtype";
 		}
 		else{
@@ -167,7 +173,7 @@ function process_form($id)	{
 					echo('<p class="error">Unable to add ' . $id . ' to the database. <br>Another client with the same id is already there.');
 				else {
 					$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
-	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $days, $lcfb, $chartrkr, $weight_type, $notes, 
+	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $daysHHI, $daysSUN, $daysBFT, $lcfb, $chartrkr, $weight_type, $notes, 
 							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId, $survey_date, $visit_date, 
 							$foodsafe_date, $pestctrl_date, $number_served);
                     $result = insert_dbClients($newperson);
@@ -188,7 +194,7 @@ function process_form($id)	{
 					$weight_type = "pounds"; 
 				}
 				$newperson = new Client($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
-	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $days, $lcfb, $chartrkr, $weight_type, $notes, 
+				    $address2, $city2, $state2, $zip2, $county2, $phone2, $daysHHI, $daysSUN, $daysBFT, $lcfb, $chartrkr, $weight_type, $notes, 
 							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId, $survey_date, $visit_date, 
 						    $foodsafe_date, $pestctrl_date, $number_served);
 				$result = insert_dbClients($newperson);

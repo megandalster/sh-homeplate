@@ -115,23 +115,6 @@
                     else $name = $_POST['s_name'];
 					echo '&nbsp;&nbsp;Name: ' ;
 					echo '<input type="text" name="s_name" value="' . $name . '">';
-                        
-					echo '<fieldset>';
-						echo '<legend>Pickup/Dropoff:</legend>';
-						echo '<p id="s_day">Day:&nbsp;&nbsp;&nbsp;&nbsp;';
-                        if( array_key_exists('s_day', $_POST) ){
-                                foreach($days as $day=>$dayname){
-                                  echo '<label><input type="checkbox" name="s_day[]" value="'.$day.'"'; 
-                                  if (in_array($day, $_POST['s_day'])) 
-                                    echo " CHECKED"; echo' />'.$day.'</label>&nbsp;&nbsp;';
-                                }
-                        }
-                        else{
-                                foreach($days as $day=>$dayname){
-                                  echo '<label><input type="checkbox" name="s_day[]" value="'.$day.'" />'.$day.'</label>&nbsp;&nbsp;';
-                                }
-                        }
-					echo '</fieldset>';
 					
 					echo('<p><input type="hidden" name="s_submitted" value="1"><input type="submit" name="Search" value="Search">');
 					echo('</form></p>');    
@@ -165,15 +148,15 @@
                         include_once('database/dbClients.php');
      					include_once('domain/Client.php');
 						
-                        $result = getall_clients($area, $type, $lcfb, $name, $availability, $deliveryAreaId, $county);
+     					$result = getall_clients($area, $type, $lcfb, $name, "","","", $deliveryAreaId, $county);
 						
                         echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
                             if (!$type) echo "client(s)"; 
                             else echo $type.'s';
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
 						if ($name!="") echo ' with name like "'.$name.'"';
-						if ($availability[0]!="") echo ' with selected pickup/dropoff days ';
-						if ($county!="") echo ' in county: '.$county;
+				
+			     		if ($county!="") echo ' in county: '.$county;
 						if ($deliveryAreaId !="") echo ' in delivery area: '.retrieve_dbDeliveryAreas($deliveryAreaId)->get_deliveryAreaName();
 						if ($lcfb!="") echo ' with LCFB =  '.$lcfb;
 						if (sizeof($result)>0) {
@@ -189,9 +172,13 @@
 									$cn ."</td><td>" .
 									$client->get_phone1() . "</td><td>" .
 									$client->get_email() . "</td><td>");
-									$allEmails[] = $client->get_email();	
-								foreach($client->get_days() as $availableon)
-									echo ( $availableon . ", ") ;
+									$allEmails[] = $client->get_email();
+								foreach(array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort") as $area=>$areaname) {
+								    if (sizeof($client->get_days($area))>0) echo $areaname.": ";
+								    foreach($client->get_days($area) as $availableon)
+									    echo ( $availableon . ", ") ;
+								    echo " ";
+								}
 								echo "</td></tr>"; 
 								if ($client->get_ContactName2()!="") {
 									echo ("<tr><td></td><td>" .

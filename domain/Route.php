@@ -163,6 +163,8 @@ class Route {
     // if stop2 has data, 
     //    if stop1 has no data, or there is no comparable stop1, then
     //        then replace stop1's data by stop2's
+    //    else (stop 1 has data and there is a comparable stop 1) 
+    //        add stop2's weights to stop 1's weights
     // otherwise, leave stop1 alone
     function special_merge($array1, $array2) {
     	$array3 = $array1;
@@ -195,9 +197,6 @@ class Route {
 							$stop1array[1] = $thisWeight;
 							$array3[$i] = implode(",", $stop1array);
 						}
-						
-						
-						
     					break;
     				  }	
     				}

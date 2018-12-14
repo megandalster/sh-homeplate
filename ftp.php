@@ -43,28 +43,9 @@ function ftpout($day, $areas) {
 		@unlink($filename);
 	// create a new file for $day
 		$filename = dirname(__FILE__).'/../homeplateftp1/ftpout/'.$yymmdd."-".$area.".csv";
-//local dev path
+    //local dev path
 		//$filename = realpath('../../../ftpout/'.$yymmdd."-".$area.".csv");
 		$handle = fopen($filename, "w");
-		
-
-		
-	//	echo "creating ftp file for tablet: ". $filename . "<br />";
-		
-		/*
-		$dirName = realpath('../../../homeplateftp1/ftpout/');
-		if (file_exists($dirName)) {
-			echo("File path " . $dirName . " found.<br />");
-		}
-		else{
-			echo("File path " . $dirName . " NOT found.<br />");
-		}
-		
-		//echo "File Name:";
-		//echo $filename . "<br />";
-		*/
-
-	// get the data to put out there
 	
 		$theRoute = get_route($yymmdd."-".$area);
 		

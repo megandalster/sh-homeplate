@@ -252,7 +252,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		$area = substr($routeID,9);
 		$date = substr($routeID,0,8);
 		$month_weeks = array(1=>"1st",2=>"2nd", 3=>"3rd", 4=>"4th", 5=>"5th");
-		if ($area=="BFT") {
+		if ($area=="BFT" || $area=="HHI") {
 			$week = substr($month_weeks[floor((substr($date,6,2)-1) / 7) + 1],0,1);
 			//floor(($dayCount-1) / 7)
 		}
@@ -269,7 +269,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		$driver_ids = implode(',',get_drivers_scheduled($area, $week, $day));
 
 		// store pickup and dropoff stops for this date and area using the dbClients table
-		$pickup_clients = getall_clients($area, "donor", "", "", array($day), "", "");
+		$pickup_clients = getall_clients($area, "donor", "", "", $day,$day,$day, "", "");
 		$pickup_ids = "";
 
 		foreach ($pickup_clients as $client)
@@ -281,7 +281,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		$pickup_ids = substr($pickup_ids,1);
 		
 		
-		$dropoff_clients = getall_clients($area, "recipient", "", "", array($day), "", "");
+		$dropoff_clients = getall_clients($area, "recipient", "", "", $day,$day,$day, "", "");
 		$dropoff_ids = "";
 		
 		foreach ($dropoff_clients as $client) 

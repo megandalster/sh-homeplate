@@ -15,7 +15,7 @@
 
 
 if($_SESSION['access_level']>=2){
-   echo('<p><strong>Client Information Form</strong><br />');
+   echo('<p><strong>Donor/Recipient Information Form</strong><br />');
    echo('Here you can edit or delete a client in the database. ');
    echo '(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)';
 }
@@ -75,7 +75,7 @@ $(function() {
 	echo "<table>";
 	if ($id=="new" || $client->get_type() == "recipient") {
 		echo "<tr>";
-		echo '<td>Survey: <input type="text" id="survey_date" name="survey_date" size="10" value="';
+		echo '<td>Applied: <input type="text" id="survey_date" name="survey_date" size="10" value="';
 		if ($client->get_survey_date() != ''){
 			$time = strtotime($client->get_survey_date());
 			echo date("m/d/Y", $time);
@@ -99,7 +99,7 @@ $(function() {
 			echo date("m/d/Y", $time);
 		}
 		echo '"></td>';
-				echo '<td>Number Served: <input type="text" id="number" name="number_served" size="5" value="'.
+				echo '<td>Serve/Week: <input type="text" id="number" name="number_served" size="5" value="'.
 					$client->get_number_served(). '"></td>';
 		echo "</tr>";
 	}
@@ -141,8 +141,26 @@ $(function() {
 	echo('</select></td>');
 	
 	echo "</tr></table>";
-?>    
-    
+$areas = array("daysHHI"=>"Hilton Head","daysSUN"=>"Bluffton","daysBFT"=>"Beaufort");
+$days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
+echo '<table><tr>';
+  foreach($areas as $area=>$areaname) {
+    echo '<td><fieldset><legend>'.$areaname.' Pickup/Dropoff:</legend>
+	   <table><tr>';
+        foreach ($days as $day) echo '<td>'.$day.'&nbsp;&nbsp;</td>';
+            echo '</tr>';
+        $client_availability = $client->get_days(substr($area,4));
+        echo ('<tr>');
+        foreach ($days as $day) {
+            echo ("<td><input type='checkbox' name='".$area."[]' value='".$day."'");
+            if (in_array($day, $client_availability)) echo " checked></td>";
+            else echo "></td>";
+        }
+    echo ('</tr></table></fieldset></td>');
+  }
+echo "</tr></table>";
+?>
+
 <fieldset>
 <legend>Food Contact</legend>
 	<table>		
@@ -205,25 +223,7 @@ $(function() {
 	</table>
 </fieldset>
 
-<fieldset id="availability">
-<legend>Pickup/Dropoff:</legend>
-	<table>
-	<tr>
-		<td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>
-		<td>Thu&nbsp;&nbsp;</td><td>Fri&nbsp;&nbsp;</td><td>Sat&nbsp;&nbsp;</td><td>Sun</td></tr>
-<?PHP
-    $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
-    $client_availability = implode(',',$client->get_days());
-       echo ('<tr>');
-       foreach ($days as $day) {
-       	  echo ('<td><input type="checkbox" name="days[]" value=' . $day);
-    	  if (in_array($day, $client->get_days())) echo(' CHECKED');
-    	  echo ('></td>');
-       }
-       echo ('</tr>');
-?>
-</table>
-</fieldset>
+
 <p>
 		<?PHP
 		

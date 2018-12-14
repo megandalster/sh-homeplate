@@ -4,7 +4,7 @@
 * Tucker.  This program is part of Homecheck, which is free software.  It comes
 * with absolutely no warranty.  You can redistribute and/or modify it under the
 * terms of the GNU Public License as published by the Free Software Foundation
-* (see <http://www.gnu.org/licenses/).mysql_ connect()
+* (see <http://www.gnu.org/licenses/)
 */
 
 /*

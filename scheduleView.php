@@ -56,7 +56,7 @@ include_once('domain/Volunteer.php');
 				   	  echo "<a href=scheduleView.php?area=".$otherArea."> $areaName</a>";	
 				}
 				echo ")<br><br>";
-				if ($area=="BFT") // Beaufort is a monthly schedule
+				if ($area=="BFT" || $area=="HHI") // Beaufort is a monthly schedule
 					show_master_weeks($areas, $area, $monthly_groups, $week_days);
 				else  // Hilton Head and Bluffton are bi-weekly schedules
 					show_master_weeks($areas, $area, $weekly_groups, $week_days);
@@ -176,7 +176,7 @@ include_once('domain/Volunteer.php');
 			   
 			   	
 				
-		    	if ($area=="BFT")
+		    	if ($area=="BFT" || $area=="HHI")
 		    		//$week = $groups[floor(($dayCount-1) / 7)];
 		    		$week = substr($groups[floor(($dayCount-1) / 7) + 1],0,1);
 		    	else if (date("W", strtotime($currentDate)) % 2 == 0) 
@@ -234,7 +234,7 @@ include_once('domain/Volunteer.php');
 	  	  	  else{
 	  	    	echo('<strong>'.$dayCount.'</strong>');
 		    	$shiftID=$thisYear.'-'.$thisMonth.'-'.date("d",mktime(0,0,0,$thisMonth,$dayCount,$thisYear));
-		    	if ($area=="BFT")
+		    	if ($area=="BFT" ||$area=="HHI")
 		    		//$week = $groups[floor(($dayCount-1) / 7)];
 		    		$week = substr($groups[floor(($dayCount-1) / 7) + 1],0,1);
 		    	else if (date("W",$daytime) % 2 == 0) 

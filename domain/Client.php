@@ -30,8 +30,10 @@ class Client {
 	private $zip2; 	      	// zip code : integer
 	private $county2; 		// county
 	private $phone2;		// administrative contact phone
-	private $days;			// array of days for pick-up or delivery
+	private $daysHHI;		// array of [days] for pick-up or delivery in HHI
 							// e.g. ['Mon', 'Wed']
+    private $daysSUN;		// array of [days] for pick-up or delivery in SUN
+	private $daysBFT;		// array of [days] for pick-up or delivery in BFT
 	private $lcfb;			// 'yes' or 'no'
 	private $chartrkr;		// 'yes' or 'no'
 	private $weight_type;	// variable for how items are recorded: 
@@ -51,9 +53,9 @@ class Client {
 	// 
 	
 	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
-	                        $address2, $city2, $state2, $zip2, $county2, $phone2, 
-							$days, $lcfb, $chartrkr, $weight_type, $notes, $email, $email2, $ContactName, $ContactName2, $deliveryAreaId, 
-							$survey_date, $visit_date, $foodsafe_date, $pestctrl_date, $number_served){                
+                            $address2, $city2, $state2, $zip2, $county2, $phone2, 
+                            $daysHHI, $daysSUN, $daysBFT, $lcfb, $chartrkr, $weight_type, $notes, $email, $email2, $ContactName, $ContactName2, $deliveryAreaId, 
+                            $survey_date, $visit_date, $foodsafe_date, $pestctrl_date, $number_served){                
         $this->id       	= $id;      
         $this->chain_name 	= $chain_name;      
         $this->area 		= $area;      
@@ -90,12 +92,18 @@ class Client {
         else
 			$this->weight_type	= $weight_type;
 		}
-        
-        if ($days == "")
-		   $this->days = array();
+        if ($daysHHI == "")
+		   $this->daysHHI = array();
 		else
-		   $this->days = explode(',',$days);
-		   
+		   $this->daysHHI = explode(',',$daysHHI);
+	    if ($daysSUN == "")
+	        $this->daysSUN = array();
+		else
+		    $this->daysSUN = explode(',',$daysSUN);
+		if ($daysBFT == "")
+		    $this->daysBFT = array();
+		else
+		    $this->daysBFT = explode(',',$daysBFT);
         $this->lcfb	= $lcfb;
         $this->chartrkr	= $chartrkr;
         $this->notes = $notes;
@@ -149,8 +157,20 @@ class Client {
     function get_phone2() {
         return $this->phone2;
     }
-    function get_days(){
-        return $this->days;
+    function get_days($area){
+        switch ($area) {
+            case "HHI":
+                return $this->daysHHI;
+                break;
+            case "SUN":
+                return $this->daysSUN;
+                break;
+            case "BFT":
+                return $this->daysBFT;
+                break;
+            default:
+                return "";
+        }
     }
     function get_lcfb(){
         return $this->lcfb;
