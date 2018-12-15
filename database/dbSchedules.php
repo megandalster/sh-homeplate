@@ -10,8 +10,8 @@
 /*
 * dbSchedules table for Homeplate -- this is the master schedule from which drivers
 * are assigned to routes.  
-* It is created with a fixed number of rows, 5x7=35 for the Beaufort area (5-week monthly schedule)
-* and 2x7=14 rows for each of the Hilton Head and Bluffton areas (alternate-week schedule),
+* It is created with a fixed number of rows, 5x7=35 for the Hilton Head and Beaufort areas (5-week monthly schedule)
+* and 2x7=14 rows for the Bluffton area (alternate-week schedule),
 * and each row initially has no drivers assigned.  The GUI will support the addition and
 * removal of individual drivers from any row.    
 * So the function insert_dbSchedules should not be called from anywhere outside 
@@ -34,19 +34,19 @@ function create_dbSchedules(){
 	}
 	mysqli_close($con);
 	// populate the table 
-	$areas = array("HHI","SUN");
+	$areas = array("HHI","BFT");
 	$weekly_groups = array("odd","even");
 	$monthly_groups = array("1","2", "3", "4", "5");
 	$days = array("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
-	foreach ($monthly_groups as $monthly_group)
+	foreach ($areas as $area)
+	  foreach ($monthly_groups as $monthly_group)
 		foreach ($days as $day) {   // day of the week
-			$se = new ScheduleEntry("BFT", $day.":".$monthly_group, "", "");
+			$se = new ScheduleEntry($area, $day.":".$monthly_group, "", "");
 			insert_dbSchedules($se);
 		}
-	foreach ($areas as $area) 
-		foreach ($weekly_groups as $week)   // week of the year
+	foreach ($weekly_groups as $week)   // week of the year
 			foreach ($days as $day) {   // day of the week
-				$se = new ScheduleEntry($area, $day.":".$week, "", "");
+				$se = new ScheduleEntry("SUN", $day.":".$week, "", "");
 				insert_dbSchedules($se);
 			}
 	return true;
@@ -206,13 +206,13 @@ function update_volunteers_scheduled ($area, $driver_id, $availability,$deleteon
 		if ($i>=0) { // schedule one day for this person
 			$day = substr($scheduled_day,0,$i);
 			$week_id = substr($scheduled_day,$i+1);
-			if ($area == "BFT")
+			if ($area == "BFT" || $area == "HHI")
 				add_driver ($area, $week_id, $day, $driver_id);
 			else 
 				add_driver ($area, $week_id, $day, $driver_id);
 		}
 		else { // schedule multiple days for this person
-			if ($area=="BFT")
+		    if ($area=="BFT" || $area == "HHI")
 		    	foreach ($weeks as $week_id)
 		    	    add_driver($area, $week_id, $scheduled_day, $driver_id);
 		    else 

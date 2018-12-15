@@ -18,7 +18,7 @@ class ScheduleEntry {
 					// e.g., "Mon:1st" means 1st Monday (5-week monthly calendar)
 					// "Mon:odd" means every odd Monday (alternate week calendar)
 	private $drivers;   // array of driver id's scheduled for this run,
-					// e.g. ["malcom1234567890", “sandi8437891234”]
+					// e.g. ["malcom1234567890", ï¿½sandi8437891234ï¿½]
 	private $notes;		// notes to/from the team captain or coordinator
 
 	
