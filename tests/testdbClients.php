@@ -35,7 +35,7 @@ class dbClientsTest extends TestCase {
 		
 		$client2 = new Client("Hannafords Brunswick", "Hannafords Family Store", "BFT", "donor",
 		    "456 Maine St", "Brunswick", "ME", "04011",  "","2077253600",
-		    "","","","","","","Tue,Thu", "yes","no", "foodtype", "This is a test case #2",
+		    "","","","","","","Tue,Thu", "","","yes","no", "foodtype", "This is a test case #2",
 		    "hanna@fords.com","","Mary","","","","","","","");
 		$this->assertTrue(update_dbClients($client2));
 		$this->assertEquals(retrieve_dbClients($client2->get_id())->get_chain_name(), "Hannafords Family Store");

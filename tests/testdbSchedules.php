@@ -1,36 +1,30 @@
 <?php
+use PHPUnit\Framework\TestCase;
 include_once(dirname(__FILE__).'/../domain/ScheduleEntry.php');
 include_once(dirname(__FILE__).'/../database/dbSchedules.php'); 
-class testdbSchedules extends UnitTestCase {
-	function testdbSchedulesModule() {
+class dbSchedulesTest extends TestCase {
+	function testdbSchedules() {
 		
-		//Test ScheduleEntries
-		$drivers = array("Richardo1112345678", "Jon1112345678");
-		$scheduleentry1 = new ScheduleEntry("HHI", "Mon:1", $drivers, "this is a test case schedule entry, created automatically. you shouldn't see it.");
-        $scheduleentry2 = new ScheduleEntry("SUN", "Mon:2", $drivers, "this is a test case schedule entry, created automatically. you shouldn't see it.");
-
-
-		//Test inserts
+		// Setup
+		$drivers = "Richardo1112345678,Jon1112345678";
+		$scheduleentry1 = new ScheduleEntry("HHI", "Mon:1", $drivers, "this is a test case.");
+        $scheduleentry2 = new ScheduleEntry("BFT", "Mon:2", $drivers, "this is a test case.");
 		$this->assertTrue(insert_dbSchedules($scheduleentry1));
 		$this->assertTrue(insert_dbSchedules($scheduleentry2));
 		
-        //Test Retrieve
-		$this->assertEqual(retrieve_dbSchedules($scheduleentry1->get_id())->get_id(), "Mon:1");
-		$this->assertEqual(retrieve_dbSchedules($scheduleentry1->get_id())->get_area(), "HHI");
-		$this->assertEqual(retrieve_dbSchedules($scheduleentry1->get_id())->get_days(), array("malcom1234567890","sandi8437891234"));
-		$this->assertEqual(retrieve_dbSchedules($scheduleentry1->get_id())->get_notes(), "this is a test case schedule entry, created automatically. you shouldn't see it.");
-		
-		//Test Update with a change of area
-		$scheduleentry2 = new ScheduleEntry("HHI", "Mon:2", $drivers, "this is a test case schedule entry, created automatically. you shouldn't see it.");
+        // Test update and retrieve
+		$this->assertEquals(retrieve_dbSchedules("HHI",$scheduleentry1->get_id())->get_id(), "Mon:1");
+		$this->assertEquals(retrieve_dbSchedules("HHI",$scheduleentry1->get_id())->get_area(), "HHI");
+		$this->assertEquals(retrieve_dbSchedules("HHI",$scheduleentry1->get_id())->get_day(), "Mon");
+		$this->assertEquals(retrieve_dbSchedules("HHI",$scheduleentry1->get_id())->get_notes(), "this is a test case.");
+		$scheduleentry2 = new ScheduleEntry("BFT", "Mon:2", $drivers, "this is a test case.");
 		$this->assertTrue(update_dbSchedules($scheduleentry2));
-		$this->assertEqual(retrieve_dbSchedules($scheduleentry2->get_id())->get_area(), "HHI");
+		$this->assertEquals(retrieve_dbSchedules("BFT",$scheduleentry2->get_id())->get_area(), "BFT");
 		
-		//Test Delete
-		$this->assertTrue(delete_dbSchedules($scheduleentry1->get_id()));
-		$this->assertTrue(delete_dbSchedules($scheduleentry2->get_id()));
-		$this->assertFalse(retrieve_dbSchedules($scheduleentry1->get_id()));
-		
-		echo ("testdbSchedules complete \n");
+		// Teardown
+		$this->assertTrue(delete_dbSchedules("HHI",$scheduleentry1->get_id()));
+		$this->assertTrue(delete_dbSchedules("BFT",$scheduleentry2->get_id()));
+		$this->assertFalse(retrieve_dbSchedules("HHI",$scheduleentry1->get_id()));
 	}
 }
 ?>

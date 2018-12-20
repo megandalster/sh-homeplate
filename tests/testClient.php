@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 include_once(dirname(__FILE__).'/../domain/Client.php');
 class ClientTest extends TestCase {
     function testClient() {  
-    	//fake client to test
+
         $client = new Client("Whole Foods Brunswick", "Whole Foods USA", "HHI", "donor", 
             "123 Maine St", "Brunswick", "ME", "04011", "", "2077253500", 
 	        "","","","","","","Mon,Wed","","", "yes","no", "pounds", "This is a test case",
