@@ -276,18 +276,19 @@ if($_POST['submitted'])
 	echo "</b><br><br>";
 	
 	if ($_POST['report_type']=="volunteerdates"){
-	    $allvolunteers = getonlythose_dbVolunteers($_POST['report_area'], "", "", "", "", "");
+	    $allvolunteers = getonlythose_dbVolunteers($_POST['report_area'], array("driver","helper","sub"), "", "", "", "");
+	    
 	    echo sizeof($allvolunteers). " volunteers found";
 	    echo '<table id="tblReport">';
-	    echo "<tr><td><b>Name</b></td><td><b>Birth Date</b></td><td><b>Start Date</b></td><td><b>Vol Trn</b></td><td><b>Triver Trn</b></td>".
-	   	    "<td align='right'><b>License #</b></td><td><b>Expire Dt</b></td><td><b>Status</b></td>";
+	    echo "<tr><td><b>Name</b></td><td><b>Birth Date</b></td><td><b>Start Date</b></td><td><b>Vol Trn</b></td><td><b>Driver Trn</b></td>".
+	   	    "<td align='right'><b>License #</b></td><td><b>Expire Dt</b></td><td><b>Status</b></td><td><b>Roles</b></td>";
 	    echo "</tr>";
 	    
 	    foreach ($allvolunteers as $volunteer) {
 	        echo '<tr>';
 	        echo '<td>'.$volunteer->get_last_name().", ".$volunteer->get_first_name().'</td><td>'.pretty($volunteer->get_birthday()).'</td><td>'.
 	   	        pretty($volunteer->get_start_date()).'</td><td align="right">'.pretty($volunteer->get_volunteerTrainingDate()).'</td><td align="right">'.pretty($volunteer->get_driverTrainingDate()).'</td>'.'<td align="right">'.
-	   	        $volunteer->get_license_no().'</td><td align="right">'.pretty($volunteer->get_license_expdate()).'</td><td align="right">'.$volunteer->get_status().'</td>';
+	   	        $volunteer->get_license_no().'</td><td align="right">'.pretty($volunteer->get_license_expdate()).'</td><td>'.$volunteer->get_status().'</td><td>'.implode(", ",$volunteer->get_type()).'</td>';
 	   	        echo "</tr>";
 	    }
 	    echo "</table>";

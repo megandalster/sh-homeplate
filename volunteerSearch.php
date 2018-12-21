@@ -62,12 +62,12 @@
 						echo '</select>';
                         
                         if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
-                        echo '&nbsp;&nbsp;Status:<select name="s_status">'.
-                            '<option value="">--all--</option>';
-							echo '<option value="active"';      if ($status=="active")      echo " SELECTED"; echo '>Active</option>';
+                        echo '&nbsp;&nbsp;Status:<select name="s_status">';
+                            echo '<option value="active"';      if ($status=="active")      echo " SELECTED"; echo '>Active</option>';
 							echo '<option value="applicant"';   if ($status=="applicant")   echo " SELECTED"; echo '>Applicant</option>';
                             echo '<option value="on-leave"';    if ($status=="on-leave")    echo " SELECTED"; echo '>On Leave</option>';
                             echo '<option value="former"';      if ($status=="former")      echo " SELECTED"; echo '>Former</option>';
+                            echo '<option value="">--all--</option>';
                         echo '</select>';
                         
 						  if( !array_key_exists('s_affiliate', $_POST) ) $affiliate = ""; else $affiliate = $_POST['s_affiliate'];
