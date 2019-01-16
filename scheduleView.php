@@ -56,9 +56,9 @@ include_once('domain/Volunteer.php');
 				   	  echo "<a href=scheduleView.php?area=".$otherArea."> $areaName</a>";	
 				}
 				echo ")<br><br>";
-				if ($area=="BFT" || $area=="HHI") // Beaufort is a monthly schedule
+				if ($area=="BFT" || $area=="HHI") // Beaufort and Hilton Head are monthly schedules
 					show_master_weeks($areas, $area, $monthly_groups, $week_days);
-				else  // Hilton Head and Bluffton are bi-weekly schedules
+				else  // Bluffton is a bi-weekly schedule
 					show_master_weeks($areas, $area, $weekly_groups, $week_days);
 				?>
 			</div>

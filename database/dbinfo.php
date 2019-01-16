@@ -18,7 +18,7 @@ function connect() {
 	$host = "localhost";
 	$database = "homeplatedb";
 	$user = "homeplatedb";
-	$password = "foodyWr1!";
+	$password = "homeplatedb";
 	$connected = mysqli_connect($host,$user,$password);
 	if (!$connected) { echo "not connected"; return mysqli_error($connected);}
 	$selected = mysqli_select_db($connected,$database);
