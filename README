@@ -2,15 +2,14 @@ Homeplate is a web-based application that provides database and scheduling suppo
 for a food distribution organization in South Carolina.
 
 Installation: Homeplate runs on an Apache/MySQL/PHP server.  To install it, visit the
-project Wiki at https://github.com/megandalster/sh-homeplate/wiki
+project Wiki at https://github.com/megandalster/sh-homeplate/wiki/installation-and-reuse/.
 
 For more details on using Homepate as a project for a CO-FOSS course, visit this site:
- https://github.com/megandalster/sh-homeplate/wiki/Project-Resources
+ https://github.com/megandalster/sh-homeplate/wiki/project-resources/.
 
 Usage: Homeplate can run stand-alone or it can be used in conjunction with Homeplate.mobile, 
 an Android app that allows drivers to record and upload weights of food pickups and dropoffs 
-on their truck routes.  To download, install, and run Homeplate.mobile together with Homeplate,
-see the README at https://github.com/megandalster/Homeplate.mobile.
+on their truck routes.  Homeplate can also be embedded in a web browser for easy user access.
 
 Credits: Homeplate was developed in 2012 by Hartley Brody, Richardo Hopkins, 
 Nicholas Wetzel, and Allen Tucker.  Since then, it has been significantly upgraded 

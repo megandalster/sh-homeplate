@@ -20,7 +20,7 @@
 						 ' Once you sign in, you will be able to fill out and submit an application form on-line.</p>';
 					echo('<ul><li>You must be a Second Helpings <i>volunteer, staff member, or board member</i> to access this system. ' .
 						'<li> Your Username is your first name followed by your phone number (no spaces). ');
-					echo('<br> If you do not remember your Password, please contact your <a href="mailto:jon25t@aol.com">Day Captain</a>.</ul>');
+					echo('<br> If you do not remember your Password, please contact your Day Captain.</ul>');
 					echo('<p><table><form method="post"><input type="hidden" name="_submit_check" value="true"><tr><td>Username:</td><td><input type="text" name="user" tabindex="1" onblur="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);"></td></tr><tr><td>Password:</td><td><input type="password" name="pass" tabindex="2"></td></tr><tr><td colspan="2" align="center"><input type="submit" name="Login" value="Login"></td></tr></table>');
 					echo('<script>document.forms[0].user.focus();</script>');
 				}
