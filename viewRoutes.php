@@ -222,6 +222,7 @@ foreach ($weekdays as $weekday)
 </tr>
 <tr>
 <?php 
+if ($route[$weekday]) {
 foreach ($weekdays as $weekday) {
     echo "<td valign='top'><table>";
     $pickups = $route[$weekday]->get_pickup_stops();
@@ -235,6 +236,7 @@ foreach ($weekdays as $weekday) {
         echo "<tr><td>".substr($dropoff,12)."</td></tr>";
         
     echo "</table></td>";
+}
 }
 ?>
 </tr>
