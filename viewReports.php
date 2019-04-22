@@ -95,7 +95,7 @@ echo('<select name="chain_name">');
     	echo ('<option value="BiLo"');if ($_POST['chain_name']=='BiLo') echo (' SELECTED'); echo('>BiLo</option>');
 		echo ('<option value="Food Lion"');if ($_POST['chain_name']=='Food Lion') echo (' SELECTED'); echo('>Food Lion</option>');
 		echo ('<option value="Harris Teeter"');if ($_POST['chain_name']=='Harris Teeter') echo (' SELECTED'); echo('>Harris Teeter</option>');
-		echo ('<option value="Piggly Wiggly"');if ($_POST['chain_name']=='Piggly Wiggly') echo (' SELECTED'); echo('>Piggly Wiggly</option>');
+		echo ('<option value="Kroger"');if ($_POST['chain_name']=='Kroger') echo (' SELECTED'); echo('>Kroger</option>');
 		echo ('<option value="Publix"');if ($_POST['chain_name']=='Publix') echo (' SELECTED'); echo('>Publix</option>');
 		echo ('<option value="Target"');if ($_POST['chain_name']=='Target') echo (' SELECTED'); echo('>Target</option>');
 		echo ('<option value="WalMart"');if ($_POST['chain_name']=='WalMart') echo (' SELECTED'); echo('>WalMart</option>');
@@ -182,7 +182,7 @@ if($_POST['submitted'])
 	echo "<div id='dvReport'>";
 	
 	if ($_POST['report_type'] == "volunteerdates") {
-	    $header = array("Second Helpings Volunteer Dates Report on ".date('F j, Y', time()). " for ");
+	    $header = array("Second Helpings Active Volunteer Dates Report on ".date('F j, Y', time()). " for ");
 	    if ($_POST['report_area']!="") $header[] = " base: ".$bases[$_POST['report_area']];
 	    else $header[] = " all bases ";
 	}
@@ -276,19 +276,19 @@ if($_POST['submitted'])
 	echo "</b><br><br>";
 	
 	if ($_POST['report_type']=="volunteerdates"){
-	    $allvolunteers = getonlythose_dbVolunteers($_POST['report_area'], array("driver","helper","sub"), "", "", "", "");
+	    $allvolunteers = getonlythose_dbVolunteers($_POST['report_area'], array("driver","helper","sub"), "active", "", "", "");
 	    
-	    echo sizeof($allvolunteers). " volunteers found";
+	    echo sizeof($allvolunteers). " active volunteers found";
 	    echo '<table id="tblReport">';
 	    echo "<tr><td><b>Name</b></td><td><b>Birth Date</b></td><td><b>Start Date</b></td><td><b>Vol Trn</b></td><td><b>Driver Trn</b></td>".
-	   	    "<td align='right'><b>License #</b></td><td><b>Expire Dt</b></td><td><b>Status</b></td><td><b>Roles</b></td>";
+	   	    "<td align='right'><b>License #</b></td><td><b>Expire Dt</b></td><td><b>Roles</b></td>";
 	    echo "</tr>";
 	    
 	    foreach ($allvolunteers as $volunteer) {
 	        echo '<tr>';
 	        echo '<td>'.$volunteer->get_last_name().", ".$volunteer->get_first_name().'</td><td>'.pretty($volunteer->get_birthday()).'</td><td>'.
 	   	        pretty($volunteer->get_start_date()).'</td><td align="right">'.pretty($volunteer->get_volunteerTrainingDate()).'</td><td align="right">'.pretty($volunteer->get_driverTrainingDate()).'</td>'.'<td align="right">'.
-	   	        $volunteer->get_license_no().'</td><td align="right">'.pretty($volunteer->get_license_expdate()).'</td><td>'.$volunteer->get_status().'</td><td>'.implode(", ",$volunteer->get_type()).'</td>';
+	   	        $volunteer->get_license_no().'</td><td align="right">'.pretty($volunteer->get_license_expdate()).'</td><td>'.implode(", ",$volunteer->get_type()).'</td>';
 	   	        echo "</tr>";
 	    }
 	    echo "</table>";

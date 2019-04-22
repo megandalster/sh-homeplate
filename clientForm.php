@@ -52,7 +52,7 @@ $(function() {
 		echo ('<option value="BiLo"');if ($client->get_chain_name()=='BiLo') echo (' SELECTED'); echo('>BiLo</option>');
 		echo ('<option value="Food Lion"');if ($client->get_chain_name()=='Food Lion') echo (' SELECTED'); echo('>Food Lion</option>');
 		echo ('<option value="Harris Teeter"');if ($client->get_chain_name()=='Harris Teeter') echo (' SELECTED'); echo('>Harris Teeter</option>');
-		echo ('<option value="Piggly Wiggly"');if ($client->get_chain_name()=='Piggly Wiggly') echo (' SELECTED'); echo('>Piggly Wiggly</option>');
+		echo ('<option value="Kroger"');if ($client->get_chain_name()=='Kroger') echo (' SELECTED'); echo('>Kroger</option>');
 		echo ('<option value="Publix"');if ($client->get_chain_name()=='Publix') echo (' SELECTED'); echo('>Publix</option>');
 		echo ('<option value="Target"');if ($client->get_chain_name()=='Target') echo (' SELECTED'); echo('>Target</option>');
 		echo ('<option value="WalMart"');if ($client->get_chain_name()=='WalMart') echo (' SELECTED'); echo('>WalMart</option>');
