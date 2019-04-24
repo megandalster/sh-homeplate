@@ -177,11 +177,6 @@ function ftpin($day,$devices) {
 				$id = substr($line1[0],0,12);
 				$date = substr($id,0,8);
 				$base = substr($id,9,3);
-				if ($date>$device->get_last_used()) {
-					$device->set_last_used($date);
-					$device->set_base($base);
-					update_dbDevices($device);
-				}
 				$notes = $deviceId.";".$line1[5]."-".$line1[6];
 				$r = get_route($id);
 				
@@ -234,20 +229,22 @@ function ftpin($day,$devices) {
 						else{
 							//echo  "driver not found:" .  $d_first . " && " .  $d_last . ":<br />";
 						}
-					}		
-							
-					foreach($availables as $av) {
-						
+					}					
+					foreach($availables as $av) {	
 						if ($av->get_first_name() == $d_first && $av->get_last_name() == $d_last) {
 							$driver_id = $av->get_id();
 						
 							break;
 						}
 					}
-					$drivers[] = $driver_id;	
-					
-					
+					$drivers[] = $driver_id;			
 				}
+				if ($date>$device->get_last_used()) {
+				    $device->set_last_used($date);
+				    $device->set_base($areas[$base]);
+				    $device->set_owner($drivers[0]);
+				    update_dbDevices($device);
+				}		
 				//echo "line 2 = ".$drivers[0].$drivers[1];
 				
 	// line 3

@@ -28,16 +28,18 @@
 				$allDevices = getall_dbDevices();
 					echo('<p><a href="deviceEdit.php?id=new">Add new tablet</a>');
 			        echo('<p>Here are the tablets currently registered with Homeplate:<p>');
-					echo "<table> <tr><td>id</td><td>status</td><td>owner</td>
-									<td>date activated</td><td>last used</td><td>base</td><td>notes</td></tr>";
+					echo "<table> <tr><td>id</td><td>status</td>
+									<td>activated</td><td>last used</td>
+                                    <td>last base</td>
+                                    <td>last driver/owner</td><td>notes</td></tr>";
 					foreach ($allDevices as $device) {
 					    echo "<tr><td><a href='deviceEdit.php?id=" . $device->get_id() ."'>".
 					    	substr($device->get_id(),0,4)."..."."</a></td>"; 
 					    echo "<td>".$device->get_status()."</td>";  
-					    echo "<td>".$device->get_owner()."</td>";  
 					    echo "<td>".$device->get_date_activated()."</td>";  
 					    echo "<td>".pretty($device->get_last_used())."</td>";
 					    echo "<td>".$device->get_base()."</td>";
+					    echo "<td>".$device->get_owner()."</td>";
 					    echo "<td>".$device->get_notes()."</td></tr>";  
 					}
                     echo "</table>";

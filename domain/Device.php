@@ -57,6 +57,9 @@ class Device {
     function set_last_used($last_used) {
     	$this->last_used = $last_used;
     }
+    function set_owner($o) {
+        $this->owner = $o;
+    }
     
 }
 ?>

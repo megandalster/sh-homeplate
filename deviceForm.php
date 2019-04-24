@@ -57,7 +57,16 @@ $(function() {
 		echo ('<option value="inactive"');if ($device->get_status()=='inactive') echo (' SELECTED'); echo('>inactive</option>');
 		echo ('<option value="out of service"');if ($device->get_status()=='out of service') echo (' SELECTED'); echo('>out of service</option>');
 		echo('</select>');
-		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Location: ');
+		
+		echo '<p>Date Activated: <span style="font-size:x-small;color:FF0000">*</span><input type="text" id="date_activated" name="date_activated" size="10" value="';
+		echo $device->get_date_activated();
+		echo '">';
+		
+		echo '<p>Date Last Used: <input type="text" id="last_used" name="last_used" size="10" value="';
+		echo $device->get_last_used();
+		echo '"></p>';
+		
+		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Base: ');
 		echo('<select name="base">');
 		echo ('<option value=""></option>');
 		echo ('<option value="Hilton Head"');if ($device->get_base()=='Hilton Head') echo (' SELECTED'); echo('>Hilton Head</option>');
@@ -66,15 +75,9 @@ $(function() {
 		echo ('<option value="Office"');if ($device->get_base()=='Office') echo (' SELECTED'); echo('>Office Use</option>');
 		echo('</select>');
 		
-		echo '<p>Owner: <input type="text" id="owner" name="owner" value="'.
+		echo '<p>Last Driver/Owner: <input type="text" id="owner" name="owner" value="'.
 				$device->get_owner(). '"></p>';
-		
-		echo '<p>Date Activated: <span style="font-size:x-small;color:FF0000">*</span><input type="text" id="date_activated" name="date_activated" size="10" value="';
-		echo $device->get_date_activated();
-		echo '">';
-		echo '&nbsp;&nbsp;&nbsp;Date Last Used: <input type="text" id="last_used" name="last_used" size="10" value="';
-		echo $device->get_last_used();
-		echo '"></p>';
+
 		echo '<p>Notes: <input type="text" id="notes" name="notes" size="50" value="'.
 				$device->get_notes(). '"></p>';
 		
