@@ -31,7 +31,7 @@
 					echo "<table> <tr><td>id</td><td>status</td>
 									<td>activated</td><td>last used</td>
                                     <td>last base</td>
-                                    <td>last driver/owner</td><td>notes</td></tr>";
+                                    <td>last user</td><td>notes</td></tr>";
 					foreach ($allDevices as $device) {
 					    echo "<tr><td><a href='deviceEdit.php?id=" . $device->get_id() ."'>".
 					    	substr($device->get_id(),0,4)."..."."</a></td>"; 

@@ -225,11 +225,20 @@ function ftpin($day,$devices) {
 							$theVol->set_lastTripDate($yymmdd);
 							$theVol->set_tripCount(($theVol->get_tripCount() + 1));
 							update_dbVolunteers($theVol);
+							if ($date>$device->get_last_used()) {
+							    $device->set_last_used($date);
+							    $device->set_base($areas[$base]);
+							    $device->set_owner($d_first." ".$d_last);
+							    update_dbDevices($device);
+							}	
+							else {
+							    // echo "date not more recent than last used" -- this shouldn't happen
+							}
 						}
 						else{
-							//echo  "driver not found:" .  $d_first . " && " .  $d_last . ":<br />";
+							// echo  "driver not found:" .  $d_first . " && " .  $d_last . ":<br />";
 						}
-					}					
+					}
 					foreach($availables as $av) {	
 						if ($av->get_first_name() == $d_first && $av->get_last_name() == $d_last) {
 							$driver_id = $av->get_id();
@@ -239,12 +248,6 @@ function ftpin($day,$devices) {
 					}
 					$drivers[] = $driver_id;			
 				}
-				if ($date>$device->get_last_used()) {
-				    $device->set_last_used($date);
-				    $device->set_base($areas[$base]);
-				    $device->set_owner($drivers[0]);
-				    update_dbDevices($device);
-				}		
 				//echo "line 2 = ".$drivers[0].$drivers[1];
 				
 	// line 3

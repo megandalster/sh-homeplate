@@ -75,7 +75,7 @@ $(function() {
 		echo ('<option value="Office"');if ($device->get_base()=='Office') echo (' SELECTED'); echo('>Office Use</option>');
 		echo('</select>');
 		
-		echo '<p>Last Driver/Owner: <input type="text" id="owner" name="owner" value="'.
+		echo '<p>Last User: <input type="text" id="owner" name="owner" value="'.
 				$device->get_owner(). '"></p>';
 
 		echo '<p>Notes: <input type="text" id="notes" name="notes" size="50" value="'.
