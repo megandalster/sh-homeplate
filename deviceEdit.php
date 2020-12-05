@@ -57,8 +57,15 @@
 			$id_retype = trim(str_replace('\\\'','',htmlentities(str_replace('&','and',str_replace('#',' ',$_POST['id_retype'])))));
 		}
 		else $id_retype="";
-		$errors = validate_form($id,$old_id,$id_retype); 	//step one is validation, "errors" array lists problems on the form submitted
-		if ($errors) {
+		$status =    $_POST['status'];
+		$base =      $_POST['base'];
+		$owner =     $_POST['owner'];
+		$date_activated =  $_POST['date_activated'];
+		$last_used =  $_POST['last_used'];
+		$notes = $_POST['notes'];
+		//step one is validation, "errors" array lists problems on the form submitted
+		$errors = validate_form($id,$old_id,$id_retype,$date_activated,$status); 	
+		if (sizeof($errors)>0) {
 		// display the errors and the form to fix
 			show_errors($errors);
 			if ($old_id=="new")
@@ -69,7 +76,7 @@
 		}
 		// this was a successful form submission; update the database and exit
 		else
-			process_form($id,$old_id);
+		    process_form($id,$old_id, $status, $base, $owner, $date_activated, $last_used, $notes);
 		echo('</div>');
 		include('footer.inc');
 		echo('</div></body></html>');
@@ -79,14 +86,7 @@
 /**
 * process_form sanitizes data, concatenates needed data, and enters it all into a database
 */
-function process_form($id,$old_id)	{
-	
-		$status =    $_POST['status'];
-		$base =      $_POST['base'];
-		$owner =     $_POST['owner'];
-		$date_activated =  $_POST['date_activated'];
-		$last_used =  $_POST['last_used'];
-		$notes = $_POST['notes'];
+	function process_form($id,$old_id, $status, $base, $owner, $date_activated, $last_used, $notes)	{
 
         //step two: try to make the deletion, addition, or change
 		if($_POST['deleteMe']=="DELETE"){
@@ -124,17 +124,20 @@ function process_form($id,$old_id)	{
 				else echo("<p>You have successfully updated " .$id. " in the database.</p>");
 		}
 }
-function validate_form($id,$old_id,$id_retype){
+function validate_form($id,$old_id,$id_retype,$date_activated,$status){
 	$errors = array();
 	if($old_id=="new"){
-		if (!$_POST['id'] || trim($_POST['id'])=="")    $errors[] = 'Please enter a valid device id';
-		if ($id!=$id_retype) $errors[] = "id and retype do not match";
-		if (!$_POST['date_activated'] || trim($_POST['date_activated'])=="")  $errors[] = 'Please enter a date activated';
+		if (!$id || trim($id)=="" || 
+		    strlen($id)!=16 || $id != strtolower($id))    
+		        $errors[] = 'Please enter a valid device id -- 16 characters and NO caps';
+		if ($id!=$id_retype) 
+		    $errors[] = "id and retype do not match";
+		if (!$date_activated || trim($date_activated)=="")  
+		    $errors[] = 'Please enter a date activated';
+		if ($status=="")
+		    $errors[] = "Please select a status";
 	}
-	if(!$errors)
-		return "";
-		else
-			return $errors;
+	return $errors;
 }
 function show_errors($e){
 	//this function should display all of our errors.
