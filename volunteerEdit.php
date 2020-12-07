@@ -102,7 +102,7 @@
 function process_form($id, $person)	{
 	//step one: sanitize data by replacing HTML entities and escaping the ' character
 		if ($id=='new') {
-			$first_name = trim(str_replace('\\\'', '', htmlentities(str_replace('&', 'and', $_POST['first_name']))));	
+		    $first_name = trim(str_replace(' ','',str_replace('\\\'', '\'', htmlentities(str_replace('&', 'and', $_POST['first_name'])))));	
 		//    $first_name = trim(str_replace('\\\'','',htmlentities(trim($_POST['first_name']))));
 				$last_name = trim(str_replace('\\\'','\'',htmlentities($_POST['last_name'])));
 				$phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
