@@ -421,7 +421,7 @@ if($_POST['submitted'])
 	$food_types = array("Store", "Meat","Deli","Bakery","Grocery","Dairy","Produce","Total");
 	$row_totals = array();
 	$food_type_totals = array("Totals",0,0,0,0,0,0,0);
-	
+
 	echo '<table  id="tblReport"><tr>';
 	foreach($food_types as $food_type)
 		echo "<td>".$food_type."</td>";
