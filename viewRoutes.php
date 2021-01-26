@@ -88,7 +88,7 @@
 		<td> <b> P/U Weight </b> </td>
 		<td> <b> D/O Weight </b> </td>
 		<td> <b> Balance </b> </td>
-		<td> <b> Start-end time </b> </td>
+		<td> <b> Tablet... start time - end time </b> </td>
 	</tr>
 	
 	<?php
@@ -140,6 +140,7 @@
 
 				//echo "routeID.client_id:". $routeID.$client_id . "<br />";
 				$theStop = retrieve_dbStops($routeID.$client_id);
+				if (!$theStop) echo "routeid.clientid = ".$routeID.$client_id;
 				$stopWeight = $theStop->get_total_weight();
 				
 				if($stopWeight > 0){
@@ -168,17 +169,19 @@
 				$first_tablet = $route[$weekday]->get_notes();
 				$j = strpos($first_tablet,","); // see if there's more than one tablet checking in
 				//echo "<td align='center'>"."yes"."</td>";
+				$times = "";
 				while ($j > 0) {
 					$this_tablet = substr($first_tablet,0,$j);
 					$first_tablet = substr($first_tablet,$j+1);
 					$i = strpos($this_tablet,";");
-					$times = substr($this_tablet,$i+1);
+					$times = $times . substr($this_tablet,0,4)."...".substr($this_tablet,$i+1) . ", ";
 					//echo "<td>".substr($this_tablet,0,$i)."</td><td>".$times."</td>";
 					//echo "</tr><tr><td></td><td></td><td></td><td></td><td></td>";
-					$j = strpos($first_tablet,",");
+					
+					$j = strpos($first_tablet,","); 
 				}
 				$i = strpos($first_tablet,";");
-				$times = substr($first_tablet,$i+1);
+				$times = $times . substr($first_tablet,0,4)."...".substr($first_tablet,$i+1);
 				//echo "<td>".substr($first_tablet,0,$i)."</td><td>".$times."</td>";
 				echo "<td>".$times."</td>";
 		  }
