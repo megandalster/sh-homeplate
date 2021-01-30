@@ -167,12 +167,12 @@ function ftpin($day,$devices) {
 			//$filename = 'C:\\Projects\\WebApps\\HomePlate\\homeplateftp1\\ftpin\\'.$yymmdd."-".$area."-".$deviceId.".csv";
 			//echo  dirname(__FILE__) . '/../../../ftpin/' . $yymmdd."-".$area."-".$deviceId.".csv"; //; $yymmdd."-".$area."-".$deviceId.".csv" . "<br />";
 			
-			if (file_exists($filename)) {
+			if (file_exists($filename)) {  // a route was created for this device, so pull the data if theere is any
 				$handle = fopen($filename, "r+");
-				//echo "Processing ftp in file:";
+				//echo "Processing ftpin file:";
 				
 				
-	// line 1			
+	// line 1	--  pull date, base, tablet ID, start, and end times		
 				$line1 = fgetcsv($handle, 0, ";"); 
 				$id = substr($line1[0],0,12);
 				$date = substr($id,0,8);
@@ -187,12 +187,10 @@ function ftpin($day,$devices) {
 				$pos = strpos($r->get_notes(),$deviceId);
 
 				
-				if ($pos === false) { // WEIGHTS ALREADY RECORDED FOR THIS TABLET, SKIP IT
+				if ($pos === false) { // WEIGHTS NOT YET RECORDED FOR THIS TABLET AND AREA
 					
 				}
-				else{
-				
-				//	echo " WEIGHTS ALREADY RECORDED FOR THIS TABLET, SKIP IT<br />";
+				else{ // WEIGHTS ALREADY RECORDED FOR THIS TABLET AND AREA, SO SKIP IT 
 					fclose($handle);
 					continue;
 				}
@@ -288,7 +286,7 @@ function ftpin($day,$devices) {
 				}
 				// if (has_nonzero_pickup_weight($r) || has_nonzero_dropoff_weight($r))
 				update_completed_dbRoutes($r);
-				@unlink($filename);  // delete the file after saving its weights
+				@unlink($filename);  // delete the file after saving/merging its weights
 				// rewrite the file and close it
 				fclose($handle);
 			}

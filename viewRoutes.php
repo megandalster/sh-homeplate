@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  Our copyright notice
+ *  Our copyright noticerouteid.clientid =
  */
  
 	session_start();
@@ -137,12 +137,10 @@
 			echo "<td align='center'>";
 			foreach ($route[$weekday]->get_pickup_stops() as $pickup_id) {
 				$client_id = substr($pickup_id,12);
-
 				//echo "routeID.client_id:". $routeID.$client_id . "<br />";
 				$theStop = retrieve_dbStops($routeID.$client_id);
-				if (!$theStop) echo "routeid.clientid = ".$routeID.$client_id;
-				$stopWeight = $theStop->get_total_weight();
-				
+				if (!$theStop) continue; //echo "routeid.clientid = ".$routeID.$client_id;
+				$stopWeight = $theStop->get_total_weight();	
 				if($stopWeight > 0){
 					$pickUpWeight += $theStop->get_total_weight();
 				}
@@ -154,11 +152,10 @@
 			$dropWeight = 0;			
 			foreach ($route[$weekday]->get_dropoff_stops() as $dropoff_id) {
 				$client_id = substr($dropoff_id,12);
-
 				$theStop = retrieve_dbStops($routeID.$client_id);
 				$stopWeight = $theStop->get_total_weight();
 				if($stopWeight > 0){
-				$dropWeight += $theStop->get_total_weight();
+				    $dropWeight += $theStop->get_total_weight();
 				}
 			}
 			echo "<td align='center'>".$dropWeight ."</td>";

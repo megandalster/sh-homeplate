@@ -161,7 +161,7 @@ class Route {
     }
     // special merge function for pickup and dropoff stops
     // if stop2 has data, 
-    //    if stop1 has no data, or there is no comparable stop1, then
+    //    if stop1 has no data, or there is no comparable stop1,
     //        then replace stop1's data by stop2's
     //    else (stop 1 has data and there is a comparable stop 1) 
     //        add stop2's weights to stop 1's weights
@@ -205,7 +205,7 @@ class Route {
     			    $array3[] = $stop2;
     			}
     		}  
-    		else { // stop2 has no data, so skip it	
+    		else { // stop2 has no data, so skip it	  
     		}
     	}
     	return $array3;
