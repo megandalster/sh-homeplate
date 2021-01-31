@@ -171,43 +171,45 @@ class Route {
     	$originallimit = sizeof($array3);
     	foreach($array2 as $stop2) {
     		$stop2array = explode (",",$stop2);
-    		$found = false;
-    		if ($stop2array[1] != 0) {   // stop2 has data, so deal with it
+    		if (sizeof($stop2array) > 1 && $stop2array[1] != 0) {   // stop2 has data, so deal with it
     			// find a matching stop, if there is one
+    		    $found = false;
     			for ($i=0; $i<$originallimit; $i++) { 
     				$stop1array = explode (",",$array3[$i]);
     				// matching stop
-    				if ($stop1array[0] == $stop2array[0]) {
-    				  $found = true;
-    				  if ($stop1array[1] == 0) { // no data there yet
+    				if ($stop1array[0] == $stop2array[0]) {  // matching stops
+    				  if ($stop1array[1] == 0 && $stop2array[1] > 0) { // no data there yet, so save data from tablet 2
     				  	$array3[$i] = $stop2;
-    					$found = true;
-    					break;
     				  }
-    				  else {			// stop1 has data, keep it
-    				  	$found = true;  
-						if($stop1array[1] > 0 || $stop2array[1] > 0){
-							$thisWeight = 0;
-							if($stop1array[1] > 0){
-								$thisWeight  = $thisWeight  + $stop1array[1] ;
+    				  else 	// stop1 has data, keep it and add stop2 data if any
+    				      if($stop1array[1] > 0 && $stop2array[1] > 0) {
+							$stop1array[1] = $stop1array[1] + $stop2array[1] ;
+							                   // look for pickup breakdowns
+							if (sizeof($stop1array) > 2) {   // and add them individually
+							    $j=2;
+							    while ($j < sizeof($stop1array)) {
+							        $w1 = substr($stop1array[$j],strpos($stop1array[$j],":")+1);
+							        $w2 = substr($stop2array[$j],strpos($stop2array[$j],":")+1);
+// echo "<br>w1, w2, w1+w2 = ".$w1.", ".$w2. ", ".($w1+$w2);
+							        $stop1array[$j] = substr($stop1array[$j],0,strpos($stop1array[$j],":")+1).
+							            ($w1 + $w2);
+							        $j++;
+							    }
 							}
-							if($stop2array[1] > 0){
-								$thisWeight  = $thisWeight  + $stop2array[1] ;
-							}
-							$stop1array[1] = $thisWeight;
-							$array3[$i] = implode(",", $stop1array);
-						}
-    					break;
-    				  }	
+							$array3[$i] = implode(",", $stop1array);						
+    				      }
+    				  $found = true;
+// echo "<br>array3[i] "; var_dump($array3[$i]);
+    				  break;
     				}
-    			} 	
-    			if (!$found) { // we didnt find a match, so append stop2 to the list
-    			    $array3[] = $stop2;
     			}
-    		}  
+    			if (!$found)  // we didnt find a match, so append stop2 to the list
+    			    $array3[] = $stop2;
+    		}
     		else { // stop2 has no data, so skip it	  
     		}
     	}
+// echo "<br>array3 = "; var_dump($array3);
     	return $array3;
     }
 }
