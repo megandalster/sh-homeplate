@@ -153,6 +153,7 @@
 			foreach ($route[$weekday]->get_dropoff_stops() as $dropoff_id) {
 				$client_id = substr($dropoff_id,12);
 				$theStop = retrieve_dbStops($routeID.$client_id);
+				if (!$theStop) continue; //echo "routeid.clientid = ".$routeID.$client_id;
 				$stopWeight = $theStop->get_total_weight();
 				if($stopWeight > 0){
 				    $dropWeight += $theStop->get_total_weight();

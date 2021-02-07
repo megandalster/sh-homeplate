@@ -146,9 +146,10 @@ class Route {
     	$this->dropoff_stops = $dropoff_stops;
     }
 	function merge_notes($notes) {
-		$array_notes = explode(",",$this->notes);
-		$array_notes = array_unique(array_merge($array_notes,array($notes)));
-    	$this->notes = implode(",", $array_notes);
+	    if ($this->notes=="")
+	        $this -> notes = $notes;
+	    else 
+    	    $this->notes = $this->notes . ", " . $notes;
     }
     function merge_drivers($drivers) {
     	$this->drivers = array_unique(array_merge($this->drivers,$drivers));

@@ -117,7 +117,6 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	echo "<br>";
 	
 }
-
 	echo "<p style='text-align:right;'><strong>Total Weight: " . $totalDropoffWeight . "</strong></p>";
 	echo "<p style='text-align:right;'><strong>Difference: " . ($totalPickUpWeight - $totalDropoffWeight) . "</strong></p>";
 if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */) {

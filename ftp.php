@@ -170,8 +170,7 @@ function ftpin($day,$devices) {
 			if (file_exists($filename)) {  // a route was created for this device, so pull the data if theere is any
 				$handle = fopen($filename, "r+");
 				//echo "Processing ftpin file:";
-				
-				
+						
 	// line 1	--  pull date, base, tablet ID, start, and end times		
 				$line1 = fgetcsv($handle, 0, ";"); 
 				$id = substr($line1[0],0,12);
@@ -180,13 +179,8 @@ function ftpin($day,$devices) {
 				$notes = $deviceId.";".$line1[5]."-".$line1[6];
 				$r = get_route($id);
 				
-				//echo $filename . " route id:" . $id  . "<br />";
-				
-				//echo $r->get_notes() . "  " . $tabletid . " strpos = ". strpos($r->get_notes(),"adam") . "<br />";
-				
 				$pos = strpos($r->get_notes(),$deviceId);
-
-				
+		
 				if ($pos === false) { // WEIGHTS NOT YET RECORDED FOR THIS TABLET AND AREA
 					
 				}
@@ -268,25 +262,20 @@ function ftpin($day,$devices) {
 				
 	// save and merge the data, allowing that more than one tablet has uploaded data 
 	// on the same day and area.
-	// do not allow more than one to pickup or dropoff at the same stop.
-				if ($r->get_status()=="completed") { // merging additional tablet's data
-					$r->merge_drivers($drivers);
-					
-					//echo "merging additional tablet's data<br />";
-					$r->merge_pickup_stops(rebuild_original_stops($r, "pickup"), $pickup_stops);
-					$r->merge_dropoff_stops(rebuild_original_stops($r, "dropoff"), $dropoff_stops);
-					$r->merge_notes($notes);
+				if (nonzero_weight($pickup_stops) || nonzero_weight($dropoff_stops)) {  // check that there's data to record
+					   $r->merge_drivers($drivers);	
+					   $r->merge_pickup_stops(rebuild_original_stops($r, "pickup"), $pickup_stops);
+					   $r->merge_dropoff_stops(rebuild_original_stops($r, "dropoff"), $dropoff_stops);
+					   $r->merge_notes($notes);
+					   $r->set_status("completed");
 				}
 				else {
-					$r->set_drivers($drivers);
-					$r->set_pickup_stops($pickup_stops);
-					$r->set_dropoff_stops($dropoff_stops);
-					$r->set_notes($notes);
-					$r->set_status("completed");
+//				    echo "<br>zero-weight route skipped for tablet ". $notes; 
+//				    var_dump($pickup_stops); var_dump($dropoff_stops);
 				}
 				// if (has_nonzero_pickup_weight($r) || has_nonzero_dropoff_weight($r))
 				update_completed_dbRoutes($r);
-				@unlink($filename);  // delete the file after saving/merging its weights
+//				@unlink($filename);  // delete the file after saving/merging its weights
 				// rewrite the file and close it
 				fclose($handle);
 			}
@@ -295,6 +284,15 @@ function ftpin($day,$devices) {
 			}
 		}
 	}
+}
+// see if any stop has a nonzero weight
+function nonzero_weight($stops) {
+    for ($i = 0; $i < sizeof($stops); $i++) {
+        $astop = explode(',',$stops[$i]);
+        if (sizeof($astop) > 1 && $astop[1] > 0)
+            return true;
+    }
+    return false;
 }
 
 //$mytime=$today = strtotime("today")+1209600; //mktime(9, 23, 33, 8, 31, 2013);

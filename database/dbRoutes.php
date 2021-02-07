@@ -185,12 +185,12 @@ function mild_delete_dbRoutes($r) {
 	$query = 'SELECT * FROM dbRoutes WHERE id = "'. $r->get_id() . '"';
 	$result = mysqli_query($con,$query);
 	if ($result==null || mysqli_num_rows($result) == 0) {
-		mysqli_close();
+		mysqli_close($con);
 		return false;
 	}
 	$query='DELETE FROM dbRoutes WHERE id = "'.$r->get_id().'"';
 	$result=mysqli_query($con,$query);
-	mysqli_close();
+	mysqli_close($con);
 	return true;
 }
 /*
