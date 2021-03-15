@@ -178,15 +178,18 @@ function ftpin($day,$devices) {
 				$base = substr($id,9,3);
 				$notes = $deviceId.";".$line1[5]."-".$line1[6];
 				$r = get_route($id);
-				
-				$pos = strpos($r->get_notes(),$deviceId);
-		
-				if ($pos === false) { // WEIGHTS NOT YET RECORDED FOR THIS TABLET AND AREA
-					
+				if ($r) { // if there's a route with this id
+				    $pos = strpos($r->get_notes(),$deviceId);
+				    if ($pos === false) { // WEIGHTS NOT YET RECORDED FOR THIS TABLET AND AREA
+				    }
+				    else{ // WEIGHTS ALREADY RECORDED FOR THIS TABLET AND AREA, SO SKIP IT 
+					   fclose($handle);
+					   continue;
+				    }
 				}
-				else{ // WEIGHTS ALREADY RECORDED FOR THIS TABLET AND AREA, SO SKIP IT 
-					fclose($handle);
-					continue;
+				else{ // no route with this id -- move on
+				    fclose($handle);
+				    continue;
 				}
 				$teamcaptain = $line1[3];
 				
@@ -268,13 +271,11 @@ function ftpin($day,$devices) {
 					   $r->merge_dropoff_stops(rebuild_original_stops($r, "dropoff"), $dropoff_stops);
 					   $r->merge_notes($notes);
 					   $r->set_status("completed");
+					   update_completed_dbRoutes($r);
 				}
 				else {
-//				    echo "<br>zero-weight route skipped for tablet ". $notes; 
-//				    var_dump($pickup_stops); var_dump($dropoff_stops);
+				    echo "<br>zero-weight route ". $id ." skipped for tablet ". $notes; 
 				}
-				// if (has_nonzero_pickup_weight($r) || has_nonzero_dropoff_weight($r))
-				update_completed_dbRoutes($r);
 //				@unlink($filename);  // delete the file after saving/merging its weights
 				// rewrite the file and close it
 				fclose($handle);

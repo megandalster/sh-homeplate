@@ -85,7 +85,7 @@ foreach ($route->get_pickup_stops() as $pickup_id) {
 	}
 	else { // special case for stops created en-route and client isnt in the database
 		$theStop = retrieve_dbStops($routeID.$client_id);
-		if (sizeof($theStop->get_items()) > 0)
+		if ($theStop && sizeof($theStop->get_items()) > 0)
 			$pickup_link = "<a href='viewStop2.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
 		else 
 			$pickup_link = "<a href='viewStop1.php?client_type=donor&stop_id=".$pickup_id."'>".$client_id."</a>";
@@ -172,8 +172,7 @@ echo('<tr><td colspan="2"> Hit <input type="hidden" name="submitted" value="1">'
 echo('<input type="submit" value="Submit" name="Submit"> to add Volunteer, Pick-up, or Drop-off (one at a time).</td></tr></table>');
 }
 else echo "</td></tr></table>";
-if ($route->get_status()!="completed")
-	echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
+echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
 				'<input type="submit" value="Refresh" name="Delete Entry"> to refresh this route in the database. ');
 
 echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Return to routes.</a>";
