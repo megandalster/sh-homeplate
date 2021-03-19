@@ -49,7 +49,9 @@ class Client {
 	private $visit_date;	//		last date visited
 	private $foodsafe_date;	//		last date food safety inspection
 	private $pestctrl_date; //		last date pest control inspection
-	private $number_served;	//		number of people served 
+	private $adults_served;	//		number of adults served 
+	private $children_served;	//		number of children served 
+	private $seniors_served;	//		number of seniors served 
 	// 
 	
 	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
@@ -81,7 +83,9 @@ class Client {
 		$this->visit_date	= $visit_date;
 		$this->foodsafe_date= $foodsafe_date;
 		$this->pestctrl_date= $pestctrl_date;
-		$this->number_served= $number_served;
+		$this->adults_served= $number_served[0];
+		$this->children_served= $number_served[1];
+		$this->seniors_served= $number_served[2];
 		
 		if( $this->type 	== "donor"){
 			$this->weight_type = "foodtype";
@@ -220,8 +224,13 @@ class Client {
 		return $this->pestctrl_date;
 	}
 	function get_number_served(){
-		return $this->number_served;
+		return $this->adults_served;
 	}
-        
+	function get_children_served(){
+	    return $this->children_served;
+	}
+	function get_seniors_served(){
+	    return $this->seniors_served;
+	}
 }
 ?>

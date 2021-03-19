@@ -99,9 +99,15 @@ $(function() {
 			echo date("m/d/Y", $time);
 		}
 		echo '"></td>';
-				echo '<td>Serve/Week: <input type="text" id="number" name="number_served" size="5" value="'.
-					$client->get_number_served(). '"></td>';
-		echo "</tr>";
+		echo '<td>Adults served/Week: <input type="text" id="number" name="number_served" size="5" value="'.
+				$client->get_number_served(). '"></td>';
+					echo '"></td>';
+		echo '<td>Children: <input type="text" id="number" name="children_served" size="5" value="'.
+				$client->get_children_served(). '"></td>';
+					echo '"></td>';
+		echo '<td>Seniors: <input type="text" id="number" name="seniors_served" size="5" value="'.
+				$client->get_seniors_served(). '"></td>';
+					echo "</tr>";
 	}
     echo ('<tr><td>Base<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="area">');

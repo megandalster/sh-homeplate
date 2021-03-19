@@ -16,7 +16,9 @@ function validate_form($id){
 	if($_POST['zip'] != null && strlen($_POST['zip'])!=5) $errors[] = 'Please enter a valid zip code';
 	if($_POST['area']==null)               $errors[] = 'Please enter an Area';
 	if($_POST['type']==null)               $errors[] = 'Please select a Type';
-	if($_POST['number_served']!=null && !is_numeric($_POST['number_served'])) $errors[] = "Please enter a valid number served" ;
+	if($_POST['number_served']!=null && !is_numeric($_POST['number_served'])) $errors[] = "Please enter a valid adults served" ;
+	if($_POST['children_served']!=null && !is_numeric($_POST['children_served'])) $errors[] = "Please enter a valid children served" ;
+	if($_POST['seniors_served']!=null && !is_numeric($_POST['seniors_served'])) $errors[] = "Please enter a valid seniors served" ;
 	if($_POST['phone1']!=null && !valid_phone($_POST['phone1'])) $errors[] = 'Enter a valid food contact phone number (7 or 10 digits)';
 	if($_POST['phone2']!=null && !valid_phone($_POST['phone2'])) $errors[] = 'Enter a valid admin contact phone number (7 or 10 digits)';
     

@@ -7,7 +7,7 @@ class ClientTest extends TestCase {
         $client = new Client("Whole Foods Brunswick", "Whole Foods USA", "HHI", "donor", 
             "123 Maine St", "Brunswick", "ME", "04011", "", "2077253500", 
 	        "","","","","","","Mon,Wed","","", "yes","no", "pounds", "This is a test case",
-            "whole@foods.com","","John","","","","","","","");      
+            "whole@foods.com","","John","","","","","","",array('0','0','0'));      
         $this->assertTrue($client->get_id() == "Whole Foods Brunswick");
         $this->assertTrue($client->get_chain_name() == "Whole Foods USA");
         $this->assertTrue($client->get_address() == "123 Maine St");

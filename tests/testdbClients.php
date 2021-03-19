@@ -9,11 +9,11 @@ class dbClientsTest extends TestCase {
 	    $client1 = new Client("Whole Foods Brunswick", "Whole Foods USA", "HHI", "donor",
 	        "123 Maine St", "Brunswick", "ME", "04011", "", "2077253500",
 	        "","","","","","","Mon,Wed","","", "yes","no", "foodtype", "This is a test case",
-	        "whole@foods.com","","John","","","","","","","");
+	        "whole@foods.com","","John","","","","","","",array('0','0','0'));
         $client2 = new Client("Hannafords Brunswick", "Hannafords", "BFT", "donor", 
             "456 Maine St", "Brunswick", "ME", "04011",  "","2077253600", 
             "","","","","","","Tue,Thu","","", "yes","no", "foodtype", "This is a test case #2",
-            "hanna@fords.com","","Mary","","","","","","","");
+            "hanna@fords.com","","Mary","","","","","","",array('0','0','0'));
 		$this->assertTrue(insert_dbClients($client1));
 		$this->assertTrue(insert_dbClients($client2));
 		
@@ -36,7 +36,7 @@ class dbClientsTest extends TestCase {
 		$client2 = new Client("Hannafords Brunswick", "Hannafords Family Store", "BFT", "donor",
 		    "456 Maine St", "Brunswick", "ME", "04011",  "","2077253600",
 		    "","","","","","","Tue,Thu", "","","yes","no", "foodtype", "This is a test case #2",
-		    "hanna@fords.com","","Mary","","","","","","","");
+		    "hanna@fords.com","","Mary","","","","","","",array('0','0','0'));
 		$this->assertTrue(update_dbClients($client2));
 		$this->assertEquals(retrieve_dbClients($client2->get_id())->get_chain_name(), "Hannafords Family Store");
 		
