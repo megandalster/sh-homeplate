@@ -50,20 +50,12 @@
 				echo "<strong>  Week of ".date('F j, Y', $mondaythisweek)."</strong>  ";
 				echo "<a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">&nbsp;&nbsp;&nbsp;&nbsp;Next>> </a>";
 				?>
-				<strong>&nbsp;&nbsp;&nbsp;&nbsp;(Another week: </strong>
-				<input type="text" onfocus="setRadio(this, 'weekDatePicker');" onchange="setRadio(this, 'weekDatePicker');" id="weekDatePicker" name="weekDatePicker" value="<?= $_POST['weekDatePicker'] ?>" size="10" />
-    			<input type="hidden" name="submitted" value="1"><input type="submit" name="submit" value="SUBMIT and wait 5 sec...">
-    			<?php 
-                if ($_POST['submitted'])
-                    $go_date = substr($_POST['weekDatePicker'],8,2).'-'.substr($_POST['weekDatePicker'],0,2).'-'.substr($_POST['weekDatePicker'],3,2);
-                else $go_date = date('y-m-d',$thisUTC);
-                echo '<a href=viewRoutes.php?area='.$thisArea.'&date='.$go_date.'>... GO)</a>'; 
-                ?>
+				
 </form>
 				<?php 
 				echo "<strong>".$areas[$thisArea]."</strong>";
 				?>
-				 Daily Route Summary  (View other bases:
+				 Daily Route Status Summary  (View other bases:
 				<?php 
 				foreach ($areas as $area=>$areaName) {
 				   if ($thisArea!=$area)
@@ -76,18 +68,7 @@
 </tr>
 	<tr>
 		<td> <b> Route * </b> </td>
-		<td align='right'> <b> Crew </b> </td>
-		<td align='right'> <b> P/U </b> </td>
-		<td align='right'> <b> D/O </b> </td>
-		
-		<!--
-		<td> <b> Data received from truck? </b> </td>
-		<td> <b> Tablet id </b> </td>
-		-->
-
-		<td> <b> P/U Weight </b> </td>
-		<td> <b> D/O Weight </b> </td>
-		<td> <b> Balance </b> </td>
+		<td align='right'> <b> Status </b> </td>
 		<td> <b> Tablet... start time - end time </b> </td>
 	</tr>
 	
@@ -99,9 +80,11 @@
 	$dayUTC = $mondaythisweek;
 	$route = array();
 	$days = array();
+	$pickups = array();
+	$dropoffs = array();
 	foreach ($weekdays as $weekday)
 	{
-		$routeID = date('y-m-d', $dayUTC).'-'.$_GET[area];
+		$routeID = date('y-m-d', $dayUTC).'-'.$_GET['area'];
 		$route[$weekday] = get_route($routeID);
         if (!$route[$weekday] && $thisUTC <= $todayUTC + 1209600) {  // autogenerate routes 2 weeks out from today 
 	        $day = date("D",mktime(0,0,0,substr($routeID,3,2),substr($routeID,6,2),substr($routeID,0,2)));
@@ -121,12 +104,23 @@
 		// if route exists, generate this set of cols
 		if($route[$weekday] != NULL)
 		{	
-			//col 2 : drivers
-			$volunteers = $route[$weekday]->get_drivers();
-			echo "<td align='right'>".sizeof($volunteers)."</td>";
+			//col 2 : status
+		    $status = "scheduled";
+		    if ($route[$weekday]->get_status == "completed")
+		      $status = "entered";
+		    else {
+		        $stopids = $route[$weekday]->get_pickup_stops();
+		        foreach ($stopids as $pickup_id) {
+		          $client_id = substr($pickup_id,12);
+		          $theStop = retrieve_dbStops($routeID.$client_id);
+		          if (!$theStop || $theStop->get_total_weight()==0) continue; //echo "routeid.clientid = ".$routeID.$client_id;
+		          else {$status="entered"; break;}
+		        }
+		    }
+			echo "<td align='right'>".$status."</td>";
 			
-			//col 3 : pickups
-			echo "<td align='right'>".$route[$weekday]->get_num_pickups()."</td>";
+			//col 3 : tablets
+		/*	echo "<td align='right'>".$route[$weekday]->get_num_pickups()."</td>";
 			
 			//col 4 : dropoffs
 			echo "<td align='right'>".$route[$weekday]->get_num_dropoffs()."</td>";
@@ -161,8 +155,8 @@
 			}
 			echo "<td align='center'>".$dropWeight ."</td>";
 			echo "<td align='center'>".($pickUpWeight - $dropWeight) ."</td>";
-			
-			if ($route[$weekday]->get_status()=="completed") {
+			*/
+			if ($route[$weekday]->get_status()=="completed" &&  $route[$weekday]->get_notes() != "") {
 			
 				$first_tablet = $route[$weekday]->get_notes();
 				$j = strpos($first_tablet,","); // see if there's more than one tablet checking in
@@ -208,40 +202,37 @@
 	}
 	?>
 </table>	
-<br><strong>*</strong> View any route's weights by clicking its date.
+<br><strong>*</strong> View a completed route's weights by clicking its date.
+
 <?php
+
+/*
 echo "<br><br><br><strong>$areas[$thisArea]</strong> Weekly Route Schedule";
 echo " for  Week of <strong>".date('F j, Y', $mondaythisweek)."</strong><br><br>  ";
-		//	show_daily_schedule($areas[$thisArea],$mondaythisweek);	
-?>	
-<table>
-<tr>
-<?php 
+		//	show_daily_schedule($areas[$thisArea],$mondaythisweek);		
+echo "<table><tr>";
 foreach ($weekdays as $weekday)
     echo "<td><strong>". $days[$weekday] . "</strong></td>";
-?>
-</tr>
-<tr>
-<?php 
+echo "</tr><tr>"; 
 if ($route[$weekday]) {
 foreach ($weekdays as $weekday) {
+    $pickups[$weekday] = $route[$weekday]->get_pickup_stops();
+    $dropoffs[$weekday] = $route[$weekday]->get_dropoff_stops();
     echo "<td valign='top'><table>";
-    $pickups = $route[$weekday]->get_pickup_stops();
     echo "<tr><td><strong>PICK UPS</strong></td></tr>";
-    foreach ($pickups as $pickup)
+    foreach ($pickups[$weekday] as $pickup)
         echo "<tr><td>".substr($pickup,12)."</td></tr>";
     
-    $dropoffs = $route[$weekday]->get_dropoff_stops();
     echo "<tr><td><strong>DROP OFFS</strong></td></tr>";
-    foreach ($dropoffs as $dropoff)
+    foreach ($dropoffs[$weekday] as $dropoff)
         echo "<tr><td>".substr($dropoff,12)."</td></tr>";
         
     echo "</table></td>";
 }
 }
+echo "</tr></table>";
+*/
 ?>
-</tr>
-</table>
 			</div>
 			<?php include('footer.inc');?>
 		</div>
