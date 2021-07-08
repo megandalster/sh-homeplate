@@ -16,6 +16,7 @@ function validate_form($id){
 	if($_POST['zip'] != null && strlen($_POST['zip'])!=5) $errors[] = 'Please enter a valid zip code';
 	if($_POST['area']==null)               $errors[] = 'Please enter an Area';
 	if($_POST['type']==null)               $errors[] = 'Please select a Type';
+	if($_POST['status']==null)               $errors[] = 'Please select a Status';
 	if($_POST['number_served']!=null && !is_numeric($_POST['number_served'])) $errors[] = "Please enter a valid adults served" ;
 	if($_POST['children_served']!=null && !is_numeric($_POST['children_served'])) $errors[] = "Please enter a valid children served" ;
 	if($_POST['seniors_served']!=null && !is_numeric($_POST['seniors_served'])) $errors[] = "Please enter a valid seniors served" ;

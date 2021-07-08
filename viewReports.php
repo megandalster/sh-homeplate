@@ -296,11 +296,11 @@ if($_POST['submitted'])
 	}
 	else if ($_POST['report_type']=="clientdetail"){
 		echo '<table id="tblReport">';
-		echo "<tr><td><b>Recipient</b></td><td><b>LCFB</b></td><td><b>Charity Trkr</b></td><td><b>Apply Dt</b></td><td><b>Visit Dt</b></td>".
+		echo "<tr><td><b>Recipient</b></td><td><b>Status</b></td><td><b>LCFB</b></td><td><b>Charity Trkr</b></td><td><b>Apply Dt</b></td><td><b>Visit Dt</b></td>".
 				"<td><b>Food Safe Dt</b></td><td><b>Pest Ctrl Dt</b></td><td><b>Adults/Wk</b></td><td><b>Children</b></td><td><b>Seniors</b></td><td><b>Total</b></td>";
 		echo "</tr>";
 		 
-		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "","","", $_POST['deliveryAreaId'], $_POST['report_county']);
+		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "","","", $_POST['deliveryAreaId'], $_POST['report_county'],"");
 		$totalServed = 0;$childrenServed = 0;$seniorsServed = 0;
 		$grandtotalserved = 0;
 		foreach ($allClients as $client) {
@@ -310,7 +310,7 @@ if($_POST['submitted'])
 		    $seniorsServed += $client->get_seniors_served();
 		    $grandtotalserved += $client_total_served;
 			echo '<tr>';
-			echo '<td>'.$client->get_id().'</td><td>'.$client->get_lcfb().'</td><td>'.$client->get_chartrkr().'</td><td align="right">'.
+			echo '<td>'.$client->get_id().'</td><td>'.$client->get_status().'</td><td>'.$client->get_lcfb().'</td><td>'.$client->get_chartrkr().'</td><td align="right">'.
 			pretty($client->get_survey_date()).'</td><td align="right">'.pretty($client->get_visit_date()).'</td>'.'<td align="right">'.
 			pretty($client->get_foodsafe_date()).'</td><td align="right">'.pretty($client->get_pestctrl_date()).'</td><td align="right">'.
 			$client->get_number_served().'</td><td align="right">'.
@@ -319,7 +319,7 @@ if($_POST['submitted'])
 			echo "</tr>";
 		}
 		echo '<tr>';
-		echo '<td><b>Total</b></td><td></td><td></td><td></td><td></td><td></td><td></td><td align="right">'.$totalServed.'</td>'.
+		echo '<td><b>Totals</b></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td align="right">'.$totalServed.'</td>'.
 		  		'<td align="right">'.$childrenServed.'</td><td align="right">'.$seniorsServed.'</td><td align="right">'.$grandtotalserved.'</td>';
 		echo "</tr></table>";
 

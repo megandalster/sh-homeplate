@@ -160,11 +160,11 @@
 						if ($name!="") echo ' with name like "'.$name.'"';
 						if ($availability[0]!="") echo ' with the above Schedule days ';
 						if (sizeof($result)>0) {
+						    $allEmails = array(); // for printing all email
 							echo ' <div id="dvLinkInfo">(select one for more info).</div>';
 							echo '<table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td>
 								<td><strong>Cell</strong></td><td><strong>E-mail</strong></td><td><strong>Status</strong></td><td><strong>Schedule</strong></td>
 								<td><strong>Trips</strong></td><td><strong>Last Date</strong></td></tr>';
-                            $allEmails = array(); // for printing all emails
                             foreach ($result as $vol) {
                             	echo "<tr><td><a href=volunteerEdit.php?id=".$vol->get_id().">" . 
 									$vol->get_last_name() .  ", " . $vol->get_first_name() . "</td><td>" . 
@@ -179,12 +179,25 @@
 								echo "<td>" . $vol->get_tripCount() . "</td>";
 								echo "<td>" . pretty1($vol->get_lastTripDate()) . "</td>";
 								echo "</tr>";
-							}
+                            }
+                            echo '</table>';
+                            
+                            echo "<br><strong>Mailing List</strong><br>";
+                            echo '<table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Address</strong></td>
+								<td><strong>City</strong></td><td><strong>State</strong></td><td><strong>Zip</strong></td></tr>';
+                            foreach ($result as $vol) {
+                                echo "<tr><td>".
+                                    $vol->get_first_name() .  " " . $vol->get_last_name() . "</td><td>" .
+                                    $vol->get_address() . "</td><td>" .
+                                    $vol->get_city() . "</td><td>" .
+                                    $vol->get_state() . "</td><td>" .
+                                    $vol->get_zip() . "</td>";
+                                echo "</tr>";
+                            }
+                            echo '</table>';
 						}
-						echo '</table>';
-                      ?>
-
-					</div>
+						?>
+					    </div>
 						<div style="padding:10px;">
 						<input type="button" value="Print List" onclick="showPrintWindow();" />
 						</div>
@@ -198,6 +211,7 @@
                               echo $email . ", ";
 						
 					}
+
 				?>
 				<!-- below is the footer that we're using currently-->
 				

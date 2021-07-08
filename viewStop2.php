@@ -139,7 +139,7 @@
 					$stop1->set_item(4, "Dairy:".$dairy_weight);
 					$stop1->set_item(5, "Produce:".$produce_weight);
 					$stop1->set_total_weight($tw);
-					$stop1->set_notes($driver_notes);
+					$stop1->set_notes("!".$driver_notes);
 					update_dbStops($stop1);
 				}
 			}

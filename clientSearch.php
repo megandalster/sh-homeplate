@@ -76,7 +76,17 @@
                         echo '<option value="recipient"';   if ($type=="recipient") echo " SELECTED"; echo '>Recipient</option>'; 
                     echo '</select>';
                         
-					if( array_key_exists('s_county', $_POST) ) 
+                    if( !array_key_exists('status', $_POST) )
+                        $status = "";
+                    else $status = $_POST['status'];
+                        echo '&nbsp;&nbsp;Status:<select name="status">';
+                        echo '<option value=""';            if ($status=="")          echo " SELECTED"; echo '>--all--</option>';
+                        echo '<option value="active"';       if ($status=="active")     echo " SELECTED"; echo '>active</option>';
+                        echo '<option value="inactive"';       if ($status=="inactive")     echo " SELECTED"; echo '>inactive</option>';
+                        echo '<option value="former"';   if ($status=="former") echo " SELECTED"; echo '>former</option>';
+                        echo '</select>';
+                        
+                    if( array_key_exists('s_county', $_POST) ) 
                     	$county = $_POST['s_county']; //override the GET variable if we just conducted a search
 					echo '<p>County: <select name="s_county">' .
 							'<option value="">--all--</option>'; 
@@ -125,7 +135,7 @@
 							$area = "";
 						else $area = $_POST['s_area'];
 						$type = $_POST['s_type'];
-						$status = $_POST['s_status'];
+						$status = $_POST['status'];
                         $name = trim(str_replace('\'','&#39;',htmlentities($_POST['s_name'])));
                         
                         $availability = array();
@@ -148,11 +158,11 @@
                         include_once('database/dbClients.php');
      					include_once('domain/Client.php');
 						
-     					$result = getall_clients($area, $type, $lcfb, $name, "","","", $deliveryAreaId, $county);
+     					$result = getall_clients($area, $type, $lcfb, $name, "","","", $deliveryAreaId, $county, $status);
 						
                         echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
-                            if (!$type) echo "client(s)"; 
-                            else echo $type.'s';
+                            if (!$type) echo $status . " client(s)"; 
+                            else echo $status ." ". $type.'s';
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
 						if ($name!="") echo ' with name like "'.$name.'"';
 				
@@ -161,7 +171,10 @@
 						if ($lcfb!="") echo ' with LCFB =  '.$lcfb;
 						if (sizeof($result)>0) {
 							echo ' (select one for more info).';
-							echo '<div><table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Contact (F/A) </strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td><td><strong>Pickup/Dropoff</strong></td></tr>';
+							echo '<div>';
+							echo '<table id="tblReport"> <tr><td><strong>Name</strong></td>';
+							echo '<td><strong>Contact (F/A) </strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td>';
+                            echo '<td><strong>Schedule</strong></td></tr>';
 							 $allEmails = array(); // for printing all emails
 							 
 							foreach ($result as $client) {
@@ -184,15 +197,31 @@
 									echo ("<tr><td></td><td>" .
 										$client->get_ContactName2() ." (A)</td><td>" .
 										$client->get_phone2() . "</td><td>" .
-										$client->get_email2() . "</td><td>");
-									
-									$allEmails[] = $client->get_email2();
-									echo "</td></tr>";
+										$client->get_email2() . "</td><td>").
+										$client->get_address2() ." ". $client->get_city2() ." ". $client->get_state2() ." ". $client->get_zip2();
+								echo "</td></tr>";
 								}
+								$allEmails[] = $client->get_email2();
 							}
+							echo '</table>';
+						
+						echo "<br><strong>Mailing List</strong><br>";
+						echo '<table id="tblReport"> <tr><td><strong>Name</strong></td>';
+						echo '<td><strong>Contact (A) </strong></td><td><strong>Address</strong></td><td><strong>City</strong></td>';
+						echo '<td><strong>State</strong></td><td><strong>Zip</strong></td></tr>';
+						
+						foreach ($result as $client) {
+						    echo "<tr><td>" . $client->get_id() . "</td><td>" .
+						          $client->get_ContactName2() . "</td><td>" .
+						          $client->get_address2() . "</td><td>" .
+						          $client->get_city2() . "</td><td>" .
+						          $client->get_state2() ."</td><td>". $client->get_zip2();
+						    echo "</td></tr>";
 						}
 						echo '</table>';
+						}
 						?>
+						</div>
 						<div style="padding:10px;">
 						<input type="button" value="Print List" onclick="showPrintWindow();" />
 						</div>
@@ -203,10 +232,9 @@
                             if ($email!="")
                               echo $email . ", ";
 				}
-					
 				?>
 				<!-- below is the footer that we're using currently-->
-			</div></div>
+			</div>
 			<?PHP include('footer.inc');?>
 		</div>
 		

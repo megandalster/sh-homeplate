@@ -45,6 +45,13 @@ $(function() {
 		echo '<input type="text" size="35" name="id" tabindex=1 value="">';
 	else echo $client->get_id();
 	
+	echo ('&nbsp;&nbsp;&nbsp;&nbsp;Status: ');
+	echo('<select name="status">');
+	echo ('<option value="active"');if ($client->get_status()=='active') echo (' SELECTED'); echo('>active</option>');
+	echo ('<option value="inactive"');if ($client->get_status()=='inactive') echo (' SELECTED'); echo('>inactive</option>');
+	echo ('<option value="former"');if ($client->get_status()=='former') echo (' SELECTED'); echo('>former</option>');
+	echo('</select>');
+	
 	if ($id=="new" || $client->get_type() == "donor") {
 		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Chain Name: ');
 		echo('<select name="chain_name">');
@@ -107,7 +114,7 @@ $(function() {
 					echo '"></td>';
 		echo '<td>Seniors: <input type="text" id="number" name="seniors_served" size="5" value="'.
 				$client->get_seniors_served(). '"></td>';
-					echo "</tr>";
+		echo "</tr>";
 	}
     echo ('<tr><td>Base<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="area">');

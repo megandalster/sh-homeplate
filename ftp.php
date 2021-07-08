@@ -276,7 +276,7 @@ function ftpin($day,$devices) {
 				else {
 				    echo "<br>zero-weight route ". $id ." skipped for tablet ". $notes; 
 				}
-//				@unlink($filename);  // delete the file after saving/merging its weights
+				@unlink($filename);  // delete the file after saving/merging its weights
 				// rewrite the file and close it
 				fclose($handle);
 			}

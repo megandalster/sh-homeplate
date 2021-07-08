@@ -92,7 +92,7 @@
 						</div><br/><br/>');
 				else {
 					$stop1->set_total_weight($total_weight);
-					$stop1->set_notes($driver_notes);
+					$stop1->set_notes("!".$driver_notes);
 					update_dbStops($stop1);
 				}
 			}

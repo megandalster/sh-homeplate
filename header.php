@@ -41,7 +41,6 @@ h1 {padding-left: 0px; padding-right:165px;}
 		$permission_array['viewRoutes.php']=1;
 		$permission_array['viewStop1.php']=1;
 		$permission_array['viewStop2.php']=1;
-		$permission_array['viewStop3.php']=1;
 		$permission_array['scheduleView.php']=1;
 		//additional pages team captains, coordinators, and boardmembers can view
 		$permission_array['clientSearch.php']=2;
@@ -67,27 +66,32 @@ h1 {padding-left: 0px; padding-right:165px;}
 		$today=date("y-m-d");
 		$week_later = date("y-m-d", strtotime("+1 week"));
 		//they're logged in and session variables are set.
-		echo('<a href="'.$path.'index.php">home</a>');
 		if ($_SESSION['access_level']==0) { // guests
 		    echo('<a href="volunteerEdit.php?id=new'.'"> | apply </a>');
-			echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$week_later.'"> | reports</a>';	
+			echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$week_later.'"> | reports</a>';
+			echo('<a href="'.$path.'logout.php"> | logout</a>');
 		}
-		if($_SESSION['access_level']>=1) // drivers, team captains, and officers 
-		    echo('<a href="'.$path.'viewRoutes.php?area='.$_SESSION['_area'].'&date='.$today.'"> | routes</a>');
-		
-	    if($_SESSION['access_level']>=2) { // team captains and board members
+		else if($_SESSION['access_level']==1) { // drivers and helpers 
+		    $routeID = $today."-".$_SESSION['_area'];
+		    echo('<a href="'.$path.'editRoute.php?routeID='.$routeID.'">today\'s route</a>');
+		    echo('<a href="'.$path.'logout.php"> | logout</a>');
+		}
+	    else { // team captains and board members
+	        echo('<a href="'.$path.'index.php">home</a>');
+	        echo('<a href="'.$path.'viewRoutes.php?area='.$_SESSION['_area'].'&date='.$today.'"> | routes</a>');
 	    	echo('<a href="'.$path.'deviceSearch.php"> | tablets</a>');
 	    	echo('<a href="'.$path.'scheduleView.php?area='.$_SESSION['_area'].'"> | master schedules</a>');	
 	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
 			echo('<a href="'.$path.'affiliateSearch.php"> | affiliates</a>');
 			echo('<a href="'.$path.'deliveryAreaSearch.php"> | areas</a>');
 	    	echo('<a href="'.$path.'clientSearch.php?area='.$_SESSION['_area'].'"> | donors and recipients</a>');
-	    	echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$week_later.'"> | reports</a>';	    
+	    	echo '<a href="'.$path.'viewReports.php?id='.$_SESSION['_area'].'&date='.$today.'&enddate='.$week_later.'"> | reports</a>';	
+	    	echo('<a href="'.$path.'logout.php"> | logout</a>');
 	    //	echo '<a href="'.$path.'log.php"> | log</a>';
 	    }
 	 //   echo('<a href="'.$path.'help.php?helpPage='.$current_page.'" target="_BLANK"> | help</a>');
 	    
-		echo('<a href="'.$path.'logout.php"> | logout</a>');
+		
 	}
 ?>
 </div>

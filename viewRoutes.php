@@ -50,7 +50,15 @@
 				echo "<strong>  Week of ".date('F j, Y', $mondaythisweek)."</strong>  ";
 				echo "<a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">&nbsp;&nbsp;&nbsp;&nbsp;Next>> </a>";
 				?>
-				
+				<strong>&nbsp;&nbsp;&nbsp;&nbsp;(Another week: </strong>
+				<input type="text" onfocus="setRadio(this, 'weekDatePicker');" onchange="setRadio(this, 'weekDatePicker');" id="weekDatePicker" name="weekDatePicker" value="<?= $_POST['weekDatePicker'] ?>" size="10" />
+    			<input type="hidden" name="submitted" value="1"><input type="submit" name="submit" value="SUBMIT and wait 5 sec...">
+    			<?php 
+                if ($_POST['submitted'])
+                    $go_date = substr($_POST['weekDatePicker'],8,2).'-'.substr($_POST['weekDatePicker'],0,2).'-'.substr($_POST['weekDatePicker'],3,2);
+                else $go_date = date('y-m-d',$thisUTC);
+                echo '<a href=viewRoutes.php?area='.$thisArea.'&date='.$go_date.'>... GO)</a>'; 
+                ?>
 </form>
 				<?php 
 				echo "<strong>".$areas[$thisArea]."</strong>";
@@ -69,7 +77,7 @@
 	<tr>
 		<td> <b> Route * </b> </td>
 		<td align='right'> <b> Status </b> </td>
-		<td> <b> Tablet... start time - end time </b> </td>
+		<td> <b> Data source </b> </td>
 	</tr>
 	
 	<?php
@@ -90,7 +98,7 @@
 	        $day = date("D",mktime(0,0,0,substr($routeID,3,2),substr($routeID,6,2),substr($routeID,0,2)));
 			$team_captains = get_team_captains(substr($routeID,9), $day);
 			if (sizeof($team_captains)==0)
-				$team_captain = "Lisa8437152491";   // force a day captain if there are none
+				$team_captain = "";   // no day captain
 			else $team_captain = $team_captains[0]->get_id();
 			$route[$weekday] = make_new_route($routeID,$team_captain);
         }
@@ -119,61 +127,26 @@
 		    }
 			echo "<td align='right'>".$status."</td>";
 			
-			//col 3 : tablets
-		/*	echo "<td align='right'>".$route[$weekday]->get_num_pickups()."</td>";
-			
-			//col 4 : dropoffs
-			echo "<td align='right'>".$route[$weekday]->get_num_dropoffs()."</td>";
-
-		  	//col 5 : status Changed to P/U and D/O weights
-			
-			$pickUpWeight = 0;		
-			echo "<td align='center'>";
-			foreach ($route[$weekday]->get_pickup_stops() as $pickup_id) {
-				$client_id = substr($pickup_id,12);
-				//echo "routeID.client_id:". $routeID.$client_id . "<br />";
-				$theStop = retrieve_dbStops($routeID.$client_id);
-				if (!$theStop) continue; //echo "routeid.clientid = ".$routeID.$client_id;
-				$stopWeight = $theStop->get_total_weight();	
-				if($stopWeight > 0){
-					$pickUpWeight += $theStop->get_total_weight();
-				}
-				
-			//	echo $theStop->get_total_weight() . "<br />";
-			}
-			echo $pickUpWeight ."</td>";
-			
-			$dropWeight = 0;			
-			foreach ($route[$weekday]->get_dropoff_stops() as $dropoff_id) {
-				$client_id = substr($dropoff_id,12);
-				$theStop = retrieve_dbStops($routeID.$client_id);
-				if (!$theStop) continue; //echo "routeid.clientid = ".$routeID.$client_id;
-				$stopWeight = $theStop->get_total_weight();
-				if($stopWeight > 0){
-				    $dropWeight += $theStop->get_total_weight();
-				}
-			}
-			echo "<td align='center'>".$dropWeight ."</td>";
-			echo "<td align='center'>".($pickUpWeight - $dropWeight) ."</td>";
-			*/
-			if ($route[$weekday]->get_status()=="completed" &&  $route[$weekday]->get_notes() != "") {
-			
-				$first_tablet = $route[$weekday]->get_notes();
-				$j = strpos($first_tablet,","); // see if there's more than one tablet checking in
-				//echo "<td align='center'>"."yes"."</td>";
+			//col 3 : data sources
+			if ($route[$weekday]->get_notes() != "") {
+			    $first_tablet = $route[$weekday]->get_notes();
+			    $j = strpos($first_tablet,","); // see if there's more than one enterer -- tablet or person
 				$times = "";
 				while ($j > 0) {
 					$this_tablet = substr($first_tablet,0,$j);
 					$first_tablet = substr($first_tablet,$j+1);
 					$i = strpos($this_tablet,";");
-					$times = $times . substr($this_tablet,0,4)."...".substr($this_tablet,$i+1) . ", ";
-					//echo "<td>".substr($this_tablet,0,$i)."</td><td>".$times."</td>";
-					//echo "</tr><tr><td></td><td></td><td></td><td></td><td></td>";
-					
+					if ($i>0) // it's a tablet
+					    $times = $times . substr($this_tablet,0,4)."...".substr($this_tablet,$i+1) . ", ";
+					else //it's a person
+					    $times = $times . substr($this_tablet,0,$j). ", ";
 					$j = strpos($first_tablet,","); 
 				}
 				$i = strpos($first_tablet,";");
-				$times = $times . substr($first_tablet,0,4)."...".substr($first_tablet,$i+1);
+				if ($i>0) // it's a tablet
+				    $times = $times . substr($first_tablet,0,4)."...".substr($first_tablet,$i+1);
+				else // it's a person
+				    $times = $times . $first_tablet;
 				//echo "<td>".substr($first_tablet,0,$i)."</td><td>".$times."</td>";
 				echo "<td>".$times."</td>";
 		  }
@@ -183,17 +156,11 @@
 		// else, use defaults
 		else
 		{	
-			// col 2 : driver (blank)
+			// col 2 : status
 			echo "<td></td>";
 			
-			// col 3 : pickups (blank)
+			// col 3 : tablet ids
 			echo "<td></td>";
-			
-			// col 4 : dropoffs (blank)
-			echo "<td></td>";
-			
-			//col 5 : status
-			echo "<td></td><td></td><td></td><td></td>";
 		}
 		
 		// end row
@@ -206,32 +173,35 @@
 
 <?php
 
-/*
-echo "<br><br><br><strong>$areas[$thisArea]</strong> Weekly Route Schedule";
-echo " for  Week of <strong>".date('F j, Y', $mondaythisweek)."</strong><br><br>  ";
-		//	show_daily_schedule($areas[$thisArea],$mondaythisweek);		
-echo "<table><tr>";
-foreach ($weekdays as $weekday)
-    echo "<td><strong>". $days[$weekday] . "</strong></td>";
-echo "</tr><tr>"; 
-if ($route[$weekday]) {
-foreach ($weekdays as $weekday) {
-    $pickups[$weekday] = $route[$weekday]->get_pickup_stops();
-    $dropoffs[$weekday] = $route[$weekday]->get_dropoff_stops();
-    echo "<td valign='top'><table>";
-    echo "<tr><td><strong>PICK UPS</strong></td></tr>";
-    foreach ($pickups[$weekday] as $pickup)
-        echo "<tr><td>".substr($pickup,12)."</td></tr>";
-    
-    echo "<tr><td><strong>DROP OFFS</strong></td></tr>";
-    foreach ($dropoffs[$weekday] as $dropoff)
-        echo "<tr><td>".substr($dropoff,12)."</td></tr>";
-        
-    echo "</table></td>";
-}
-}
-echo "</tr></table>";
-*/
+ echo "<br><br><br><strong>$areas[$thisArea]</strong> Weekly Route Schedule";
+ echo " for  Week of <strong>".date('F j, Y', $mondaythisweek)."</strong><br><br>  ";
+ //	show_daily_schedule($areas[$thisArea],$mondaythisweek);
+ echo "<table><tr>";
+ foreach ($weekdays as $weekday)
+   echo "<td><strong>". $days[$weekday] . "</strong></td>";
+ echo "</tr><tr>";
+ 
+ foreach ($weekdays as $weekday) {
+   if ($route[$weekday]) {
+     $pickups[$weekday] = $route[$weekday]->get_pickup_stops();
+     $dropoffs[$weekday] = $route[$weekday]->get_dropoff_stops();
+     echo "<td valign='top'><table>";
+
+     echo "<tr><td><strong>PICK UPS</strong></td></tr>";
+     foreach ($pickups[$weekday] as $pickup)
+       echo "<tr><td>".substr($pickup,12)."</td></tr>";
+ 
+     echo "<tr><td><strong>DROP OFFS</strong></td></tr>";
+     foreach ($dropoffs[$weekday] as $dropoff)
+       echo "<tr><td>".substr($dropoff,12)."</td></tr>";
+ 
+     echo "</table></td>";
+   }
+   else echo "<td valign='top'><table></table></td>";
+  
+ }
+ echo "</tr></table>";
+
 ?>
 			</div>
 			<?php include('footer.inc');?>

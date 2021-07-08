@@ -31,7 +31,7 @@ function retrieve_dbClients($id){
 	    $result_row['weight_type'], $result_row['notes'],  $result_row['email'],$result_row['email2'], $result_row['ContactName'],
 	    $result_row['ContactName2'], $result_row['deliveryAreaId'],
 	    $result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['pestctrl_date'], 
-	    explode(',',$result_row['number_served'])
+	    explode(',',$result_row['number_served']),$result_row['status']
 	    );
 	mysqli_close($con);
 	return $theClient;
@@ -50,7 +50,7 @@ function getall_dbClients(){
 	        $result_row['weight_type'], $result_row['notes'],  $result_row['email'],$result_row['email2'], $result_row['ContactName'],
 	        $result_row['ContactName2'], $result_row['deliveryAreaId'],
 	        $result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['pestctrl_date'], 
-	        explode(',',$result_row['number_served'])
+	        explode(',',$result_row['number_served']),$result_row['status']
 	        );
 		$theClients[] = $theClient;
 	}
@@ -58,11 +58,12 @@ function getall_dbClients(){
 	return $theClients;
 }
 
-function getall_clients($area, $type, $lcfb, $name, $dayHHI,$daySUN,$dayBFT, $deliveryAreaId, $county) {
+function getall_clients($area, $type, $lcfb, $name, $dayHHI,$daySUN,$dayBFT, $deliveryAreaId, $county, $status) {
 	$con=connect();
 	if ($dayHHI=="") { // query for retrieving clients with search criteria for reporting
         $query = "SELECT * FROM dbClients WHERE area like '%". $area . "%' ";
             if($type)           $query .= "AND type = '". $type . "' ";
+            if($status)        $query .= "AND status = '". $status . "' ";
             if($lcfb)         $query .= "AND lcfb = '" . $lcfb . "' ";
             if($name)           $query .= "AND id LIKE '%" . $name ."%' ";
 			if($deliveryAreaId)	$query .= "AND deliveryAreaId=" . $deliveryAreaId . " ";
@@ -77,6 +78,7 @@ function getall_clients($area, $type, $lcfb, $name, $dayHHI,$daySUN,$dayBFT, $de
         else
             $query .= "WHERE daysBFT LIKE '%".$dayBFT."%' ";
         if($type)           $query .= "AND type = '". $type . "' ";
+        if($status)        $query .= "AND status = '". $status . "' ";
 	}
     $query .= "ORDER BY id";
     $result = mysqli_query ($con,$query);
@@ -89,7 +91,7 @@ function getall_clients($area, $type, $lcfb, $name, $dayHHI,$daySUN,$dayBFT, $de
             $result_row['weight_type'], $result_row['notes'],  $result_row['email'],$result_row['email2'], $result_row['ContactName'],
             $result_row['ContactName2'], $result_row['deliveryAreaId'],
             $result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['pestctrl_date'], 
-            explode(',',$result_row['number_served'])
+            explode(',',$result_row['number_served']),$result_row['status']
             );
 		$theClients[] = $theClient;  
     }
@@ -142,7 +144,8 @@ function insert_dbClients($client){
 				$client->get_visit_date() ."','".
 				$client->get_foodsafe_date() ."','".
 				$client->get_pestctrl_date() ."','".
-				$number_served .
+				$number_served . "','".
+				$client->get_status() .
 				"');";
 	$result = mysqli_query($con,$query);
 	if (!$result) {
@@ -195,7 +198,7 @@ function getall_dbClientsForArea($deliveryAreaId){
 	        $result_row['weight_type'], $result_row['notes'],  $result_row['email'],$result_row['email2'], $result_row['ContactName'],
 	        $result_row['ContactName2'], $result_row['deliveryAreaId'],
 	        $result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['pestctrl_date'], 
-	        explode(',',$result_row['number_served'])
+	        explode(',',$result_row['number_served']),$result_row['status']
 	        );
 		$theClients[] = $theClient;
 	}

@@ -27,8 +27,8 @@
      		//		include_once('database/dbLog.php');
      				if($_SESSION['_id']!="guest"){
      				    $person = retrieve_dbVolunteers($_SESSION['_id']);
-     					$first_name = $person->get_first_name();
-     					echo "<p>Welcome, ".$first_name.", to <i>Homeplate</i>! ";
+     				    $_SESSION['name'] = $person->get_first_name()." ".$person->get_last_name();
+     				    echo "<p>Welcome, ".$_SESSION['name'].", to <i>Homeplate</i>! ";
      				}
      				else
      				    echo "<p>Welcome to <i>Homeplate</i>! ";
@@ -86,7 +86,7 @@
 						 }
 						 echo('<br clear="all">');
 					}
-					echo "<p>Please select an item from the menu above for all other scheduling activities.";
+					echo "<p>Please select an item from the menu above.";
 				}
 				?>
 				<br clear="all">

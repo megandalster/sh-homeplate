@@ -49,7 +49,7 @@ if($_POST['_form_submit'] == 1)
 	echo "<p>".$message;
 	include('routeForm.inc');
 }
-else if ($_POST['deleteMe']=="DELETE") {
+else if ($_POST['deleteMe']=="DELETE" && $_SESSION['access_level']>=2) {
 	echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Return to routes.</a>";
 	echo('</div></div>');
 	include('footer.inc');
@@ -90,5 +90,19 @@ function process_form($_POST_PARAM, &$route)
 		return ("Route deleted: ". $route->get_area() . " " . $route->get_day());
 	}
 	return "No changes made!";
+}
+function add_enterer(&$theStop, &$route) {
+    if (substr($theStop->get_notes(),0,1)=="!") {
+        $theStop->set_notes(substr($theStop->get_notes(),1)); // remove marker
+        update_dbStops($theStop);
+        if (strpos($route->get_notes(),$_SESSION['name'])!==false) 
+            return;  // don't duplicate the enterer's name
+        else {
+            $route->merge_notes($_SESSION['name']); // otherwise track the enterer
+            $route->set_status("completed");
+            mild_update_dbRoutes($route);
+        }
+    }
+    return;
 }
 ?>
