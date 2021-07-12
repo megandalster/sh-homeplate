@@ -10,7 +10,7 @@
 function validate_form($id){
 	if($id=='new' && ($_POST['first_name']==null || $_POST['first_name']=='new')) $errors[] = 'Please enter a first name';
 	if($id=='new' && $_POST['last_name']==null) $errors[] = 'Please enter a last name';
-	if($id=='new' && !valid_phone($_POST['phone1'])) $errors[] = 'Please enter a valid primary phone number (10 digits: ###-###-####)';
+	if($id=='new' && !valid_phone($_POST['first_name'],$_POST['phone1'])) $errors[] = 'Please enter a valid primary phone number (10 digits: ###-###-####)'.$id;
 	if($_POST['city']==null) $errors[] = 'Please enter a city';
 	if($_POST['address']==null) $errors[] = 'Please enter an address';
 	if($_POST['state']==null) $errors[] = 'Please enter a state';
@@ -21,7 +21,7 @@ function validate_form($id){
 	if($_POST['type']==null && $_SESSION['access_level']>=1) $errors[] = 'Please select a Role';
 	if ($_POST['type']!=null && $_SESSION['access_level']<=1 && (in_array('teamcaptain',$_POST['type']) || in_array('boardmember',$_POST['type']) || in_array('coordinator',$_POST['type'])))
 		$errors[] = "Sorry, you can't promote yourself to a higher role.";
-	if($_POST['phone2']!=null && !valid_phone($_POST['phone2'])) $errors[] = 'Please enter a valid secondary phone number (10 digits: ###-###-####)';
+	if($_POST['phone2']!=null && !valid_phone($id,$_POST['phone2'])) $errors[] = 'Please enter a valid secondary phone number (10 digits: ###-###-####)';
 	if(!valid_email($_POST['email']) && $_POST['email']!=null) $errors[] = "Please enter a valid email";
 	if(($_POST['DateOfBirth_Month']!=="" || $_POST['DateOfBirth_Day']!=="") && $_POST['DateOfBirth_Year']==="")
 		$birthday = "XX-".$_POST['DateOfBirth_Month'].'-'.$_POST['DateOfBirth_Day'];
@@ -39,7 +39,8 @@ function validate_form($id){
 *		it should be between 7 and 11 digits
 * returns boolean if phone is valid
 */
-function valid_phone($phone){
+function valid_phone($id,$phone){
+        if ($id=="Beaufort" || $id=="HiltonHead" || $id=="Bluffton") return true;  // phone can be null for crew logins
 		if($phone==null) return false;
 		$phone = str_replace(' ','',str_replace('+','',str_replace('(','',str_replace(')','',str_replace('-','',$phone)))));
 		$test = str_replace('0','',str_replace('1','',str_replace('2','',str_replace('3','',str_replace('4','',str_replace('5','',str_replace('6','',str_replace('7','',str_replace('8','',str_replace('9','',$phone))))))))));

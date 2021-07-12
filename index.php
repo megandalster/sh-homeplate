@@ -29,6 +29,8 @@
      				    $person = retrieve_dbVolunteers($_SESSION['_id']);
      				    $_SESSION['name'] = $person->get_first_name()." ".$person->get_last_name();
      				    echo "<p>Welcome, ".$_SESSION['name'].", to <i>Homeplate</i>! ";
+     				    echo "Check that today's route is in . $_SESSION['area'] . " and then hit <b>Today's Route </b> above.";
+     				        
      				}
      				else
      				    echo "<p>Welcome to <i>Homeplate</i>! ";

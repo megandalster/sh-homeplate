@@ -33,7 +33,7 @@ else if ($_SESSION['access_level']>=2) {
 <p><strong><?PHP echo($route->get_area())." route for ".$route->get_day()?></strong>
 <?php 
 
-echo ('<p><table><tr><td>Crew: ');
+echo ('<p><table><tr><td>Check Today\'s Crew: ');
 echo ('</td><td>Pick-ups -- weights'); 
 echo ('</td><td>Drop-offs -- weights'); 
 echo ('</td></tr>');
@@ -45,10 +45,15 @@ if (sizeof($route->get_drivers())==0 && $route->get_status()=="completed")
 else
 foreach ($route->get_drivers() as $driver_id) {
     $driver = retrieve_dbVolunteers($driver_id);
-	if ($driver)
+    if ($driver) 
 	    $name = $driver->get_first_name() . ' ' . $driver->get_last_name();
-	else $name = $driver_id;
-	echo $name."<br>";
+    else $name = $driver_id;
+    echo '<input type="checkbox" name="onboard[]" value=' . $driver_id;
+//    if (strpos($st,$key)!==false) echo(' CHECKED');
+    echo '>' . $name ."<br>";
+//    echo ('<input type="checkbox" name="type[]" value=' . $key);
+//    if (strpos($st,$key)!==false) echo(' CHECKED');
+//    echo ('>' . $value . '&nbsp;&nbsp;');
 }
 
 echo "</td><td valign='top'>";
@@ -153,7 +158,7 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 
 	echo '</td></tr>';
 	echo('<tr><td colspan="2"> Hit <input type="hidden" name="submitted" value="1">');
-	echo('<input type="submit" value="Submit" name="Submit"> to add Volunteer, Pick-up, or Drop-off (one at a time).</td></tr></table>');
+	echo('<input type="submit" value="Submit" name="Submit"> to select Crew, add a Volunteer, Pick-up, or Drop-off (one at a time).</td></tr></table>');
 //}
 //else echo "</td></tr></table>";
 // echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
