@@ -27,6 +27,8 @@ include_once('database/dbStops.php');
 $routeID = $_GET['routeID'];
 $route = get_route($routeID);
 $day = date("D",mktime(0,0,0,substr($routeID,3,2),substr($routeID,6,2),substr($routeID,0,2)));
+$today = date('y-m-d');
+
 $team_captains = get_team_captains(substr($routeID,9), $day);
 if (sizeof($team_captains)==0)
 	$team_captain = "Lisa8437152491";   // force a day captain if there are none
@@ -45,7 +47,7 @@ if(! $route)
 
 if($_POST['_form_submit'] == 1)
 {
-	$message = process_form($_POST, $route);
+	$message = process_form($_POST, $route, $today);
 	echo "<p>".$message;
 	include('routeForm.inc');
 }
@@ -64,15 +66,38 @@ else {
  * adds and removes drivers, pick-ups, and drop-offs and
  * returns a message reporting the result
  */
-function process_form($_POST_PARAM, &$route)
+function process_form($_POST_PARAM, &$route, $today)
 {
-	// add a new driver to the route, but don't disturb weights on existing stops
-	if ($_POST['add_driver']) {
-		$route->add_driver($_POST['add_driver']);
-		mild_update_dbRoutes($route);
-		$driver = retrieve_dbVolunteers($_POST['add_driver']);
-		return ("New crew member added: ". $driver->get_first_name() . " " . $driver->get_last_name());
-	}
+    // add a new driver to the route, but don't disturb weights on existing stops
+    if ($_POST['add_driver']) {
+        $route->add_driver($_POST['add_driver']);
+        mild_update_dbRoutes($route);
+        $driver = retrieve_dbVolunteers($_POST['add_driver']);
+        return ("New crew member added: ". $driver->get_first_name() . " " . $driver->get_last_name());
+    }
+    // update drivers' Trip Count and Last Trip Date
+  //  if ($_POST['onboard']) {
+        $routedate =  substr($route->get_id(),0,8);
+        foreach ($route->get_drivers() as $driver_id) {
+            $driver = retrieve_dbVolunteers($driver_id);
+            $result = false;
+            if (!in_array($driver_id, $_POST['onboard'])) {  // driver is ununchecked -- remove this date from his last trips
+ //               echo "<br><br>before removal ".$routedate; var_dump($driver->get_lastTripDates(), $driver->get_tripCount());
+                $result = $driver->remove_lastTripDates($routedate);
+ //               echo "<br>after removal ".$routedate; var_dump($driver->get_lastTripDates(), $driver->get_tripCount());
+                if ($result)
+                    update_dbVolunteers($driver); // update only if there is a change
+            }
+            else {  // driver is checked -- add this date to his last trips
+//                echo "<br><br>before insert ".$routedate; var_dump($driver->get_lastTripDates(), $driver->get_tripCount());
+                $result = $driver->insert_lastTripDates($routedate);
+//                echo "<br>after insert ".$routedate; var_dump($driver->get_lastTripDates(), $driver->get_tripCount());
+                if ($result)
+                    update_dbVolunteers($driver); // update only if there is a change
+            }
+        }
+        return ("Crew onboard updated");
+//    }
 	// add a new pick up to the route, but don't disturb weights on existing stops
 	if ($_POST['add_pickup']) {
 		$route->add_pick_up($_POST['add_pickup']);

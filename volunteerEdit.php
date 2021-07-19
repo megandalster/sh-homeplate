@@ -66,11 +66,15 @@
 				$first_name = trim($_POST['first_name']);
 				$last_name = $_POST['last_name'];
 				$phone1 = $_POST['phone1'];
+				$tripCount = 0;
+				$lastTripDates = "";
 		}
 		else {
 				$first_name = $person->get_first_name();
 				$last_name = $person->get_last_name();
 				$phone1 = $person->get_phone1();
+				$tripCount = $person->get_tripCount();
+				$lastTripDates = implode(',',$person->get_lastTripDates());
 		}
 		$person = new Volunteer($last_name, $first_name, $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
 								 $phone1, $_POST['phone2'], $_POST['email'], implode(',',$_POST['type']),
@@ -79,7 +83,7 @@
                                  $avail, $_POST['schedule'], $_POST['history'],
                                  $_POST['birthday'],
                                  $_POST['start_date'],
-                                 $_POST['notes'], $_POST['old_pass'], $_POST['tripCount'], $_POST['lastTripDate'], 
+                                 $_POST['notes'], $_POST['old_pass'], $tripCount, $lastTripDates, 
 								 $_POST['volunteerTrainingDate'], $_POST['driverTrainingDate'], $_POST['shirtSize'], $_POST['affiliateId']);
 		$errors = validate_form($id); 	//step one is validation.
 									// errors array lists problems on the form submitted
@@ -107,12 +111,16 @@ function process_form($id, $person)	{
 				$last_name = trim(str_replace('\\\'','\'',htmlentities($_POST['last_name'])));
 				$phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
 				$clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
+				$tripCount = 0;
+				$lastTripDates = "";
 		}
 		else {
 				$first_name = $person->get_first_name();
 				$last_name = $person->get_last_name();
 				$phone1 = $person->get_phone1();
 				$clean_phone1 = $phone1;
+				$tripCount = $person->get_tripCount();
+				$lastTripDates = implode(',',$person->get_lastTripDates());
 		}
 		$address = trim(str_replace('\\\'','\'',htmlentities($_POST['address'])));
 		$city = trim(str_replace('\\\'','\'',htmlentities($_POST['city'])));
@@ -142,12 +150,7 @@ function process_form($id, $person)	{
 		$history = $_POST['history'];
 		$pass = $_POST['password'];
 		$shirtSize = $_POST['shirtSize'];
-		$tripCount = $_POST['tripCount'];
-		$lastTripDate = substr($_POST['lastTripDate'],8,2)."-".substr($_POST['lastTripDate'],0,2)."-".
-		  		substr($_POST['lastTripDate'],3,2);
-		if (strlen($lastTripDate) < 8) $lastTripDate = '';
-		$volunteerTrainingDate = substr($_POST['volunteerTrainingDate'],8,2)."-".substr($_POST['volunteerTrainingDate'],0,2)."-".
-								substr($_POST['volunteerTrainingDate'],3,2);
+		
 		if (strlen($volunteerTrainingDate) < 8) $volunteerTrainingDate = '';
 		$driverTrainingDate = substr($_POST['driverTrainingDate'],8,2)."-".substr($_POST['driverTrainingDate'],0,2)."-".
 								substr($_POST['driverTrainingDate'],3,2);
@@ -165,7 +168,7 @@ function process_form($id, $person)	{
 		$newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
                 		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
                 		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass,
-						$tripCount, $lastTripDate, $volunteerTrainingDate, $driverTrainingDate, $shirtSize, $affiliateId);
+						$tripCount, $lastTripDates, $volunteerTrainingDate, $driverTrainingDate, $shirtSize, $affiliateId);
         
 	//step two: try to make the deletion, password change, addition, or change
 		if($_POST['deleteMe']=="DELETE"){

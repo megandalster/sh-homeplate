@@ -41,6 +41,7 @@
 	$client_type = $_GET['client_type'];
 	$area = substr($_GET['stop_id'],9,3);
 	$ndate = substr($_GET['stop_id'],0,8);
+	$balance = $_GET['balance'];
 	$date = date('l, F j, Y', mktime(0,0,0,substr($ndate,3,2),substr($ndate,6,2),substr($ndate,0,2)));
 	$client_items = "";
 	
@@ -68,6 +69,7 @@
 			<!-- Display the associated route, driver and date of the stop -->
 			<p>Area: <?php echo($areas[$area])?><br />
 			   Date: <?php echo($date)?></p>
+			   Balance on truck: <?php echo($balance)?></p>
 			
 			<!-- The data entry field for total weight and driver notes -->
 			<form method = "post">
@@ -91,7 +93,8 @@
 					echo('<div class = "warning"><b>Please enter a valid total weight</b>
 						</div><br/><br/>');
 				else {
-					$stop1->set_total_weight($total_weight);
+				    $stop1->set_total_weight($total_weight);
+				    $balance = $balance - $total_weight;
 					$stop1->set_notes("!".$driver_notes);
 					update_dbStops($stop1);
 				}

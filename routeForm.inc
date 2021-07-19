@@ -12,49 +12,64 @@
  *	@author Allen Tucker
  *	@version 4/15/2012
  */
-$today = date('y-m-d');
-// for drivers, only today's route can be edited by adding weights for individual stops
-if($_SESSION['access_level']==1 && substr($route->get_id(),0,8)==$today) {
-    echo "<p>Welcome, ".$_SESSION['name'].", to <i>Homeplate</i>! ";
-	echo('<p>Here you can record pickup and delivery weights for today\'s route.' .
-	     '<br><br><i>When you have completed your route</i>, please' . 
-	     '<br>&nbsp;&nbsp;&nbsp;&nbsp;1. check that the <b>Balance</b> below is 0 (if the truck is empty), and' .  
-         '<br>&nbsp;&nbsp;&nbsp;&nbsp;2. hit <b>logout</b> above to sign out.</p><p>');
+$routedate = substr($route->get_id(),0,8);
+$thisUTC = mktime(0,0,0,substr($today,3,2),substr($today,6,2),substr($today,0,2));
+$twoweeksagoUTC = $thisUTC - 1209600;
+$twoweeksago = date('y-m-d',$twoweeksagoUTC);
+echo '<p><strong>'.$route->get_area()." route for ".$route->get_day().'</strong>';
+// for today's route only, a crew member can record crew names and add weights for individual stops
+if($_SESSION['access_level']==1 && $routedate==$today) {
+    echo('<p>Here you can check in the onboard crew and record the weights for each stop on today\'s route.' .
+        '<br>&nbsp;&nbsp;&nbsp;&nbsp;1. Check the Scheduled <b>Crew</b> members who are onboard the truck, and hit <b>Submit</b> below.' .
+        '<br>&nbsp;&nbsp;&nbsp;&nbsp;2. For each Pick-up or Drop-off <b>stop</b>, select it below to record its food weights.</p><p>' .
+        '<i>At the end of the route</i>:' . 
+	     '<br>&nbsp;&nbsp;&nbsp;&nbsp;1. Check that the <b>Balance</b> below is 0 (the truck is empty), and' .  
+         '<br>&nbsp;&nbsp;&nbsp;&nbsp;2. Hit <b>logout</b> above to sign out.</p><p>');
 }
-// current and future routes can be edited by adding and removing drivers 
+// recent routes can be edited by coordinators by adjusting crew members and weights for individual stops 
 else if ($_SESSION['access_level']>=2) {
-	echo('<p><strong>Route Information Form</strong><br />');
-	echo('You can make changes to this route at the bottom of the form.</p><p>');
+    if ($routedate < $twoweeksago)
+        echo('<p>Here you can update the weights for any of this route\'s <b>stops</b>.');
+    else if ($routedate > $today)
+        echo('<p>Here you can add to the <b>Scheduled Crew</b> or <b>stops</b> to this route.');
+    else echo('<p>Here you can update the onboard crew and the weights for any of this route\'s <b>stops</b>.');
+	if ($today>=$routedate && $routedate >= $twoweeksago) {
+	   echo('<br>&nbsp;&nbsp;&nbsp;&nbsp;Checks indicate the onboard crew members for this route.');
+	   echo('<br>&nbsp;&nbsp;&nbsp;&nbsp;(Trip counts are automatically adjusted if you make changes.)');
+	}
+	echo('<br><br>When you are done, hit <b>Return to routes</b> at the bottom.</p><p>');
 }
 
 ?>
 <form method="POST"><input type="hidden" name="_form_submit" value="1">
 
-<p><strong><?PHP echo($route->get_area())." route for ".$route->get_day()?></strong>
 <?php 
 
-echo ('<p><table><tr><td>Check Today\'s Crew: ');
-echo ('</td><td>Pick-ups -- weights'); 
-echo ('</td><td>Drop-offs -- weights'); 
+echo ('<p><table><tr><td><b>Scheduled Crew</b>: ');
+echo ('</td><td>Pick-up <b>stops</b> -- weights'); 
+echo ('</td><td>Drop-off <b>stops</b> -- weights'); 
 echo ('</td></tr>');
 echo "<tr><td valign='top'>";
 
-
+$priorcrew = array();
 if (sizeof($route->get_drivers())==0 && $route->get_status()=="completed")
 	echo "no drivers checked in<br>";
-else
-foreach ($route->get_drivers() as $driver_id) {
+else 
+  foreach ($route->get_drivers() as $driver_id) {
     $driver = retrieve_dbVolunteers($driver_id);
     if ($driver) 
 	    $name = $driver->get_first_name() . ' ' . $driver->get_last_name();
-    else $name = $driver_id;
-    echo '<input type="checkbox" name="onboard[]" value=' . $driver_id;
-//    if (strpos($st,$key)!==false) echo(' CHECKED');
-    echo '>' . $name ."<br>";
-//    echo ('<input type="checkbox" name="type[]" value=' . $key);
-//    if (strpos($st,$key)!==false) echo(' CHECKED');
-//    echo ('>' . $value . '&nbsp;&nbsp;');
-}
+    else $name = $driver->get_id();
+    if ($routedate >= $twoweeksago && $routedate <= $today) {
+        echo '<input type="checkbox" name="onboard[]" value=' . $driver_id;
+        if (in_array ($routedate, $driver->get_lastTripDates() )) {
+            echo(' CHECKED');
+            $priorcrew[] = $driver->get_id();
+        }
+        echo '>  ' . $name .'<br>';
+    }
+    else echo $name ."<br>";
+  }
 
 echo "</td><td valign='top'>";
 
@@ -92,28 +107,32 @@ echo "<p style='text-align:right;'><strong>Total Weight: " . $totalPickUpWeight 
 echo "</td><td valign='top'>";
 
 $totalDropoffWeight = 0;
-
 foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	$client_id = substr($dropoff_id,12);
-	//$client = retrieve_dbClients($client_id);
-	$dropoff_link = "<a href='viewStop1.php?client_type=recipient&stop_id=".$dropoff_id."'>".$client_id."</a>"; 
-	echo $dropoff_link;
 	$theStop = retrieve_dbStops($routeID.$client_id);
 	if ($theStop && $theStop->get_total_weight()>0) { 
 	    if (substr($theStop->get_notes(),0,1)=="!")
 	        add_enterer($theStop, $route);
-		echo " -- ".$theStop->get_total_weight();
 		$totalDropoffWeight += $theStop->get_total_weight();
 	}
-	echo "<br>";
-	
+}
+$balance = $totalPickUpWeight - $totalDropoffWeight;
+foreach ($route->get_dropoff_stops() as $dropoff_id) { 
+    $client_id = substr($dropoff_id,12);
+    $dropoff_link = "<a href='viewStop1.php?client_type=recipient&stop_id=".$dropoff_id."&balance=".$balance."'>".$client_id."</a>";
+    echo $dropoff_link;
+    $theStop = retrieve_dbStops($routeID.$client_id);
+    if ($theStop && $theStop->get_total_weight()>0) {
+        echo " -- ".$theStop->get_total_weight();
+    }
+    echo "<br>";
 }
 	echo "<p style='text-align:right;'><strong>Total Weight: " . $totalDropoffWeight . "</strong></p>";
-	echo "<p style='text-align:right;'><strong>Balance: " . ($totalPickUpWeight - $totalDropoffWeight) . "</strong></p>";
+	echo "<p style='text-align:right;'><strong>Balance: " . $balance . "</strong></p>";
 //if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */) {
 	echo "</td><tr><td>";
 	
-	echo "Add Volunteer:<br>";
+	echo "Add Crew:<br>";
 	//$drivers = getall_drivers_available(substr($route->get_id(),9,3),substr($route->get_day(),0,3));
 	$drivers = get_all_crew(substr($route->get_id(),9));
 
@@ -157,8 +176,11 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	echo('</select>');
 
 	echo '</td></tr>';
-	echo('<tr><td colspan="2"> Hit <input type="hidden" name="submitted" value="1">');
-	echo('<input type="submit" value="Submit" name="Submit"> to select Crew, add a Volunteer, Pick-up, or Drop-off (one at a time).</td></tr></table>');
+	echo '<tr><td colspan="3"> Hit <input type="hidden" name="submitted" value="1">';
+	echo '<input type="submit" value="Submit" name="Submit"> to ';
+	if ($_SESSION['access_level']==1 && $today==substr($route->get_id(),0,8)) echo 'check in today\'s Crew, ';
+	else echo 'change the onboard crew, ';
+	echo 'add a Crew member, add a Pick-up, or add a Drop-off (one at a time).</td></tr></table>';
 //}
 //else echo "</td></tr></table>";
 // echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .

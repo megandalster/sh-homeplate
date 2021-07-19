@@ -217,8 +217,7 @@ function ftpin($day,$devices) {
 						$theVol = retrieve_dbVolunteersByName($d_first, $d_last);
 						//echo "updating driver<br />";
 						if ($theVol instanceof Volunteer) {
-							$theVol->set_lastTripDate($yymmdd);
-							$theVol->set_tripCount(($theVol->get_tripCount() + 1));
+							$theVol->insert_lastTripDates($yymmdd);
 							update_dbVolunteers($theVol);
 							if ($date>$device->get_last_used()) {
 							    $device->set_last_used($date);

@@ -23,24 +23,27 @@
 				<?PHP
 					include_once('database/dbVolunteers.php');
      				include_once('domain/Volunteer.php');
+     				$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 						
      		//		include_once('database/dbLog.php');
      				if($_SESSION['_id']!="guest"){
      				    $person = retrieve_dbVolunteers($_SESSION['_id']);
      				    $_SESSION['name'] = $person->get_first_name()." ".$person->get_last_name();
-     				    echo "<p>Welcome, ".$_SESSION['name'].", to <i>Homeplate</i>! ";
-     				    echo "Check that today's route is in . $_SESSION['area'] . " and then hit <b>Today's Route </b> above.";
-     				        
+     				    echo "<p>Welcome, ".$_SESSION['name'].", to <i>Homeplate</i>! ";    
      				}
      				else
      				    echo "<p>Welcome to <i>Homeplate</i>! ";
      				$today = time();
-					echo "Today is ".date('l F j, Y', $today).".<p>";
+					echo "<br>Today is ".date('l F j, Y', $today).".";
 					
 					if($_SESSION['access_level']==0) 
 					    echo('<p> To apply to become a driver with Second Helpings, select <a href="'.$path.
 					         'volunteerEdit.php?id='.'new'.'">apply</a>.');
-					else if($_SESSION['access_level']>=2) {
+					    else if ($_SESSION['access_level']==1){
+					        echo "<br><br>Check that your truck is in " . $areas[$_SESSION['_area']] . " and then hit <b>today's toute </b> to get started."; 
+					       echo "<br>&nbsp;&nbsp;Otherwise, hit <b>logout</b>.";
+					    }
+					else {
 						include_once('ftp.php');
 						update_ftp();
 						echo "<p>Route and Weight data are up to date with all tablets that have checked in.";
@@ -60,7 +63,14 @@
                     //DEFAULT PASSWORD CHECK
 					if (md5($person->get_id())==$person->get_password()){
 						 if(!isset($_POST['_rp_submitted']))
-						 	echo('<div class="warning"><form method="post"><p><strong>We recommend that you change your password, which is currently default.</strong><table class="warningTable"><tr><td class="warningTable">Old Password:</td><td class="warningTable"><input type="password" name="_rp_old"></td></tr><tr><td class="warningTable">New password</td><td class="warningTable"><input type="password" name="_rp_newa"></td></tr><tr><td class="warningTable">New password<br />(confirm)</td><td class="warningTable"><input type="password" name="_rp_newb"></td></tr><tr><td colspan="2" align="right" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></td></tr></table></p></form></div>');
+						 	echo('<div class="warning"><form method="post">
+                                <p><strong>We recommend that you change your password, which is currently default.</strong>
+                                <table class="warningTable">
+                                    <tr><td class="warningTable">Old Password:</td><td class="warningTable"><input type="password" name="_rp_old"></td></tr>
+                                    <tr><td class="warningTable">New password</td><td class="warningTable"><input type="password" name="_rp_newa"></td></tr>
+                                    <tr><td class="warningTable">New password<br />(confirm)</td><td class="warningTable"><input type="password" name="_rp_newb"></td></tr>
+                                    <tr><td colspan="2" align="right" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></td></tr>
+                                </table></p></form></div>');
 						 else{
 						 	//they've submitted
 						 	if(($_POST['_rp_newa']!=$_POST['_rp_newb']) || (!$_POST['_rp_newa']))
@@ -71,30 +81,26 @@
 						 		'<td class="warningTable"><input type="password" name="_rp_old"></td></tr>'.
 						 		'<tr><td class="warningTable">New password</td><td class="warningTable"><input type="password" name="_rp_newa"></td></tr>'.
 						 		'<tr><td class="warningTable">New password<br />(confirm)</td><td class="warningTable"><input type="password" name="_rp_newb"></td></tr>'.
-						 		'<tr><td colspan="2" align="center" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></form></td></tr>'.
-						 		'</table></div>');
+						 		'<tr><td colspan="2" align="center" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></td></tr>'.
+						 		'</table></p></form></div>');
 						 	else if(md5($_POST['_rp_old'])!=$person->get_password())
 						 		echo('<div class="warning"><form method="post"><p>Error with old password.</p><br /><table class="warningTable">'.
 						 		'<tr><td class="warningTable">Old Password:</td><td class="warningTable"><input type="password" name="_rp_old"></td></tr>'.
 						 		'<tr><td class="warningTable">New password</td><td class="warningTable"><input type="password" name="_rp_newa"></td></tr>'.
 						 		'<tr><td class="warningTable">New password<br />(confirm)</td><td class="warningTable"><input type="password" name="_rp_newb"></td></tr>'.
-						 		'<tr><td colspan="2" align="center" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></form></td></tr>'.
-						 		'</table></div>');
+						 		'<tr><td colspan="2" align="center" class="warningTable"><input type="hidden" name="_rp_submitted" value="1"><input type="submit" value="Change Password"></td></tr>'.
+						 		'</table></p></form></div>');
 						 	else if((md5($_POST['_rp_old'])==$person->get_password()) && ($_POST['_rp_newa']==$_POST['_rp_newb'])){
 						 		$newPass = md5($_POST['_rp_newa']);
 						 		$person->set_password($newPass); 
 						 		update_dbVolunteers($person);
 						 	}
 						 }
-						 echo('<br clear="all">');
 					}
-					echo "<p>Please select an item from the menu above.";
 				}
 				?>
-				<br clear="all">
-				
 			</div>
-			<?PHP include('footer.inc');?>
 		</div>
+		<?PHP include('footer.inc');?>
 	</body>
 </html>

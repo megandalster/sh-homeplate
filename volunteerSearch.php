@@ -164,7 +164,7 @@
 							echo ' <div id="dvLinkInfo">(select one for more info).</div>';
 							echo '<table id="tblReport"> <tr><td><strong>Name</strong></td><td><strong>Phone</strong></td>
 								<td><strong>Cell</strong></td><td><strong>E-mail</strong></td><td><strong>Status</strong></td><td><strong>Schedule</strong></td>
-								<td><strong>Trips</strong></td><td><strong>Last Date</strong></td></tr>';
+								<td><strong>Trips</strong></td><td><strong>Last Dates</strong></td></tr>';
                             foreach ($result as $vol) {
                             	echo "<tr><td><a href=volunteerEdit.php?id=".$vol->get_id().">" . 
 									$vol->get_last_name() .  ", " . $vol->get_first_name() . "</td><td>" . 
@@ -177,7 +177,10 @@
 									echo ($availableon . ", ") ;
 								echo "</td></a>";
 								echo "<td>" . $vol->get_tripCount() . "</td>";
-								echo "<td>" . pretty1($vol->get_lastTripDate()) . "</td>";
+								echo "<td>" ;
+								foreach ($vol->get_lastTripDates() as $lastTripDate) 
+								    echo pretty1($lastTripDate) . "&nbsp;&nbsp;";
+								echo "</td>";
 								echo "</tr>";
                             }
                             echo '</table>';

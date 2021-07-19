@@ -32,15 +32,15 @@ class Volunteer {
 	private $license_expdate; 	// expiration date yy-mm-dd
 	private $accidents;     // array of accidents (past 3 years)
 							// each entry shows "date:nature:fatalities:injuries"
-	private $availability; 	// array of day-week pairs; e.g. �Mon:1�, �Thu:4�, �NY�
+	private $availability; 	// array of day:week pairs; e.g. �Mon:1�, �Thu:4�, �NY�
 	private $schedule;     	// array of scheduled shifts; e.g.,  [�Mon:1�, �Wed:2�]
 	private $history;      	// array of recent routes worked; e.g., [�11-03-12�]
 	private $birthday;     	// format: yy-mm-dd
 	private $start_date;   	// format: yy-mm-dd (for applicants, date submitted)
 	private $notes;			// misc notes about this volunteer
 	private $password;     	// password for system access
-	private $tripCount; 	//Volunteer trip count
-	private $lastTripDate;	//date volunteer was on last truck
+	private $tripCount; 	// Volunteer trip count
+	private $lastTripDates;	// array of up to 5 most recent trip dates volunteer was onboard the truck
 	private $volunteerTrainingDate;	//date when trained as a volunteer
 	private $driverTrainingDate;    // date when trained as a driver
 	private $shirtSize;		//Shirt Size: S, M, L, XL, 2XL
@@ -50,7 +50,7 @@ class Volunteer {
          */
     function __construct($last_name, $first_name, $address, $city, $state, $zip, $phone1, $phone2, $email, $type,
                          $status, $area, $license_no, $license_state, $license_expdate, $accidents, $availability, 
-                         $schedule, $history, $birthday, $start_date, $notes, $password, $tripCount, $lastTripDate, 
+                         $schedule, $history, $birthday, $start_date, $notes, $password, $tripCount, $lastTripDates, 
     					 $volunteerTrainingDate, $driverTrainingDate, $shirtSize, $affiliateId){                
         $this->id = $first_name . $phone1; 
         $this->last_name = $last_name;
@@ -64,7 +64,10 @@ class Volunteer {
         $this->email = $email;
 		$this->tripCount = $tripCount;
 		
-		$this->lastTripDate = $lastTripDate;
+		if ($lastTripDates == "")
+		    $this->lastTripDates = array();
+		else 
+		    $this->lastTripDates = explode(',',$lastTripDates);
 		$this->volunteerTrainingDate = $volunteerTrainingDate;
 		$this->driverTrainingDate = $driverTrainingDate;
 		$this->shirtSize = $shirtSize;
@@ -181,8 +184,8 @@ class Volunteer {
 		return $this->tripCount;
 	}
 	
-	function get_lastTripDate(){
-		return $this->lastTripDate;
+	function get_lastTripDates(){
+		return $this->lastTripDates;
 	}
 	
 	function get_volunteerTrainingDate(){
@@ -231,8 +234,26 @@ class Volunteer {
         $this->password = $new_password;
     }
  
-	function set_lastTripDate($newDate){
-		$this->lastTripDate = $newDate;
+	function insert_lastTripDates($newDate){ // insert -- avoid duplicate entties
+	    sort($this->lastTripDates);
+	    if (in_array($newDate,$this->lastTripDates))
+	        return false; // avoid double-counting the same date
+	    if (sizeof($this->lastTripDates)==5) {
+	        array_splice($this->lastTripDates,0,0); // remove the earliest date
+	    }
+		$this->lastTripDates[] = $newDate; 
+		$this->tripCount ++;
+		return true;
+	}
+	
+	function remove_lastTripDates($date) { // remove a date from last trip dates and decrement tripCount
+	    sort($this->lastTripDates);
+	    $i = array_search($date,$this->lastTripDates);
+	    if ($i===false )
+	        return false; // not there
+	    array_splice($this->lastTripDates,$i,1);  // remove it
+	    $this->tripCount --;
+	    return true;
 	}
 	
 	function set_volunteerTrainingDate($newDate){

@@ -46,7 +46,7 @@
 <form method="post" action="">
 				<?php
 				$mondaythisweek = strtotime('last monday', strtotime('tomorrow',$thisUTC));
-				echo "<br><<<a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$prevweekUTC).">Previous&nbsp;&nbsp;&nbsp;&nbsp;</a>";
+				echo "<br><a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$prevweekUTC).">Previous&nbsp;&nbsp;&nbsp;&nbsp;</a>";
 				echo "<strong>  Week of ".date('F j, Y', $mondaythisweek)."</strong>  ";
 				echo "<a href=viewRoutes.php?area=".$thisArea."&date=".date('y-m-d',$nextweekUTC).">&nbsp;&nbsp;&nbsp;&nbsp;Next>> </a>";
 				?>
@@ -77,7 +77,7 @@
 	<tr>
 		<td> <b> Route * </b> </td>
 		<td align='right'> <b> Status </b> </td>
-		<td> <b> Data source </b> </td>
+		<td> <b> Entered by </b> </td>
 	</tr>
 	
 	<?php
@@ -169,7 +169,7 @@
 	}
 	?>
 </table>	
-<br><strong>*</strong> View a completed route's weights by clicking its date.
+<br><strong>*</strong> View an entered route's weights by clicking its date.
 
 <?php
 

@@ -123,13 +123,13 @@ else // $_SESSION['access_level']>=2
 		?>
 		</td></tr>
 		
-		<tr><td>Trip Count: </td><td><input type="text" name="tripCount" size="4" tabindex=11 value="<?PHP echo($person->get_tripCount())?>"></td>
-		<?PHP 	echo '<td>Last Trip Date: </td><td><input type="text" tabindex=12 id="lastTripDate" name="lastTripDate" value="';
-				if ($person->get_lastTripDate() != ''){
-					$time = strtotime($person->get_lastTripDate());
-					echo date("m/d/Y", $time);
+		<tr><td>Trip Count: </td><td><?PHP echo($person->get_tripCount())?></td>
+		<?PHP 	echo '<td>Last Trip Dates: </td><td>';
+				foreach ($person->get_lastTripDates() as $lastTripDate) {
+				    $time = strtotime($lastTripDate);
+					echo date("m/d/Y", $time) . "&nbsp;&nbsp;";
 				}
-				echo '">';
+				echo '</td>';
 		?>
 		</tr>
 		

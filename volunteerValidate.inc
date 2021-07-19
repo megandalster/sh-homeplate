@@ -40,7 +40,8 @@ function validate_form($id){
 * returns boolean if phone is valid
 */
 function valid_phone($id,$phone){
-        if ($id=="Beaufort" || $id=="HiltonHead" || $id=="Bluffton") return true;  // phone can be null for crew logins
+        $truckids = array("HiltonHe","Bluffton","Beaufort");
+        if (in_array(substr($id,0,8),$truckids) && $phone=="") return true;  // phone can be null for crew logins
 		if($phone==null) return false;
 		$phone = str_replace(' ','',str_replace('+','',str_replace('(','',str_replace(')','',str_replace('-','',$phone)))));
 		$test = str_replace('0','',str_replace('1','',str_replace('2','',str_replace('3','',str_replace('4','',str_replace('5','',str_replace('6','',str_replace('7','',str_replace('8','',str_replace('9','',$phone))))))))));
