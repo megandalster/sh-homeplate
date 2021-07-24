@@ -126,7 +126,7 @@ function getonlythose_dbVolunteers($area, $types, $status, $name, $availability,
 		$query .= " AND affiliateId=" . $affiliateId;
 	}
 	
-    $query .= " ORDER BY last_name";
+    $query .= " ORDER BY last_name, first_name";
 	$result = mysqli_query($con,$query);
 	$theVols = array();
 		
@@ -147,7 +147,7 @@ function getonlythose_dbVolunteers($area, $types, $status, $name, $availability,
 
 function get_team_captains ($area, $day) {
 	$con=connect();
-	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE type LIKE '%teamcaptain%' AND availability LIKE '%".$day."%' AND area  = '".$area."' ORDER BY last_name");
+	$result=mysqli_query($con,"SELECT * FROM dbVolunteers WHERE status  = 'active' AND type LIKE '%teamcaptain%' AND availability LIKE '%".$day."%' AND area  = '".$area."' ORDER BY last_name");
 	
 	$theVols = array();	
 	while($result_row = mysqli_fetch_assoc($result)){
@@ -167,7 +167,7 @@ function get_team_captains ($area, $day) {
 function get_all_crew($area){
 	
 	$con=connect();
-	$sql = "SELECT * FROM dbVolunteers WHERE  area  = '".$area."' AND (type LIKE '%driver%' OR type LIKE '%helper%' OR type LIKE '%sub%') ORDER BY last_name";
+	$sql = "SELECT * FROM dbVolunteers WHERE status  = 'active' AND area  = '".$area."' AND (type LIKE '%driver%' OR type LIKE '%helper%' OR type LIKE '%sub%') ORDER BY last_name";
 	
 	$result=mysqli_query($con,$sql);
 	

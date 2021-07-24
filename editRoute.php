@@ -68,6 +68,18 @@ else {
  */
 function process_form($_POST_PARAM, &$route, $today)
 {
+    // add a new pick up to the route, but don't disturb weights on existing stops
+    if ($_POST['add_pickup']) {
+        $route->add_pick_up($_POST['add_pickup']);
+        mild_update_dbRoutes($route);
+        return ("New pickup added: ". substr($_POST['add_pickup'],12));
+    }
+    // add a new drop off to the route, but don't disturb weights on existing stops
+    if ($_POST['add_dropoff']) {
+        $route->add_drop_off($_POST['add_dropoff']);
+        mild_update_dbRoutes($route);
+        return ("New dropoff added: ". substr($_POST['add_dropoff'],12));
+    }
     // add a new driver to the route, but don't disturb weights on existing stops
     if ($_POST['add_driver']) {
         $route->add_driver($_POST['add_driver']);
@@ -76,7 +88,7 @@ function process_form($_POST_PARAM, &$route, $today)
         return ("New crew member added: ". $driver->get_first_name() . " " . $driver->get_last_name());
     }
     // update drivers' Trip Count and Last Trip Date
-  //  if ($_POST['onboard']) {
+    if ($_POST['onboard']) {
         $routedate =  substr($route->get_id(),0,8);
         foreach ($route->get_drivers() as $driver_id) {
             $driver = retrieve_dbVolunteers($driver_id);
@@ -97,23 +109,7 @@ function process_form($_POST_PARAM, &$route, $today)
             }
         }
         return ("Crew onboard updated");
-//    }
-	// add a new pick up to the route, but don't disturb weights on existing stops
-	if ($_POST['add_pickup']) {
-		$route->add_pick_up($_POST['add_pickup']);
-		mild_update_dbRoutes($route);
-		return ("New pickup added: ". substr($_POST['add_pickup'],12));
-	}
-	// add a new drop off to the route, but don't disturb weights on existing stops
-	if ($_POST['add_dropoff']) {
-		$route->add_drop_off($_POST['add_dropoff']);
-		mild_update_dbRoutes($route);
-		return ("New dropoff added: ". substr($_POST['add_dropoff'],12));
-	}
-	if($_POST['deleteMe']=="DELETE"){
-		delete_dbRoutes($route);
-		return ("Route deleted: ". $route->get_area() . " " . $route->get_day());
-	}
+    }
 	return "No changes made!";
 }
 function add_enterer(&$theStop, &$route) {

@@ -48,7 +48,7 @@
 				<?PHP
 				
 				// display the search form
-					$area = $_GET['area'];
+					$area = "";
 					$deliveryAreaId = $_GET['deliveryAreaId'];
 					$deliveryAreas = getall_dbDeliveryAreas();
 					$counties = array("Beaufort", "Jasper", "Hampton");
@@ -77,13 +77,13 @@
                     echo '</select>';
                         
                     if( !array_key_exists('status', $_POST) )
-                        $status = "";
+                        $status = "active";
                     else $status = $_POST['status'];
                         echo '&nbsp;&nbsp;Status:<select name="status">';
-                        echo '<option value=""';            if ($status=="")          echo " SELECTED"; echo '>--all--</option>';
                         echo '<option value="active"';       if ($status=="active")     echo " SELECTED"; echo '>active</option>';
                         echo '<option value="inactive"';       if ($status=="inactive")     echo " SELECTED"; echo '>inactive</option>';
                         echo '<option value="former"';   if ($status=="former") echo " SELECTED"; echo '>former</option>';
+                        echo '<option value=""';            if ($status=="")          echo " SELECTED"; echo '>--all--</option>';
                         echo '</select>';
                         
                     if( array_key_exists('s_county', $_POST) ) 
@@ -207,16 +207,26 @@
 						
 						echo "<br><strong>Mailing List</strong><br>";
 						echo '<table id="tblReport"> <tr><td><strong>Name</strong></td>';
-						echo '<td><strong>Contact (A) </strong></td><td><strong>Address</strong></td><td><strong>City</strong></td>';
+						echo '<td><strong>Contact </strong></td><td><strong>Address</strong></td><td><strong>City</strong></td>';
 						echo '<td><strong>State</strong></td><td><strong>Zip</strong></td></tr>';
 						
 						foreach ($result as $client) {
-						    echo "<tr><td>" . $client->get_id() . "</td><td>" .
-						          $client->get_ContactName2() . "</td><td>" .
+						    if ($client->get_type()=="donor") {
+						       echo "<tr><td>" . $client->get_id() . "</td><td>" .
+							     $client->get_ContactName() . " (F)</td><td>" .
+								 $client->get_address() . "</td><td>" .
+								 $client->get_city() . "</td><td>" .
+								 $client->get_state() ."</td><td>". $client->get_zip();
+							   echo "</td></tr>";
+						    }
+						    else {
+						        echo "<tr><td>" . $client->get_id() . "</td><td>" .
+						          $client->get_ContactName2() . " (A)</td><td>" .
 						          $client->get_address2() . "</td><td>" .
 						          $client->get_city2() . "</td><td>" .
 						          $client->get_state2() ."</td><td>". $client->get_zip2();
-						    echo "</td></tr>";
+						        echo "</td></tr>";
+						    }
 						}
 						echo '</table>';
 						}

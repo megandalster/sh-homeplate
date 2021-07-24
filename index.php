@@ -1,13 +1,13 @@
 <?PHP
 /*
- * Copyright 2012 by Hartley Brody, Richardo Hopkins, Nicholas Wetzel, and 
+ * Copyright 2012 by Hartley Brody, Richardo Hopkins, Nicholas Wetzel, and
  * Allen Tucker. This program is part of Homeplate, which is free software.
  * It comes with absolutely no warranty.  You can redistribute and/or
  * modify it under the terms of the GNU Public License as published
  * by the Free Software Foundation (see <http://www.gnu.org/licenses/).
-*/
-	session_start();
-	session_cache_expire(30);
+ */
+session_start();
+session_cache_expire(30);
 ?>
 <html>
 	<head>
@@ -44,9 +44,9 @@
 					       echo "<br>&nbsp;&nbsp;Otherwise, hit <b>logout</b>.";
 					    }
 					else {
-						include_once('ftp.php');
-						update_ftp();
-						echo "<p>Route and Weight data are up to date with all tablets that have checked in.";
+					//	include_once('ftp.php');
+					//	update_ftp();
+						echo "<p>Route and Weight data are always up to date.";
 						echo "<br>Please select <b>routes</b> above to view details.";
 					}
 				?>

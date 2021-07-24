@@ -46,7 +46,7 @@
 			<div id="content">
 				<?PHP
 				// display the search form
-					$area = $_GET['area'];
+					$area = "";
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
 					echo('<p><a href="'.$path.'volunteerEdit.php?id=new">Add new volunteer</a>');
@@ -54,7 +54,7 @@
 						echo('<p><strong>Search for volunteers:</strong>');
                         
                         if( array_key_exists('s_area', $_POST) ) $area = $_POST['s_area']; //override the GET variable if we just conducted a search
-						echo '<p>Area: <select name="s_area">' .
+						echo '<p>Base: <select name="s_area">' .
 							'<option value="">--all--</option>'; 
                             echo '<option value="HHI"'; if ($area=="HHI") echo " SELECTED"; echo '>Hilton Head</option>' ;
                             echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Bluffton</option>' ;
@@ -63,11 +63,11 @@
                         
                         if( !array_key_exists('s_status', $_POST) ) $status = ""; else $status = $_POST['s_status'];
                         echo '&nbsp;&nbsp;Status:<select name="s_status">';
+                            echo '<option value="">--all--</option>';
                             echo '<option value="active"';      if ($status=="active")      echo " SELECTED"; echo '>Active</option>';
 							echo '<option value="applicant"';   if ($status=="applicant")   echo " SELECTED"; echo '>Applicant</option>';
                             echo '<option value="on-leave"';    if ($status=="on-leave")    echo " SELECTED"; echo '>On Leave</option>';
                             echo '<option value="former"';      if ($status=="former")      echo " SELECTED"; echo '>Former</option>';
-                            echo '<option value="">--all--</option>';
                         echo '</select>';
                         
 						  if( !array_key_exists('s_affiliate', $_POST) ) $affiliate = ""; else $affiliate = $_POST['s_affiliate'];

@@ -3,9 +3,9 @@
 /*
  *  Our copyright noticerouteid.clientid =
  */
- 
-	session_start();
-	session_cache_expire(30)
+
+session_start();
+session_cache_expire(30)
 ?>
 <html>
 	<head>
@@ -65,9 +65,12 @@
 				?>
 				 Daily Route Status Summary  (View other bases:
 				<?php 
+				$count=1;
 				foreach ($areas as $area=>$areaName) {
-				   if ($thisArea!=$area)
-				   	  echo "<a href=viewRoutes.php?area=".$area."&date=".$thisDay."> $areaName</a>";	
+				    if ($thisArea!=$area) {
+				   	  echo "<a href=viewRoutes.php?area=".$area."&date=".$thisDay."> $areaName</a>";
+				   	  if ($count==1) {echo ", "; $count++;}
+				    }
 				}
 				echo")<br><br>";
 				?>
@@ -76,7 +79,7 @@
 </tr>
 	<tr>
 		<td> <b> Route * </b> </td>
-		<td align='right'> <b> Status </b> </td>
+		<td align='right'> <b> Data Status </b> </td>
 		<td> <b> Entered by </b> </td>
 	</tr>
 	
@@ -113,7 +116,7 @@
 		if($route[$weekday] != NULL)
 		{	
 			//col 2 : status
-		    $status = "scheduled";
+		    $status = "No Data";
 		    if ($route[$weekday]->get_status == "completed")
 		      $status = "entered";
 		    else {
