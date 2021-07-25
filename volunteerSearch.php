@@ -46,7 +46,7 @@
 			<div id="content">
 				<?PHP
 				// display the search form
-					$area = "";
+					$area = $_GET['area'];
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
 					echo('<p><a href="'.$path.'volunteerEdit.php?id=new">Add new volunteer</a>');

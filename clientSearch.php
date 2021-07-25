@@ -48,7 +48,7 @@
 				<?PHP
 				
 				// display the search form
-					$area = "";
+					$area = $_GET['area'];
 					$deliveryAreaId = $_GET['deliveryAreaId'];
 					$deliveryAreas = getall_dbDeliveryAreas();
 					$counties = array("Beaufort", "Jasper", "Hampton");
