@@ -149,7 +149,7 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 
 	echo "</td><td>";
 	echo "Add Pick-up:<br>";
-	$pickups = getall_clients("", "donor", "", "", "","","","","","active");
+	$pickups = getall_clients("", "donor", "", "", "","","","","","active","");
 	echo('<select name="add_pickup">');
 	echo ('<option value=""></option>');
 	foreach ($pickups as $pickup) {
@@ -163,7 +163,7 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 
 	echo "</td><td>";
 	echo "Add Drop-off:<br>";
-	$dropoffs = getall_clients("", "recipient", "", "","","", "","","","active");
+	$dropoffs = getall_clients("", "recipient", "", "","","", "","","","active","");
 	echo('<select name="add_dropoff">');
 	echo ('<option value=""></option>');
 	foreach ($dropoffs as $dropoff) {

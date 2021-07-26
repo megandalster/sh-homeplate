@@ -66,8 +66,8 @@
                         echo '<option value="SUN"'; if ($area=="SUN") echo " SELECTED"; echo '>Bluffton</option>' ;
                         echo '<option value="BFT"'; if ($area=="BFT") echo " SELECTED"; echo '>Beaufort</option>';
 					echo '</select>';
-                        
-                    if( !array_key_exists('s_type', $_POST) ) 
+					
+					if( !array_key_exists('s_type', $_POST) ) 
                     	$type = ""; 
                     else $type = $_POST['s_type'];
 					echo '&nbsp;&nbsp;Donor/Recipient:<select name="s_type">';
@@ -110,7 +110,15 @@
 						}
 					echo('</select>');
 											
-                    if( !array_key_exists('s_lcfb', $_POST) ) 
+					if( array_key_exists('noso', $_POST) )
+					    $noso = $_POST['noso']; //override the GET variable if we just conducted a search
+					    echo '&nbsp;&nbsp;No/So: <select name="noso">' .
+									    '<option value="">--all--</option>';
+					    echo '<option value="North"'; if ($noso=="North") echo " SELECTED"; echo '>North of the Broad</option>' ;
+					    echo '<option value="South"'; if ($noso=="South") echo " SELECTED"; echo '>South of the Broad</option>' ;
+					    echo '</select>';    
+					    
+					if( !array_key_exists('s_lcfb', $_POST) ) 
                     	$lcfb = ""; 
                     else $lcfb = $_POST['s_lcfb'];
                     
@@ -136,6 +144,7 @@
 						else $area = $_POST['s_area'];
 						$type = $_POST['s_type'];
 						$status = $_POST['status'];
+						$noso = $_POST['noso'];
                         $name = trim(str_replace('\'','&#39;',htmlentities($_POST['s_name'])));
                         
                         $availability = array();
@@ -158,19 +167,20 @@
                         include_once('database/dbClients.php');
      					include_once('domain/Client.php');
 						
-     					$result = getall_clients($area, $type, $lcfb, $name, "","","", $deliveryAreaId, $county, $status);
+     					$result = getall_clients($area, $type, $lcfb, $name, "","","", $deliveryAreaId, $county, $status, $noso);
 						
                         echo '<p><strong>Search Results:</strong> <p>Found ' . sizeof($result). ' ';
                             if (!$type) echo $status . " client(s)"; 
                             else echo $status ." ". $type.'s';
 						if ($areas[$area]!="") echo ' from '.$areas[$area];
+						if ($noso) echo " (".$noso." of the Broad)";
 						if ($name!="") echo ' with name like "'.$name.'"';
 				
 			     		if ($county!="") echo ' in county: '.$county;
 						if ($deliveryAreaId !="") echo ' in delivery area: '.retrieve_dbDeliveryAreas($deliveryAreaId)->get_deliveryAreaName();
 						if ($lcfb!="") echo ' with LCFB =  '.$lcfb;
 						if (sizeof($result)>0) {
-							echo ' (select one for more info).';
+							echo '. Select one for more info.';
 							echo '<div>';
 							echo '<table id="tblReport"> <tr><td><strong>Name</strong></td>';
 							echo '<td><strong>Contact (F/A) </strong></td><td><strong>Phone</strong></td><td><strong>E-mail</strong></td>';

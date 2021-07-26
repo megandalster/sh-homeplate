@@ -79,7 +79,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 	    else { // team captains and board members
 	        echo('<a href="'.$path.'index.php">home</a>');
 	        echo('<a href="'.$path.'viewRoutes.php?area='.$_SESSION['_area'].'&date='.$today.'"> | routes</a>');
-	    	echo('<a href="'.$path.'deviceSearch.php"> | tablets</a>');
+	//    	echo('<a href="'.$path.'deviceSearch.php"> | tablets</a>');
 	    	echo('<a href="'.$path.'scheduleView.php?area='.$_SESSION['_area'].'"> | master schedules</a>');	
 	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
 			echo('<a href="'.$path.'affiliateSearch.php"> | affiliates</a>');

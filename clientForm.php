@@ -139,7 +139,7 @@ $(function() {
 	echo ('<option value="Jasper"');if ($client->get_county()=='Jasper') echo (' SELECTED'); echo('>Jasper</option>');
 	echo('</select></td>');
 	
-	echo ('<td>Area<span style="font-size:x-small;color:FF0000">*</span>: ');
+	echo ('<td>Delivery Area<span style="font-size:x-small;color:FF0000">*</span>: ');
     echo('<select name="deliveryAreaId">');
     echo ('<option value=""></option>');
 	$deliveryAreas = getall_dbDeliveryAreas();
@@ -151,6 +151,13 @@ $(function() {
 			echo (' SELECTED');
 		 echo('>'); echo($deliveryArea->get_deliveryAreaName()); echo('</option>');
 	}
+	echo('</select></td>');
+	
+	echo ('<td>No/So: ');
+	echo('<select name="noso">');
+	echo ('<option value=""></option>');
+	echo ('<option value="North"');if ($client->get_noso()=='North') echo (' SELECTED'); echo('>North of the Broad</option>');
+	echo ('<option value="South"');if ($client->get_noso()=='South') echo (' SELECTED'); echo('>South of the Broad</option>');
 	echo('</select></td>');
 	
 	echo "</tr></table>";

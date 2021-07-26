@@ -53,12 +53,13 @@ class Client {
 	private $children_served;	//		number of children served 
 	private $seniors_served;	//		number of seniors served 
 	private $status;        // active, inactive, former
+	private $noso;          // North or South of the Broad River
 	// 
 	
 	function __construct($id, $chain_name, $area, $type, $address, $city, $state, $zip, $county, $phone1, 
                             $address2, $city2, $state2, $zip2, $county2, $phone2, 
                             $daysHHI, $daysSUN, $daysBFT, $lcfb, $chartrkr, $weight_type, $notes, $email, $email2, $ContactName, $ContactName2, $deliveryAreaId, 
-                            $survey_date, $visit_date, $foodsafe_date, $pestctrl_date, $number_served, $status){                
+                            $survey_date, $visit_date, $foodsafe_date, $pestctrl_date, $number_served, $status, $noso){                
         $this->id       	= $id;      
         $this->chain_name 	= $chain_name;      
         $this->area 		= $area;      
@@ -88,6 +89,7 @@ class Client {
 		$this->children_served= $number_served[1];
 		$this->seniors_served= $number_served[2];
 		$this->status = $status;
+		$this->noso = $noso;
 		
 		if( $this->type 	== "donor"){
 			$this->weight_type = "foodtype";
@@ -236,6 +238,9 @@ class Client {
 	}
 	function get_status(){
 	    return $this->status;
+	}
+	function get_noso(){
+	    return $this->noso;
 	}
 }
 ?>

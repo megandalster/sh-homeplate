@@ -66,7 +66,7 @@ County : <select name="report_county">
 </div>
 
 <div style="float:left;padding-left:8px;">
-Area : 
+Delivery Area : 
 <?php 
  echo('<select name="deliveryAreaId">');
  echo ('<option value="">--all--</option>');
@@ -86,6 +86,13 @@ Area :
     
 	echo('</select>');
 ?>
+</div>
+
+<div style="float:left;padding-left:8px;">No/So : <select name="report_noso">
+	<option value="">--all--</option>
+	<option value="North" <?php if($_POST['report_noso'] == "North"){echo "selected='true'";} ?>>North of the Broad</option>
+	<option value="South" <?php if($_POST['report_noso'] == "South"){echo "selected='true'";} ?>>South of the Broad</option>
+</select>
 </div>
 
 <div style="float:left;padding-left:8px;">
@@ -196,6 +203,8 @@ if($_POST['submitted'])
 		    $deliveryArea = retrieve_dbDeliveryAreas($_POST['deliveryAreaId']);
 		    $header[] =  ", delivery area: " . $deliveryArea->get_deliveryAreaName();
 		}
+		if ($_POST['report_noso']!="") $header[] = " ".$_POST['report_noso']." of the Broad";
+		else $header[] = " ";
 	}
 	else {	
 		$header = array("Second Helpings Truck Weight Report for ");
@@ -208,6 +217,8 @@ if($_POST['submitted'])
 		$header[] =  ", delivery area: " . $deliveryArea->get_deliveryAreaName();
 	}
 		else $header[] = ", all delivery areas";
+	if ($_POST['report_noso']!="") $header[] = " ".$_POST['report_noso']." of the Broad";
+		else $header[] = " ";
 		
 	if ($_POST['client_name']!="")
 		$header[] = ",  client '".$_POST['client_name']."' only";
@@ -300,7 +311,7 @@ if($_POST['submitted'])
 				"<td><b>Food Safe Dt</b></td><td><b>Pest Ctrl Dt</b></td><td><b>Adults/Wk</b></td><td><b>Children</b></td><td><b>Seniors</b></td><td><b>Total</b></td>";
 		echo "</tr>";
 		 
-		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "","","", $_POST['deliveryAreaId'], $_POST['report_county'],"");
+		$allClients = getall_clients($_POST['report_area'], "recipient", "", "", "","","", $_POST['deliveryAreaId'], $_POST['report_county'],"",$_POST['report_noso']);
 		$totalServed = 0;$childrenServed = 0;$seniorsServed = 0;
 		$grandtotalserved = 0;
 		foreach ($allClients as $client) {
