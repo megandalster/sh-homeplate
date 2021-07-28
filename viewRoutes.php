@@ -79,7 +79,9 @@ session_cache_expire(30)
 </tr>
 	<tr>
 		<td> <b> Route * </b> </td>
-		<td align='right'> <b> Data Status </b> </td>
+		<td align='right'> <b> Received </b> </td>
+		<td align='right'> <b> Delivered </b> </td>
+		<td align='right'> <b> Balance </b> </td>
 		<td> <b> Entered by </b> </td>
 	</tr>
 	
@@ -121,16 +123,33 @@ session_cache_expire(30)
 		      $status = "entered";
 		    else {
 		        $stopids = $route[$weekday]->get_pickup_stops();
+		        $pickupweight = 0;
 		        foreach ($stopids as $pickup_id) {
 		          $client_id = substr($pickup_id,12);
 		          $theStop = retrieve_dbStops($routeID.$client_id);
 		          if (!$theStop || $theStop->get_total_weight()==0) continue; //echo "routeid.clientid = ".$routeID.$client_id;
-		          else {$status="entered"; break;}
+		          else {$status="entered"; $pickupweight+= $theStop->get_total_weight();}
+		        }
+		        $stopids = $route[$weekday]->get_dropoff_stops();
+		        $dropoffweight = 0;
+		        foreach ($stopids as $dropoff_id) {
+		            $client_id = substr($dropoff_id,12);
+		            $theStop = retrieve_dbStops($routeID.$client_id);
+		            if (!$theStop || $theStop->get_total_weight()==0) continue; //echo "routeid.clientid = ".$routeID.$client_id;
+		            else {$status="entered"; $dropoffweight+= $theStop->get_total_weight();}
 		        }
 		    }
-			echo "<td align='right'>".$status."</td>";
+		    // col 3 : weight received
+		    if ($status=="entered") {
+		      echo "<td align='right'>".$pickupweight."</td>";
+		    // col 4 : weight delivered
+		      echo "<td align='right'>".$dropoffweight."</td>";
+		    // col 5: balance
+		      echo "<td align='right'>".($pickupweight - $dropoffweight)."</td>";
+		    }
+		    else echo "<td align='right'>No Data</td><td></td><td></td>";
 			
-			//col 3 : data sources
+			//col 6 : data sources
 			if ($route[$weekday]->get_notes() != "") {
 			    $first_tablet = $route[$weekday]->get_notes();
 			    $j = strpos($first_tablet,","); // see if there's more than one enterer -- tablet or person
@@ -151,7 +170,7 @@ session_cache_expire(30)
 				else // it's a person
 				    $times = $times . $first_tablet;
 				//echo "<td>".substr($first_tablet,0,$i)."</td><td>".$times."</td>";
-				echo "<td>".$times."</td>";
+				echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;".$times."</td>";
 		  }
 		  else echo "<td></td>";
 			
