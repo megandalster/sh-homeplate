@@ -24,6 +24,7 @@ session_cache_expire(30);
 					include_once('database/dbVolunteers.php');
      				include_once('domain/Volunteer.php');
      				$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
+     				date_default_timezone_set('America/New_York');
 						
      		//		include_once('database/dbLog.php');
      				if($_SESSION['_id']!="guest"){
@@ -34,7 +35,7 @@ session_cache_expire(30);
      				else
      				    echo "<p>Welcome to <i>Homeplate</i>! ";
      				$today = time();
-					echo "<br>Today is ".date('l F j, Y', $today).".";
+					echo "<br>Today is ".date('l F j, Y h:i A', $today).".";
 					
 					if($_SESSION['access_level']==0) 
 					    echo('<p> To apply to become a driver with Second Helpings, select <a href="'.$path.

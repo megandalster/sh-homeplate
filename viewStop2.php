@@ -54,7 +54,7 @@
 	$dairy_weight = isset($_POST["dairy_weight"]) ? $_POST["dairy_weight"] : $stop1->get_item_weight(4);
 	$produce_weight = isset($_POST["produce_weight"]) ? $_POST["produce_weight"] : $stop1->get_item_weight(5);
 	$total_weight = $meat_weight+$frozen_weight+$bakery_weight+$grocery_weight+$dairy_weight+$produce_weight;
-	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : $stop1->get_notes();
+	$driver_notes = ""; // isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : $stop1->get_notes();
 		
 ?>
 
@@ -89,16 +89,15 @@
 				<i>Produce Weight: </i><input type="text" size="10" name="produce_weight" <?php echo 'value='.$produce_weight?>> lbs.<br /><br />	
 				<i>Total Weight: <?php echo $total_weight?> lbs.	
 			
-			<br><br><i>Additional notes:</i><br />
-			<textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>
+		<!--	<br><br><i>Additional notes:</i><br />
+			<textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>   -->
 			
 			<input type = "hidden" name = "submitted" value = "true"/>	
 			<br><br><input type="submit" value="Save" name="Submit"/>&nbsp;&nbsp;Hit <i>Save</i> to re-total and save these weights and notes.
-		
-			</fieldset>
-			</form><br />
+			<?php
+			echo '<br><br><a href="editRoute.php?routeID='.$routeID.'">Return to Route</a>';
+			echo '</fieldset></form><br />';
 			
-			<?php 
 			// If values have been submitted, then validate and update the database if valid
 			if (isset($_POST['Submit'])){
 				$errors = false;
@@ -144,7 +143,6 @@
 				}
 			}
 			// The link to return to the current route.
-			echo '<a href="editRoute.php?routeID='.$routeID.'">Return to Route</a>';
 			echo '</div>';
 			include('footer.inc');
 			?>

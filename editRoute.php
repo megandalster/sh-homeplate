@@ -110,6 +110,10 @@ function process_form($_POST_PARAM, &$route, $today)
         }
         return ("Crew onboard updated");
     }
+    if($_POST['deleteMe']=="DELETE"){
+        delete_dbRoutes($route);
+        return ("Route deleted: ". $route->get_area() . " " . $route->get_day());
+    }
 	return "No changes made!";
 }
 function add_enterer(&$theStop, &$route) {

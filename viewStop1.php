@@ -47,7 +47,7 @@
 	
 	// Total weight variable and driver notes are initialized if they have not already been set.
 	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : $stop1->get_total_weight();
-	$driver_notes = isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : $stop1->get_notes();
+	$driver_notes = ""; // isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : $stop1->get_notes();
 	
 ?>
 
@@ -77,16 +77,16 @@
 				<legend><b>Data Entry</b></legend><br />
 				<i>Total Weight: </i><input type="text" size="10" name="total_weight" <?php echo 'value='.$total_weight?>> lbs.
 				
-			<br><br><i>Additional notes:</i><br />
-			<textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>
+	<!--		<br><br><i>Additional notes:</i><br />
+			    <textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>  -->
 			
 			<!-- A hidden variable that, when submitted, is used to display submitted values and update the databases -->	
 			<br><input type = "hidden" name = "submitted" value = "true"/>		
 			<br><input type="submit" value="Save"/>&nbsp;&nbsp;<i>Hit Save to save this weight and notes.</i>
-			</fieldset>
-			</form><br />
-			
 			<?php 
+			echo '<br><br><a href="editRoute.php?routeID='.$routeID.'"><big>Return to Route</big></a>';
+			echo '</fieldset></form><br />';
+			
 			// If values have been submitted, then update the database and display the submitted values to the driver.
 			if (isset($_POST['submitted'])){
 				if (preg_match('/[0-9]+/',$total_weight,$matches)==0 || $matches[0]!=$total_weight)  // validate total weight as a number
@@ -101,7 +101,6 @@
 			}
 			
 			// The link to return to the current route.
-			echo '<a href="editRoute.php?routeID='.$routeID.'"><big>Return to Route</big></a><br><br>';
 			echo '</div>';
 			include('footer.inc');
 			?>

@@ -10,7 +10,7 @@
  *	routeForm.inc
  *  a form for a route to be edited from the database
  *	@author Allen Tucker
- *	@version 4/15/2012
+ *	@version 7/23/2021
  */
 $routedate = substr($route->get_id(),0,8);
 $thisUTC = mktime(0,0,0,substr($today,3,2),substr($today,6,2),substr($today,0,2));
@@ -129,7 +129,7 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 }
 	echo "<p style='text-align:right;'><strong>Total Weight: " . $totalDropoffWeight . "</strong></p>";
 	echo "<p style='text-align:right;'><strong>Balance: " . $balance . "</strong></p>";
-//if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */) {
+// if ($_SESSION['access_level']>=2 /* && substr($route->get_id(),0,8)>$today */) {
 	echo "</td><tr><td>";
 	
 	echo "Add Crew:<br>";
@@ -178,15 +178,17 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	echo '</td></tr>';
 	echo '<tr><td colspan="3"> Hit <input type="hidden" name="submitted" value="1">';
 	echo '<input type="submit" value="Submit" name="Submit"> to ';
-	if ($_SESSION['access_level']==1 && $today==substr($route->get_id(),0,8)) echo 'check in today\'s Crew, ';
+	if ($_SESSION['access_level']==1 && $today==substr($route->get_id(),0,8)) 
+	    echo 'enter today\'s Crew, ';
 	else echo 'change the onboard crew, ';
 	echo 'add a Crew member, add a Pick-up, or add a Drop-off (one at a time).</td></tr></table>';
-//}
-//else echo "</td></tr></table>";
-// echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
-//				'<input type="submit" value="Refresh" name="Delete Entry"> to refresh this route in the database. ');
-if ($_SESSION['access_level']>=2)
+
+if ($_SESSION['access_level']>=2){
+    if (substr($route->get_id(),0,8)>$today) 
+        echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
+    				'<input type="submit" value="Refresh" name="Delete Entry"> to refresh this route in the database. ');
     echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Return to routes.</a>";
+}
 echo('</div></div>');
 	include('footer.inc');
 	echo('</body></html>');

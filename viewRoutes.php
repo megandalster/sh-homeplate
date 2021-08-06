@@ -82,7 +82,7 @@ session_cache_expire(30)
 		<td align='right'> <b> Received </b> </td>
 		<td align='right'> <b> Delivered </b> </td>
 		<td align='right'> <b> Balance </b> </td>
-		<td> <b> Entered by </b> </td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>Entered by </b> </td>
 	</tr>
 	
 	<?php
