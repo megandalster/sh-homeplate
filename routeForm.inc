@@ -19,7 +19,7 @@ $twoweeksago = date('y-m-d',$twoweeksagoUTC);
 echo '<p><strong>'.$route->get_area()." route for ".$route->get_day().'</strong>';
 // for today's route only, a crew member can record crew names and add weights for individual stops
 if($_SESSION['access_level']==1 && $routedate==$today) {
-    echo('<p>Here you can check in the onboard crew and record the weights for each stop on today\'s route.' .
+    echo('<p>Here you can record in the onboard crew and record the weights for each stop on today\'s route.' .
         '<br>&nbsp;&nbsp;&nbsp;&nbsp;1. Check the Scheduled <b>Crew</b> members who are onboard the truck, and hit <b>Submit</b> below.' .
         '<br>&nbsp;&nbsp;&nbsp;&nbsp;2. For each Pick-up or Drop-off <b>stop</b>, select it below to record its food weights.</p><p>' .
         '<i>At the end of the route</i>:' . 
@@ -32,10 +32,11 @@ else if ($_SESSION['access_level']>=2) {
         echo('<p>Here you can update the weights for any of this route\'s <b>stops</b>.');
     else if ($routedate > $today)
         echo('<p>Here you can add to the <b>Scheduled Crew</b> or <b>stops</b> to this route.');
-    else echo('<p>Here you can update the onboard crew and the weights for any of this route\'s <b>stops</b>.');
+    else echo('<p>Here you can record the onboard crew and enter the weights for any of this route\'s <b>stops</b>.');
 	if ($today>=$routedate && $routedate >= $twoweeksago) {
-	   echo('<br>&nbsp;&nbsp;&nbsp;&nbsp;Checks indicate the onboard crew members for this route.');
-	   echo('<br>&nbsp;&nbsp;&nbsp;&nbsp;(Trip counts are automatically adjusted if you make changes.)');
+	   echo('<br>&nbsp;&nbsp;1.  Check/uncheck the onboard crew members for this route and hit <b>Submit</b>.');
+	   echo('<br>&nbsp;&nbsp;&nbsp;&nbsp;(Trip counts are automatically adjusted when you make changes.)');
+	   echo('<br>&nbsp;&nbsp;2.  For each Pick-up or Drop-off <b>stop</b>, select it below to record its food weights.');
 	}
 	echo('<br><br>When you are done, hit <b>Return to routes</b> at the bottom.</p><p>');
 }
@@ -179,8 +180,8 @@ foreach ($route->get_dropoff_stops() as $dropoff_id) {
 	echo '<tr><td colspan="3"> Hit <input type="hidden" name="submitted" value="1">';
 	echo '<input type="submit" value="Submit" name="Submit"> to ';
 	if ($_SESSION['access_level']==1 && $today==substr($route->get_id(),0,8)) 
-	    echo 'enter today\'s Crew, ';
-	else echo 'change the onboard crew, ';
+	    echo 'record today\'s Crew, ';
+	else echo 'record the onboard crew, ';
 	echo 'add a Crew member, add a Pick-up, or add a Drop-off (one at a time).</td></tr></table>';
 
 if ($_SESSION['access_level']>=2){
