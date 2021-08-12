@@ -23,6 +23,8 @@ session_cache_expire(30);
 				<?PHP
 					include_once('database/dbVolunteers.php');
      				include_once('domain/Volunteer.php');
+     				include_once 'database/dbRoutes.php';
+     				include_once 'domain/Route.php';
      				$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
      				date_default_timezone_set('America/New_York');
 						
@@ -37,16 +39,16 @@ session_cache_expire(30);
      				$today = time();
 					echo "<br>Today is ".date('l F j, Y h:i A', $today).".";
 					
+					autogenerate_routes();  // be sure next 2 weeks routes are always ready to go
 					if($_SESSION['access_level']==0) 
 					    echo('<p> To apply to become a driver with Second Helpings, select <a href="'.$path.
 					         'volunteerEdit.php?id='.'new'.'">apply</a>.');
-					    else if ($_SESSION['access_level']==1){
-					        echo "<br><br>Check that your truck is in " . $areas[$_SESSION['_area']] . " and then hit <b>today's toute </b> to get started."; 
-					       echo "<br>&nbsp;&nbsp;Otherwise, hit <b>logout</b>.";
-					    }
+					else if ($_SESSION['access_level']==1){
+					    echo "<br><br>Check that your truck is in " . $areas[$_SESSION['_area']] . " and then hit <b>today's toute </b> to get started."; 
+					    echo "<br>&nbsp;&nbsp;Otherwise, hit <b>logout</b>.";
+					}
 					else {
-					//	include_once('ftp.php');
-					//	update_ftp();
+						
 						echo "<p>Route and Weight data are always up to date.";
 						echo "<br>Please select <b>routes</b> above to view details.";
 					}

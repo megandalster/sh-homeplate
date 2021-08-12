@@ -149,7 +149,7 @@ Report Type : <select name="report_type">
  <script>
 $(function() {
 $( "#dailyDatePicker" ).datepicker();
-$( "#range_Start_DatePicker" ).datepicker({ dateFormat: 'mm/dd/yy'}).datepicker("setDate", new Date(new Date().getFullYear(), 0, 1));
+$( "#range_Start_DatePicker" ).datepicker();
 $( "#range_End_DatePicker" ).datepicker();
 });
 </script>
