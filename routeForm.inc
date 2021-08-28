@@ -60,8 +60,9 @@ else
     $driver = retrieve_dbVolunteers($driver_id);
     if ($driver) 
 	    $name = $driver->get_first_name() . ' ' . $driver->get_last_name();
-    else $name = $driver->get_id();
-    if ($routedate >= $twoweeksago && $routedate <= $today) {
+    else 
+        $name = $driver_id;
+    if ($driver && $routedate >= $twoweeksago && $routedate <= $today) {
         echo '<input type="checkbox" name="onboard[]" value=' . $driver_id;
         if (in_array ($routedate, $driver->get_lastTripDates() )) {
             echo(' CHECKED');
