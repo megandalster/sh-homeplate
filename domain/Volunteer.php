@@ -238,8 +238,9 @@ class Volunteer {
 	    sort($this->lastTripDates);
 	    if (in_array($newDate,$this->lastTripDates))
 	        return false; // avoid double-counting the same date
-	    if (sizeof($this->lastTripDates)==5) {
-	        array_splice($this->lastTripDates,0,0); // remove the earliest date
+	    $s = sizeof($this->lastTripDates);
+	    if ($s >= 5) {
+	        array_splice($this->lastTripDates,0,$s-4); // remove the earliest dates
 	    }
 		$this->lastTripDates[] = $newDate; 
 		$this->tripCount ++;
