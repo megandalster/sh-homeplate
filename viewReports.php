@@ -346,8 +346,6 @@ if($_POST['submitted'])
 	// get all stops from database for given area, report type, and date range
 	$all_stops = getall_dbStops_between_dates($_POST['report_area'], $_POST['report_type'], 
 		$_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name'], $_POST['report_county']);
-	if ($_POST['sort_by']=="weight")
-	    usort($all_stops, "byWeight");
 	
 	//split all_stops into 2 different arrays - one for each
 	$pickups = array();
