@@ -52,16 +52,16 @@ echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
 Base : <select name="report_area">
 	<option value="">--all--</option>
 	<option value="HHI" <?php if($_POST['report_area'] == "HHI"){echo "selected='true'";} ?> >Hilton Head</option>
-	<option value="SUN" <?php if($_POST['report_area'] == "SUN"){echo "selected='true'";} ?>>Bluffton</option>
-	<option value="BFT" <?php if($_POST['report_area'] == "BFT"){echo "selected='true'";} ?>>Beaufort</option>
+	<option value="SUN" <?php if($_POST['report_area'] == "SUN"){echo "selected='true'";} ?> >Bluffton</option>
+	<option value="BFT" <?php if($_POST['report_area'] == "BFT"){echo "selected='true'";} ?> >Beaufort</option>
 </select>
 </div>
 <div style="float:left;padding-left:8px;">
 County : <select name="report_county">
 	<option value="">--all--</option>
 	<option value="Beaufort" <?php if($_POST['report_county'] == "Beaufort"){echo "selected='true'";} ?> >Beaufort</option>
-	<option value="Hampton" <?php if($_POST['report_county'] == "Hampton"){echo "selected='true'";} ?>>Hampton</option>
-	<option value="Jasper" <?php if($_POST['report_county'] == "Jasper"){echo "selected='true'";} ?>>Jasper</option>
+	<option value="Hampton" <?php if($_POST['report_county'] == "Hampton"){echo "selected='true'";} ?> >Hampton</option>
+	<option value="Jasper" <?php if($_POST['report_county'] == "Jasper"){echo "selected='true'";} ?> >Jasper</option>
 </select>
 </div>
 
@@ -136,15 +136,20 @@ Donor/Recipient :
 	<div style="clear:both;"></div>
 <div style="padding:10px 0px 0px 8px;">
 Report Type : <select name="report_type">
-	<option value="">All Stops</option>
-	<option value="pickup" <?php if($_POST['report_type'] == "pickup"){echo "selected='true'";} ?> >Donors Only</option>
-	<option value="dropoff" <?php if($_POST['report_type'] == "dropoff"){echo "selected='true'";} ?>>Recipients Only</option>
+	<option value="">Rank Report</option>
+	<option value="pickup" <?php if($_POST['report_type'] == "pickup"){echo "selected='true'";} ?> >Donors Rank Report</option>
+	<option value="dropoff" <?php if($_POST['report_type'] == "dropoff"){echo "selected='true'";} ?> >Recipients Rank Report</option>
 	<option value="publixwalmart" <?php if($_POST['report_type'] == "publixwalmart"){echo "selected='true'";} ?> >Breakdowns by Food Type</option>
 	<option value="clientdetail" <?php if($_POST['report_type'] == "clientdetail"){echo "selected='true'";} ?> >Client Detail</option>
 	<option value="volunteerdates" <?php if($_POST['report_type'] == "volunteerdates"){echo "selected='true'";} ?> >Volunteer Dates</option>
 </select>
+<?php 
+echo 'Sorted by : <select name="sort_by">';
+echo	'<option value="weight"'; if($_POST['sort_by'] == "weight"){echo "selected='true'";} echo '>Weight</option>';
+echo	'<option value="name"'; if($_POST['sort_by'] == "name"){echo "selected='true'";} echo '>Name</option>';
+echo '</select>';
+?>
 </div>
-
 
  <script>
 $(function() {
@@ -207,9 +212,11 @@ if($_POST['submitted'])
 		else $header[] = " ";
 	}
 	else {	
-		$header = array("Second Helpings Truck Weight Report for ");
+	    $header = array("Second Helpings Rank Report for ");
 	if ($_POST['report_area']!="") $header[] = " base: ".$bases[$_POST['report_area']]; 
 		else $header[] = " all bases ";
+	if ($_POST['sort_by']=="name")
+		$header[] = " (sorted by name) ";
 	if ($_POST['report_county']!="") $header[] = ", county: ".$_POST['report_county'];
 		else $header[] = ", all counties ";
 	if ($_POST['deliveryAreaId']!=""){
@@ -339,33 +346,41 @@ if($_POST['submitted'])
 	// get all stops from database for given area, report type, and date range
 	$all_stops = getall_dbStops_between_dates($_POST['report_area'], $_POST['report_type'], 
 		$_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name'], $_POST['report_county']);
-
+	
 	//split all_stops into 2 different arrays - one for each
 	$pickups = array();
 	$dropoffs = array();
 
-	// assign each stop by type to corresponding array
-	foreach($all_stops as $stop)
-	{
-		if($stop->get_type() == "pickup")
-		$pickups[] = $stop;
-		else
-		$dropoffs[] = $stop;
-	}
-
 	// keep track of total weights
 	$tw_pickups  = 0;
 	$tw_dropoffs = 0;
+	
+	// assign each stop by type to corresponding array
+	foreach($all_stops as $stop)
+	{
+	    if($stop->get_type() == "pickup"){
+		  $pickups[] = $stop;
+		  $pickUpWeight = $stop->get_total_weight();
+		  if($pickUpWeight > 0)
+		      $tw_pickups += $pickUpWeight;
+	    }
+	    else{
+		  $dropoffs[] = $stop;
+		  $dropOffTotalWeight = $stop->get_total_weight();  
+		  if($dropOffTotalWeight > 0)
+		      $tw_dropoffs += $dropOffTotalWeight;
+	    }
+	}
 
 	echo '<table id="tblReport"><tr>';
 
 	if ($_POST['report_type']!="dropoff") {
 			echo "<tr><td><b>Donor</b></td>";
-			echo "<td><b>Weight</b></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+			echo "<td><b>Weight</b></td><td><b>% Total</b></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 	}
 	if ($_POST['report_type']!="pickup") {
 		echo "<td><b>Recipient</b></td>";
-		echo "<td><b>Weight</b></td>";
+		echo "<td><b>Weight</b></td><td><b>% Total</b></td>";
 	}
 	echo "</tr>";
 	// iterator control
@@ -386,28 +401,28 @@ if($_POST['submitted'])
 				echo "<td align='right'>No Items</td><td></td>";
 			}
 			else{
-				echo "<td align='right'>".$pickups[$i]->get_total_weight()."</td><td></td>";
-				
-				$pickUpWeight = $pickups[$i]->get_total_weight();
-				if($pickUpWeight > 0)
-					$tw_pickups += $pickUpWeight;
+			    $foo = (float)(100 * $totalWeight) / $tw_pickups;
+			    $pct = number_format($foo, 1, '.', '');
+				echo "<td align='right'>".$totalWeight."</td><td align='right'>".$pct."%</td><td></td>";
 			}
 			
 		}
 		else if ($_POST['report_type']!="dropoff")
 		{
-			echo "<td></td><td></td><td></td>";
+			echo "<td></td><td></td><td></td><td></td>";
 		}
 
 		// cols 3 & 4 : recipient name and weight
 		if($dropoffs[$i] != null)
 		{
 			echo "<td>".$dropoffs[$i]->get_client_id()."</td>";
+	
 			$dropOffTotalWeight = $dropoffs[$i]->get_total_weight();
 			
-			if($dropOffTotalWeight > 0){
-				$tw_dropoffs += $dropoffs[$i]->get_total_weight();
-				echo "<td align='right'>". $dropOffTotalWeight ."</td>";
+			if($dropOffTotalWeight > 0){    
+			    $foo = (float)(100 * $dropOffTotalWeight) / $tw_dropoffs;
+			    $pct = number_format($foo, 1, '.', '');
+			    echo "<td align='right'>".$dropOffTotalWeight."</td><td align='right'>".$pct."%</td><td></td>";
 			}
 			else{
 				echo "<td align='right'>No Items</td>";
@@ -423,9 +438,9 @@ if($_POST['submitted'])
 	// total weight row
 	echo "<tr>";
 	if ($_POST['report_type']!="dropoff")
-		echo "<td><b>Totals</b></td><td align='right'>".$tw_pickups."</td><td></td>";
+		echo "<td><b>Total</b></td><td align='right'>".$tw_pickups."</td><td align='right'>100.0%</td><td></td>";
 	if ($_POST['report_type']!="pickup")
-		echo "<td><b>Totals</b></td><td align='right'>".$tw_dropoffs."</td>";
+		echo "<td><b>Total</b></td><td align='right'>".$tw_dropoffs."</td><td align='right'>100.0%</td>";
 	echo "</tr>";
 	echo "</table>";
 
@@ -436,11 +451,10 @@ if($_POST['submitted'])
   	// get all stops from database for given area, report type, and date range
 	$all_stops = getall_dbWalmartPublixStops_between_dates($_POST['report_area'], 
 			$_POST['client_name'], $start_date, $end_date, $_POST['deliveryAreaId'], $_POST['chain_name'], $_POST['report_county']);
-
-	//split all_stops into 5 different arrays - one for each food type
+	//split all_stops into 6 different arrays - one for each food type
 	$food_types = array("Store", "Meat","Deli","Bakery","Grocery","Dairy","Produce","Total");
 	$row_totals = array();
-	$food_type_totals = array("Totals",0,0,0,0,0,0,0);
+	$food_type_totals = array("Total",0,0,0,0,0,0,0);
 
 	echo '<table  id="tblReport"><tr>';
 	foreach($food_types as $food_type)
@@ -547,6 +561,9 @@ function export_data($header,$pickups,$dropoffs,$twp,$twd) {
 	fclose($handle);	
 }
 
+function byWeight ($s1, $s2) {
+    return (int)$s1->get_total_weight() <= (int)$s2->get_total_weight();
+}
 ?>
 <script type="text/javascript">
 			function showPrintWindow(){
