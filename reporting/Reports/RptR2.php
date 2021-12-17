@@ -44,7 +44,13 @@ class RptR2 extends PdfReport
                 $p_subtot += $data['pickups'][$p_idx]['weight'];
                 $p_idx++;
             } else {
-                $this->rowData('',null,null);
+                if ($donor_type != '') {
+                    $p = ($p_subtot / $data['tw_pickups']) * 100.0;
+                    $this->subTotal($donor_type,$p_subtot,$p);
+                    $donor_type = '';
+                } else {
+                    $this->rowData('',null,null);
+                }
             }
             
             if ($d_idx < count($data['dropoffs'])) {
@@ -70,10 +76,10 @@ class RptR2 extends PdfReport
         $this->pdf->SetFont('','B');
     
         $this->pdf->SetXY( 95-28, 35);
-        $this->pdf->Cell(34,4,"Year To Date",1, 0,'C');
-        $this->pdf->SetX( 190-28);
-        $this->pdf->Cell(34,4,"Year To Date",1, 0,'C');
-        $this->pdf->Ln();
+//        $this->pdf->Cell(34,4,"Year To Date",1, 0,'C');
+//        $this->pdf->SetX( 190-28);
+//        $this->pdf->Cell(34,4,"Year To Date",1, 0,'C');
+//        $this->pdf->Ln();
         $this->pdf->SetX( 15);
         $this->pdf->Cell(52,4,"Donor",1, 0,'L');
         $this->pdf->Cell(20,4,"Weight - Lbs",1, 0,'C');
@@ -128,14 +134,17 @@ class RptR2 extends PdfReport
     
         $con = connect();
         $query = <<<SQL
-                    SELECT s.client, s.type, s.weight, c.donor_type from (
+                    SELECT s.client, s.type, s.weight,
+                    case when c.donor_type='Rescued Food' then 'Rescued Food' else 'Other Food' end as donor_type,
+                    case when c.donor_type='Rescued Food' THEN 0 else 1 end as orderby
+                    from (
                         SELECT client, type, SUM(weight) as weight
                         FROM dbStops
                         WHERE date >= '$start_date' AND date < '$end_date'
                             AND weight > 0
                         GROUP BY client ) s
                     JOIN dbClients c on c.id = s.client
-                    order by 4,3 desc
+                    order by 5,3 desc
 SQL;
         error_log($query);
         $result = mysqli_query ($con,$query);
