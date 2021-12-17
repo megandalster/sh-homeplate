@@ -95,7 +95,7 @@
                         echo '<option value="Jasper"'; if ($county=="Jasper") echo " SELECTED"; echo '>Jasper</option>';
 					echo '</select>';
 					
-					echo '&nbsp;&nbsp;Delivery Area:';
+					echo '&nbsp;&nbsp;Pickup/Delivery Area:';
 					echo('<select name="s_deliveryAreaId">');
 						echo ('<option value="--all--" SELECTED>--all--</option>');
 						foreach($deliveryAreas as $deliveryArea){

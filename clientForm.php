@@ -75,24 +75,24 @@ echo <<<END
                     <option value="former" {$fn(selected($client->get_status(),'former'))}>former</option>
                 </select>
             </td>
-END;
-	
-	if ($id=="new" || $client->get_type() == "donor") {
-        echo <<<END
-		    <td>&nbsp;&nbsp;&nbsp;&nbsp;Chain Name:
-                <select name="chain_name">
-                    <option value=""></option>
-                    <option value="BiLo" {$fn(selected($client->get_chain_name(),'BiLo'))}>BiLo</option>
-                    <option value="Food Lion" {$fn(selected($client->get_chain_name(),'Food Lion'))}>Food Lion</option>
-                    <option value="Harris Teeter" {$fn(selected($client->get_chain_name(),'Harris Teeter'))}>Harris Teeter</option>
-                    <option value="Kroger" {$fn(selected($client->get_chain_name(),'Kroger'))}>Kroger</option>
-                    <option value="Publix" {$fn(selected($client->get_chain_name(),'Publix'))}>Publix</option>
-                    <option value="Target" {$fn(selected($client->get_chain_name(),'Target'))}>Target</option>
-                    <option value="WalMart" {$fn(selected($client->get_chain_name(),'WalMart'))}>WalMart</option>
-                </select>
+		    <td>
+                <div id="chain-name-div" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;Chain Name:
+                    <select name="chain_name">
+                        <option value=""></option>
+                        <option value="Big Lots" {$fn(selected($client->get_chain_name(),'Big Lots'))}>Big Lots</option>
+                        <option value="BiLo" {$fn(selected($client->get_chain_name(),'BiLo'))}>BiLo</option>
+                        <option value="Food Lion" {$fn(selected($client->get_chain_name(),'Food Lion'))}>Food Lion</option>
+                        <option value="Fresh Market" {$fn(selected($client->get_chain_name(),'Fresh Market'))}>Fresh Market</option>
+                        <option value="Harris Teeter" {$fn(selected($client->get_chain_name(),'Harris Teeter'))}>Harris Teeter</option>
+                        <option value="Kroger" {$fn(selected($client->get_chain_name(),'Kroger'))}>Kroger</option>
+                        <option value="Publix" {$fn(selected($client->get_chain_name(),'Publix'))}>Publix</option>
+                        <option value="Target" {$fn(selected($client->get_chain_name(),'Target'))}>Target</option>
+                        <option value="WalMart" {$fn(selected($client->get_chain_name(),'WalMart'))}>WalMart</option>
+                        <option value="Whole Foods" {$fn(selected($client->get_chain_name(),'Whole Foods'))}>Whole Foods</option>
+                    </select>
+                </div>
             </td>
 END;
-	}
  
 	if ($id=="new" || $client->get_type() == "recipient") {
         echo <<< END
@@ -140,13 +140,13 @@ END;
                 <td>Pest Ctrl: <input type="text" id="pestctrl_date" name="pestctrl_date" size="10"
                     value="{$fn(showDate($client->get_pestctrl_date()))}">
                 </td>
-                <td>Adults served/Week: <input type="text" id="number" name="number_served" size="5"
+                <td>Adults served/Week<span class="required">*</span>: <input type="text" id="number" name="number_served" size="5"
                     value="{$client->get_number_served()}">
                 </td>
-                <td>Children: <input type="text" id="number" name="children_served" size="5"
+                <td>Children<span class="required">*</span>: <input type="text" id="number" name="children_served" size="5"
                     value="{$client->get_children_served()}">
                 </td>
-                <td>Seniors: <input type="text" id="number" name="seniors_served" size="5"
+                <td>Seniors<span class="required">*</span>: <input type="text" id="number" name="seniors_served" size="5"
                     value="{$client->get_seniors_served()}">
                 </td>
             </tr>
@@ -186,7 +186,7 @@ END;
                             </select>
                         </div>
                     </td>
-                    <td style="width:67px; text-align: right">County:</td>
+                    <td style="width:67px; text-align: right">County<span class="required"">*</span>:</td>
                     <td>
                         <select name="county">
                             <option value=""></option>
@@ -195,7 +195,7 @@ END;
                             <option value="Jasper" {$fn(selected($client->get_county(),'Jasper'))}>Jasper</option>
                         </select>
                     </td>
-                    <td>Delivery Area<span class="required">*</span>:
+                    <td><span id="area-label">Delivery Area</span><span class="required">*</span>:
                         <select name="deliveryAreaId">
                             <option value=""></option>
 END;
@@ -367,8 +367,12 @@ function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
           let val = $( "#type-select option:selected" ).text()
           if (val === 'Donor') {
             $('#donor-type-div').show()
+            $('#chain-name-div').show()
+            $('#area-label').text('Pickup Area')
           } else {
             $('#donor-type-div').hide()
+            $('#chain-name-div').hide()
+            $('#area-label').text('Delivery Area')
           }
         })
         $('#type-select').trigger('change')
