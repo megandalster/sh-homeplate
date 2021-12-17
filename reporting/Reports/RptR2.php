@@ -76,10 +76,12 @@ class RptR2 extends PdfReport
         $this->pdf->SetFont('','B');
     
         $this->pdf->SetXY( 95-28, 35);
-//        $this->pdf->Cell(34,4,"Year To Date",1, 0,'C');
-//        $this->pdf->SetX( 190-28);
-//        $this->pdf->Cell(34,4,"Year To Date",1, 0,'C');
-//        $this->pdf->Ln();
+        if ($this->ytd) {
+            $this->pdf->Cell(34, 4, "Year To Date", 1, 0, 'C');
+            $this->pdf->SetX(190 - 28);
+            $this->pdf->Cell(34, 4, "Year To Date", 1, 0, 'C');
+            $this->pdf->Ln();
+        }
         $this->pdf->SetX( 15);
         $this->pdf->Cell(52,4,"Donor",1, 0,'L');
         $this->pdf->Cell(20,4,"Weight - Lbs",1, 0,'C');
@@ -118,8 +120,13 @@ class RptR2 extends PdfReport
         $this->pdf->Cell(14,4,number_format($percent,1)."%",'T', 0,'R');
     }
     
-    public function data($rpt_date=null,$isfy=false) {
+    public function data($rpt_date=null,$isytd=false) {
         $start_date = $rpt_date->format('y-m-d');
+        if ($isytd) {
+            $start_date = new DateTime($rpt_date->format('y-m-d'));
+            $start_date->setDate( $start_date->format('Y'), 1, 1);
+            $start_date = $start_date->format('y-m-d');
+        }
         $end_date = new DateTime($rpt_date->format('y-m-d'));
         $end_date->modify('+1 month');
         $end_date = $end_date->format('y-m-d');

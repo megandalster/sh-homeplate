@@ -26,9 +26,10 @@ if ($ispdf || $isxlsx) {
     $rpt = null;
     switch ($_POST['report_name']) {
         case 'R2' :
+        case 'R2ytd' :
             if ($ispdf) {
                 require(dirname(__FILE__) . '/reporting/Reports/RptR2.php');
-                $rpt = new RptR2($rpt_date);
+                $rpt = new RptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
             }
             break;
     }
@@ -75,7 +76,8 @@ if ($ispdf || $isxlsx) {
         <form method="post" action="">
             <div style="padding-left:8px;">
             Report: <select name="report_name">
-                <option value="R2" {$fn(selected($_POST['report_name'],'R2'))} >R2 – Donor and Recipient M_YTD Rank</option>
+                <option value="R2" {$fn(selected($_POST['report_name'],'R2'))} >R2 – Donor and Recipient Month Rank</option>
+                <option value="R2ytd" {$fn(selected($_POST['report_name'],'R2ytd'))} >R2 – Donor and Recipient YTD Rank</option>
                 <option value="R3" {$fn(selected($_POST['report_name'],'R3'))} disabled>R3 – Donor Monthly Variance</option>
                 <option value="R4" {$fn(selected($_POST['report_name'],'R4'))} disabled>R4 – Recipient Monthly Variance</option>
                 <option value="R5" {$fn(selected($_POST['report_name'],'R5'))} disabled>R5 – Donor 3 Mo. & YTD Variance</option>
