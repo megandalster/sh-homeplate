@@ -13,20 +13,8 @@
  *	@version 4/4/2012
  */
 
-// showData: format date within heredoc
-function showDate($date) {
-    if ($date != '') {
-        return date('m/d/Y', strtotime($date));
-    }
-    return '';
-}
-// selected: return SELECTED if matching
-function selected($test,$answer) {
-   return $test == $answer ? 'SELECTED' : '';
-}
-
-// $fn: call function within heredoc
-$fn = function ($data) { return $data; };
+global $fn;
+include_once(dirname(__FILE__).'/Utils.php');
 
 
 if($_SESSION['access_level']>=2){
@@ -140,13 +128,13 @@ END;
                 <td>Pest Ctrl: <input type="text" id="pestctrl_date" name="pestctrl_date" size="10"
                     value="{$fn(showDate($client->get_pestctrl_date()))}">
                 </td>
-                <td>Adults served/Week<span class="required">*</span>: <input type="text" id="number" name="number_served" size="5"
+                <td id="td-adults">Adults served/Week<span class="required">*</span>: <input type="text" id="number" name="number_served" size="5"
                     value="{$client->get_number_served()}">
                 </td>
-                <td>Children<span class="required">*</span>: <input type="text" id="number" name="children_served" size="5"
+                <td id="td-children">Children<span class="required">*</span>: <input type="text" id="number" name="children_served" size="5"
                     value="{$client->get_children_served()}">
                 </td>
-                <td>Seniors<span class="required">*</span>: <input type="text" id="number" name="seniors_served" size="5"
+                <td id="td-seniors">Seniors<span class="required">*</span>: <input type="text" id="number" name="seniors_served" size="5"
                     value="{$client->get_seniors_served()}">
                 </td>
             </tr>
@@ -368,10 +356,16 @@ function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
           if (val === 'Donor') {
             $('#donor-type-div').show()
             $('#chain-name-div').show()
+            $('#td-adults').hide()
+            $('#td-children').hide()
+            $('#td-seniors').hide()
             $('#area-label').text('Pickup Area')
           } else {
             $('#donor-type-div').hide()
             $('#chain-name-div').hide()
+            $('#td-adults').show()
+            $('#td-children').show()
+            $('#td-seniors').show()
             $('#area-label').text('Delivery Area')
           }
         })
