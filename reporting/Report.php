@@ -4,6 +4,7 @@ class Report
 {
     public $reportDate;
     public $reportDateLabel;
+    public $filename;
     
     function __construct($reportDate=null) {
         switch (gettype($reportDate)) {

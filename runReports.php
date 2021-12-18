@@ -11,35 +11,53 @@
 session_start();
 session_cache_expire(30);
 
+$isxlsx = array_key_exists('XLSX', $_POST );
+$ispdf = array_key_exists('PDF', $_POST );
+
+if ($isxlsx) {
+    ob_start();
+}
+
 global $fn;
 include_once(dirname(__FILE__).'/Utils.php');
 
 $message = null;
-$ispdf = array_key_exists('PDF', $_POST );
-$isxlsx = array_key_exists('XLSX', $_POST );
+$rpt_date = array_key_exists('range_Month_Picker',$_POST) ? $_POST['range_Month_Picker'] : (new DateTime())->format('m/Y');
+$parts = explode('/',$rpt_date);
+$rpt_date = new DateTime($parts[1].'-'.$parts[0].'-01T00:00:00');
+
 if ($ispdf || $isxlsx) {
-    $rpt_date = $_POST['range_Month_Picker'];
-    $parts = explode('/',$rpt_date);
-    $rpt_date = new DateTime($parts[1].'-'.$parts[0].'-01T00:00:00');
-    error_log($_POST['range_Month_Picker'].' --> '.$rpt_date->format('Y-m-d'));
+    
+    $filename = "report.pdf";
+    header('Content-disposition: attachment; filename="'.$filename.'"');
+    header("Content-Type: application/pdf");
+//    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    header('Content-Transfer-Encoding: binary');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
     
     $rpt = null;
     switch ($_POST['report_name']) {
         case 'R2' :
         case 'R2ytd' :
             if ($ispdf) {
-                require(dirname(__FILE__) . '/reporting/Reports/RptR2.php');
-                $rpt = new RptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR2.php');
+                $rpt = new PdfRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
             }
             break;
     }
     if ($rpt != null) {
         $rpt->run();
         exit();
+    } else {
+        $message = $_POST['report_name'].'('. ($ispdf ? 'PDF' : 'XLSX') .') has not yet been implemented';
     }
-    $message = $_POST['report_name'].'('. ($ispdf ? 'PDF' : 'XLSX') .') has not yet been implemented';
 }
 
+$rpt_date = $rpt_date->format('m/Y');
 ?>
 <html>
     <head>
