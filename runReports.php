@@ -28,14 +28,6 @@ $rpt_date = new DateTime($parts[1].'-'.$parts[0].'-01T00:00:00');
 
 if ($ispdf || $isxlsx) {
     
-    $filename = "report.pdf";
-    header('Content-disposition: attachment; filename="'.$filename.'"');
-    header("Content-Type: application/pdf");
-//    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    header('Content-Transfer-Encoding: binary');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    
     $rpt = null;
     switch ($_POST['report_name']) {
         case 'R2' :
@@ -48,8 +40,25 @@ if ($ispdf || $isxlsx) {
 //                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
             }
             break;
+        case 'R3':
+            if ($ispdf) {
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR3.php');
+                $rpt = new PdfRptR3($rpt_date);
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            }
+            break;
     }
     if ($rpt != null) {
+        $filename = "report.pdf";
+        header('Content-disposition: attachment; filename="'.$filename.'"');
+        header("Content-Type: application/pdf");
+//    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+    
         $rpt->run();
         exit();
     } else {
@@ -58,6 +67,8 @@ if ($ispdf || $isxlsx) {
 }
 
 $rpt_date = $rpt_date->format('m/Y');
+
+if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
 ?>
 <html>
     <head>
@@ -96,7 +107,7 @@ $rpt_date = $rpt_date->format('m/Y');
             Report: <select name="report_name">
                 <option value="R2" {$fn(selected($_POST['report_name'],'R2'))} >R2 – Donor and Recipient Month Rank</option>
                 <option value="R2ytd" {$fn(selected($_POST['report_name'],'R2ytd'))} >R2 – Donor and Recipient YTD Rank</option>
-                <option value="R3" {$fn(selected($_POST['report_name'],'R3'))} disabled>R3 – Donor Monthly Variance</option>
+                <option value="R3" {$fn(selected($_POST['report_name'],'R3'))} >R3 – Donor Monthly Variance</option>
                 <option value="R4" {$fn(selected($_POST['report_name'],'R4'))} disabled>R4 – Recipient Monthly Variance</option>
                 <option value="R5" {$fn(selected($_POST['report_name'],'R5'))} disabled>R5 – Donor 3 Mo. & YTD Variance</option>
                 <option value="R6" {$fn(selected($_POST['report_name'],'R6'))} disabled>R6 – Recipient 3 Mo. & YTD Variance</option>
@@ -131,6 +142,7 @@ $rpt_date = $rpt_date->format('m/Y');
                 let today = new Date()
                 let lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
                 $( "#range_Month_Picker" ).datepicker({
+                                minDate: new Date(2020,1,1),
                                 maxDate: lastMonth,
                                 defaultDate: lastMonth,
                                 dateFormat: "mm/yy",
