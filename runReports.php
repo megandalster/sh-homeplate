@@ -49,6 +49,33 @@ if ($ispdf || $isxlsx) {
 //                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
             }
             break;
+        case 'R4':
+            if ($ispdf) {
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR4.php');
+                $rpt = new PdfRptR4($rpt_date);
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            }
+            break;
+        case 'R5':
+            if ($ispdf) {
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR5.php');
+                $rpt = new PdfRptR5($rpt_date);
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            }
+            break;
+        case 'R6':
+            if ($ispdf) {
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR6.php');
+                $rpt = new PdfRptR6($rpt_date);
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            }
+            break;
     }
     if ($rpt != null) {
         $filename = "report.pdf";
@@ -108,9 +135,9 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                 <option value="R2" {$fn(selected($_POST['report_name'],'R2'))} >R2 – Donor and Recipient Month Rank</option>
                 <option value="R2ytd" {$fn(selected($_POST['report_name'],'R2ytd'))} >R2 – Donor and Recipient YTD Rank</option>
                 <option value="R3" {$fn(selected($_POST['report_name'],'R3'))} >R3 – Donor Monthly Variance</option>
-                <option value="R4" {$fn(selected($_POST['report_name'],'R4'))} disabled>R4 – Recipient Monthly Variance</option>
-                <option value="R5" {$fn(selected($_POST['report_name'],'R5'))} disabled>R5 – Donor 3 Mo. & YTD Variance</option>
-                <option value="R6" {$fn(selected($_POST['report_name'],'R6'))} disabled>R6 – Recipient 3 Mo. & YTD Variance</option>
+                <option value="R4" {$fn(selected($_POST['report_name'],'R4'))} >R4 – Recipient Monthly Variance</option>
+                <option value="R5" {$fn(selected($_POST['report_name'],'R5'))} >R5 – Donor 3 Mo. & YTD Variance</option>
+                <option value="R6" {$fn(selected($_POST['report_name'],'R6'))} >R6 – Recipient 3 Mo. & YTD Variance</option>
                 <option value="R7" {$fn(selected($_POST['report_name'],'R7'))} disabled>R7 – Donor 6 Mo. Trend</option>
                 <option value="R8" {$fn(selected($_POST['report_name'],'R8'))} disabled>R8 – Donor by Area Trend</option>
                 <option value="R9" {$fn(selected($_POST['report_name'],'R9'))} disabled>R9 – Recipient 6 Mo. Trend</option>

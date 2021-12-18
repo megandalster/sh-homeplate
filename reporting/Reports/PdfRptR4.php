@@ -2,20 +2,20 @@
 
 
 require(dirname(__FILE__).'/../PdfReport.php');
-require(dirname(__FILE__).'/../Traits/R3DataTrait.php');
+require(dirname(__FILE__).'/../Traits/R4DataTrait.php');
 
 
-class PdfRptR3 extends PdfReport
+class PdfRptR4 extends PdfReport
 {
-    use R3DataTrait;
+    use R4DataTrait;
     
     private $prevYearLabel = null;
  
     function __construct($reportDate=null,$ytd=false) {
         parent::__construct($reportDate);
         $this->ytd = $ytd;
-        $this->header['reportName'] = 'R3 - DONOR MONTHLY VARIANCE REPORT';
-        $this->filename = 'R3-D-MVAR-'.$this->reportDateLabel;
+        $this->header['reportName'] = 'R4 - RECIPIENT MONTHLY VARIANCE REPORT';
+        $this->filename = 'R4-R-MVAR-'.$this->reportDateLabel;
         $this->pdf->setTitle($this->filename);
     
         $prv_date = new DateTime($this->reportDate->format('Y-m-d'));
@@ -31,63 +31,27 @@ class PdfRptR3 extends PdfReport
         $this->pdf->Ln();
         
         $data = $this->data($this->reportDate);
-        $donor_type = count($data['pickups']) > 0 ? $data['pickups'][0]['donor_type'] : '';
         $cur_total = 0.0;
         $prv_total = 0.0;
-        $d_cur_total = 0.0;
-        $d_prv_total = 0.0;
     
         $p_idx = 0;
-        while ($p_idx < count($data['pickups'])) {
-            if ($p_idx < count($data['pickups']) && $data['pickups'][$p_idx]['donor_type'] != $donor_type) {
-                // change of type
-                $d = $d_cur_total - $d_prv_total;
-                $p = $d_prv_total == 0 ? null : ($d / $d_prv_total) * 100.0;
-                $this->rowTotal(
-                    $donor_type,
-                    $d_cur_total,
-                    $d_prv_total,
-                    $d,
-                    $p
-                );
-                $donor_type = $data['pickups'][$p_idx]['donor_type'];
-                $d_cur_total = 0.0;
-                $d_prv_total = 0.0;
-                $this->pdf->Ln();
-            } else if ($p_idx < count($data['pickups'])) {
-                $cw = $data['pickups'][$p_idx]['cur_weight'];
-                $pw = $data['pickups'][$p_idx]['prv_weight'];
-                $d = $cw - $pw;
-                $p = $pw == 0 ? null : ($d / $pw) * 100.0;
-                $this->rowData(
-                    $data['pickups'][$p_idx]['client'],
-                    $data['pickups'][$p_idx]['cur_weight'],
-                    $data['pickups'][$p_idx]['prv_weight'],
-                    $d,
-                    $p);
-                $cur_total += $data['pickups'][$p_idx]['cur_weight'];
-                $prv_total += $data['pickups'][$p_idx]['prv_weight'];
-                $d_cur_total += $data['pickups'][$p_idx]['cur_weight'];
-                $d_prv_total += $data['pickups'][$p_idx]['prv_weight'];
-                $p_idx++;
-            }
-            $this->pdf->Ln();
-        }
-        if ($donor_type != '') {
-            $d = $d_cur_total - $d_prv_total;
-            $p =$d_prv_total == 0 ? null : ($d / $d_prv_total) * 100;
-            $this->rowTotal(
-                $donor_type,
-                $d_cur_total,
-                $d_prv_total,
+        while ($p_idx < count($data['dropoffs'])) {
+            $cw = $data['dropoffs'][$p_idx]['cur_weight'];
+            $pw = $data['dropoffs'][$p_idx]['prv_weight'];
+            $d = $cw - $pw;
+            $p = $pw == 0 ? null : ($d / $pw) * 100.0;
+            $this->rowData(
+                $data['dropoffs'][$p_idx]['client'],
+                $data['dropoffs'][$p_idx]['cur_weight'],
+                $data['dropoffs'][$p_idx]['prv_weight'],
                 $d,
-                $p
-            );
-            $donor_type = '';
+                $p);
+            $cur_total += $data['dropoffs'][$p_idx]['cur_weight'];
+            $prv_total += $data['dropoffs'][$p_idx]['prv_weight'];
+            $p_idx++;
             $this->pdf->Ln();
         }
     
-        $this->pdf->Ln();
         $d = $cur_total - $prv_total;
         $p = $prv_total == 0 ? null : ($d / $prv_total) * 100.0;
         $this->rowTotal(

@@ -15,6 +15,7 @@ class PdfReport extends Report
         $this->setPdfHeaderReportDate($this->reportDateLabel);
         
         $this->pdf = new PDF_MemImage();
+        $this->pdf->SetAutoPageBreak(true, 10);
     }
 
     function run() {

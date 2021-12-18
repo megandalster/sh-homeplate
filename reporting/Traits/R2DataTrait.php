@@ -36,7 +36,7 @@ trait R2DataTrait {
                     JOIN dbClients c on c.id = s.client
                     order by 5,3 desc
 SQL;
-        error_log($query);
+//        error_log($query);
         $result = mysqli_query ($con,$query);
         $theStops = array();
         while ($result_row = mysqli_fetch_assoc($result)) {
