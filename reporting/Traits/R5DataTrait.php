@@ -98,7 +98,7 @@ from (
     ) y
     order by 4,7 desc, 1
 SQL;
-        error_log($query);
+//        error_log($query);
         $result = mysqli_query ($con,$query);
         if (!$result) {
             error_log(mysqli_error($con). "\n");

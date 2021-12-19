@@ -46,16 +46,17 @@ select client,
         IFNULL(ycur_weight,0)-IFNULL(yprv_weight,0) as ychg_weight
 from (
         SELECT  DISTINCT s.client,
-                         c.area,
+                         da.deliveryAreaName as area,
                          c.county,
     		CUR.weight as cur_weight,
     		PRV.weight as prv_weight,
     		YCUR.weight as ycur_weight,
     		YPRV.weight as yprv_weight
          FROM dbStops s
-    		LEFT JOIN dbClients c on c.id = s.client
+    		JOIN dbClients c on c.id = s.client
     			and c.type = 'recipient'
                 -- and c.status='active'
+             LEFT JOIN dbDeliveryAreas da on da.deliveryAreaId = c.deliveryAreaId
             LEFT JOIN (
                 SELECT s.client, sum(weight) as weight
                 FROM dbStops s
@@ -94,9 +95,9 @@ from (
             	AND s.type='dropoff'
                AND s.weight > 0
     ) y
-    order by 3,6 desc
+    order by 6 desc
 SQL;
-        error_log($query);
+//        error_log($query);
         $result = mysqli_query ($con,$query);
         if (!$result) {
             error_log(mysqli_error($con). "\n");

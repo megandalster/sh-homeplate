@@ -42,6 +42,7 @@ class PdfRptR5 extends PdfReport
         $aprv_total = array();
         $aycur_total = array();
         $ayprv_total = array();
+        $adiff = array();
     
         $donor_type = $data['pickups'][0]['donor_type'];
         $p_idx = 0;
@@ -55,9 +56,9 @@ class PdfRptR5 extends PdfReport
             if ($data['pickups'][$p_idx]['donor_type'] != $donor_type) {
                 $this->rowTotal();
     
-                $keys = array_keys($acur_total);
+                arsort($adiff);
+                $keys = array_keys($adiff);
                 ksort($keys,SORT_STRING);
-                error_log(print_r($keys,true));
                 foreach ($keys as $key) {
                     $a = substr($key,0,3);
                     $d = $acur_total[$key] - $aprv_total[$key];
@@ -132,7 +133,8 @@ class PdfRptR5 extends PdfReport
     
             if ($donor_type == 'Rescued Food') {
                 $area = $data['pickups'][$p_idx]['area'];
-                if (!array_key_exists($area, $acur_total)) {
+                if (!array_key_exists($area, $adiff)) {
+                    $adiff[$area] = 0;
                     $acur_total[$area] = 0;
                     $aprv_total[$area] = 0;
                     $aycur_total[$area] = 0;
@@ -142,6 +144,7 @@ class PdfRptR5 extends PdfReport
                 $aprv_total[$area] += $pw;
                 $aycur_total[$area] += $ycw;
                 $ayprv_total[$area] += $ypw;
+                $adiff[$area] += $cw - $pw;
             }
             $p_idx++;
         }
@@ -264,9 +267,9 @@ class PdfRptR5 extends PdfReport
         if ($d1 < 0) $this->pdf->SetTextColor(0,0, 0);
         $this->pdf->Cell(0.5,4,"",'LR', 0,'C');
         $this->pdf->Cell(17.5,4,$ycw != null ? number_format($ycw) : '',0, 0,'R');
-        $this->pdf->Cell(17.5,4,$ypw != null ? number_format($ypw) : '','L', 0,'R');
+        $this->pdf->Cell(17.5,4,$ypw != null ? number_format($ypw) : '',0, 0,'R');
         if ($yd1 < 0) $this->pdf->SetTextColor(255,0, 0);
-        $this->pdf->Cell(17.5,4,$yd1 != null ? number_format($yd1) : '',0, 0,'R');
+        $this->pdf->Cell(17.5,4,$yd1 != null ? number_format($yd1) : '','L', 0,'R');
         $this->pdf->Cell(13,4,$yp1 != null ? number_format($yp1)."%" : '','R', 0,'R');
         $this->pdf->Ln();
     }
@@ -287,9 +290,9 @@ class PdfRptR5 extends PdfReport
         if ($d1 < 0) $this->pdf->SetTextColor(0,0, 0);
         $this->pdf->Cell(0.5,4,"",$b.'LR', 0,'C');
         $this->pdf->Cell(17.5,4,$ycw != null ? number_format($ycw) : '',$b, 0,'R');
-        $this->pdf->Cell(17.5,4,$ypw != null ? number_format($ypw) : '',$b.'L', 0,'R');
+        $this->pdf->Cell(17.5,4,$ypw != null ? number_format($ypw) : '',$b, 0,'R');
         if ($yd1 < 0) $this->pdf->SetTextColor(255,0, 0);
-        $this->pdf->Cell(17.5,4,$yd1 != null ? number_format($yd1) : '',$b, 0,'R');
+        $this->pdf->Cell(17.5,4,$yd1 != null ? number_format($yd1) : '',$b.'L', 0,'R');
         $this->pdf->Cell(13,4,$yp1 != null ? number_format($yp1)."%" : '',$b.'R', 0,'R');
         $this->pdf->Ln();
     }
