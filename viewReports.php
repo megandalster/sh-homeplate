@@ -364,7 +364,7 @@ if($_POST['submitted'])
 		  if($pickUpWeight > 0)
 		      $tw_pickups += $pickUpWeight;
 	    }
-	    else{
+	    else if (substr($stop->get_id(),12)!=="") {  // skip blank dropoffs
 		  $dropoffs[] = $stop;
 		  $dropOffTotalWeight = $stop->get_total_weight();  
 		  if($dropOffTotalWeight > 0)

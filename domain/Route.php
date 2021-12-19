@@ -63,14 +63,22 @@ class Route {
     function get_teamcaptain_id() {
     	return $this->teamcaptain_id;
     }
-    function get_pickup_stops() {
-    	return $this->pickup_stops;
+    function get_pickup_stops() {  // remove duplicate and blank stops
+        $data = array_intersect_key($this->pickup_stops, array_unique(array_map('strtolower', $this->pickup_stops)));
+        $filtered = array_filter($data, function ($element) {
+            return '' !== trim(substr($element,12));
+        });
+        return $filtered; // array_unique($this->dropoff_stops);
     }
     function get_num_pickups() {
     	return sizeof($this->pickup_stops);
     }
-    function get_dropoff_stops() {
-    	return $this->dropoff_stops;
+    function get_dropoff_stops() {  // remove duplicate and blank stops
+        $data = array_intersect_key($this->dropoff_stops, array_unique(array_map('strtolower', $this->dropoff_stops)));
+        $filtered = array_filter($data, function ($element) {
+            return '' !== trim(substr($element,12));
+        });
+        return $filtered; // array_unique($this->dropoff_stops);
     }
     function get_num_dropoffs() {
     	return sizeof($this->dropoff_stops);
