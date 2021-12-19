@@ -1,0 +1,5 @@
+/.idea/
+/reporting/fpdf/
+/reporting/jpgraph/
+/reporting/xlsxwriter/
+*.iml

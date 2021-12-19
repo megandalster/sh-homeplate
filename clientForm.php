@@ -13,11 +13,14 @@
  *	@version 4/4/2012
  */
 
+global $fn;
+include_once(dirname(__FILE__).'/Utils.php');
+
 
 if($_SESSION['access_level']>=2){
    echo('<p><strong>Donor/Recipient Information Form</strong><br />');
    echo('Here you can edit or delete a client in the database. ');
-   echo '(<span style="font-size:x-small;color:FF0000">*</span> indicates required information.)';
+   echo '(<span style="font-size:x-small;color:#FF0000;">*</span> indicates required information.)';
 }
 else {
     echo("<p id=\"error\">You do not have sufficient permissions to edit clients in the database.</p>");
@@ -26,141 +29,190 @@ else {
 	die();
 }
 
-?>
-<form method="POST">
+echo <<<END
+<style>
+    .required {
+        font-size: x-small;
+        color: #FF0000;
+    }
+</style>
 <script>
-$(function() {
-	$( "#survey_date" ).datepicker();
-	$( "#visit_date" ).datepicker();
-	$( "#foodsafe_date" ).datepicker();
-	$( "#pestctrl_date" ).datepicker();
-});
+    $(function() {
+        $( "#survey_date" ).datepicker();
+        $( "#visit_date" ).datepicker();
+        $( "#foodsafe_date" ).datepicker();
+        $( "#pestctrl_date" ).datepicker();
+    });
 </script>
-	<input type="hidden" name="old_id" value=<?PHP echo("\"".$id."\"");?>>
+<form method="POST">
+	<input type="hidden" name="old_id" value="{$id}">
 	<input type="hidden" name="_form_submit" value="1">
 
-<p>	Name<span style="font-size:x-small;color:FF0000">*</span>: 
-<?PHP 
-	if ($id=="new") 
-		echo '<input type="text" size="35" name="id" tabindex=1 value="">';
-	else echo $client->get_id();
-	
-	echo ('&nbsp;&nbsp;&nbsp;&nbsp;Status: ');
-	echo('<select name="status">');
-	echo ('<option value="active"');if ($client->get_status()=='active') echo (' SELECTED'); echo('>active</option>');
-	echo ('<option value="inactive"');if ($client->get_status()=='inactive') echo (' SELECTED'); echo('>inactive</option>');
-	echo ('<option value="former"');if ($client->get_status()=='former') echo (' SELECTED'); echo('>former</option>');
-	echo('</select>');
-	
-	if ($id=="new" || $client->get_type() == "donor") {
-		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Chain Name: ');
-		echo('<select name="chain_name">');
-		echo ('<option value=""></option>');
-		echo ('<option value="BiLo"');if ($client->get_chain_name()=='BiLo') echo (' SELECTED'); echo('>BiLo</option>');
-		echo ('<option value="Food Lion"');if ($client->get_chain_name()=='Food Lion') echo (' SELECTED'); echo('>Food Lion</option>');
-		echo ('<option value="Harris Teeter"');if ($client->get_chain_name()=='Harris Teeter') echo (' SELECTED'); echo('>Harris Teeter</option>');
-		echo ('<option value="Kroger"');if ($client->get_chain_name()=='Kroger') echo (' SELECTED'); echo('>Kroger</option>');
-		echo ('<option value="Publix"');if ($client->get_chain_name()=='Publix') echo (' SELECTED'); echo('>Publix</option>');
-		echo ('<option value="Target"');if ($client->get_chain_name()=='Target') echo (' SELECTED'); echo('>Target</option>');
-		echo ('<option value="WalMart"');if ($client->get_chain_name()=='WalMart') echo (' SELECTED'); echo('>WalMart</option>');
-		echo('</select>');
-	}
+    <table>
+        <tr>
+            <td style="width:55px; text-align: right">Name<span class="required">*</span>:
+            </td>
+            <td>
+                {$fn($id=='new' ? '<input type="text" size="35" name="id" tabindex=1 value="">' : '<span style="font-weight:bold;">'.$client->get_id().'</span>')}
+            </td>
+            <td style="width:55px; text-align: right">Status:</td>
+            <td>
+                <select name="status">
+                    <option value="active" {$fn(selected($client->get_status(),'active'))}>active</option>
+                    <option value="inactive" {$fn(selected($client->get_status(),'inactive'))}>inactive</option>
+                    <option value="former" {$fn(selected($client->get_status(),'former'))}>former</option>
+                </select>
+            </td>
+		    <td>
+                <div id="chain-name-div" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;Chain Name:
+                    <select name="chain_name">
+                        <option value=""></option>
+                        <option value="Big Lots" {$fn(selected($client->get_chain_name(),'Big Lots'))}>Big Lots</option>
+                        <option value="BiLo" {$fn(selected($client->get_chain_name(),'BiLo'))}>BiLo</option>
+                        <option value="Food Lion" {$fn(selected($client->get_chain_name(),'Food Lion'))}>Food Lion</option>
+                        <option value="Fresh Market" {$fn(selected($client->get_chain_name(),'Fresh Market'))}>Fresh Market</option>
+                        <option value="Harris Teeter" {$fn(selected($client->get_chain_name(),'Harris Teeter'))}>Harris Teeter</option>
+                        <option value="Kroger" {$fn(selected($client->get_chain_name(),'Kroger'))}>Kroger</option>
+                        <option value="Publix" {$fn(selected($client->get_chain_name(),'Publix'))}>Publix</option>
+                        <option value="Target" {$fn(selected($client->get_chain_name(),'Target'))}>Target</option>
+                        <option value="WalMart" {$fn(selected($client->get_chain_name(),'WalMart'))}>WalMart</option>
+                        <option value="Whole Foods" {$fn(selected($client->get_chain_name(),'Whole Foods'))}>Whole Foods</option>
+                    </select>
+                </div>
+            </td>
+END;
+ 
 	if ($id=="new" || $client->get_type() == "recipient") {
-		echo ('&nbsp;&nbsp;&nbsp;&nbsp;LCFB: ');
-		echo('<select name="lcfb">');
-		echo ('<option value=""></option>');
-		echo ('<option value="yes"');if ($client->get_lcfb()=='yes') echo (' SELECTED'); echo('>Yes</option>');
-		echo ('<option value="no"');if ($client->get_lcfb()=='no') echo (' SELECTED'); echo('>No</option>');
-		echo('</select>');
-		echo ('&nbsp;&nbsp;&nbsp;&nbsp;Char Trkr: ');
-		echo('<select name="chartrkr">');
-		echo ('<option value=""></option>');
-		echo ('<option value="yes"');if ($client->get_chartrkr()=='yes') echo (' SELECTED'); echo('>Yes</option>');
-		echo ('<option value="no"');if ($client->get_chartrkr()=='no') echo (' SELECTED'); echo('>No</option>');
-		echo('</select>');
-	}
-	echo "<table>";
-	if ($id=="new" || $client->get_type() == "recipient") {
-		echo "<tr>";
-		echo '<td>Applied: <input type="text" id="survey_date" name="survey_date" size="10" value="';
-		if ($client->get_survey_date() != ''){
-			$time = strtotime($client->get_survey_date());
-			echo date("m/d/Y", $time);
-		}
-		echo '"></td>';
-		echo '<td>Visit: <input type="text" id="visit_date" name="visit_date" size="10" value="';
-		if ($client->get_visit_date() != ''){
-			$time = strtotime($client->get_visit_date());
-			echo date("m/d/Y", $time);
-		}
-		echo '"></td>';
-		echo '<td>Food Safe: <input type="text" id="foodsafe_date" name="foodsafe_date" size="10" value="';
-		if ($client->get_foodsafe_date() != ''){
-			$time = strtotime($client->get_foodsafe_date());
-			echo date("m/d/Y", $time);
-		}
-		echo '"></td>';
-		echo '<td>Pest Ctrl: <input type="text" id="pestctrl_date" name="pestctrl_date" size="10" value="';
-		if ($client->get_pestctrl_date() != ''){
-			$time = strtotime($client->get_pestctrl_date());
-			echo date("m/d/Y", $time);
-		}
-		echo '"></td>';
-		echo '<td>Adults served/Week: <input type="text" id="number" name="number_served" size="5" value="'.
-				$client->get_number_served(). '"></td>';
-					echo '"></td>';
-		echo '<td>Children: <input type="text" id="number" name="children_served" size="5" value="'.
-				$client->get_children_served(). '"></td>';
-					echo '"></td>';
-		echo '<td>Seniors: <input type="text" id="number" name="seniors_served" size="5" value="'.
-				$client->get_seniors_served(). '"></td>';
-		echo "</tr>";
-	}
-    echo ('<tr><td>Base<span style="font-size:x-small;color:FF0000">*</span>: ');
-    echo('<select name="area">');
-    echo ('<option value=""></option>');
-    echo ('<option value="HHI"');if ($client->get_area()=='HHI') echo (' SELECTED'); echo('>Hilton Head</option>');
-    echo ('<option value="SUN"');if ($client->get_area()=='SUN') echo (' SELECTED'); echo('>Bluffton</option>');
-	echo ('<option value="BFT"');if ($client->get_area()=='BFT') echo (' SELECTED'); echo('>Beaufort</option>');
-	echo('</select></td>');
+        echo <<< END
+		    <td>&nbsp;&nbsp;&nbsp;&nbsp;LCFB:
+                <select name="lcfb">
+                    <option value=""></option>
+                    <option value="yes" {$fn(selected($client->get_lcfb(),'yes'))}>Yes</option>
+                    <option value="no" {$fn(selected($client->get_lcfb(),'no'))}>No</option>
+                </select>
+                &nbsp;&nbsp;&nbsp;&nbsp;Char Trkr:
+                <select name="chartrkr">
+                    <option value=""></option>
+                    <option value="yes" {$fn(selected($client->get_chartrkr(),'yes'))}>Yes</option>
+                    <option value="no" {$fn(selected($client->get_chartrkr(),'no'))}>No</option>
+                </select>
+            </td>
+END;
+    }
+    echo <<<END
+        </tr>
+    </table>
+END;
 	
-	echo ('<td>Type<span style="font-size:x-small;color:FF0000">*</span>: ');
-    echo('<select name="type">');
-    echo ('<option value=""></option>');
-	echo ('<option value="donor"');if ($client->get_type()=='donor') echo (' SELECTED'); echo('>Donor</option>');
-	echo ('<option value="recipient"');if ($client->get_type()=='recipient') echo (' SELECTED'); echo('>Recipient</option>');
-	echo('</select></td>');
+    
+    // Line 2 --------------------------------------------------------------------------
+	if ($id=="new" || $client->get_type() == "recipient") {
+		echo <<<END
+        <table>
+            <tr>
+		        <td style="width:55px; text-align: right">Applied:</td>
+		        <td style="width:100px;">
+		            <input type="text" id="survey_date" name="survey_date" size="10"
+		                value="{$fn(showDate($client->get_survey_date()))}">
+		        </td>
+		        <td>Visit:</td>
+		        <td>
+		            <input type="text" id="visit_date" name="visit_date" size="10"
+		                value="{$fn(showDate($client->get_visit_date()))}">
+		        </td>
+		        <td>Food Safe:</td>
+		        <td>
+		            <input type="text" id="foodsafe_date" name="foodsafe_date" size="10"
+		                value="{$fn(showDate($client->get_foodsafe_date()))}">
+		        </td>
+                <td>Pest Ctrl: <input type="text" id="pestctrl_date" name="pestctrl_date" size="10"
+                    value="{$fn(showDate($client->get_pestctrl_date()))}">
+                </td>
+                <td id="td-adults">Adults served/Week<span class="required">*</span>: <input type="text" id="number" name="number_served" size="5"
+                    value="{$client->get_number_served()}">
+                </td>
+                <td id="td-children">Children<span class="required">*</span>: <input type="text" id="number" name="children_served" size="5"
+                    value="{$client->get_children_served()}">
+                </td>
+                <td id="td-seniors">Seniors<span class="required">*</span>: <input type="text" id="number" name="seniors_served" size="5"
+                    value="{$client->get_seniors_served()}">
+                </td>
+            </tr>
+        </table>
+END;
+	}
 
-    echo ('<td>County: ');
-    echo('<select name="county">');
-    echo ('<option value=""></option>');
-    echo ('<option value="Beaufort"');if ($client->get_county()=='Beaufort') echo (' SELECTED'); echo('>Beaufort</option>');
-    echo ('<option value="Hampton"');if ($client->get_county()=='Hampton') echo (' SELECTED'); echo('>Hampton</option>');
-	echo ('<option value="Jasper"');if ($client->get_county()=='Jasper') echo (' SELECTED'); echo('>Jasper</option>');
-	echo('</select></td>');
-	
-	echo ('<td>Delivery Area<span style="font-size:x-small;color:FF0000">*</span>: ');
-    echo('<select name="deliveryAreaId">');
-    echo ('<option value=""></option>');
+    // Line 3 --------------------------------------------------------------------------
+    echo <<<END
+            <table>
+                <tr>
+                    <td style="width:55px; text-align: right">Base<span class="required">*</span>:</td>
+                    <td style="width:100px;">
+                        <select name="area">
+                            <option value=""></option>
+                            <option value="HHI" {$fn(selected($client->get_area(),'HHI'))}>Hilton Head</option>
+                            <option value="SUN" {$fn(selected($client->get_area(),'SUN'))}>Bluffton</option>
+                            <option value="BFT" {$fn(selected($client->get_area(),'BFT'))}>Beaufort</option>
+                        </select>
+                    </td>
+                    <td style="width:40px; text-align: right">Type<span class="required"">*</span>:</td>
+                    <td>
+                        <select name="type" id="type-select">
+                            <option value=""></option>
+                            <option value="donor"' {$fn(selected($client->get_type(),'donor'))}>Donor</option>
+                            <option value="recipient" {$fn(selected($client->get_type(),'recipient'))}>Recipient</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div id="donor-type-div" style="display:none;">Donor Type<span class="required"">*</span>:
+                            <select name="donor_type">
+                                <option value=""></option>
+                                <option value="Rescued Food" {$fn(selected($client->get_donor_type(),'Rescued Food'))}>Rescued Food</option>
+                                <option value="Purchased Food" {$fn(selected($client->get_donor_type(),'Purchased Food'))}>Purchased Food</option>
+                                <option value="Food Drive Food" {$fn(selected($client->get_donor_type(),'Food Drive Food'))}>Food Drive Food</option>
+                                <option value="Transported Food" {$fn(selected($client->get_donor_type(),'Transported Food'))}>Transported Food</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td style="width:67px; text-align: right">County<span class="required"">*</span>:</td>
+                    <td>
+                        <select name="county">
+                            <option value=""></option>
+                            <option value="Beaufort" {$fn(selected($client->get_county(),'Beaufort'))}>Beaufort</option>
+                            <option value="Hampton" {$fn(selected($client->get_county(),'Hampton'))}>Hampton</option>
+                            <option value="Jasper" {$fn(selected($client->get_county(),'Jasper'))}>Jasper</option>
+                        </select>
+                    </td>
+                    <td><span id="area-label">Delivery Area</span><span class="required">*</span>:
+                        <select name="deliveryAreaId">
+                            <option value=""></option>
+END;
+    
 	$deliveryAreas = getall_dbDeliveryAreas();
 	foreach($deliveryAreas as $deliveryArea){
-		echo ('<option value="'); 
-		echo($deliveryArea->get_deliveryAreaId()); 
-		echo('"');
-		if ($client->get_deliveryAreaId()==$deliveryArea->get_deliveryAreaId()) 
-			echo (' SELECTED');
-		 echo('>'); echo($deliveryArea->get_deliveryAreaName()); echo('</option>');
+		echo <<<END
+            <option
+                value="{$deliveryArea->get_deliveryAreaId()}"
+                {$fn(selected($client->get_deliveryAreaId(),$deliveryArea->get_deliveryAreaId()))}>
+                {$deliveryArea->get_deliveryAreaName()}
+            </option>
+END;
 	}
-	echo('</select></td>');
-	
-	echo ('<td>No/So: ');
-	echo('<select name="noso">');
-	echo ('<option value=""></option>');
-	echo ('<option value="North"');if ($client->get_noso()=='North') echo (' SELECTED'); echo('>North of the Broad</option>');
-	echo ('<option value="South"');if ($client->get_noso()=='South') echo (' SELECTED'); echo('>South of the Broad</option>');
-	echo('</select></td>');
-	
-	echo "</tr></table>";
+    
+    echo <<<END
+                        </select>
+                    </td>
+                    <td>No/So:
+                        <select name="noso">
+                            <option value=""></option>
+                            <option value="North" {$fn(selected($client->get_noso(),'North'))}>North of the Broad</option>
+                            <option value="South" {$fn(selected($client->get_noso(),'South'))}>South of the Broad</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+END;
+
 $areas = array("daysHHI"=>"Hilton Head","daysSUN"=>"Bluffton","daysBFT"=>"Beaufort");
 $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
 echo '<table><tr>';
@@ -188,8 +240,8 @@ echo "</tr></table>";
 		    <td>Phone:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=3 value="<?PHP echo $client->get_phone1()?>"></td>
 		    <td>Email:</td><td> <input type="text" size="30" name="email" tabindex=4 value="<?PHP echo $client->get_email() ?>"></td>
 		</tr>
-		<tr><td>Address<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" size="30" name="address" tabindex=5 value="<?PHP echo($client->get_address())?>"></td>
-		<td>City<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="city" tabindex=6 value="<?PHP echo($client->get_city())?>"></td>
+		<tr><td>Address<span class="required">*</span>:</td><td> <input type="text" size="30" name="address" tabindex=5 value="<?PHP echo($client->get_address())?>"></td>
+		<td>City<span class="required">*</span>:</td><td> <input type="text" name="city" tabindex=6 value="<?PHP echo($client->get_city())?>"></td>
 		<td>State, Zip:</td>
 		<td><select name="state" tabindex=7>
 		<?PHP
@@ -298,4 +350,25 @@ function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
 		echo "</select>";	
 }
 ?>
+    <script>
+        $('#type-select').change(() => {
+          let val = $( "#type-select option:selected" ).text()
+          if (val === 'Donor') {
+            $('#donor-type-div').show()
+            $('#chain-name-div').show()
+            $('#td-adults').hide()
+            $('#td-children').hide()
+            $('#td-seniors').hide()
+            $('#area-label').text('Pickup Area')
+          } else {
+            $('#donor-type-div').hide()
+            $('#chain-name-div').hide()
+            $('#td-adults').show()
+            $('#td-children').show()
+            $('#td-seniors').show()
+            $('#area-label').text('Delivery Area')
+          }
+        })
+        $('#type-select').trigger('change')
+      </script>
 </form>
