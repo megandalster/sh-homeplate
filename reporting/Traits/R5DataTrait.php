@@ -35,7 +35,8 @@ trait R5DataTrait {
         
         $con = connect();
         $query = <<<SQL
-select client, area,
+select client,
+       area,
        donor_type,
        orderby,
 		cur_weight,
@@ -45,7 +46,7 @@ select client, area,
         yprv_weight,
         IFNULL(ycur_weight,0)-IFNULL(yprv_weight,0) as ychg_weight
 from (
-        SELECT  DISTINCT s.client, c.area,
+        SELECT  DISTINCT s.client, da.deliveryAreaName as area,
                 case when c.donor_type='Rescued Food' then 'Rescued Food' else 'Other Food' end as donor_type,
                 case when c.donor_type='Rescued Food' THEN 0 else 1 end as orderby,
     		CUR.weight as cur_weight,
@@ -53,9 +54,10 @@ from (
     		YCUR.weight as ycur_weight,
     		YPRV.weight as yprv_weight
          FROM dbStops s
-    		LEFT JOIN dbClients c on c.id = s.client
+    		JOIN dbClients c on c.id = s.client
     			and c.type = 'donor'
                 -- and c.status='active'
+             LEFT JOIN dbDeliveryAreas da on da.deliveryAreaId = c.deliveryAreaId
             LEFT JOIN (
                 SELECT s.client, sum(weight) as weight
                 FROM dbStops s
@@ -94,7 +96,7 @@ from (
             	AND s.type='pickup'
                AND s.weight > 0
     ) y
-    order by 4,7 desc
+    order by 4,7 desc, 1
 SQL;
         error_log($query);
         $result = mysqli_query ($con,$query);
