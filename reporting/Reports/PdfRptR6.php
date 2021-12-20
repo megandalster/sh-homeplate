@@ -21,7 +21,6 @@ class PdfRptR6 extends PdfReport
         $prv_date = new DateTime($this->reportDate->format('Y-m-d'));
         $prv_date->modify('-1 year');
         $this->prevYearLabel = $prv_date->format('M-y');
-    
     }
     
     function run()
@@ -260,13 +259,11 @@ class PdfRptR6 extends PdfReport
         $this->pdf->Cell(17.5,4,$lab,1, 0, 'C');
         $lab = substr($this->startDateLabel,0,4).$this->prevYearLabel;
         $this->pdf->Cell(17.5,4,$lab,1, 0,'C');
-        $this->pdf->Cell(17.5,4,"Change",1, 0,'C');
-        $this->pdf->Cell(13,4,"",1, 0,'C');
+        $this->pdf->Cell(30.5,4,"Change",1, 0,'C');
         $this->pdf->Cell(0.5,4,"",0, 0,'C');
         $this->pdf->Cell(17.5,4,$this->reportDateLabel,1, 0, 'C');
         $this->pdf->Cell(17.5,4,$this->prevYearLabel,1, 0,'C');
-        $this->pdf->Cell(17.5,4,"Change",1, 0,'C');
-        $this->pdf->Cell(13,4,"",1, 0,'C');
+        $this->pdf->Cell(30.5,4,"Change",1, 0,'C');
         $this->pdf->Ln();
     
         $y = $this->pdf->GetY();

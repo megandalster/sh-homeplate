@@ -119,7 +119,7 @@ SQL;
         }
         mysqli_close($con);
         return array(
-            'dropoffs' => $dropoffs,
+            'dropoffs' => $dropoffs
         );
     }
 }

@@ -92,14 +92,17 @@ class PdfRptR5 extends PdfReport
                     $cycur_total,
                     $cyprv_total,
                     $yd,
-                    $yp);
-                $this->rowData();
+                    $yp,
+                    'BT'
+                );
                 $ccur_total = 0.0;
                 $cprv_total = 0.0;
                 $cycur_total = 0.0;
                 $cyprv_total = 0.0;
                 $donor_type = $data['pickups'][$p_idx]['donor_type'];
-                
+    
+                $this->newPage();
+    
             }
         
             $area = substr($data['pickups'][$p_idx]['area'],0,3);
@@ -208,13 +211,11 @@ class PdfRptR5 extends PdfReport
         $this->pdf->Cell(17.5,4,$lab,1, 0, 'C');
         $lab = substr($this->startDateLabel,0,4).$this->prevYearLabel;
         $this->pdf->Cell(17.5,4,$lab,1, 0,'C');
-        $this->pdf->Cell(17.5,4,"Change",1, 0,'C');
-        $this->pdf->Cell(13,4,"",1, 0,'C');
+        $this->pdf->Cell(30.5,4,"Change",1, 0,'C');
         $this->pdf->Cell(0.5,4,"",0, 0,'C');
         $this->pdf->Cell(17.5,4,$this->reportDateLabel,1, 0, 'C');
         $this->pdf->Cell(17.5,4,$this->prevYearLabel,1, 0,'C');
-        $this->pdf->Cell(17.5,4,"Change",1, 0,'C');
-        $this->pdf->Cell(13,4,"",1, 0,'C');
+        $this->pdf->Cell(30.5,4,"Change",1, 0,'C');
         $this->pdf->Ln();
     
         $y = $this->pdf->GetY();

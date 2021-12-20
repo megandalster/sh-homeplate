@@ -115,12 +115,12 @@ SQL;
                 'chg_weight' => $result_row['chg_weight'],
                 'ycur_weight' => $result_row['ycur_weight'],
                 'yprv_weight' => $result_row['yprv_weight'],
-                'ychg_weight' => $result_row['ychg_weight'],
+                'ychg_weight' => $result_row['ychg_weight']
             );
         }
         mysqli_close($con);
         return array(
-            'pickups' => $pickups,
+            'pickups' => $pickups
         );
     }
 }
