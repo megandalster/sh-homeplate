@@ -85,6 +85,24 @@ if ($ispdf || $isxlsx) {
 //                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
             }
             break;
+        case 'R8':
+            if ($ispdf) {
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR8.php');
+                $rpt = new PdfRptR8($rpt_date);
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            }
+            break;
+        case 'R9':
+            if ($ispdf) {
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR9.php');
+                $rpt = new PdfRptR9($rpt_date);
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            }
+            break;
     }
     if ($rpt != null) {
         $filename = "report.pdf";
@@ -148,8 +166,8 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                 <option value="R5" {$fn(selected($_POST['report_name'],'R5'))} >R5 – Donor 3 Mo. & YTD Variance</option>
                 <option value="R6" {$fn(selected($_POST['report_name'],'R6'))} >R6 – Recipient 3 Mo. & YTD Variance</option>
                 <option value="R7" {$fn(selected($_POST['report_name'],'R7'))} >R7 – Donor 6 Mo. Trend</option>
-                <option value="R8" {$fn(selected($_POST['report_name'],'R8'))} disabled>R8 – Donor by Area Trend</option>
-                <option value="R9" {$fn(selected($_POST['report_name'],'R9'))} disabled>R9 – Recipient 6 Mo. Trend</option>
+                <option value="R8" {$fn(selected($_POST['report_name'],'R8'))} >R8 – Donor by Area Trend</option>
+                <option value="R9" {$fn(selected($_POST['report_name'],'R9'))} >R9 – Recipient 6 Mo. Trend</option>
                 <option value="R10" {$fn(selected($_POST['report_name'],'R10'))} disabled>R10 – Food Type Trend</option>
                 <option value="R11" {$fn(selected($_POST['report_name'],'R11'))} disabled>R11 – Snapshot</option>
                 <option value="R12" {$fn(selected($_POST['report_name'],'R12'))} disabled>R12 – Food Per Person Served</option>

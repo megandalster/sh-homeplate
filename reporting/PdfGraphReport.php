@@ -18,3 +18,12 @@ class PdfGraphReport extends PdfReport
 function valueFormat($aLabel,$dec=0) {
     return number_format($aLabel,$dec);
 }
+
+// R9
+function percentFormat($aLabel,$dec=1) {
+    if ($aLabel > 25.0)
+        return "\n\n                         ".number_format($aLabel,$dec).'%';
+    if ($aLabel > 10.0)
+        return "\n                         ".number_format($aLabel,$dec).'%';
+    return "                           ".number_format($aLabel,$dec).'%';
+}
