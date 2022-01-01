@@ -46,7 +46,7 @@ trait R4DataTrait {
     
         	WHERE ((s.date >= '$start_date' AND s.date < '$end_date') or (s.date >= '$prv_start_date' AND s.date < '$prv_end_date'))
                AND s.weight > 0
-               AND s.type='dropoff'
+              -- AND s.type='dropoff'
          order by 2 DESC,1
 SQL;
 //        error_log($query);

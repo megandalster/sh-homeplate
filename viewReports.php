@@ -413,7 +413,7 @@ if($_POST['submitted'])
 		}
 
 		// cols 3 & 4 : recipient name and weight
-		if($dropoffs[$i] != null)
+		if($i < count($dropoffs) && $dropoffs[$i] != null)
 		{
 			echo "<td>".$dropoffs[$i]->get_client_id()."</td>";
 	

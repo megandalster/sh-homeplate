@@ -37,13 +37,17 @@ class PdfRptR9 extends PdfGraphReport
         return $this->barPctVal($aLabel,5);
     }
     function barPctVal($aLabel,$dset) {
-        if ($aLabel > 20.0)
-            return "\n\n                         ".number_format($aLabel,1).'%';
+//        return number_format($aLabel,1).'%';
+//        if ($aLabel > 20.0)
+//            return "\n\n                         ".number_format($aLabel,1).'%';
+//        if ($aLabel > 10.0)
+//            return "\n                         ".number_format($aLabel,1).'%';
+//        if ($dset == 4)
+//            return "\n                           ".number_format($aLabel,1).'%';
+//        return "                           ".number_format($aLabel,1).'%';
         if ($aLabel > 10.0)
-            return "\n                         ".number_format($aLabel,1).'%';
-        if ($dset == 4)
-            return "\n                           ".number_format($aLabel,1).'%';
-        return "                           ".number_format($aLabel,1).'%';
+            return "                          ".number_format($aLabel,1).'%';
+        return "                            ".number_format($aLabel,1).'%';
     }
     
     function line1Val($aLabel) {
@@ -357,6 +361,7 @@ class PdfRptR9 extends PdfGraphReport
 //        $b2plot->value->SetMargin(-5);
         $b2plot->value->SetColor('#555');
     
+    
         // Gray Beaufort
 //        $b3plot->SetFastStroke(false);
         $b3plot->SetColor("white");
@@ -490,47 +495,52 @@ class PdfRptR9 extends PdfGraphReport
             $b1plot->SetColor("#FFC003");
             $b1plot->SetFillColor("#FFC003");
             $b1plot->SetLegend('Jasper County Total');
-            $b1plot->value->SetColor('#555');
             $b1plot->value->SetFont(FF_DV_SANSSERIF,FS_NORMAL,7);
             $b1plot->value->show = true;
 //            $b1plot->value->SetMargin(20);
             $b1plot->value->SetFormatCallback([$this,'bar1PctVal']);
+            $b1plot->valuepos = 'center';
+            $b1plot->value->SetColor('#555');
             
             $b2plot->SetColor("#ED7D31");
             $b2plot->SetFillColor("#ED7D31");
             $b2plot->SetLegend('Bluffton Area');
             $b2plot->value->show = true;
-            $b2plot->value->SetColor('#555');
             $b2plot->value->SetFont(FF_DEFAULT,FS_NORMAL,7);
 //            $b2plot->value->SetMargin(35);
             $b2plot->value->SetFormatCallback([$this,'bar2PctVal']);
+            $b2plot->valuepos = 'center';
+            $b2plot->value->SetColor('#555');
     
             $b3plot->SetColor("#A5A5A5");
             $b3plot->SetFillColor("#A5A5A5");
             $b3plot->SetLegend('Beaufort Area');
             $b3plot->value->show = true;
-            $b3plot->value->SetColor('#555');
             $b3plot->value->SetFont(FF_DEFAULT,FS_NORMAL,7);
 //            $b3plot->value->SetMargin(15);
             $b3plot->value->SetFormatCallback([$this,'bar3PctVal']);
+            $b3plot->valuepos = 'center';
+            $b3plot->value->SetColor('#555');
     
             $b4plot->SetColor("#4572C4");
             $b4plot->SetFillColor("#4572C4");
             $b4plot->SetLegend('Hilton Head Area');
             $b4plot->value->show = true;
-            $b4plot->value->SetColor('#555');
             $b4plot->value->SetFont(FF_DEFAULT,FS_NORMAL,7);
 //            $b4plot->value->SetMargin(15);
             $b4plot->value->SetFormatCallback([$this,'bar4PctVal']);
+            $b4plot->valuepos = 'center';
+            $b4plot->value->SetColor('#555');
     
             $b5plot->SetColor("#00B050");
             $b5plot->SetFillColor("#00B050");
             $b5plot->SetLegend('Hamilton County Total');
             $b5plot->value->show = true;
-            $b5plot->value->SetColor('#555');
             $b5plot->value->SetFont(FF_DEFAULT,FS_NORMAL,7);
 //            $b5plot->value->SetMargin(15);
             $b5plot->value->SetFormatCallback([$this,'bar5PctVal']);
+            $b5plot->valuepos = 'center';
+            $b5plot->value->SetColor('#555');
     
             $graph->title->Hide(true);
             $graph->legend->Pos(0.5, 0.79, 'center', 'botton');

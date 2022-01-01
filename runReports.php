@@ -22,12 +22,22 @@ global $fn;
 include_once(dirname(__FILE__).'/Utils.php');
 
 $message = null;
-$rpt_date = array_key_exists('range_Month_Picker',$_POST) ? $_POST['range_Month_Picker'] : (new DateTime())->format('m/Y');
+$rpt_date = (new DateTime())->format('m/Y');
+if (array_key_exists('range_Month_Picker',$_POST)) {
+    $rpt_date = $_POST['range_Month_Picker'];
+} else {
+    $rpt_date = new DateTime();
+    $rpt_date = new DateTime($rpt_date->format('Y-m').'-01');
+    $rpt_date->modify('-1 month');
+    $rpt_date = $rpt_date->format('m/Y');
+}
+
+//$rpt_date = array_key_exists('range_Month_Picker',$_POST) ? $_POST['range_Month_Picker'] : (new DateTime())->sub({months:1})->format('m/Y');
 $parts = explode('/',$rpt_date);
 $rpt_date = new DateTime($parts[1].'-'.$parts[0].'-01T00:00:00');
 
 if ($ispdf || $isxlsx) {
-    
+    error_log('runReports: '.$_POST['report_name'].' for '.$rpt_date->format('Y-m-d'));
     $rpt = null;
     switch ($_POST['report_name']) {
         case 'R2' :
@@ -103,6 +113,33 @@ if ($ispdf || $isxlsx) {
 //                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
             }
             break;
+        case 'R10':
+            if ($ispdf) {
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR10.php');
+                $rpt = new PdfRptR10($rpt_date);
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            }
+            break;
+        case 'R11':
+            if ($ispdf) {
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR11.php');
+                $rpt = new PdfRptR11($rpt_date);
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            }
+            break;
+        case 'R14':
+            if ($ispdf) {
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR14.php');
+                $rpt = new PdfRptR14($rpt_date);
+            } else {
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
+//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
+            }
+            break;
     }
     if ($rpt != null) {
         $filename = "report.pdf";
@@ -168,11 +205,11 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                 <option value="R7" {$fn(selected($_POST['report_name'],'R7'))} >R7 – Donor 6 Mo. Trend</option>
                 <option value="R8" {$fn(selected($_POST['report_name'],'R8'))} >R8 – Donor by Area Trend</option>
                 <option value="R9" {$fn(selected($_POST['report_name'],'R9'))} >R9 – Recipient 6 Mo. Trend</option>
-                <option value="R10" {$fn(selected($_POST['report_name'],'R10'))} disabled>R10 – Food Type Trend</option>
-                <option value="R11" {$fn(selected($_POST['report_name'],'R11'))} disabled>R11 – Snapshot</option>
+                <option value="R10" {$fn(selected($_POST['report_name'],'R10'))} >R10 – Food Type Trend</option>
+                <option value="R11" {$fn(selected($_POST['report_name'],'R11'))} >R11 – Snapshot</option>
                 <option value="R12" {$fn(selected($_POST['report_name'],'R12'))} disabled>R12 – Food Per Person Served</option>
                 <option value="R13" {$fn(selected($_POST['report_name'],'R13'))} disabled>R13 – Agency Distribution</option>
-                <option value="R14" {$fn(selected($_POST['report_name'],'R14'))} disabled>R14 – Key Rescued Daily Average</option>
+                <option value="R14" {$fn(selected($_POST['report_name'],'R14'))} >R14 – Key Rescued Daily Average</option>
             </select>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             Report Month:

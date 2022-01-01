@@ -5,31 +5,36 @@ include_once(dirname(__FILE__).'/../../database/dbinfo.php');
 trait R6DataTrait {
     public $startDateLabel = '';
     public function data($rpt_date=null) {
-        // start Date is -3 months
-        $start_date = new DateTime($rpt_date->format('y-m-d'));
-        $start_date->modify('-2 month');
-        $this->startDateLabel = $start_date->format('M-y');
-        $start_date = $start_date->format('y-m-d');
-
-        $end_date = new DateTime($rpt_date->format('y-m-d'));
-        $end_date->modify('+1 month');
-        $end_date = $end_date->format('y-m-d');
+        $tmpdate = new DateTime($rpt_date->format('y-m-d'));
     
-        $ytd_start_date = new DateTime(substr($end_date,0,2).'-01-01');
-        $ytd_start_date = $ytd_start_date->format('y-m-d');
+        // start Date is -3 months INCLUSIVE
+        $tmpdate->modify('-2 month');
+        $this->startDateLabel = $tmpdate->format('M-y');
+        $start_date = $tmpdate->format('y-m-d');
     
-        $prv_start_date = new DateTime($start_date);
-        $prv_start_date->modify('-1 year');
-        $prv_start_date = $prv_start_date->format('y-m-d');
-        $prv_end_date = new DateTime($end_date);
-        $prv_end_date->modify('-1 year');
-        $prv_end_date = $prv_end_date->format('y-m-d');
+        // back to prv ytd
+        $tmpdate->modify('-1 year');
+        $prv_start_date = $tmpdate->format('y-m-d');
     
-        $pytd_start_date = new DateTime(substr($prv_end_date,0,2).'-01-01');
-        $pytd_start_date = $pytd_start_date->format('y-m-d');
+        // back to prv end date
+        $tmpdate->modify('+3 month');
+        $prv_end_date = $tmpdate->format('y-m-d');
     
-        error_log($start_date.' --> '.$end_date.'     '.$prv_start_date.' --> '.$prv_end_date);
-        error_log($ytd_start_date.' --> '.$end_date.'     '.$pytd_start_date.' --> '.$prv_end_date);
+        // up to cur year end date
+        $tmpdate->modify('+1 year');
+        $end_date = $tmpdate->format('y-m-d');
+    
+    
+    
+    
+        $tmpdate = new DateTime(substr($start_date,0,2).'-01-01');
+        $ytd_start_date = $tmpdate->format('y-m-d');
+    
+        $tmpdate->modify('-1 year');
+        $pytd_start_date = $tmpdate->format('y-m-d');
+    
+        error_log('   cur: '.$start_date.' < '.$end_date.    '      prv: '.$prv_start_date.' < '.$prv_end_date);
+        error_log('   ytd: '.$ytd_start_date.' < '.$end_date.'   prvytd: '.$pytd_start_date.' < '.$prv_end_date);
     
         $dropoffs = array();
         
@@ -92,7 +97,7 @@ from (
         	           or (s.date >= '$prv_start_date' AND s.date < '$prv_end_date')
         	           or (s.date >= '$ytd_start_date' AND s.date < '$end_date')
         	           or (s.date >= '$pytd_start_date' AND s.date < '$prv_end_date'))
-            	AND s.type='dropoff'
+            	-- AND s.type='dropoff'
                AND s.weight > 0
     ) y
     order by 6 desc

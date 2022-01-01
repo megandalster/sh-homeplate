@@ -66,7 +66,7 @@ trait R9DataTrait {
                         GROUP BY 1
                     ) tot ON tot.client = s.client
                 WHERE (s.date >= '$start_date' AND s.date < '$end_date')
-                    AND s.type = 'dropoff'
+                    -- AND s.type = 'dropoff'
                     AND s.weight > 0
                 GROUP BY 1,2
                 ORDER BY 5,7 DESC,1

@@ -48,7 +48,7 @@ trait R3DataTrait {
     
         	WHERE ((s.date >= '$start_date' AND s.date < '$end_date') or (s.date >= '$prv_start_date' AND s.date < '$prv_end_date'))
                AND s.weight > 0
-               AND s.type = 'pickup'
+              -- AND s.type = 'pickup'
          order by 3,4 DESC
         -- group by 1
 SQL;
