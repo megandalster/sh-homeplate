@@ -1,11 +1,12 @@
 <?php
-require(dirname(__FILE__).'/Report.php');
-require(dirname(__FILE__).'/pdf_mem_image.php');
-require(dirname(__FILE__) . '/Traits/PdfHeaderTrait.php');
+require_once(dirname(__FILE__).'/Report.php');
+require_once(dirname(__FILE__).'/pdf_mem_image.php');
+require_once(dirname(__FILE__) . '/Traits/PdfHeaderTrait.php');
 
 class PdfReport extends Report
 {
     public $pdf = null;
+    public $outputFile = null;
 
     use PdfHeaderTrait;
     
@@ -17,19 +18,26 @@ class PdfReport extends Report
         $this->pdf = new PDF_MemImage();
         $this->pdf->SetAutoPageBreak(true, 10);
     }
+    
+    function SetOutputFile($filename) {
+        $this->outputFile = $filename;
+    }
 
     function run() {
-        header('Content-disposition: attachment; filename="'.$this->filename.'"');
-        header("Content-Type: application/pdf");
-//    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        header('Content-Transfer-Encoding: binary');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-    
+        if ($this->outputFile == null) {
+            header('Content-disposition: attachment; filename="'.$this->filename.'"');
+            header("Content-Type: application/pdf");
+            header('Content-Transfer-Encoding: binary');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+        }
     }
     
     function output() {
-        $this->pdf->Output('I',$this->filename.'.pdf');
+        if ($this->outputFile == null)
+            $this->pdf->Output('I',$this->filename.'.pdf');
+        else
+            $this->pdf->Output('F',$this->outputFile);
     }
     
     

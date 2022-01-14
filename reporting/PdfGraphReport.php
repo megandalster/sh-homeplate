@@ -1,5 +1,5 @@
 <?php
-require(dirname(__FILE__).'/PdfReport.php');
+require_once (dirname(__FILE__).'/PdfReport.php');
 require_once (dirname(__FILE__).'/jpgraph/jpgraph.php');
 require_once (dirname(__FILE__).'/jpgraph/jpgraph_line.php');
 require_once (dirname(__FILE__).'/jpgraph/jpgraph_bar.php');

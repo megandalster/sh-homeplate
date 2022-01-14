@@ -1,8 +1,8 @@
 <?php
 
 
-require(dirname(__FILE__).'/../PdfGraphReport.php');
-require(dirname(__FILE__).'/../Traits/R10DataTrait.php');
+require_once(dirname(__FILE__).'/../PdfGraphReport.php');
+require_once(dirname(__FILE__).'/../Traits/R10DataTrait.php');
 
 class PdfRptR10 extends PdfGraphReport
 {

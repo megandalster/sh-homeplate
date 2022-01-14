@@ -1,8 +1,8 @@
 <?php
 
 
-require(dirname(__FILE__).'/../PdfReport.php');
-require(dirname(__FILE__).'/../Traits/R6DataTrait.php');
+require_once(dirname(__FILE__).'/../PdfReport.php');
+require_once(dirname(__FILE__).'/../Traits/R6DataTrait.php');
 
 
 class PdfRptR6 extends PdfReport
@@ -23,8 +23,7 @@ class PdfRptR6 extends PdfReport
         $this->prevYearLabel = $prv_date->format('M-y');
     }
     
-    function run()
-    {
+    function run() {
         parent::run();
         $data = $this->data($this->reportDate);
     

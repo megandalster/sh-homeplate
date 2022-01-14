@@ -1,8 +1,8 @@
 <?php
 
 
-require(dirname(__FILE__).'/../PdfReport.php');
-require(dirname(__FILE__).'/../Traits/R4DataTrait.php');
+require_once(dirname(__FILE__).'/../PdfReport.php');
+require_once(dirname(__FILE__).'/../Traits/R4DataTrait.php');
 
 
 class PdfRptR4 extends PdfReport

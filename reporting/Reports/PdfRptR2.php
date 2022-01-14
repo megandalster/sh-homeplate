@@ -1,8 +1,8 @@
 <?php
 
 
-require(dirname(__FILE__).'/../PdfReport.php');
-require(dirname(__FILE__).'/../Traits/R2DataTrait.php');
+require_once(dirname(__FILE__).'/../PdfReport.php');
+require_once(dirname(__FILE__).'/../Traits/R2DataTrait.php');
 
 
 class PdfRptR2 extends PdfReport
@@ -14,14 +14,26 @@ class PdfRptR2 extends PdfReport
     function __construct($reportDate=null,$ytd=false) {
         parent::__construct($reportDate);
         $this->ytd = $ytd;
-        $this->header['reportName'] = 'R2 - DONOR & RECIPIENT RANK REPORT';
-        $this->filename = 'R2-D&R-RANK-'.$this->reportDateLabel;
+        $this->filename = 'R2-D&R-M_YTD-RANK-'.$this->reportDateLabel;
         $this->pdf->setTitle($this->filename);
     }
     
-    function run() {
+    function run()
+    {
         parent::run();
         
+        $this->header['reportName'] = 'R2 - DONOR & RECIPIENT MONTH RANK REPORT';
+        $this->ytd = false;
+        $this->_run();
+    
+        $this->header['reportName'] = 'R2 - DONOR & RECIPIENT YTD RANK REPORT';
+        $this->ytd = true;
+        $this->_run();
+
+        $this->output();
+    }
+    
+    function _run() {
         $this->newPage();
         $this->pdf->Ln();
         
@@ -70,7 +82,6 @@ class PdfRptR2 extends PdfReport
         }
     
         $this->grandTotal($data['tw_pickups'], $data['tw_dropoffs']);
-        $this->output();
     }
     
     function newPage() {

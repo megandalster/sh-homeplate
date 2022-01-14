@@ -1,8 +1,8 @@
 <?php
 
 
-require(dirname(__FILE__).'/../PdfReport.php');
-require(dirname(__FILE__).'/../Traits/R5DataTrait.php');
+require_once(dirname(__FILE__).'/../PdfReport.php');
+require_once(dirname(__FILE__).'/../Traits/R5DataTrait.php');
 
 
 class PdfRptR5 extends PdfReport

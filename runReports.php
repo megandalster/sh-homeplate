@@ -11,12 +11,7 @@
 session_start();
 session_cache_expire(30);
 
-$isxlsx = array_key_exists('XLSX', $_POST );
 $ispdf = array_key_exists('PDF', $_POST );
-
-if ($isxlsx) {
-    ob_start();
-}
 
 global $fn;
 include_once(dirname(__FILE__).'/Utils.php');
@@ -36,124 +31,116 @@ if (array_key_exists('range_Month_Picker',$_POST)) {
 $parts = explode('/',$rpt_date);
 $rpt_date = new DateTime($parts[1].'-'.$parts[0].'-01T00:00:00');
 
-if ($ispdf || $isxlsx) {
-    error_log('runReports: '.$_POST['report_name'].' for '.$rpt_date->format('Y-m-d'));
-    $rpt = null;
-    switch ($_POST['report_name']) {
-        case 'R2' :
-        case 'R2ytd' :
-            if ($ispdf) {
+if ($ispdf) {
+    error_log('runReports: '.join('.',$_POST['report_name']).' for '.$rpt_date->format('Y-m-d'));
+    $rpts = array();
+    $rptname = 'Reports-'.join('.',$_POST['report_name']).'-'.$rpt_date->format('M-y').'.pdf';
+    foreach ($_POST['report_name'] as $rpt) {
+        switch ($rpt) {
+            case 'R2' :
+            case 'R2ytd' :
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR2.php');
-                $rpt = new PdfRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R3':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR2($rpt_date, $rpt == 'R2ytd');
+                break;
+            case 'R3':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR3.php');
-                $rpt = new PdfRptR3($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R4':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR3($rpt_date);
+                break;
+            case 'R4':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR4.php');
-                $rpt = new PdfRptR4($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R5':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR4($rpt_date);
+                break;
+            case 'R5':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR5.php');
-                $rpt = new PdfRptR5($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R6':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR5($rpt_date);
+                break;
+            case 'R6':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR6.php');
-                $rpt = new PdfRptR6($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R7':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR6($rpt_date);
+                break;
+            case 'R7':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR7.php');
-                $rpt = new PdfRptR7($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R8':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR7($rpt_date);
+                break;
+            case 'R8':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR8.php');
-                $rpt = new PdfRptR8($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R9':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR8($rpt_date);
+                break;
+            case 'R9':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR9.php');
-                $rpt = new PdfRptR9($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R10':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR9($rpt_date);
+                break;
+            case 'R10':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR10.php');
-                $rpt = new PdfRptR10($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R11':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR10($rpt_date);
+                break;
+            case 'R11':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR11.php');
-                $rpt = new PdfRptR11($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
-        case 'R14':
-            if ($ispdf) {
+                $rpts[] = new PdfRptR11($rpt_date);
+                break;
+            case 'R12':
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR12.php');
+                $rpts[] = new PdfRptR12($rpt_date);
+                break;
+            case 'R14':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR14.php');
-                $rpt = new PdfRptR14($rpt_date);
-            } else {
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR2.php');
-//                $rpt = new XlsxRptR2($rpt_date, $_POST['report_name'] == 'R2ytd');
-            }
-            break;
+                $rpts[] = new PdfRptR14($rpt_date);
+                break;
+            case 'R15':
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR15.php');
+                $rpts[] = new PdfRptR15($rpt_date);
+                break;
+        }
     }
-    if ($rpt != null) {
-        $filename = "report.pdf";
-        header('Content-disposition: attachment; filename="'.$filename.'"');
+
+    if (count($rpts) == 1) {
+        $filename = $rpts[0]->filename;
+        header('Content-disposition: inline; filename="'.$filename.'"');
         header("Content-Type: application/pdf");
-//    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
     
-        $rpt->run();
+        $rpts[0]->run();
+        exit();
+    } else if (count($rpts) > 1) {
+        $files = array();
+        foreach ($rpts as $rpt) {
+            $tmpfname = tempnam(sys_get_temp_dir(), 'PDF');
+
+            $rpt->SetOutputFile($tmpfname);
+            $rpt->run(true);
+            $files[] = $tmpfname;
+        }
+
+        $pdftk = 'reporting/pdftk/pdftk';
+        if (PHP_OS == 'Darwin') {
+            $pdftk = '/usr/local/bin/pdftk';
+        }
+        
+        $output=null;
+        $retval=null;
+        error_log($pdftk.' '.join(' ',$files).' cat output -');
+
+//        header('Content-disposition: attachment; filename="'.$rpt->filename.'"');
+        header('Content-disposition: inline; filename="'.$rptname.'"');
+        header("Content-Type: application/pdf");
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        
+        passthru($pdftk.' '.join(' ',$files).' cat output -'); //.$tmpfname2, $output, $retval);
+//        error_log('pdftk: '.print_r($output,true));
+        
+
+//        $pdf = file_get_contents($tmpfname2);
+//        echo $pdf;
+
+//        unlink($tmpfname2);
+        foreach($files as $f) unlink($f);
         exit();
     } else {
-        $message = $_POST['report_name'].'('. ($ispdf ? 'PDF' : 'XLSX') .') has not yet been implemented';
+        $message = print_r($_POST['report_name'],true).' has not yet been implemented';
     }
 }
 
@@ -194,10 +181,26 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
     echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
     echo <<<END
         <form method="post" action="">
-            <div style="padding-left:8px;">
-            Report: <select name="report_name">
-                <option value="R2" {$fn(selected($_POST['report_name'],'R2'))} >R2 – Donor and Recipient Month Rank</option>
+            <div style="padding-left:8px; float: left;">
+            <!--
+            <table>
+                <tr>
+                    <td><input type="checkbox" name="R2">R2 – Donor and Recipient Month Rank</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="R2ytd">R2 – Donor and Recipient YTD Rank</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="R3">R3 – Donor Monthly Variance</td>
+                </tr>
+            </table>
+            -->
+            <span style="display: inline-block; vertical-align: top;">Report: &nbsp;</span>
+            <select name="report_name[]" multiple size="15">
+                <option value="R2" {$fn(selected($_POST['report_name'],'R2'))} >R2 – Donor & Recipient Mo. & YTD Rank</option>
+                <!--
                 <option value="R2ytd" {$fn(selected($_POST['report_name'],'R2ytd'))} >R2 – Donor and Recipient YTD Rank</option>
+                -->
                 <option value="R3" {$fn(selected($_POST['report_name'],'R3'))} >R3 – Donor Monthly Variance</option>
                 <option value="R4" {$fn(selected($_POST['report_name'],'R4'))} >R4 – Recipient Monthly Variance</option>
                 <option value="R5" {$fn(selected($_POST['report_name'],'R5'))} >R5 – Donor 3 Mo. & YTD Variance</option>
@@ -207,25 +210,31 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                 <option value="R9" {$fn(selected($_POST['report_name'],'R9'))} >R9 – Recipient 6 Mo. Trend</option>
                 <option value="R10" {$fn(selected($_POST['report_name'],'R10'))} >R10 – Food Type Trend</option>
                 <option value="R11" {$fn(selected($_POST['report_name'],'R11'))} >R11 – Snapshot</option>
-                <option value="R12" {$fn(selected($_POST['report_name'],'R12'))} disabled>R12 – Food Per Person Served</option>
+                <option value="R12" {$fn(selected($_POST['report_name'],'R12'))} >R12 – Food Per Person Served</option>
                 <option value="R13" {$fn(selected($_POST['report_name'],'R13'))} disabled>R13 – Agency Distribution</option>
                 <option value="R14" {$fn(selected($_POST['report_name'],'R14'))} >R14 – Key Rescued Daily Average</option>
+                <option value="R15" {$fn(selected($_POST['report_name'],'R15'))} >R15 – Recipient Non-Rescued Food</option>
             </select>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <br/>
+            <span style="display: inline-block; text-align: right; font-size: 9px; font-style: italic; width: 100%;">Use CTRL/Command key to select multiple Reports.</span>
+            </div>
+            <div style="display: inline-block; padding-left:30px;">
             Report Month:
             <input type="text"
                     id="range_Month_Picker"
                     name="range_Month_Picker"
                     value="{$rpt_date}"
                     size="15" />
+
+            <br/>
+            <br/>
+            <input type="hidden" name="submitted" value="1">
+            <input type="submit" formtarget="_blank" name="PDF" value="Generate PDF" style="margin-left: 106px;">
+
+            <input type="submit" formtarget="_blank" name="TEST" value="Test" style="margin-left: 175px; display:none;">
             </div>
     
     
-            <br>
-            <br>
-            <input type="hidden" name="submitted" value="1">
-            <input type="submit" formtarget="_blank" name="PDF" value="Generate PDF" style="margin-left: 175px">
-            <input type="submit" formtarget="_blank" name="XLSX"  value="Generate XLSX" style="margin-left: 25px">
             
         </form>
          <script>

@@ -1,7 +1,7 @@
 <?php
 
 include_once(dirname(__FILE__).'/../../database/dbinfo.php');
-require(dirname(__FILE__).'/../Traits/R10DataTrait.php');
+require_once(dirname(__FILE__).'/../Traits/R10DataTrait.php');
 
 // B Section from R10DataTrait
 trait R11DataTrait {
