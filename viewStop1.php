@@ -49,8 +49,10 @@
         $stop1 = retrieve_dbStops($routeID.$client_id);
     }
     
+    error_log(print_r($stop1,true));
     // If values have been submitted, then update the database and display the submitted values to the driver.
     if (isset($_POST['submitted'])){
+        error_log('resetting weight');
         $rw = $_POST['rescued_weight'];
         $tw = $_POST['transported_weight'];
         $pw = $_POST['purchased_weight'];

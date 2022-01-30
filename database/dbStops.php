@@ -90,7 +90,11 @@ function retrieve_dbStops ($id) {
 	}
 	
     $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $items, $result_row['notes']);
-	mysqli_close($con); 
+    $theStop->set_rescued_weight($result_row['rescued_weight']);
+    $theStop->set_transported_weight($result_row['transported_weight']);
+    $theStop->set_purchased_weight($result_row['purchased_weight']);
+    $theStop->set_food_drive_weight($result_row['food_drive_weight']);
+	mysqli_close($con);
     return $theStop;   
 }
 
@@ -105,6 +109,10 @@ function getall_dbStops () {
     	if ($result_row['items']=="")
     		$items = $result_row['weight'];
         $theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $items, $result_row['notes']);
+        $theStop->set_rescued_weight($result_row['rescued_weight']);
+        $theStop->set_transported_weight($result_row['transported_weight']);
+        $theStop->set_purchased_weight($result_row['purchased_weight']);
+        $theStop->set_food_drive_weight($result_row['food_drive_weight']);
         $theStops[] = $theStop;
     }
 	mysqli_close($con);
@@ -166,6 +174,10 @@ function getall_dbStops_between_dates ($area, $type, $client_name, $start_date, 
 		}
 		
     	$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $weight , $result_row['notes']);
+        $theStop->set_rescued_weight($result_row['rescued_weight']);
+        $theStop->set_transported_weight($result_row['transported_weight']);
+        $theStop->set_purchased_weight($result_row['purchased_weight']);
+        $theStop->set_food_drive_weight($result_row['food_drive_weight']);
         $theStops[] = $theStop;
     }
 	mysqli_close($con);
@@ -203,6 +215,10 @@ function getall_dbWalmartPublixStops_between_dates ($area, $client_name, $start_
 		//echo "<!--" . $result_row['items'] . "-->\n";
 		
 		$theStop = new Stop($result_row['route'], $result_row['client'], $result_row['type'], $result_row['items'] , $result_row['notes']);
+        $theStop->set_rescued_weight($result_row['rescued_weight']);
+        $theStop->set_transported_weight($result_row['transported_weight']);
+        $theStop->set_purchased_weight($result_row['purchased_weight']);
+        $theStop->set_food_drive_weight($result_row['food_drive_weight']);
         $theStops[] = $theStop;
     }
 	mysqli_close($con);

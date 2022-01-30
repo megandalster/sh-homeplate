@@ -223,7 +223,7 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                 <option id="R12" value="R12" {$fn(selected($_POST['report_name'],'R12'))} >R12 – Food Per Person Served</option>
                 <option id="R13" value="R13" {$fn(selected($_POST['report_name'],'R13'))} >R13 – Agency Distribution</option>
                 <option value="R14" {$fn(selected($_POST['report_name'],'R14'))} >R14 – Key Rescued Daily Average</option>
-                <option value="R15" {$fn(selected($_POST['report_name'],'R15'))} >R15 – Recipient Non-Rescued Food</option>
+                <option id="R15" value="R15" {$fn(selected($_POST['report_name'],'R15'))} >R15 – Recipient Non-Rescued Food</option>
 <!--                <option value="R16" {$fn(selected($_POST['report_name'],'R16'))} >R16 – Test</option>-->
             </select>
             <br/>
@@ -274,6 +274,7 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                                           // disable
                                           $("#R12").prop('disabled',year<2021)
                                           $("#R13").prop('disabled',year<2021)
+                                          $("#R15").prop('disabled',year<2021)
                                     }
                                 },
                                 beforeShow : function(input, inst) {
@@ -293,6 +294,7 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                                 let year = date.substr(3)
                                 $("#R12").prop('disabled',year<2021)
                                 $("#R13").prop('disabled',year<2021)
+                                $("#R15").prop('disabled',year<2021)
                             });
                             $( "#range_Month_Picker" ).datepicker( "setDate", lastMonth)
         
