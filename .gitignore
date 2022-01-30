@@ -3,3 +3,6 @@
 /reporting/jpgraph/
 /reporting/xlsxwriter/
 *.iml
+/vendor/
+/composer.json
+/composer.lock

@@ -24,6 +24,10 @@ class Stop {
 	private $client_id; 
 	private $type;		// "donor" or "recipient"
 	private $items;		// array of foodtype:weight pairs for this stop
+    private $rescued_weight;
+    private $transported_weight;
+    private $purchased_weight;
+    private $food_drive_weight;
 	private $total_weight; // total weight for this stop
 	private $notes;		// notes written by the driver 
 
@@ -72,6 +76,18 @@ class Stop {
 	function get_notes(){
 		return $this->notes;
 	}
+    function get_rescued_weight() {
+        return $this->rescued_weight==""?0:$this->rescued_weight;
+    }
+    function get_transported_weight() {
+        return $this->transported_weight==""?0:$this->transported_weight;
+    }
+    function get_purchased_weight() {
+        return $this->purchased_weight==""?0:$this->purchased_weight;
+    }
+    function get_food_drive_weight() {
+        return $this->food_drive_weight==""?0:$this->food_drive_weight;
+    }
 	function get_total_weight() {
 	    return $this->total_weight==""?0:$this->total_weight;
 	}
@@ -94,7 +110,19 @@ class Stop {
 			//}
 		}
 	}
-	
+    
+    function set_rescued_weight($weight){
+        $this->rescued_weight = $weight;
+    }
+    function set_transported_weight($weight){
+        $this->transported_weight = $weight;
+    }
+    function set_purchased_weight($weight){
+        $this->purchased_weight = $weight;
+    }
+    function set_food_drive_weight($weight){
+        $this->food_drive_weight = $weight;
+    }
 	// Sets the stop's total weight to the specified numeric value.
 	function set_total_weight($weight){
 		$this->total_weight = $weight;

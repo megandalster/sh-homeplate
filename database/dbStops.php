@@ -53,8 +53,12 @@ function insert_dbStops ($stop){
                 $stop->get_route_id()."','".
                 $stop->get_client_id()."','".
                 $stop->get_type()."','".
-                implode(',',$stop->get_items())."','".
-                $stop->get_total_weight()."','".
+                implode(',',$stop->get_items())."',".
+                $stop->get_rescued_weight().",".
+                $stop->get_transported_weight().",".
+                $stop->get_purchased_weight().",".
+                $stop->get_food_drive_weight().",".
+                $stop->get_total_weight().",'".
                 $stop->get_date()."','".
                 $stop->get_notes()."');";
     $result = mysqli_query($con,$query);

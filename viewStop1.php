@@ -9,6 +9,8 @@
 */
 
 /*
+ * DROPOFF STOPS
+ *
  * viewStop1 GUI for Homeplate
  * @author Nicholas Wetzel
  * @version May 8, 2012
@@ -29,76 +31,156 @@
     // Set necessary values using the GET routine
 	$routeID = substr($_GET['stop_id'],0,12);
 	$client_id = substr($_GET['stop_id'],12);
+    $client_type = $_GET['client_type'];
+    $area = substr($_GET['stop_id'],9,3);
+    $ndate = substr($_GET['stop_id'],0,8);
+    $balance = $_GET['balance'];
+    $date = date('l, F j, Y', mktime(0,0,0,substr($ndate,3,2),substr($ndate,6,2),substr($ndate,0,2)));
+    $client_items = "";
+
 	// If the current stop has not been created then create it and add it to the database.
     // Otherwise, retrieve it from the database.
-	if (!retrieve_dbStops($routeID.$client_id)){
-		$stop1 = new Stop($routeID, $client_id, $client_type, $client_items, $driver_notes);
-		insert_dbStops($stop1);	
-	}
-	else{
-		$stop1 = retrieve_dbStops($routeID.$client_id);
-	}
-	$client_type = $_GET['client_type'];
-	$area = substr($_GET['stop_id'],9,3);
-	$ndate = substr($_GET['stop_id'],0,8);
-	$balance = $_GET['balance'];
-	$date = date('l, F j, Y', mktime(0,0,0,substr($ndate,3,2),substr($ndate,6,2),substr($ndate,0,2)));
-	$client_items = "";
-	
-	// Total weight variable and driver notes are initialized if they have not already been set.
-	$total_weight = isset($_POST["total_weight"]) ? $_POST["total_weight"] : $stop1->get_total_weight();
-	$driver_notes = ""; // isset($_POST["driver_notes"]) ? $_POST["driver_notes"] : $stop1->get_notes();
-	
-?>
 
+    if (!retrieve_dbStops($routeID.$client_id)){
+        $stop1 = new Stop($routeID, $client_id, $client_type, $client_items, '');
+        insert_dbStops($stop1);
+    }
+    else{
+        $stop1 = retrieve_dbStops($routeID.$client_id);
+    }
+    
+    // If values have been submitted, then update the database and display the submitted values to the driver.
+    if (isset($_POST['submitted'])){
+        $rw = $_POST['rescued_weight'];
+        $tw = $_POST['transported_weight'];
+        $pw = $_POST['purchased_weight'];
+        $fw = $_POST['food_drive_weight'];
+        $stop1->set_rescued_weight($rw);
+        $stop1->set_transported_weight($tw);
+        $stop1->set_purchased_weight($pw);
+        $stop1->set_food_drive_weight($fw);
+        $tw = $rw + $tw + $pw + $fw;
+        $stop1->set_total_weight($tw);
+        $balance = $balance - $tw;
+        update_dbStops($stop1);
+    }
+
+    echo <<<END
 <html>
 	<head>
 		<title>
-			Viewing <?php echo($area."-".$client_id."-".$date)?>;
+			Viewing {$area}-{$client_id}-{$date}
 		</title>
 		<link rel="stylesheet" href="styles.css" type="text/css" />
+        <style>
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            input[type=number] {
+                -moz-appearance: textfield;
+            }
+        </style>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	</head>
 	<body>
 		<div id="container">
-			<?php include('header.php');?>
+END;
+    include('header.php');
+    echo <<<END
 			<div id="content">
   
   			<!-- Display the name of the current stop -->
-			<p><big><b><?php echo($client_id)?></b></big></p>
+			<p><big><b>{$client_id}</b></big></p>
 			
 			<!-- Display the associated route, driver and date of the stop -->
-			<p>Area: <?php echo($areas[$area])?><br />
-			   Date: <?php echo($date)?></p>
-			   Balance on truck: <?php echo($balance)?></p>
+			<p>Area: {$areas[$area]}<br />
+			   Date: {$date}</p>
+			   Balance on truck: {$balance}</p>
 			
 			<!-- The data entry field for total weight and driver notes -->
 			<form method = "post">
 			<fieldset>
 				<legend><b>Data Entry</b></legend><br />
-				<i>Total Weight: </i><input type="text" size="10" name="total_weight" <?php echo 'value='.$total_weight?>> lbs.
-				
-	<!--		<br><br><i>Additional notes:</i><br />
-			    <textarea rows="3" cols="50" name="driver_notes"><?php echo $driver_notes;?></textarea>  -->
-			
-			<!-- A hidden variable that, when submitted, is used to display submitted values and update the databases -->	
+                <table>
+                    <tr>
+                        <td style="text-align: right;">
+                            <i>Rescued Weight: </i>
+                        </td>
+                        <td>
+                            <input type="number"  min="0" style="width: 70px;"
+                                   onchange="updateTotal()" step="1" pattern="\d+"
+                                   name="rescued_weight"
+                                   id="rescued_weight" value="{$stop1->get_rescued_weight()}"> lbs.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">
+                            <i>Transported Weight: </i>
+                        </td>
+                        <td>
+                            <input type="number"  min="0" style="width: 70px;"
+                                   onchange="updateTotal()" pattern="\d+" pattern="\d+"
+                                   name="transported_weight"
+                                   id="transported_weight" value="{$stop1->get_transported_weight()}"> lbs.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">
+                            <i>Purchased Weight: </i>
+                        </td>
+                        <td>
+                            <input type="number"  min="0" style="width: 70px;"
+                                   onchange="updateTotal()" pattern="\d+" pattern="\d+"
+                                   name="purchased_weight"
+                                   id="purchased_weight" value="{$stop1->get_purchased_weight()}"> lbs.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">
+                            <i>Food Drive Weight: </i>
+                        </td>
+                        <td>
+                            <input type="number"  min="0" style="width: 70px;"
+                                   onchange="updateTotal()" pattern="\d+" pattern="\d+"
+                                   name="food_drive_weight"
+                                   id="food_drive_weight" value="{$stop1->get_food_drive_weight()}"> lbs.
+                        </td>
+                    </tr>
+                    <tr><td>&nbsp;</td><td>-----------------</td></tr>
+                    <tr>
+                        <td style="text-align: right;">
+                            <i>Total Weight: </i>
+                        </td>
+                        <td>
+                            <input type="number"  min="0" style="width: 70px;"
+                                   name="total_weight" id="total_weight" disabled value="{$stop1->get_total_weight()}"> lbs.
+                        </td>
+                    </tr>
+                </table>
+                <script>
+                  function updateTotal() {
+                    let rw = parseInt($('#rescued_weight').val(),10) || 0
+                    $('#rescued_weight').val(rw)
+                    let tw = parseInt($('#transported_weight').val(),10) || 0
+                    $('#transported_weight').val(tw)
+                    let pw = parseInt($('#purchased_weight').val(),10) || 0
+                    $('#purchased_weight').val(pw)
+                    let fw = parseInt($('#food_drive_weight').val(),10) || 0
+                    $('#food_drive_weight').val(fw)
+                    $('#total_weight').val(rw+tw+pw+fw)
+                  }
+                </script>
+                
+			<!-- A hidden variable that, when submitted, is used to display submitted values and update the databases -->
 			<br><input type = "hidden" name = "submitted" value = "true"/>		
 			<br><input type="submit" value="Save"/>&nbsp;&nbsp;<i>Hit Save to save this weight and notes.</i>
-			<?php 
-			echo '<br><br><a href="editRoute.php?routeID='.$routeID.'"><big>Return to Route</big></a>';
-			echo '</fieldset></form><br />';
-			
-			// If values have been submitted, then update the database and display the submitted values to the driver.
-			if (isset($_POST['submitted'])){
-				if (preg_match('/[0-9]+/',$total_weight,$matches)==0 || $matches[0]!=$total_weight)  // validate total weight as a number
-					echo('<div class = "warning"><b>Please enter a valid total weight</b>
-						</div><br/><br/>');
-				else {
-				    $stop1->set_total_weight($total_weight);
-				    $balance = $balance - $total_weight;
-					$stop1->set_notes("!".$driver_notes);
-					update_dbStops($stop1);
-				}
-			}
+			<br><br><a href="editRoute.php?routeID={$routeID}"><big>Return to Route</big></a>
+			</fieldset></form><br />
+END;
+
 			
 			// The link to return to the current route.
 			echo '</div>';

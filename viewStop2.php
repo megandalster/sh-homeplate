@@ -15,6 +15,8 @@
  */
 
 /*
+ * PICKUP STOPS
+ *
  * This file creates the data entry page for stops that record separate weights for
  * different food types.
  */

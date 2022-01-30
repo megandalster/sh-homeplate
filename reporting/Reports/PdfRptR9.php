@@ -597,7 +597,7 @@ class PdfRptR9 extends PdfGraphReport
         $this->pdf->MultiCell(14,4,"% Total\nFood",1, 'C');
     
         $this->pdf->SetXY( 9,$y2);
-        $this->pdf->Cell(52,4,"Donor",1, 0,'L');
+        $this->pdf->Cell(52,4,"Recipient",1, 0,'L');
         $this->pdf->Cell(15,4,$this->headerLabels[0],1, 0,'C');
         $this->pdf->Cell(15,4,$this->headerLabels[1],1, 0,'C');
         $this->pdf->Cell(15,4,$this->headerLabels[2],1, 0,'C');

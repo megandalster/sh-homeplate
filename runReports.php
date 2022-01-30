@@ -82,6 +82,10 @@ if ($ispdf) {
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR12.php');
                 $rpts[] = new PdfRptR12($rpt_date);
                 break;
+            case 'R13':
+                require(dirname(__FILE__) . '/reporting/Reports/PdfRptR13.php');
+                $rpts[] = new PdfRptR13($rpt_date);
+                break;
             case 'R14':
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR14.php');
                 $rpts[] = new PdfRptR14($rpt_date);
@@ -90,6 +94,12 @@ if ($ispdf) {
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR15.php');
                 $rpts[] = new PdfRptR15($rpt_date);
                 break;
+//            case 'R16':
+//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR16.php');
+//                $rpt = new XlsxRptR16($rpt_date);
+//                $rpt->run();
+//                $rpt->output();
+//                exit();
         }
     }
 
@@ -210,10 +220,11 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                 <option value="R9" {$fn(selected($_POST['report_name'],'R9'))} >R9 – Recipient 6 Mo. Trend</option>
                 <option value="R10" {$fn(selected($_POST['report_name'],'R10'))} >R10 – Food Type Trend</option>
                 <option value="R11" {$fn(selected($_POST['report_name'],'R11'))} >R11 – Snapshot</option>
-                <option value="R12" {$fn(selected($_POST['report_name'],'R12'))} >R12 – Food Per Person Served</option>
-                <option value="R13" {$fn(selected($_POST['report_name'],'R13'))} disabled>R13 – Agency Distribution</option>
+                <option id="R12" value="R12" {$fn(selected($_POST['report_name'],'R12'))} >R12 – Food Per Person Served</option>
+                <option id="R13" value="R13" {$fn(selected($_POST['report_name'],'R13'))} >R13 – Agency Distribution</option>
                 <option value="R14" {$fn(selected($_POST['report_name'],'R14'))} >R14 – Key Rescued Daily Average</option>
                 <option value="R15" {$fn(selected($_POST['report_name'],'R15'))} >R15 – Recipient Non-Rescued Food</option>
+<!--                <option value="R16" {$fn(selected($_POST['report_name'],'R16'))} >R16 – Test</option>-->
             </select>
             <br/>
             <span style="display: inline-block; text-align: right; font-size: 9px; font-style: italic; width: 100%;">Use CTRL/Command key to select multiple Reports.</span>
@@ -259,6 +270,10 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                                         let year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                                         $(this).datepicker('setDate', new Date(year, month, 1)).trigger('change');
                                         $('.date-picker').focusout()//Added to remove focus from datepicker input box on selecting date
+                                        
+                                          // disable
+                                          $("#R12").prop('disabled',year<2021)
+                                          $("#R13").prop('disabled',year<2021)
                                     }
                                 },
                                 beforeShow : function(input, inst) {
@@ -273,6 +288,12 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                                     }
                                 }
                             })
+                            .on("change", function(evt) {
+                                let date = evt.currentTarget.value
+                                let year = date.substr(3)
+                                $("#R12").prop('disabled',year<2021)
+                                $("#R13").prop('disabled',year<2021)
+                            });
                             $( "#range_Month_Picker" ).datepicker( "setDate", lastMonth)
         
             });
