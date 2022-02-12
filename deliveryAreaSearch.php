@@ -7,7 +7,7 @@
  * by the Free Software Foundation (see <http://www.gnu.org/licenses/).
 */
 	session_start();
-	session_cache_expire(30);
+	//session_cache_expire(30);
 	
 	  include_once('database/dbDeliveryAreas.php');
       include_once('domain/DeliveryArea.php');
@@ -64,7 +64,7 @@ die();
 			<div id="content">
 				<?PHP
 				// display the search form
-					$area = $_GET['area'];
+					$area = $_GET['area'] ?? '';
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");
 					$days = array("Mon"=>"Monday","Tue"=>"Tuesday","Wed"=>"Wednesday","Thu"=>"Thursday","Fri"=>"Friday","Sat"=>"Saturday","Sun"=>"Sunday");
 					echo('<p><a href="'.$path.'deliveryAreaEdit.php?id=new">Add new area</a>');

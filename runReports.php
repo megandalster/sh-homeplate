@@ -9,9 +9,10 @@
 */
 
 session_start();
-session_cache_expire(30);
+////session_cache_expire(30);
 
 $ispdf = array_key_exists('PDF', $_POST );
+$isxlsx = array_key_exists('XLSX', $_POST );
 
 global $fn;
 include_once(dirname(__FILE__).'/Utils.php');
@@ -30,6 +31,32 @@ if (array_key_exists('range_Month_Picker',$_POST)) {
 //$rpt_date = array_key_exists('range_Month_Picker',$_POST) ? $_POST['range_Month_Picker'] : (new DateTime())->sub({months:1})->format('m/Y');
 $parts = explode('/',$rpt_date);
 $rpt_date = new DateTime($parts[1].'-'.$parts[0].'-01T00:00:00');
+
+if ($isxlsx) {
+    error_log('runReports: '.$_POST['report_name'].' for '.$rpt_date->format('Y-m-d'));
+    
+    switch ($_POST['report_name']) {
+        case 'R16':
+            require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR16.php');
+            $rpt = new XlsxRptR16($rpt_date);
+            $rpt->run();
+            $rpt->output();
+            exit();
+        case 'R17':
+            require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR17.php');
+            $rpt = new XlsxRptR17($rpt_date);
+            $rpt->run();
+            $rpt->output();
+            exit();
+        case 'R18':
+            require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR18.php');
+            $rpt = new XlsxRptR18($rpt_date);
+            $rpt->run();
+            $rpt->output();
+            exit();
+    }
+    $message = print_r($_POST['report_name'], true) . ' has not yet been implemented';
+}
 
 if ($ispdf) {
     error_log('runReports: '.join('.',$_POST['report_name']).' for '.$rpt_date->format('Y-m-d'));
@@ -94,12 +121,6 @@ if ($ispdf) {
                 require(dirname(__FILE__) . '/reporting/Reports/PdfRptR15.php');
                 $rpts[] = new PdfRptR15($rpt_date);
                 break;
-//            case 'R16':
-//                require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR16.php');
-//                $rpt = new XlsxRptR16($rpt_date);
-//                $rpt->run();
-//                $rpt->output();
-//                exit();
         }
     }
 
@@ -155,7 +176,7 @@ if ($ispdf) {
 }
 
 $rpt_date = $rpt_date->format('m/Y');
-
+$phpver = phpversion();
 if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
 ?>
 <html>
@@ -190,6 +211,199 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
 <?php
     echo "<h4>Today is ".date('l F j, Y', time())."</h4>";
     echo <<<END
+        <!-- PHP version: $phpver  -->
+        <table>
+            <tr>
+                <td style="padding-left: 75px;">
+                    <form method="post" action="">
+                    <table>
+                        <tr>
+                            <td style="text-align: center; font-size: 16px; font-weight: bold;">PDF Reports</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">
+                                Report Month:
+                                <input type="text"
+                                        id="pdf_range_Month_Picker"
+                                        name="range_Month_Picker"
+                                        value="{$rpt_date}"
+                                        size="15" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select id="PDF-select" name="report_name[]" multiple size="15" style="width:300px;">
+                                    <option value="R2" {$fn(selected($_POST['report_name'],'R2'))} >&nbsp;R2 – Donor & Recipient Mo. & YTD Rank</option>
+                                    <option value="R3" {$fn(selected($_POST['report_name'],'R3'))} >&nbsp;R3 – Donor Monthly Variance</option>
+                                    <option value="R4" {$fn(selected($_POST['report_name'],'R4'))} >&nbsp;R4 – Recipient Monthly Variance</option>
+                                    <option value="R5" {$fn(selected($_POST['report_name'],'R5'))} >&nbsp;R5 – Donor 3 Mo. & YTD Variance</option>
+                                    <option value="R6" {$fn(selected($_POST['report_name'],'R6'))} >&nbsp;R6 – Recipient 3 Mo. & YTD Variance</option>
+                                    <option value="R7" {$fn(selected($_POST['report_name'],'R7'))} >&nbsp;R7 – Donor 6 Mo. Trend</option>
+                                    <option value="R8" {$fn(selected($_POST['report_name'],'R8'))} >&nbsp;R8 – Donor by Area Trend</option>
+                                    <option value="R9" {$fn(selected($_POST['report_name'],'R9'))} >&nbsp;R9 – Recipient 6 Mo. Trend</option>
+                                    <option value="R10" {$fn(selected($_POST['report_name'],'R10'))} >&nbsp;R10 – Food Type Trend</option>
+                                    <option value="R11" {$fn(selected($_POST['report_name'],'R11'))} >&nbsp;R11 – Snapshot</option>
+                                    <option id="R12" value="R12" {$fn(selected($_POST['report_name'],'R12'))} >&nbsp;R12 – Food Per Person Served</option>
+                                    <option id="R13" value="R13" {$fn(selected($_POST['report_name'],'R13'))} >&nbsp;R13 – Agency Distribution</option>
+                                    <option value="R14" {$fn(selected($_POST['report_name'],'R14'))} >&nbsp;R14 – Key Rescued Daily Average</option>
+                                    <option id="R15" value="R15" {$fn(selected($_POST['report_name'],'R15'))} >&nbsp;R15 – Recipient Non-Rescued Food</option>
+                                </select>
+                                <br/>
+                                <span style="display: inline-block; text-align: right; font-size: 9px; font-style: italic; width: 100%;">Use CTRL/Command key to select multiple Reports.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                <input id="PDF-submit" type="submit" formtarget="_blank" name="PDF" value="Generate PDF" style="margin-left: 106px;" disabled>
+                            </td>
+                        </tr>
+                    </table>
+                    </form>
+                </td>
+                <td style="width: 100px;"></td>
+                <td>
+                    <form method="post" action="">
+                    <table>
+                        <tr>
+                            <td style="text-align: center; font-size: 16px; font-weight: bold;">XLSX Reports</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">
+                                Report Month:
+                                <input type="text"
+                                        id="xlsx_range_Month_Picker"
+                                        name="range_Month_Picker"
+                                        value="{$rpt_date}"
+                                        size="15" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select id="XLSX-select" name="report_name" size="15" style="width:300px;">
+                                    <option value="R16" {$fn(selected($_POST['report_name'],'R16'))} >&nbsp;R16 – Rescued Food Distribution - Beaufort</option>
+                                    <option value="R17" {$fn(selected($_POST['report_name'],'R17'))} >&nbsp;R17 – Rescued Food Distribution - Bluffton</option>
+                                    <option value="R18" {$fn(selected($_POST['report_name'],'R18'))} >&nbsp;R18 – Rescued Food Distribution - Hilton Head</option>
+                                </select>
+                                <br/>
+                                <span style="display: inline-block; text-align: right; font-size: 9px; font-style: italic; width: 100%;">&nbsp;</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                <input id="XLSX-submit" type="submit" formtarget="_blank" name="XLSX" value="Generate XLSX" style="margin-left: 106px;" disabled>
+                            </td>
+                        </tr>
+                    </table>
+                    </form>
+                </td>
+            </tr>
+        </table>
+END;
+
+    echo <<<END
+         <script>
+            $(function() {
+                let today = new Date()
+                let lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+                $( "#pdf_range_Month_Picker" ).datepicker({
+                                minDate: new Date(2020,1,1),
+                                maxDate: lastMonth,
+                                defaultDate: lastMonth,
+                                dateFormat: "mm/yy",
+                                changeMonth: true,
+                                changeYear: true,
+                                showButtonPanel: true,
+                                onClose: function(dateText, inst) {
+                                    function isDonePressed(){
+                                        return ($('#ui-datepicker-div').html().indexOf('ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover') > -1);
+                                    }
+        
+                                    if (isDonePressed()){
+                                        let month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                                        let year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                                        $(this).datepicker('setDate', new Date(year, month, 1)).trigger('change');
+                                        $('.date-picker').focusout()//Added to remove focus from datepicker input box on selecting date
+                                        
+                                          // disable
+                                          $("#R12").prop('disabled',year<2022)
+                                          $("#R13").prop('disabled',year<2022)
+                                          $("#R15").prop('disabled',year<2021)
+                                    }
+                                },
+                                beforeShow : function(input, inst) {
+                                    inst.dpDiv.addClass('month_year_datepicker')
+        
+                                    if ((datestr = $(this).val()).length > 0) {
+                                        year = datestr.substring(datestr.length-4, datestr.length);
+                                        month = datestr.substring(0, 2);
+                                        $(this).datepicker('option', 'defaultDate', new Date(year, month-1, 1));
+                                        $(this).datepicker('setDate', new Date(year, month-1, 1));
+                                        $(".ui-datepicker-calendar").hide();
+                                    }
+                                }
+                            })
+                            .on("change", function(evt) {
+                                let date = evt.currentTarget.value
+                                let year = date.substr(3)
+                                $("#R12").prop('disabled',year<2022)
+                                $("#R13").prop('disabled',year<2022)
+                                $("#R15").prop('disabled',year<2021)
+                            });
+                            $( "#pdf_range_Month_Picker" ).datepicker( "setDate", lastMonth)
+                 $("#PDF-select").on("change", function () {
+                    var count = $("#PDF-select :selected").length
+                    $('#PDF-submit').prop('disabled',count == 0)
+                 });
+
+                $( "#xlsx_range_Month_Picker" ).datepicker({
+                                minDate: new Date(2020,1,1),
+                                maxDate: lastMonth,
+                                defaultDate: lastMonth,
+                                dateFormat: "mm/yy",
+                                changeMonth: true,
+                                changeYear: true,
+                                showButtonPanel: true,
+                                onClose: function(dateText, inst) {
+                                    function isDonePressed(){
+                                        return ($('#ui-datepicker-div').html().indexOf('ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover') > -1);
+                                    }
+        
+                                    if (isDonePressed()){
+                                        let month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                                        let year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                                        $(this).datepicker('setDate', new Date(year, month, 1)).trigger('change');
+                                        $('.date-picker').focusout()//Added to remove focus from datepicker input box on selecting date
+                                    }
+                                },
+                                beforeShow : function(input, inst) {
+                                    inst.dpDiv.addClass('month_year_datepicker')
+        
+                                    if ((datestr = $(this).val()).length > 0) {
+                                        year = datestr.substring(datestr.length-4, datestr.length);
+                                        month = datestr.substring(0, 2);
+                                        $(this).datepicker('option', 'defaultDate', new Date(year, month-1, 1));
+                                        $(this).datepicker('setDate', new Date(year, month-1, 1));
+                                        $(".ui-datepicker-calendar").hide();
+                                    }
+                                }
+                            })
+                            .on("change", function(evt) {
+                                let date = evt.currentTarget.value
+                                let year = date.substr(3)
+                            });
+                            $( "#xlsx_range_Month_Picker" ).datepicker( "setDate", lastMonth)
+
+                 $("#XLSX-select").on("change", function () {
+                    var count = $("#XLSX-select :selected").length
+                    $('#XLSX-submit').prop('disabled',count == 0)
+                 });
+
+            });
+        </script>
+
+END;
+    
+    $nuthin = <<<END
         <form method="post" action="">
             <div style="padding-left:8px; float: left;">
             <!--
@@ -205,7 +419,7 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                 </tr>
             </table>
             -->
-            <span style="display: inline-block; vertical-align: top;">Report: &nbsp;</span>
+            <span style="display: inline-block; vertical-align: top;">PDF Reports: &nbsp;</span>
             <select name="report_name[]" multiple size="15">
                 <option value="R2" {$fn(selected($_POST['report_name'],'R2'))} >R2 – Donor & Recipient Mo. & YTD Rank</option>
                 <!--
@@ -224,7 +438,7 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                 <option id="R13" value="R13" {$fn(selected($_POST['report_name'],'R13'))} >R13 – Agency Distribution</option>
                 <option value="R14" {$fn(selected($_POST['report_name'],'R14'))} >R14 – Key Rescued Daily Average</option>
                 <option id="R15" value="R15" {$fn(selected($_POST['report_name'],'R15'))} >R15 – Recipient Non-Rescued Food</option>
-<!--                <option value="R16" {$fn(selected($_POST['report_name'],'R16'))} >R16 – Test</option>-->
+                <option value="R16" {$fn(selected($_POST['report_name'],'R16'))} >R16 – Test</option>
             </select>
             <br/>
             <span style="display: inline-block; text-align: right; font-size: 9px; font-style: italic; width: 100%;">Use CTRL/Command key to select multiple Reports.</span>
@@ -248,58 +462,6 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
     
             
         </form>
-         <script>
-            $(function() {
-                let today = new Date()
-                let lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
-                $( "#range_Month_Picker" ).datepicker({
-                                minDate: new Date(2020,1,1),
-                                maxDate: lastMonth,
-                                defaultDate: lastMonth,
-                                dateFormat: "mm/yy",
-                                changeMonth: true,
-                                changeYear: true,
-                                showButtonPanel: true,
-                                onClose: function(dateText, inst) {
-                                    function isDonePressed(){
-                                        return ($('#ui-datepicker-div').html().indexOf('ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover') > -1);
-                                    }
-        
-                                    if (isDonePressed()){
-                                        let month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                                        let year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                                        $(this).datepicker('setDate', new Date(year, month, 1)).trigger('change');
-                                        $('.date-picker').focusout()//Added to remove focus from datepicker input box on selecting date
-                                        
-                                          // disable
-                                          $("#R12").prop('disabled',year<2021)
-                                          $("#R13").prop('disabled',year<2021)
-                                          $("#R15").prop('disabled',year<2021)
-                                    }
-                                },
-                                beforeShow : function(input, inst) {
-                                    inst.dpDiv.addClass('month_year_datepicker')
-        
-                                    if ((datestr = $(this).val()).length > 0) {
-                                        year = datestr.substring(datestr.length-4, datestr.length);
-                                        month = datestr.substring(0, 2);
-                                        $(this).datepicker('option', 'defaultDate', new Date(year, month-1, 1));
-                                        $(this).datepicker('setDate', new Date(year, month-1, 1));
-                                        $(".ui-datepicker-calendar").hide();
-                                    }
-                                }
-                            })
-                            .on("change", function(evt) {
-                                let date = evt.currentTarget.value
-                                let year = date.substr(3)
-                                $("#R12").prop('disabled',year<2021)
-                                $("#R13").prop('disabled',year<2021)
-                                $("#R15").prop('disabled',year<2021)
-                            });
-                            $( "#range_Month_Picker" ).datepicker( "setDate", lastMonth)
-        
-            });
-        </script>
 
 END;
 

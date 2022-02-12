@@ -14,7 +14,7 @@
  *	@version April 15, 2012
  */
 session_start();
-session_cache_expire(30);
+////session_cache_expire(30);
 include_once('database/dbRoutes.php');
 include_once('domain/Route.php');
 include_once('domain/Client.php');
@@ -45,13 +45,13 @@ if(! $route)
 <div id="container"><?PHP include('header.php');?>
 <div id="content"><?PHP
 
-if($_POST['_form_submit'] == 1)
+if(array_key_exists('_form_submit',$_POST) && $_POST['_form_submit'] == 1)
 {
 	$message = process_form($_POST, $route, $today);
 	echo "<p>".$message;
 	include('routeForm.inc');
 }
-else if ($_POST['deleteMe']=="DELETE" && $_SESSION['access_level']>=2) {
+else if (array_key_exists('deleteMe',$_POST) && $_POST['deleteMe']=="DELETE" && $_SESSION['access_level']>=2) {
 	echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Return to routes.</a>";
 	echo('</div></div>');
 	include('footer.inc');

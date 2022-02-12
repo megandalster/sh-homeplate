@@ -20,7 +20,7 @@
  * This file creates the data entry page for stops that record only total weight.
  */
 	session_start();
-	session_cache_expire(30);
+	//session_cache_expire(30);
 	
 	include_once('database/dbStops.php');
 	include_once('domain/Stop.php');

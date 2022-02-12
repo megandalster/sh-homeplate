@@ -7,7 +7,7 @@
  * by the Free Software Foundation (see <http://www.gnu.org/licenses/).
 */
 	session_start();
-	session_cache_expire(30);
+	//session_cache_expire(30);
 	
 	include_once('database/dbDeliveryAreas.php');
 	include_once('database/dbClients.php');
@@ -48,8 +48,8 @@
 				<?PHP
 				
 				// display the search form
-					$area = $_GET['area'];
-					$deliveryAreaId = $_GET['deliveryAreaId'];
+					$area = $_GET['area'] ?? '';
+					$deliveryAreaId = $_GET['deliveryAreaId'] ?? '';
 					$deliveryAreas = getall_dbDeliveryAreas();
 					$counties = array("Beaufort", "Jasper", "Hampton");
 					$areas = array("HHI"=>"Hilton Head","SUN"=>"Bluffton","BFT"=>"Beaufort");

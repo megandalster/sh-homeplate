@@ -5,7 +5,7 @@
  */
 	
 session_start();
-session_cache_expire(30);
+//session_cache_expire(30);
 include_once('database/dbVolunteers.php');
 include_once('database/dbSchedules.php');
 include_once('domain/ScheduleEntry.php');
@@ -132,7 +132,7 @@ include_once('domain/Volunteer.php');
 		$thisMonday = date("m",$today);
 		$endDate = date("Y-m-d",strtotime('monday this week +4 weeks -1 day'));
 		
-		$thisMonth=date("m",$startDate);
+		$thisMonth=date("m",strtotime('monday this week'));
 		$thisYear = date("Y",strtotime('monday this week'));
 		$thisStartMonday = date("d",$thisMonday);
 		
@@ -168,10 +168,9 @@ include_once('domain/Volunteer.php');
 			  
 			   
 			   echo "<div class='calendarDayBoxData'>";
-			
-		
-			
-				$dayCount = date("d",$currentDate);
+      
+      
+				$dayCount = date("d",strtotime($currentDate));
 			   $shiftID=$thisYear.'-'.$thisMonth.'-'.date("d",mktime(0,0,0,$thisMonth,$dayCount,$thisYear));
 			   
 			   	
@@ -199,8 +198,8 @@ include_once('domain/Volunteer.php');
 				//$currentDate = date('d m Y', strtotime($currentDate . ' + 1 day'));
 				
 				$currentDate = date('Y-m-d', strtotime($currentDate. ' + 1 days'));
-				$thisYear = date("Y",$currentDate);
-				$thisMonth=date("m",$currentDate);
+				$thisYear = date("Y",strtotime($currentDate));
+				$thisMonth=date("m",strtotime($currentDate));
 			}
 			echo "</tr>";
 		}

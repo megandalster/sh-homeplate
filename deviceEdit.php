@@ -14,7 +14,7 @@
  *	@version February 18, 2018
  */
 	session_start();
-	session_cache_expire(30);
+	//session_cache_expire(30);
     include_once('database/dbDevices.php');
     include_once('domain/Device.php');
 	

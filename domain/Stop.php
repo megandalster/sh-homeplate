@@ -71,7 +71,8 @@ class Stop {
         	$i = explode(':',$item);
         	$item_weights[] = $i[1];
 		}
-		return $item_weights[$index]==""?0:$item_weights[$index];
+		return $item_weights[$index] ?? 0;
+//        return $item_weights[$index] ==""?0: $item_weights[$index] ?? 0;
 	}
 	function get_notes(){
 		return $this->notes;
@@ -103,7 +104,7 @@ class Stop {
 		$this->total_weight = 0;
 		foreach($this->items as $item){
 			$i = explode(':',$item);
-			$itemWeight = $i[1]; 
+			$itemWeight = intval($i[1],10);
 			//if(itemWeight > 0){
 			//echo $itemWeight . "<br />"; 
 				$this->total_weight += $itemWeight; 		

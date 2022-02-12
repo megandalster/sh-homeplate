@@ -14,7 +14,7 @@
  *	@version April 1, 2012
  */
 	session_start();
-	session_cache_expire(30);		
+	//session_cache_expire(30);		
     include_once('database/dbVolunteers.php');
     include_once('domain/Volunteer.php');
     include_once('database/dbSchedules.php'); 

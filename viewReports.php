@@ -9,7 +9,7 @@
 */
 
 session_start();
-session_cache_expire(30)
+//session_cache_expire(30)
 
 ?>
 <html>

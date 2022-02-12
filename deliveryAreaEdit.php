@@ -14,7 +14,7 @@
  *	@version April 1, 2012
  */
 	session_start();
-	session_cache_expire(30);		
+	//session_cache_expire(30);		
 	 include_once('database/dbDeliveryAreas.php');
     include_once('domain/DeliveryArea.php');
     
@@ -53,7 +53,7 @@
 	<div id="content">
 <?PHP
 	
-	if($_POST['_form_submit']!=1)
+	if(!array_key_exists('_form_submit',$_POST))
 	//in this case, the form has not been submitted, so show it
 		include('deliveryAreaForm.inc');
 	else {

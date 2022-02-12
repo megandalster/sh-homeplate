@@ -51,7 +51,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 		
 		//Check if they're at a valid page for their access level.
 		$current_page = substr($_SERVER['PHP_SELF'],1);
-		if($permission_array[$current_page]>$_SESSION['access_level']){
+		if(array_key_exists($current_page,$permission_array) && $permission_array[$current_page]>$_SESSION['access_level']){
 			//in this case, the user doesn't have permission to view this page.
 			//we redirect them to the index page.
 			echo "<script type=\"text/javascript\">window.location = \"index.php\";</script>";

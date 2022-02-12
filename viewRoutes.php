@@ -5,7 +5,12 @@
  */
 
 session_start();
-session_cache_expire(30)
+////session_cache_expire(30)
+
+if (!array_key_exists('weekDatePicker',$_POST)) {
+    $_POST['weekDatePicker'] = '';
+}
+
 ?>
 <html>
 	<head>
@@ -54,7 +59,7 @@ session_cache_expire(30)
 				<input type="text" onfocus="setRadio(this, 'weekDatePicker');" onchange="setRadio(this, 'weekDatePicker');" id="weekDatePicker" name="weekDatePicker" value="<?= $_POST['weekDatePicker'] ?>" size="10" />
     			<input type="hidden" name="submitted" value="1"><input type="submit" name="submit" value="SUBMIT and wait 5 sec...">
     			<?php 
-                if ($_POST['submitted'])
+                if (array_key_exists('submitted',$_POST))
                     $go_date = substr($_POST['weekDatePicker'],8,2).'-'.substr($_POST['weekDatePicker'],0,2).'-'.substr($_POST['weekDatePicker'],3,2);
                 else $go_date = date('y-m-d',$thisUTC);
                 echo '<a href=viewRoutes.php?area='.$thisArea.'&date='.$go_date.'>... GO)</a>'; 
@@ -119,7 +124,7 @@ session_cache_expire(30)
 		{	
 			//col 2 : status
 		    $status = "No Data";
-		    if ($route[$weekday]->get_status == "completed")
+		    if ($route[$weekday]->get_status() == "completed")
 		      $status = "entered";
 		    else {
 		        $stopids = $route[$weekday]->get_pickup_stops();
@@ -140,7 +145,7 @@ session_cache_expire(30)
 		        }
 		    }
 		    // col 3 : weight received
-		    if ($status=="entered") {
+		    if ($status=="entered" && isset($pickupweight) && isset($dropoffweight)) {
 		      echo "<td align='right'>".$pickupweight."</td>";
 		    // col 4 : weight delivered
 		      echo "<td align='right'>".$dropoffweight."</td>";
