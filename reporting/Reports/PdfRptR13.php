@@ -35,10 +35,12 @@ class PdfRptR13 extends PdfReport
     {
         parent::run();
         $data = $this->r12data($this->month_start,$this->end_date);
-        $month_pppspw = (array_pop($data['rows']))[9];
+        $month_pppspw = (array_pop($data['rows']));
+        $month_pppspw = $month_pppspw[9];
     
         $data = $this->r12data($this->year_start,$this->end_date);
-        $ytd_pppspw = (array_pop($data['rows']))[9];
+        $ytd_pppspw = (array_pop($data['rows']));
+        $ytd_pppspw= $ytd_pppspw[9];
     
         $data = $this->data($this->month_start,$this->end_date,$this->year_start,$month_pppspw,$ytd_pppspw);
     
@@ -82,7 +84,7 @@ class PdfRptR13 extends PdfReport
         $this->pdf->SetFontSize(8);
         $this->pdf->SetX( 8);
         $this->pdf->SetFont('','');
-        $this->pdf->Cell(75,4,'(a)  Persons Served Per Week (PSPW), 2021 Agency Data',0, 0,'L');
+        $this->pdf->Cell(75,4,'(a)  Persons Served Per Week (PSPW)',0, 0,'L');
         $this->pdf->Ln();
         $this->pdf->SetX( 8);
         $this->pdf->Cell(75,4,'(b)  Target PPPSPW is derived from R- 12 Report Mo. and YTD',0, 0,'L');
@@ -162,7 +164,7 @@ class PdfRptR13 extends PdfReport
         $this->pdf->MultiCell(16,4,"Actual\nAdjusted\nDelivery",1, 'C',1);
         $x += 16;
         $this->pdf->SetXY($x,$y2);
-        $this->pdf->MultiCell(16,4,"\nVariance\nTo Target",1, 'C',);
+        $this->pdf->MultiCell(16,4,"\nVariance\nTo Target",1, 'C');
         $x += 16.5;
         $this->pdf->SetXY($x,$y2);
         $this->pdf->MultiCell(16,4,"\n\n  Target",1, 'C');
@@ -187,7 +189,7 @@ class PdfRptR13 extends PdfReport
         $this->pdf->MultiCell(16,4,"Actual\nAdjusted\nDelivery",1, 'C',1);
         $x += 16;
         $this->pdf->SetXY($x,$y2);
-        $this->pdf->MultiCell(16,4,"\nVariance\nTo Target",1, 'C',);
+        $this->pdf->MultiCell(16,4,"\nVariance\nTo Target",1, 'C');
         
         
         $this->pdf->SetFont('','');
@@ -202,13 +204,13 @@ class PdfRptR13 extends PdfReport
         $this->pdf->Cell(16,4,"Lbs./Wk",1, 0,'C');
         $this->setFill('blue');
         $this->pdf->Cell(16,4,"Lbs./Wk",1, 0,'C',1);
-        $this->pdf->Cell(16,4,"Lbs./Wk",1, 0,'C',);
+        $this->pdf->Cell(16,4,"Lbs./Wk",1, 0,'C');
         $this->pdf->Cell(0.5,4,'','LR', 0,'R');
         $this->pdf->Cell(16,4,"PPPSPW",1, 0,'C');
         $this->pdf->Cell(16,4,"Lbs./Wk",1, 0,'C');
         $this->setFill('green');
         $this->pdf->Cell(16,4,"Lbs./Wk",1, 0,'C',1);
-        $this->pdf->Cell(16,4,"Lbs./Wk",1, 0,'C',);
+        $this->pdf->Cell(16,4,"Lbs./Wk",1, 0,'C');
     
         $this->pdf->Ln();
         

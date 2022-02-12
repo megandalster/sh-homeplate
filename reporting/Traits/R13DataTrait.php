@@ -78,6 +78,7 @@ trait R13DataTrait {
             group by 4,5,1
             order by 4,5,15 desc
 SQL;
+//        error_log($query);
         $data = array();
         $totals = array(
             'BFT' => array(1,'Beaufort Agencies Total',null,null,null,null,null,null,null,null,null),

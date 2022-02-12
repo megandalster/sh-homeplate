@@ -50,7 +50,7 @@ trait R11DataTrait {
                             WHEN c.donor_type='Food Drive Food' THEN 2 ELSE 3 END AS orderby
                     from (
                         SELECT client,
-                               CASE WHEN date >= '2021-01-01' THEN '2021' ELSE '2020' END as yr,
+                               CASE WHEN date >= '$start_date' THEN '$cur_year' ELSE '$yb_year' END as yr,
                                SUM(weight) as weight
                         FROM dbStops
                         WHERE (
@@ -347,8 +347,8 @@ SQL;
         // SECTION CHART
         $query = <<<SQL
                 SELECT	SUBSTR(date,4,2)as month,
-                    CAST(ROUND(SUM(IF(date >= '21-01-01',weight,0)),-3)/1000 AS UNSIGNED) as cur_weight,
-					CAST(ROUND(SUM(IF(date < '21-01-01',weight,0)),-3)/1000 AS UNSIGNED) as yb_weight
+                    CAST(ROUND(SUM(IF(date >= '$start_date',weight,0)),-3)/1000 AS UNSIGNED) as cur_weight,
+					CAST(ROUND(SUM(IF(date < '$start_date',weight,0)),-3)/1000 AS UNSIGNED) as yb_weight
                 FROM dbStops s
                         JOIN dbClients c on c.id = s.client
                             AND c.type = 'donor'

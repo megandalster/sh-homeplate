@@ -30,7 +30,7 @@ class PdfRptR12 extends PdfReport
     function run()
     {
         parent::run();
-        $this->_run($this->month_start,$this->end_date,);
+        $this->_run($this->month_start,$this->end_date);
     
         $this->weeks_label = '@Wks/YTD';
         $this->header['reportDate'] = $this->header['reportDate'] . ' YTD';
@@ -42,10 +42,11 @@ class PdfRptR12 extends PdfReport
     
         $this->newPage($data['weeks_in_report']);
     
+        $npage_idx = -1;
         $idx = 0;
         while ($idx < count($data['rows'])) {
             $row = $data['rows'][$idx];
-            if ($idx == 0) $row[] = 'T';
+            if ($idx == 0 || $idx == $npage_idx) $row[] = 'T';
 
 //            error_log(print_r($row,true));
             $type = array_shift($row);
@@ -57,8 +58,15 @@ class PdfRptR12 extends PdfReport
                 $this->rowData();
             } else if ($type == 2) {
                 $this->rowData();
-                $this->rowTotal(...$row);
-                $this->rowData();
+                if ($row[0] == 'Beaufort Co.') {
+                    $row[] = 'B';
+                    $this->rowTotal(...$row);
+                    $this->newPage($data['weeks_in_report']);
+                    $npage_idx = $idx + 1;
+                } else {
+                    $this->rowTotal(...$row);
+                    $this->rowData();
+                }
             } else {
                 $row[] = 'TBLR';
                 $row[] = 3;
@@ -173,7 +181,7 @@ class PdfRptR12 extends PdfReport
         $x += 18.5;
         $this->pdf->SetXY($x,$y1);
         $this->setFill('blue');
-        $this->pdf->MultiCell(14,4,"Persons\nServed\nPer\nWeek (2021 data)",1, 'C',1);
+        $this->pdf->MultiCell(14,4,"\n\nPersons\nServed\nPer\nWeek",1, 'C',1);
         $x += 14.5;
         $this->pdf->SetXY($x,$y1);
         $this->pdf->MultiCell(18,4,"\nAdjusted\nDelivered\nFood",1, 'C');
@@ -183,7 +191,7 @@ class PdfRptR12 extends PdfReport
         $this->pdf->MultiCell(17,4,"Adjusted\nDelivered\nFood        \n ",1, 'C',1);
         $this->pdf->SetXY($x,$y1);
         $this->pdf->SetFont('','B');
-        $this->pdf->MultiCell(17,4,"\n\n         Per\nPerson",1, 'C',);
+        $this->pdf->MultiCell(17,4,"\n\n         Per\nPerson",1, 'C');
         $this->pdf->SetFont('','');
     
         $this->pdf->Ln();

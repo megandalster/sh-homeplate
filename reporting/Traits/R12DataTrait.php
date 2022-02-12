@@ -59,6 +59,8 @@ trait R12DataTrait {
             group by 4,5,1
             order by 4,5,13 desc
 SQL;
+//                error_log($query);
+    
         $weeks_in_report = 0;
         $data = array();
         $totals = array(
