@@ -35,7 +35,33 @@ trait R11DataTrait {
         
         
         $con = connect();
-        
+    
+        // get Report constants
+        $query = <<<SQL
+                SELECT name,
+                       value
+                FROM reportConstants
+                WHERE name in (
+                            'poundsPerMeal',
+                            'valuePerPound',
+                            'keyRescuedFoodLocations'
+                              )
+SQL;
+        $constants = [];
+        $result = mysqli_query ($con,$query);
+        while ($result_row = mysqli_fetch_assoc($result)) {
+            if ($result_row['name'] == 'poundsPerMeal')
+                $constants[$result_row['name']] = floatval($result_row['value']);
+            else if ($result_row['name'] == 'valuePerPound')
+                $constants[$result_row['name']] = floatval($result_row['value']);
+            else if ($result_row['name'] == 'keyRescuedFoodLocations')
+                $constants[$result_row['name']] = explode('|',$result_row['value']);
+        }
+    
+    
+    
+    
+    
         // SECTION A
         $query = <<<SQL
                     SELECT
@@ -245,8 +271,16 @@ SQL;
             $E[$key][4] = ($values[1] == 0 ? null : (($values[0] - $values[1]) / $values[1]) * 100.0);
         }
     
-    
+//        'Sams Club 6582',
+//                    'Publix HH North (473)',
+//                    'Publix Rte 278 (845)',
+//                    'WalMart Hardeeville (2832)',
+//                    'Walmart Ladys Island (7181)'
+//                )
+
+        
         // SECTION F
+        $keyLocations = "'".implode("','",$constants['keyRescuedFoodLocations'])."'";
         $query = <<<SQL
                 SELECT s.client,
                        c.area,
@@ -262,13 +296,7 @@ SQL;
                 )
                 -- AND s.type = 'pickup'
                 AND weight > 0
-                AND s.client in (
-                    'Sams Club 6582',
-                    'Publix HH North (473)',
-                    'Publix Rte 278 (845)',
-                    'WalMart Hardeeville (2832)',
-                    'Walmart Ladys Island (7181)'
-                )
+                AND s.client in ($keyLocations)
                 GROUP BY 1
                 ORDER BY 3 desc
 SQL;
@@ -341,7 +369,6 @@ SQL;
         foreach($G as $key => $values) {
             $G[$key][2] = ($cur_tot == 0 ? null : ($values[0] / $cur_tot) * 100.0);;
         }
-    
     
     
         // SECTION CHART
@@ -429,7 +456,8 @@ SQL;
             'E' => $E,
             'F' => $F,
             'G' => $G,
-            'CHART' => $CHART
+            'CHART' => $CHART,
+            'CONSTANTS' => $constants
         );
     }
 }

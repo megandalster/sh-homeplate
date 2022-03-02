@@ -129,18 +129,20 @@ class PdfRptR11 extends PdfGraphReport
         }
     
         $perPound = 1.67;
+        $perPound = $data['CONSTANTS']['valuePerPound'];
         $m1 = $rescued_weight * $perPound;
         $m2 = $yb_rescued_weight * $perPound;
         $m4 = $m1 - $m2;
         $m5 = ($m2 == 0 ? null : (($m1 - $m2) / $m2) * 100.0);
-        $this->subHeader2("H. Rescued Food Value @ $1.67/lb",$m1,$m2,$m4,$m5,'T');
+        $this->subHeader2("H. Rescued Food Value @ $".$perPound."/lb",$m1,$m2,$m4,$m5,'T');
     
         $perMeal = 1.2;
+        $perMeal = $data['CONSTANTS']['poundsPerMeal'];
         $m1 = $distributed_weight / $perMeal;
         $m2 = $yb_distributed_weight / $perMeal;
         $m4 = $m1 - $m2;
         $m5 = ($m2 == 0 ? null : (($m1 - $m2) / $m2) * 100.0);
-        $this->subHeader2("I. Distributed Food Equivalent Meals @ 1.2 lbs/meal",$m1,$m2,$m4,$m5,'B');
+        $this->subHeader2("I. Distributed Food Equivalent Meals @ ".$perMeal." lbs/meal",$m1,$m2,$m4,$m5,'B');
     
         $this->pdf->SetFontSize(7);
         $this->pdf->SetX(25);

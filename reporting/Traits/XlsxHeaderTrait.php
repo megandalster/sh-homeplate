@@ -13,6 +13,8 @@ trait XlsxHeaderTrait {
     }
     
     public function writeXlsxHeader($report) {
+        $report->spreadsheet->getDefaultStyle()->getFont()->setName('Arial');
+        $report->spreadsheet->getDefaultStyle()->getFont()->setSize(11);
         
         $report->spreadsheet->getActiveSheet()
             ->setCellValue('A1', $this->header['company'])
@@ -23,8 +25,6 @@ trait XlsxHeaderTrait {
         $styleArray = [
             'font' => [
                 'bold' => true,
-                'name'=>'Arial',
-                'size'=>12,
             ],
             'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,

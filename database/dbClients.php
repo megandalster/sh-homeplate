@@ -32,7 +32,7 @@ function retrieve_dbClients($id){
 	    $result_row['ContactName2'], $result_row['deliveryAreaId'],
 	    $result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['pestctrl_date'], 
 	    explode(',',$result_row['number_served']),$result_row['status'],$result_row['noso'],
-        $result_row['donor_type']
+        $result_row['donor_type'],$result_row['target_do']
 	    );
 	mysqli_close($con);
 	return $theClient;
@@ -52,7 +52,7 @@ function getall_dbClients(){
 	        $result_row['ContactName2'], $result_row['deliveryAreaId'],
 	        $result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['pestctrl_date'], 
 	        explode(',',$result_row['number_served']),$result_row['status'],$result_row['noso'],
-            $result_row['donor_type']
+            $result_row['donor_type'],$result_row['target_do']
 	        );
 		$theClients[] = $theClient;
 	}
@@ -96,7 +96,7 @@ function getall_clients($area, $type, $lcfb, $name, $dayHHI,$daySUN,$dayBFT, $de
             $result_row['ContactName2'], $result_row['deliveryAreaId'],
             $result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['pestctrl_date'], 
             explode(',',$result_row['number_served']),$result_row['status'],$result_row['noso'],
-            $result_row['donor_type']
+            $result_row['donor_type'],$result_row['target_do']
             );
 		$theClients[] = $theClient;  
     }
@@ -152,7 +152,8 @@ function insert_dbClients($client){
 				$number_served . "','".
 				$client->get_status() . "','".
 				$client->get_noso() . "','".
-                $client->get_donor_type() .
+                $client->get_donor_type() ."','".
+                $client->get_target_do() .
 				"');";
 	$result = mysqli_query($con,$query);
 	if (!$result) {
@@ -206,7 +207,7 @@ function getall_dbClientsForArea($deliveryAreaId){
 	        $result_row['ContactName2'], $result_row['deliveryAreaId'],
 	        $result_row['survey_date'], $result_row['visit_date'], $result_row['foodsafe_date'], $result_row['pestctrl_date'], 
 	        explode(',',$result_row['number_served']),$result_row['status'],$result_row['noso'],
-            $result_row['donor_type']
+            $result_row['donor_type'],$result_row['target_do']
 	        );
 		$theClients[] = $theClient;
 	}

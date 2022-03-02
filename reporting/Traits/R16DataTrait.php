@@ -35,13 +35,24 @@ trait R16DataTrait {
             $dates[6][] = $tmpdate->modify('+1 day')->format('y-m-d');
         }
         
+        $pickups = [];
         
-        $dropoffs = [];
+        $aid='BFT';
+        if ($area == 'Bluffton') {
+            $aid='SUN';
+        }
+        if ($area == 'Hilton Head') {
+            $aid='HHI';
+        }
+    
+        $weekdays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    
     
         $con = connect();
         for ($x=0; $x<7; $x++) {
             $query = <<<SQL
                     select client,
+                           area,
                             SUM(IF(date='{$dates[$x][0]}',weight,0)) as wk1,
                             SUM(IF(date='{$dates[$x][1]}',weight,0)) as wk2,
                             SUM(IF(date='{$dates[$x][2]}',weight,0)) as wk3,
@@ -58,25 +69,25 @@ trait R16DataTrait {
                                         SELECT
                                             REPLACE(s.client,'  ',' ') as client,
                                             date,
+                                               substr(da.deliveryAreaName,1,3) AS area,
                                             SUM(s.weight) as weight
                                         FROM dbStops s
                                             JOIN dbClients c ON c.id = s.client
                                                 AND c.donor_type = 'Rescued Food'
-                                                AND c.chain_name != ''
+                                                # AND c.chain_name != ''
                                             JOIN dbDeliveryAreas da on da.deliveryAreaId = c.deliveryAreaId
-                                                AND da.deliveryAreaName='$area'
-                                        WHERE s.date IN ('{$dates[$x][0]}','{$dates[$x][1]}','{$dates[$x][2]}',
-                                                         '{$dates[$x][3]}','{$dates[$x][4]}','{$dates[$x][5]}',
-                                                         '{$dates[$x][6]}','{$dates[$x][7]}','{$dates[$x][8]}',
-                                                         '{$dates[$x][9]}','{$dates[$x][10]}','{$dates[$x][11]}')
+                                        WHERE s.route IN ('{$dates[$x][0]}-$aid','{$dates[$x][1]}-$aid','{$dates[$x][2]}-$aid',
+                                                         '{$dates[$x][3]}-$aid','{$dates[$x][4]}-$aid','{$dates[$x][5]}-$aid',
+                                                         '{$dates[$x][6]}-$aid','{$dates[$x][7]}-$aid','{$dates[$x][8]}-$aid',
+                                                         '{$dates[$x][9]}-$aid','{$dates[$x][10]}-$aid','{$dates[$x][11]}-$aid')
                                             AND s.weight > 0
-                                        GROUP BY 1,2
+                                        GROUP BY 1,2,3
                                         ORDER BY 2,1
                                     ) x
                                     group by 1
 SQL;
-
-    //        error_log($query);
+    
+//            error_log(str_replace(["\r\n", "\r", "\n"], " ", $query));
             $result = mysqli_query ($con,$query);
             if (!$result) {
                 error_log(mysqli_error($con). "\n");
@@ -85,13 +96,14 @@ SQL;
             }
         
             $week = $this->WEEKDAYS[$x];
-            $dropoffs[$week] = [
+            $pickups[$week] = [
                 'dates' => $dates[$x],
                 'rows' => []
             ];
             while ($result_row = mysqli_fetch_assoc($result)) {
-                $dropoffs[$week]['rows'][] = [
-                    'client' => $result_row['client'],
+                $pickups[$week]['rows'][] = [
+                    'client' => trim($result_row['client']),
+                    'area' => $result_row['area'],
                     'data' => [
                         $result_row['wk1'],
                         $result_row['wk2'],
@@ -111,10 +123,12 @@ SQL;
         }
 
         
-        $pickups = [];
+        $dropoffs = [];
         for ($x=0; $x<7; $x++) {
             $query = <<<SQL
                     select client,
+                           area,
+                           target_do,
                             SUM(IF(date='{$dates[$x][0]}',weight,0)) as wk1,
                             SUM(IF(date='{$dates[$x][1]}',weight,0)) as wk2,
                             SUM(IF(date='{$dates[$x][2]}',weight,0)) as wk3,
@@ -131,24 +145,25 @@ SQL;
                                         SELECT
                                             REPLACE(s.client,'  ',' ') as client,
                                             date,
+                                               substr(da.deliveryAreaName,1,3) AS area,
+                                               c.target_do,
                                             SUM(s.rescued_weight) as weight
                                         FROM dbStops s
                                             JOIN dbClients c ON c.id = s.client
                                                 AND c.type = 'Recipient'
                                             JOIN dbDeliveryAreas da on da.deliveryAreaId = c.deliveryAreaId
-                                                AND da.deliveryAreaName='$area'
-                                        WHERE s.date IN ('{$dates[$x][0]}','{$dates[$x][1]}','{$dates[$x][2]}',
-                                                         '{$dates[$x][3]}','{$dates[$x][4]}','{$dates[$x][5]}',
-                                                         '{$dates[$x][6]}','{$dates[$x][7]}','{$dates[$x][8]}',
-                                                         '{$dates[$x][9]}','{$dates[$x][10]}','{$dates[$x][11]}')
+                                        WHERE s.route IN ('{$dates[$x][0]}-$aid','{$dates[$x][1]}-$aid','{$dates[$x][2]}-$aid',
+                                                         '{$dates[$x][3]}-$aid','{$dates[$x][4]}-$aid','{$dates[$x][5]}-$aid',
+                                                         '{$dates[$x][6]}-$aid','{$dates[$x][7]}-$aid','{$dates[$x][8]}-$aid',
+                                                         '{$dates[$x][9]}-$aid','{$dates[$x][10]}-$aid','{$dates[$x][11]}-$aid')
                                             AND s.rescued_weight > 0
-                                        GROUP BY 1,2
+                                        GROUP BY 1,2,3,4
                                         ORDER BY 2,1
                                     ) x
                                     group by 1
 SQL;
-        
-            //        error_log($query);
+    
+//            error_log(str_replace(["\r\n", "\r", "\n"], " ", $query));
             $result = mysqli_query ($con,$query);
             if (!$result) {
                 error_log(mysqli_error($con). "\n");
@@ -157,13 +172,14 @@ SQL;
             }
         
             $week = $this->WEEKDAYS[$x];
-            $pickups[$week] = [
+            $dropoffs[$week] = [
                 'dates' => $dates[$x],
                 'rows' => []
             ];
             while ($result_row = mysqli_fetch_assoc($result)) {
-                $pickups[$week]['rows'][] = [
-                    'client' => $result_row['client'],
+                $dropoffs[$week]['rows'][] = [
+                    'client' => trim($result_row['client']),
+                    'area' => $result_row['area'],
                     'data' => [
                         $result_row['wk1'],
                         $result_row['wk2'],
@@ -177,7 +193,8 @@ SQL;
                         $result_row['wk10'],
                         $result_row['wk11'],
                         $result_row['wk12']
-                    ]
+                    ],
+                    'target_do' => $result_row['target_do']
                 ];
             }
         }

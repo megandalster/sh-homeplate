@@ -28,7 +28,7 @@
             null,null,null,null,null,null,null,null,
             null,null,null,null,null,null,null,null,
             null,null,null,null,null,null,
-            null,null,array(0,0,0),"active",null,null);
+            null,null,array(0,0,0),"active",null,null,0);
 	}
 	else {
 		$client = retrieve_dbClients($id);
@@ -85,7 +85,7 @@
         	                     $lcfb, $chartrkr, $weight_type, $_POST['notes'], $_POST['email'],$_POST['email2'],$_POST['ContactName'], 
         	                     $_POST['ContactName2'], $_POST['deliveryAreaId'],$_POST['survey_date'], $_POST['visit_date'], $_POST['foodsafe_date'], 
         	    $_POST['pestctrl_date'],array($_POST['number_served'],$_POST['children_served'],$_POST['seniors_served']),
-                $_POST['status'],$_POST['noso'],$_POST['donor_type']);
+                $_POST['status'],$_POST['noso'],$_POST['donor_type'],$_POST['target_do']);
 			$id = $old_id;
 			include('clientForm.php');
 		}
@@ -160,6 +160,7 @@ function process_form($id)	{
         $status = $_POST['status'];
         $noso = $_POST['noso'];
         $donor_type = $_POST['donor_type'];
+        $target_do = $_POST['target_do'];
 
         //step two: try to make the deletion, addition, or change
 		if($_POST['deleteMe']=="DELETE"){
@@ -184,7 +185,7 @@ function process_form($id)	{
 	                        $address2, $city2, $state2, $zip2, $county2, $phone2, $daysHHI, $daysSUN, $daysBFT, $lcfb, $chartrkr, $weight_type, $notes, 
 							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId, $survey_date, $visit_date, 
 							$foodsafe_date, $pestctrl_date, array($number_served,$children_served,$seniors_served),$status,$noso,
-                            $donor_type);
+                            $donor_type,$target_do);
                     $result = insert_dbClients($newperson);
 					if (!$result)
                         echo ('<p class="error">Unable to add '. $id . ' in the database. <br>Please report this error to the Program Coordinator.');
@@ -206,7 +207,7 @@ function process_form($id)	{
 				    $address2, $city2, $state2, $zip2, $county2, $phone2, $daysHHI, $daysSUN, $daysBFT, $lcfb, $chartrkr, $weight_type, $notes, 
 							$email, $email2, $ContactName, $ContactName2, $deliveryAreaId, $survey_date, $visit_date, 
 						    $foodsafe_date, $pestctrl_date, array($number_served,$children_served,$seniors_served),
-                    $status,$noso,$donor_type);
+                    $status,$noso,$donor_type,$target_do);
 				$result = insert_dbClients($newperson);
                 if (!$result)
                    	echo ('<p class="error">Unable to update ' .$id. '. <br>Please report this error to the Program Coordinator.');

@@ -16,6 +16,19 @@ $isxlsx = array_key_exists('XLSX', $_POST );
 
 global $fn;
 include_once(dirname(__FILE__).'/Utils.php');
+include_once(dirname(__FILE__).'/database/dbReportConstants.php');
+
+// handle CONSTANTS updates first
+if (array_key_exists('CONSTANTS',$_POST)) {
+    if (array_key_exists('valuePerPound', $_POST))
+        setConstant('valuePerPound', $_POST['valuePerPound']);
+    if (array_key_exists('poundsPerMeal', $_POST))
+        setConstant('poundsPerMeal', $_POST['poundsPerMeal']);
+    if (array_key_exists('key_locations', $_POST))
+        setConstant('keyRescuedFoodLocations', $_POST['key_locations']);
+}
+
+
 
 $message = null;
 $rpt_date = (new DateTime())->format('m/Y');
@@ -175,6 +188,10 @@ if ($ispdf) {
     }
 }
 
+// Report Constants
+$constants = getConstants();
+$keyOptions = getOptionsForDonors($constants['keyRescuedFoodLocations']);
+
 $rpt_date = $rpt_date->format('m/Y');
 $phpver = phpversion();
 if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
@@ -187,8 +204,17 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
         
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-        
+
         <style>
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            input[type=number] {
+                -moz-appearance: textfield;
+            }
             .message {
                 margin-top: 50px;
                 margin-bottom: 50px;
@@ -296,15 +322,77 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                     </table>
                     </form>
                 </td>
+                <td style="padding-left: 100px;">
+                    <form method="post" action="" onsubmit="return validate();">
+                    <table>
+                        <tr>
+                            <td style="text-align: center; font-size: 16px; font-weight: bold;">R11 Report Constants</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                Rescued Food Value Per Pound:
+                                <input type="number" step="0.01"
+                                        id="valuePerPound"
+                                        name="valuePerPound"
+                                        value="{$constants['valuePerPound']}"
+                                        style="width: 60px; margin-right: 30px; text-align: right;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                Equivilent Pounds Per Meal:
+                                <input type="number" step="0.01"
+                                        id="poundsPerMeal"
+                                        name="poundsPerMeal"
+                                        value="{$constants['poundsPerMeal']}"
+                                        style="width: 60px; margin-right: 30px; text-align: right;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                &nbsp;<span style="font-weight: bold;">Key Rescued Food Locations</span></br>
+                                <select id="KeyLocations-select" name="key_locations[]"
+                                    multiple size="13" style="width:300px;"
+                                    >
+                                    $keyOptions
+                                </select>
+                                <br/>
+                                <span style="display: inline-block; text-align: right; font-size: 9px; font-style: italic; width: 100%;">Use CTRL/Command key to select mulitple Locations.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                <input id="Constants-submit" type="submit" name="CONSTANTS"
+                                    value="Save Constants" style="margin-left: 106px;">
+                            </td>
+                        </tr>
+                    </table>
+                    </form>
+                </td>
             </tr>
         </table>
 END;
 
     echo <<<END
          <script>
+            function validate() {
+                var objList = document.getElementById('KeyLocations-select');
+                var cnt=0;
+                for (var k = 0; k < objList.options.length; k++) {
+                    if(objList.options[k].selected)
+                    cnt+=1;
+                }
+                if(cnt < 6)
+                    return true;
+                
+                alert("Only 5 Locations may be selected.")
+                return false;
+            }
+            
             $(function() {
                 let today = new Date()
                 let lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+                
                 $( "#pdf_range_Month_Picker" ).datepicker({
                                 minDate: new Date(2020,1,1),
                                 maxDate: lastMonth,
@@ -397,7 +485,7 @@ END;
                     var count = $("#XLSX-select :selected").length
                     $('#XLSX-submit').prop('disabled',count == 0)
                  });
-
+                 
             });
         </script>
 

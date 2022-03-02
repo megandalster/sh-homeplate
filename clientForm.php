@@ -29,11 +29,24 @@ else {
 	die();
 }
 
+if ($id == 'new') {
+    $client->set_type('recipient');
+}
+
 echo <<<END
 <style>
     .required {
         font-size: x-small;
         color: #FF0000;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
     }
 </style>
 <script>
@@ -64,7 +77,7 @@ echo <<<END
                 </select>
             </td>
 		    <td>
-                <div id="chain-name-div" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;Chain Name:
+                <div class="donor" id="chain-name-div" style="display:none;">&nbsp;&nbsp;&nbsp;&nbsp;Group/Chain:
                     <select name="chain_name">
                         <option value=""></option>
                         <option value="Big Lots" {$fn(selected($client->get_chain_name(),'Big Lots'))}>Big Lots</option>
@@ -74,17 +87,14 @@ echo <<<END
                         <option value="Harris Teeter" {$fn(selected($client->get_chain_name(),'Harris Teeter'))}>Harris Teeter</option>
                         <option value="Kroger" {$fn(selected($client->get_chain_name(),'Kroger'))}>Kroger</option>
                         <option value="Publix" {$fn(selected($client->get_chain_name(),'Publix'))}>Publix</option>
+                        <option value="Restaurants" {$fn(selected($client->get_chain_name(),'Restaurants'))}>Restaurants</option>
                         <option value="Target" {$fn(selected($client->get_chain_name(),'Target'))}>Target</option>
                         <option value="WalMart" {$fn(selected($client->get_chain_name(),'WalMart'))}>WalMart</option>
                         <option value="Whole Foods" {$fn(selected($client->get_chain_name(),'Whole Foods'))}>Whole Foods</option>
                     </select>
                 </div>
             </td>
-END;
- 
-	if ($id=="new" || $client->get_type() == "recipient") {
-        echo <<< END
-		    <td>&nbsp;&nbsp;&nbsp;&nbsp;LCFB:
+		    <td class="recipient">&nbsp;&nbsp;&nbsp;&nbsp;LCFB:
                 <select name="lcfb">
                     <option value=""></option>
                     <option value="yes" {$fn(selected($client->get_lcfb(),'yes'))}>Yes</option>
@@ -97,18 +107,14 @@ END;
                     <option value="no" {$fn(selected($client->get_chartrkr(),'no'))}>No</option>
                 </select>
             </td>
-END;
-    }
-    echo <<<END
         </tr>
     </table>
 END;
 	
     
     // Line 2 --------------------------------------------------------------------------
-	if ($id=="new" || $client->get_type() == "recipient") {
-		echo <<<END
-        <table>
+	echo <<<END
+        <table class="recipient">
             <tr>
 		        <td style="width:55px; text-align: right">Applied:</td>
 		        <td style="width:100px;">
@@ -128,7 +134,7 @@ END;
                 <td>Pest Ctrl: <input type="text" id="pestctrl_date" name="pestctrl_date" size="10"
                     value="{$fn(showDate($client->get_pestctrl_date()))}">
                 </td>
-                <td id="td-adults">Adults served/Week<span class="required">*</span>: <input type="text" id="number" name="number_served" size="5"
+                <td id="td-adults">&nbsp;&nbsp;&nbsp;Adults served/Week<span class="required">*</span>: <input type="text" id="number" name="number_served" size="5"
                     value="{$client->get_number_served()}">
                 </td>
                 <td id="td-children">Children<span class="required">*</span>: <input type="text" id="number" name="children_served" size="5"
@@ -140,7 +146,6 @@ END;
             </tr>
         </table>
 END;
-	}
 
     // Line 3 --------------------------------------------------------------------------
     echo <<<END
@@ -164,7 +169,7 @@ END;
                         </select>
                     </td>
                     <td>
-                        <div id="donor-type-div" style="display:none;">Donor Type<span class="required"">*</span>:
+                        <div class="donor" id="donor-type-div" style="display:none;">Donor Type<span class="required"">*</span>:
                             <select name="donor_type">
                                 <option value=""></option>
                                 <option value="Rescued Food" {$fn(selected($client->get_donor_type(),'Rescued Food'))}>Rescued Food</option>
@@ -208,6 +213,10 @@ END;
                             <option value="North" {$fn(selected($client->get_noso(),'North'))}>North of the Broad</option>
                             <option value="South" {$fn(selected($client->get_noso(),'South'))}>South of the Broad</option>
                         </select>
+                    </td>
+                    <td class="recipient">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Target D/O - Lbs:
+                        <input name="target_do" type="number" step="1"
+                            min="0" max="9999" style="width: 3em;" value="{$client->get_target_do()}">
                     </td>
                 </tr>
             </table>
@@ -354,18 +363,12 @@ function &select_date($month, $day, $year, $month_name, $day_name, $year_name) {
         $('#type-select').change(() => {
           let val = $( "#type-select option:selected" ).text()
           if (val === 'Donor') {
-            $('#donor-type-div').show()
-            $('#chain-name-div').show()
-            $('#td-adults').hide()
-            $('#td-children').hide()
-            $('#td-seniors').hide()
+            $('.donor').show()
+            $('.recipient').hide()
             $('#area-label').text('Pickup Area')
           } else {
-            $('#donor-type-div').hide()
-            $('#chain-name-div').hide()
-            $('#td-adults').show()
-            $('#td-children').show()
-            $('#td-seniors').show()
+            $('.donor').hide()
+            $('.recipient').show()
             $('#area-label').text('Delivery Area')
           }
         })

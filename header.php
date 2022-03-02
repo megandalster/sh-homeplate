@@ -47,10 +47,17 @@ h1 {padding-left: 0px; padding-right:165px;}
 		$permission_array['clientEdit.php']=2;
 		$permission_array['volunteerSearch.php']=2;
 		// $permission_array['volunteerEdit.php']=2;
-		$permission_array['viewReports.php']=0;
+		$permission_array['viewReports.php']=2;
+        $permission_array['runReports.php']=2;
 		
 		//Check if they're at a valid page for their access level.
 		$current_page = substr($_SERVER['PHP_SELF'],1);
+
+        // fix if running locally
+        $slashat = strrpos($current_page,'/');
+        if ($slashat != FALSE) $current_page = substr($current_page,$slashat+1);
+//        error_log("page:'$current_page'     '{$permission_array[$current_page]}' > '{$_SESSION['access_level']}'");
+
 		if(array_key_exists($current_page,$permission_array) && $permission_array[$current_page]>$_SESSION['access_level']){
 			//in this case, the user doesn't have permission to view this page.
 			//we redirect them to the index page.
