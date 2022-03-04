@@ -48,25 +48,34 @@
     else{
         $stop1 = retrieve_dbStops($routeID.$client_id);
     }
+
+    // Weight variables for different food types and driver notes are initialized if they have not already been set.
+    $rescued_weight = isset($_POST["rescued_weight"]) ? $_POST["rescued_weight"] : $stop1->get_rescued_weight();
+    $transported_weight = isset($_POST["transported_weight"]) ? $_POST["transported_weight"] : $stop1->get_transported_weight();
+    $purchased_weight = isset($_POST["purchased_weight"]) ? $_POST["purchased_weight"] : $stop1->get_purchased_weight();
+    $food_drive_weight = isset($_POST["food_drive_weight"]) ? $_POST["food_drive_weight"] : $stop1->get_food_drive_weight();
     
-    error_log(print_r($stop1,true));
+    
+    $total_weight = $rescued_weight+$transported_weight+$purchased_weight+$food_drive_weight;
+
     // If values have been submitted, then update the database and display the submitted values to the driver.
     if (isset($_POST['submitted'])){
         error_log('resetting weight');
-        $rw = $_POST['rescued_weight'];
-        $tw = $_POST['transported_weight'];
-        $pw = $_POST['purchased_weight'];
-        $fw = $_POST['food_drive_weight'];
-        $stop1->set_rescued_weight($rw);
-        $stop1->set_transported_weight($tw);
-        $stop1->set_purchased_weight($pw);
-        $stop1->set_food_drive_weight($fw);
-        $tw = $rw + $tw + $pw + $fw;
-        $stop1->set_total_weight($tw);
-        $balance = $balance - $tw;
+        $stop1->set_rescued_weight($rescued_weight);
+        $stop1->set_transported_weight($transported_weight);
+        $stop1->set_purchased_weight($purchased_weight);
+        $stop1->set_food_drive_weight($food_drive_weight);
+        $total_weight = $rescued_weight + $transported_weight + $purchased_weight + $food_drive_weight;
+        $stop1->set_total_weight($total_weight);
+        $balance = $balance - $total_weight;
         update_dbStops($stop1);
     }
 
+    if ($rescued_weight == 0) $rescued_weight = '';
+    if ($transported_weight == 0) $transported_weight = '';
+    if ($purchased_weight == 0) $purchased_weight = '';
+    if ($food_drive_weight == 0) $food_drive_weight = '';
+    
     echo <<<END
 <html>
 	<head>
@@ -83,6 +92,16 @@
 
             input[type=number] {
                 -moz-appearance: textfield;
+            }
+            td {
+                font-size: 18px;
+                text-align: right;
+                font-weight: bold;
+            }
+            input {
+                font-size: 20px;
+                text-align: right;
+                font-weight: bold;
             }
         </style>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -109,70 +128,67 @@ END;
                 <table>
                     <tr>
                         <td style="text-align: right;">
-                            <i>Rescued Weight: </i>
+                            Rescued Weight:
                         </td>
                         <td>
                             <input type="number"  min="0" style="width: 70px;"
                                    onchange="updateTotal()" step="1" pattern="\d+"
                                    name="rescued_weight"
-                                   id="rescued_weight" value="{$stop1->get_rescued_weight()}"> lbs.
+                                   id="rescued_weight" value="{$rescued_weight}"> lbs.
                         </td>
                     </tr>
                     <tr>
                         <td style="text-align: right;">
-                            <i>Transported Weight: </i>
+                            Transported Weight:
                         </td>
                         <td>
                             <input type="number"  min="0" style="width: 70px;"
                                    onchange="updateTotal()" pattern="\d+" pattern="\d+"
                                    name="transported_weight"
-                                   id="transported_weight" value="{$stop1->get_transported_weight()}"> lbs.
+                                   id="transported_weight" value="{$transported_weight}"> lbs.
                         </td>
                     </tr>
                     <tr>
                         <td style="text-align: right;">
-                            <i>Purchased Weight: </i>
+                            Purchased Weight:
                         </td>
                         <td>
                             <input type="number"  min="0" style="width: 70px;"
                                    onchange="updateTotal()" pattern="\d+" pattern="\d+"
                                    name="purchased_weight"
-                                   id="purchased_weight" value="{$stop1->get_purchased_weight()}"> lbs.
+                                   id="purchased_weight" value="{$purchased_weight}"> lbs.
                         </td>
                     </tr>
                     <tr>
                         <td style="text-align: right;">
-                            <i>Food Drive Weight: </i>
+                            Food Drive Weight:
                         </td>
                         <td>
                             <input type="number"  min="0" style="width: 70px;"
                                    onchange="updateTotal()" pattern="\d+" pattern="\d+"
                                    name="food_drive_weight"
-                                   id="food_drive_weight" value="{$stop1->get_food_drive_weight()}"> lbs.
+                                   id="food_drive_weight" value="{$food_drive_weight}"> lbs.
                         </td>
                     </tr>
-                    <tr><td>&nbsp;</td><td>-----------------</td></tr>
-                    <tr>
+                    <tr style="border-top: 1px solid black;">
                         <td style="text-align: right;">
-                            <i>Total Weight: </i>
+                            Total Weight:
                         </td>
-                        <td>
-                            <input type="number"  min="0" style="width: 70px;"
-                                   name="total_weight" id="total_weight" disabled value="{$stop1->get_total_weight()}"> lbs.
+                        <td><span id="tw" style="font-size: 20px;">{$total_weight}</span> lbs.
                         </td>
                     </tr>
                 </table>
                 <script>
+                        $("input[type=number]").focusin(()=>{
+                          $(this).select()
+                        })
+
                   function updateTotal() {
                     let rw = parseInt($('#rescued_weight').val(),10) || 0
-                    $('#rescued_weight').val(rw)
                     let tw = parseInt($('#transported_weight').val(),10) || 0
-                    $('#transported_weight').val(tw)
                     let pw = parseInt($('#purchased_weight').val(),10) || 0
-                    $('#purchased_weight').val(pw)
                     let fw = parseInt($('#food_drive_weight').val(),10) || 0
-                    $('#food_drive_weight').val(fw)
-                    $('#total_weight').val(rw+tw+pw+fw)
+                    $('#tw').html(''+(rw+tw+pw+fw))
                   }
                 </script>
                 

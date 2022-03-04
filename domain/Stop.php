@@ -113,19 +113,24 @@ class Stop {
 	}
     
     function set_rescued_weight($weight){
+        if ($weight == '') $weight = 0;
         $this->rescued_weight = $weight;
     }
     function set_transported_weight($weight){
+        if ($weight == '') $weight = 0;
         $this->transported_weight = $weight;
     }
     function set_purchased_weight($weight){
+        if ($weight == '') $weight = 0;
         $this->purchased_weight = $weight;
     }
     function set_food_drive_weight($weight){
+        if ($weight == '') $weight = 0;
         $this->food_drive_weight = $weight;
     }
 	// Sets the stop's total weight to the specified numeric value.
 	function set_total_weight($weight){
+        if ($weight == '') $weight = 0;
 		$this->total_weight = $weight;
 	}
 	function set_id($new_id){
