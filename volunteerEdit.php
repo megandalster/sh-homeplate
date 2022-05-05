@@ -17,15 +17,37 @@
 	//session_cache_expire(30);		
     include_once('database/dbVolunteers.php');
     include_once('domain/Volunteer.php');
-    include_once('database/dbSchedules.php'); 
+    include_once('database/dbSchedules.php');
+    include_once('database/dbRoutes.php');
 	 include_once('database/dbAffiliates.php');
+    include_once('database/dbPins.php');
     include_once('domain/Affiliate.php');
     
 //    include_once('database/dbLog.php');
-	$id = $_GET["id"];
+
+    error_log(print_r($_POST,true));
+
+    $id = $_GET["id"];
+    
+    // Remove Any pin and let continue
+    if ($_POST['RemovePin']) {
+        error_log("REMOVE_PIN: ".$_POST['RemovePin']);
+        pull_pin(new Pin($_POST['RemovePin'],null,null,null,null));
+        $_POST['_form_submit']=0;
+    }
+    if ($_POST['AddPin']) {
+        $pindate = substr($_POST['AddPinDate'],6,4)."-".substr($_POST['AddPinDate'],0,2)."-".
+            substr($_POST['AddPinDate'],3,2);
+        error_log("ADD_PIN: ".$_POST['PinToAdd'].' on '.$_POST['AddPinDate'].' -> '.$pindate);
+    
+        push_pin(new Pin(null,$id, $_POST['PinToAdd'],$pindate,null));
+        $_POST['_form_submit']=0;
+    }
+
+
 	if ($id=='new') {
 	 	$person = new Volunteer(null,'new',null,null,null,null,null,null,null,null,"active",
-	 	     	null,null,null,null,null,null,null,null,null,null,null,md5("new"), 0, null, null, null, 'M', null);
+	 	     	null,null,null,null,null,null,null,null,null,null,null,md5("new"), 0, null, null, null, 'M', null, null);
 	}
 	else {
 		$person = retrieve_dbVolunteers($id);
@@ -34,6 +56,8 @@
 		     die();
         }  
 	}
+    
+    $pin_options = pin_options_list($person->get_pins());
 ?>
 <html>
 	<head>
@@ -68,33 +92,49 @@
 				$phone1 = $_POST['phone1'];
 				$tripCount = 0;
 				$lastTripDates = "";
-		}
-		else {
+		} else if ($_SESSION['access_level']>=2) {
+            # Admins can now edit the names and phone number
+            $first_name = trim($_POST['first_name']);
+            $last_name = $_POST['last_name'];
+            $phone1 = $_POST['phone1'];
+            $tripCount = $person->get_tripCount();
+            $lastTripDates = implode(',',$person->get_lastTripDates());
+            error_log("changing key: $first_name $phone1");
+        } else {
 				$first_name = $person->get_first_name();
 				$last_name = $person->get_last_name();
 				$phone1 = $person->get_phone1();
 				$tripCount = $person->get_tripCount();
 				$lastTripDates = implode(',',$person->get_lastTripDates());
 		}
-		$person = new Volunteer($last_name, $first_name, $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
-								 $phone1, $_POST['phone2'], $_POST['email'], implode(',',$_POST['type']),
-								 $_POST['status'], $_POST['area'], $_POST['license_no'], $_POST['license_state'], $_POST['license_expdate'],
-                                 $_POST['accidents'],
-                                 $avail, $_POST['schedule'], $_POST['history'],
-                                 $_POST['birthday'],
-                                 $_POST['start_date'],
-                                 $_POST['notes'], $_POST['old_pass'], $tripCount, $lastTripDates, 
-								 $_POST['volunteerTrainingDate'], $_POST['driverTrainingDate'], $_POST['shirtSize'], $_POST['affiliateId']);
-		$errors = validate_form($id); 	//step one is validation.
-									// errors array lists problems on the form submitted
-		if ($errors) {
-		// display the errors and the form to fix
-			show_errors($errors);
-			include('volunteerForm.inc');
-		}
-		// this was a successful form submission; update the database and exit
-		else
-			process_form($id, $person);
+        
+        $errors = validate_form($id); 	//step one is validation.
+        if ($errors) {
+            // display the errors and the form to fix
+            show_errors($errors);
+            include('volunteerForm.inc');
+        } else {
+            if(($_POST['birthday_Month']!=="" || $_POST['birthday_Day']!=="") && $_POST['birthday_Year']==="")
+                $birthday = "XX-".$_POST['birthday_Month'].'-'.$_POST['birthday_Day'];
+            else
+                $birthday = $_POST['birthday_Year'].'-'.$_POST['birthday_Month'].'-'.$_POST['birthday_Day'];
+    
+    
+            $person = new Volunteer($last_name, $first_name, $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'],
+                $phone1, $_POST['phone2'], $_POST['email'], implode(',', $_POST['type']),
+                $_POST['status'], $_POST['area'], $_POST['license_no'], $_POST['license_state'], $_POST['license_expdate'],
+                $_POST['accidents'],
+                $avail, $_POST['schedule'], $_POST['history'],
+                $_POST['birthday'],
+                $_POST['start_date'],
+                $_POST['notes'], $_POST['old_pass'], $tripCount, $lastTripDates,
+                $_POST['volunteerTrainingDate'], $_POST['driverTrainingDate'], $_POST['shirtSize'], $_POST['affiliateId'],
+                $_POST['$volunteerFormsDate']);
+    
+            // errors array lists problems on the form submitted
+            // this was a successful form submission; update the database and exit
+            process_form($id, $person);
+        }
 		include('footer.inc');
 		echo('</div></div></body></html>');
 		die();
@@ -113,8 +153,15 @@ function process_form($id, $person)	{
 				$clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
 				$tripCount = 0;
 				$lastTripDates = "";
-		}
-		else {
+		} else if ($_SESSION['access_level']>=2) {
+            $first_name = trim(str_replace(' ','',str_replace('\\\'', '\'', htmlentities(str_replace('&', 'and', $_POST['first_name'])))));
+            //    $first_name = trim(str_replace('\\\'','',htmlentities(trim($_POST['first_name']))));
+            $last_name = trim(str_replace('\\\'','\'',htmlentities($_POST['last_name'])));
+            $phone1 = trim(str_replace(' ','',htmlentities($_POST['phone1'])));
+            $clean_phone1 = preg_replace("/[^0-9]/", "", $phone1);
+            $tripCount = $person->get_tripCount();
+            $lastTripDates = implode(',',$person->get_lastTripDates());
+        } else {
 				$first_name = $person->get_first_name();
 				$last_name = $person->get_last_name();
 				$phone1 = $person->get_phone1();
@@ -150,12 +197,20 @@ function process_form($id, $person)	{
 		$history = $_POST['history'];
 		$pass = $_POST['password'];
 		$shirtSize = $_POST['shirtSize'];
-		
+    
+        $volunteerTrainingDate = substr($_POST['volunteerTrainingDate'],8,2)."-".substr($_POST['volunteerTrainingDate'],0,2)."-".
+                                substr($_POST['volunteerTrainingDate'],3,2);
 		if (strlen($volunteerTrainingDate) < 8) $volunteerTrainingDate = '';
+  
 		$driverTrainingDate = substr($_POST['driverTrainingDate'],8,2)."-".substr($_POST['driverTrainingDate'],0,2)."-".
 								substr($_POST['driverTrainingDate'],3,2);
 		if (strlen($driverTrainingDate) < 8) $driverTrainingDate = '';
-		$affiliateId = $_POST['affiliateId'];
+    
+        $volunteerFormsDate = substr($_POST['volunteerFormsDate'],8,2)."-".substr($_POST['volunteerFormsDate'],0,2)."-".
+                                substr($_POST['volunteerFormsDate'],3,2);
+        if (strlen($volunteerFormsDate) < 8) $volunteerFormsDate = '';
+    
+        $affiliateId = $_POST['affiliateId'];
 		//rebuild birthday and start_date strings
 		if($_POST['birthday_Year']=="")
 				$birthday = 'XX-'.$_POST['birthday_Month'].'-'.$_POST['birthday_Day'];
@@ -168,7 +223,8 @@ function process_form($id, $person)	{
 		$newperson = new Volunteer($last_name, $first_name, $address, $city, $state, $zip, $clean_phone1, $clean_phone2, $email, $type,
                 		$status, $area, $license_no, $license_state, $license_expdate, $accidents,
                 		$availability, $schedule, $history, $birthday, $start_date, $notes, $pass,
-						$tripCount, $lastTripDates, $volunteerTrainingDate, $driverTrainingDate, $shirtSize, $affiliateId);
+						$tripCount, $lastTripDates, $volunteerTrainingDate, $driverTrainingDate, $shirtSize, $affiliateId,
+                        $volunteerFormsDate);
         
 	//step two: try to make the deletion, password change, addition, or change
 		if($_POST['deleteMe']=="DELETE"){
@@ -225,6 +281,29 @@ function process_form($id, $person)	{
 						 else echo("<p>You have successfully added " .$first_name." ".$last_name. " to the database.</p>");
 				}
 		}
+        
+        // has the volunteer ID changed
+        else if ($newperson->get_id() != $_POST['old_id']) {
+            
+            // check if new id already exists
+            $dup = retrieve_dbVolunteers($newperson->get_id());
+            if ($dup)
+                echo('<p class="error">Unable to change name or phone number ' .$first_name.' '.$clean_phone1. ' to the database. <br>Another person with the same id is already there.');
+            else {
+                // move existing routes and schedules to new user name
+                replace_route_driver($_POST['old_id'],$newperson->get_id());
+                replace_schedule_driver($_POST['old_id'],$newperson->get_id());
+                $result = delete_dbVolunteers($_POST['old_id']);
+                $result = insert_dbVolunteers($newperson);
+                update_volunteers_scheduled($newperson->get_area(), $newperson->get_id(), $newperson->get_availability(),"deleteandinsert");
+
+                if (!$result) {
+                    echo ('<p class="error">Unable to update ' .$first_name.' '.$last_name. '. <br>Please report this error to the Program Coordinator.');
+                }
+                else echo("<p>You have successfully updated " .$first_name." ".$last_name. " in the database.</p>");
+    
+            }
+        }
 
 		// try to replace an existing person in the database by removing and adding
 		else {

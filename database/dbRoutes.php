@@ -350,4 +350,23 @@ function has_nonzero_dropoff_weight($r) {
 	}
 	return false;	
 }
+
+
+// replace driver and/or teamcaptain_id
+function replace_route_driver($old_driver_id,$new_driver_id) {
+	$con=connect();
+	$result = mysqli_query($con,"SELECT * FROM dbRoutes WHERE drivers LIKE '%$old_driver_id%' OR teamcaptain_id='$old_driver_id'");
+	while($result_row = mysqli_fetch_assoc($result)){
+		$id = $result_row['id'];
+		$theDrivers = $result_row['drivers'];
+		$theDrivers = str_replace($old_driver_id,$new_driver_id,$theDrivers);
+		$captain = $result_row['teamcaptain_id'];
+		if ($captain == $old_driver_id)
+			$captain = $new_driver_id;
+			
+		mysqli_query($con,"UPDATE dbRoutes SET drivers='$theDrivers', teamcaptain_id='$captain' WHERE id='$id'");
+	}
+	mysqli_close($con);
+}
+
 ?>

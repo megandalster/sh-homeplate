@@ -82,11 +82,22 @@ function process_form($_POST_PARAM, &$route, $today)
     }
     // add a new driver to the route, but don't disturb weights on existing stops
     if ($_POST['add_driver']) {
-        $route->add_driver($_POST['add_driver']);
+        $add_id = $_POST['add_driver'];
+        $route->add_driver($add_id);
         mild_update_dbRoutes($route);
-        $driver = retrieve_dbVolunteers($_POST['add_driver']);
+        $driver = retrieve_dbVolunteers($add_id);
+    
+        // add trip to driver if trip was completed
+        if ($route->get_status()=="completed") {
+            $routedate =  substr($route->get_id(),0,8);
+            $result = $driver->insert_lastTripDates($routedate);
+            if ($result) {
+                update_dbVolunteers($driver); // update only if there is a change
+            }
+        }
         return ("New crew member added: ". $driver->get_first_name() . " " . $driver->get_last_name());
     }
+    
     // update drivers' Trip Count and Last Trip Date
     if ($_POST['onboard']) {
         $routedate =  substr($route->get_id(),0,8);

@@ -154,6 +154,20 @@ function get_total_slots($area, $week, $day) {
 	return max(sizeof($d),2);
 }
 
+// replace driver
+function replace_schedule_driver($old_driver_id,$new_driver_id) {
+    $con=connect();
+    $result = mysqli_query($con,"SELECT * FROM dbSchedules WHERE drivers LIKE '%$old_driver_id%'");
+    while($result_row = mysqli_fetch_assoc($result)){
+        $id = $result_row['id'];
+        $area = $result_row['area'];
+        $theDrivers = $result_row['drivers'];
+        $theDrivers = str_replace($old_driver_id,$new_driver_id,$theDrivers);
+        mysqli_query($con,"UPDATE dbSchedules SET drivers='$theDrivers' WHERE id='$id' AND area='$area'");
+    }
+    mysqli_close($con);
+}
+
 // remove a driver from a schedule
 function remove_driver ($area, $week, $day, $driver_id) {
 	$se = retrieve_dbSchedules($area, $day.":".$week);

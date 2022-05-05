@@ -8,12 +8,13 @@
 */
 
 function validate_form($id){
-	if($id=='new' && ($_POST['first_name']==null || $_POST['first_name']=='new')) $errors[] = 'Please enter a first name';
-	if($id=='new' && $_POST['last_name']==null) $errors[] = 'Please enter a last name';
-	if($id=='new' && !valid_phone($_POST['first_name'],$_POST['phone1'])) $errors[] = 'Please enter a valid primary phone number (10 digits: ###-###-####)'.$id;
+    $errors = [];
+	if(($id=='new' || $_SESSION['access_level']>=2) && ($_POST['first_name']==null || $_POST['first_name']=='new')) $errors[] = 'Please enter a first name';
+	if(($id=='new' || $_SESSION['access_level']>=2) && $_POST['last_name']==null) $errors[] = 'Please enter a last name';
+	if(($id=='new' || $_SESSION['access_level']>=2) && !valid_phone($_POST['first_name'],$_POST['phone1'])) $errors[] = 'Please enter a valid primary phone number (10 digits: ###-###-####)'.$id;
 	if($_POST['city']==null) $errors[] = 'Please enter a city';
 	if($_POST['address']==null) $errors[] = 'Please enter an address';
-	if($_POST['state']==null) $errors[] = 'Please enter a state';
+	if($_POST['address']==null) $errors[] = 'Please enter an address';
 	if(($_POST['zip'] != strval(intval($_POST['zip']))) || ($_POST['zip']==null) || (strlen($_POST['zip'])!=5)) $errors[] = 'Please enter a valid zip code';
 	if ($_SESSION['access_level']==0 && ($_POST['type']==null || !in_array('applicant',$_POST['type'])))
 		$_POST['type'][] = 'applicant';
@@ -23,12 +24,23 @@ function validate_form($id){
 		$errors[] = "Sorry, you can't promote yourself to a higher role.";
 	if($_POST['phone2']!=null && !valid_phone($id,$_POST['phone2'])) $errors[] = 'Please enter a valid secondary phone number (10 digits: ###-###-####)';
 	if(!valid_email($_POST['email']) && $_POST['email']!=null) $errors[] = "Please enter a valid email";
-	if(($_POST['DateOfBirth_Month']!=="" || $_POST['DateOfBirth_Day']!=="") && $_POST['DateOfBirth_Year']==="")
-		$birthday = "XX-".$_POST['DateOfBirth_Month'].'-'.$_POST['DateOfBirth_Day'];
-	else
-		$birthday = $_POST['DateOfBirth_Year'].'-'.$_POST['DateOfBirth_Month'].'-'.$_POST['DateOfBirth_Day'];
+    if(($_POST['birthday_Month']!=="" || $_POST['birthday_Day']!=="") && $_POST['birthday_Year']==="")
+        $birthday = "XX-".$_POST['birthday_Month'].'-'.$_POST['birthday_Day'];
+    else
+        $birthday = $_POST['birthday_Year'].'-'.$_POST['birthday_Month'].'-'.$_POST['birthday_Day'];
+    if($birthday=='--' || $birthday=='XX--') $errors[] = 'Please enter a birthday';
 	if (strlen($birthday)>2 && strlen($birthday)<8) $errors[] = 'Please select a valid birthday';
-	return $errors;
+    
+    $license_no = $_POST['license_no'];
+    $license_state = $_POST['license_state'];
+    $license_expdate = $_POST['expdate_Year'].'-'.$_POST['expdate_Month'].'-'.$_POST['expdate_Day'];
+    if (strlen($license_expdate) < 8) $license_expdate = null;
+    
+    if($license_no==null) $errors[] = 'Please enter a License No';
+    if($license_state==null) $errors[] = 'Please enter a License State';
+    if($license_expdate==null) $errors[] = 'Please enter a License Exp Date';
+    
+    return $errors;
 }
 
 

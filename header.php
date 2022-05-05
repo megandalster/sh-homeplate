@@ -88,7 +88,7 @@ h1 {padding-left: 0px; padding-right:165px;}
 	        echo('<a href="'.$path.'viewRoutes.php?area='.$_SESSION['_area'].'&date='.$today.'"> | routes</a>');
 	//    	echo('<a href="'.$path.'deviceSearch.php"> | tablets</a>');
 	    	echo('<a href="'.$path.'scheduleView.php?area='.$_SESSION['_area'].'"> | master schedules</a>');	
-	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | volunteers</a>');
+	    	echo('<a href="'.$path.'volunteerSearch.php?area='.$_SESSION['_area'].'"> | truck volunteers</a>');
 			echo('<a href="'.$path.'affiliateSearch.php"> | affiliates</a>');
 			echo('<a href="'.$path.'deliveryAreaSearch.php"> | areas</a>');
 	    	echo('<a href="'.$path.'clientSearch.php?area='.$_SESSION['_area'].'"> | donors and recipients</a>');

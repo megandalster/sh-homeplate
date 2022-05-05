@@ -7,11 +7,14 @@
  * (see <http://www.gnu.org/licenses/).
 */
 
+include_once(dirname(__FILE__).'/../domain/Pin.php');
+
 /*
  * Volunteer class for Homeplate
  * @author Allen Tucker
  * @version February 4, 2012
  */
+
 
 class Volunteer {
 	private $id; 	// id (unique key) = first_name . phone1
@@ -45,13 +48,17 @@ class Volunteer {
 	private $driverTrainingDate;    // date when trained as a driver
 	private $shirtSize;		//Shirt Size: S, M, L, XL, 2XL
 	private $affiliateId;	//associated affiliate
+    private $volunteerFormsDate;	//date when completed volunteer forms
+    
+    private $pins = [];
+    
         /**
          * constructor for a Volunteer
          */
     function __construct($last_name, $first_name, $address, $city, $state, $zip, $phone1, $phone2, $email, $type,
                          $status, $area, $license_no, $license_state, $license_expdate, $accidents, $availability, 
                          $schedule, $history, $birthday, $start_date, $notes, $password, $tripCount, $lastTripDates, 
-    					 $volunteerTrainingDate, $driverTrainingDate, $shirtSize, $affiliateId){                
+    					 $volunteerTrainingDate, $driverTrainingDate, $shirtSize, $affiliateId, $volunteerFormsDate){
         $this->id = $first_name . $phone1; 
         $this->last_name = $last_name;
         $this->first_name = $first_name;
@@ -104,7 +111,8 @@ class Volunteer {
         $this->notes = $notes;   
         if ($password=="")
             $this->password = md5($this->id);
-        else $this->password = $password;       
+        else $this->password = $password;
+        $this->volunteerFormsDate = $volunteerFormsDate;
     }
     //getter functions
     function get_id() {
@@ -266,7 +274,19 @@ class Volunteer {
 	function set_tripCount($count){
 		$this->tripCount = $count;
 	}
-	
-	
+    
+    function get_volunteerFormsDate(){
+        return $this->volunteerFormsDate;
+    }
+    function set_volunteerFormsDate($newDate){
+        $this->volunteerFormsDate = $newDate;
+    }
+    
+    function get_pins() {
+        return $this->pins;
+    }
+    function set_pins($pins) {
+        $this->pins = $pins;
+    }
 }
 ?>

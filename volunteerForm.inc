@@ -47,7 +47,7 @@ else // $_SESSION['access_level']>=2
 	<input type="hidden" name="_form_submit" value="1">
 
 <p>	<?php 
-	if ($id=="new") {
+	if ($id=="new" || $_SESSION['access_level']>=2) {
 		echo 'First Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" name="first_name" tabindex=1 value="'.$person->get_first_name().'">';
 		echo 'Last Name<span style="font-size:x-small;color:FF0000">*</span>: <input type="text" name="last_name" tabindex=2 value="'.$person->get_last_name().'">';
 	}
@@ -80,7 +80,7 @@ else // $_SESSION['access_level']>=2
 			</tr>
 		<tr>
 		<?php 
-			if ($id=="new")
+			if ($id=="new" || $_SESSION['access_level']>=2)
 				echo '<td>Primary Phone<span style="font-size:x-small;color:FF0000">*</span>:</td><td> <input type="text" name="phone1" MAXLENGTH=12 tabindex=7 value="'.$person->get_phone1().'"></td>';
 			else 
 				echo '<td>Primary Phone:</td><td>'.$person->get_phone1().'</td>';
@@ -89,7 +89,7 @@ else // $_SESSION['access_level']>=2
 		<tr><td>Email:</td><td><input type="text" name="email" size="30" tabindex=9 value="<?PHP echo($person->get_email())?>"></td></tr>
 
 
-       <tr><td>Birthday:</td><td>
+       <tr><td>Birthday<span style="font-size:x-small;color:FF0000">*</span>:</td><td>
             <?PHP 
             	$mm = substr($person->get_birthday(),3,2);
             	$dd = substr($person->get_birthday(),6,2);
@@ -103,7 +103,17 @@ else // $_SESSION['access_level']>=2
 				}
 				echo '">';
 		?>
-		</td></tr>
+		</td>
+           <td colspan="2">Volunteer Forms Completed: </td><td colspan="2"><input type="text" tabindex=10 id="volunteerFormsDate" name="volunteerFormsDate" value="
+           <?PHP
+				if ($person->get_volunteerFormsDate() != ''){
+					$time = strtotime($person->get_volunteerFormsDate());
+					echo date("m/d/Y", $time);
+               }
+                ?>
+               ">
+           </td>
+       </tr>
 		<tr><td>Shirt Size:</td><td>
 		<?PHP 
 		 $shirtSizes = array("S", "M", "L", "XL", "2XL");
@@ -157,6 +167,8 @@ $( "#lastTripDate" ).datepicker();
 $( "#startDate" ).datepicker();
 $( "#volunteerTrainingDate" ).datepicker();
 $( "#driverTrainingDate" ).datepicker();
+  $( "#volunteerFormsDate" ).datepicker();
+  $( "#AddPinDate" ).datepicker();
 });
 </script>
 
@@ -198,7 +210,7 @@ $( "#driverTrainingDate" ).datepicker();
 	
 	$st = implode(',',$person->get_type());
     $types = array('driver'=>'Driver', 'helper'=>'Helper', 'teamcaptain'=>'Day Captain', 'sub' => "Sub",
-                   'coordinator'=>'Coordinator', 'associate'=>"Associate", 'boardmember'=>"Board Member");
+                   'coordinator'=>'Coordinator', 'associate'=>"Associate", 'boardmember'=>"Board Member", 'hpuser' => 'HP User');
 	echo('<p>Role(s)');
 	echo('<span style="font-size:x-small;color:FF0000">*</span>: ');
 
@@ -216,18 +228,18 @@ $( "#driverTrainingDate" ).datepicker();
     $oddeven = array ('odd', 'even');
     $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
     $person_availability = implode(',',$person->get_availability());
-    if ($person->get_area()=="BFT" || $person->get_area()=="HHI")
-    	foreach ($weeks as $weekno => $weekvalue) {
-       		echo ('<tr><td>'. $weekvalue . '</td>');
-       		foreach ($days as $day) {
-       	  		$realkey = $day . ":". $weekno;
-       	  		echo ('<td><input type="checkbox" name="availability[]" value=' . $realkey);
-    	  		if (in_array($day.":".$weekno, $person->get_availability())) echo(' CHECKED');
-    	  		echo ('></td>');
-       		}
-       		echo ('</tr>');
-    	}
-    else {
+    if ($person->get_area()=="BFT" || $person->get_area()=="HHI") {
+        foreach ($weeks as $weekno => $weekvalue) {
+            echo('<tr><td>' . $weekvalue . '</td>');
+            foreach ($days as $day) {
+                $realkey = $day . ":" . $weekno;
+                echo('<td><input type="checkbox" name="availability[]" value=' . $realkey);
+                if (in_array($day . ":" . $weekno, $person->get_availability())) echo(' CHECKED');
+                echo('></td>');
+            }
+            echo('</tr>');
+        }
+    } else {
        foreach ($oddeven as $weekno) {  // Bluffton is odd-even
        	  echo ('<tr><td>'. $weekno . '</td>');
        	  foreach ($days as $day) {
@@ -244,10 +256,10 @@ $( "#driverTrainingDate" ).datepicker();
     }
     else echo "<p>(<i>Note: A new volunteer's schedule cannot be made until the above contact data has been submitted.</i>)";
 //		if($id == 'new' || strpos(implode(',',$person->get_type()),'applicant') !== false) {
-		  echo('<p>License no: ');
+		  echo('<p>License no<span style="font-size:x-small;color:FF0000">*</span>: ');
 	      echo('<input type="text" name="license_no" value="'.$person->get_license_no().'">');
 	   
-	      echo('&nbsp;&nbsp;License state: <select name="license_state" tabindex=5>');
+	      echo('&nbsp;&nbsp;License state<span style="font-size:x-small;color:FF0000">*</span>: <select name="license_state" tabindex=5>');
 	      foreach ($states as $st) {
 				echo "<option value='" . $st . "' ";
                 if($person->get_license_state() == $st ) echo("SELECTED");
@@ -256,7 +268,7 @@ $( "#driverTrainingDate" ).datepicker();
 			}
 	      echo('</select>');
 	   
-	      echo('&nbsp;&nbsp;License Expiration: ');
+	      echo('&nbsp;&nbsp;License Expiration<span style="font-size:x-small;color:FF0000">*</span>: ');
           $mm = substr($person->get_license_expdate(),3,2);
           $dd = substr($person->get_license_expdate(),6,2);
           $yy = substr($person->get_license_expdate(),0,2);
@@ -268,6 +280,23 @@ $( "#driverTrainingDate" ).datepicker();
 	      echo($person->get_notes());
 	      echo('</textarea>');
 
+          echo('<br/><p>Pins:<br />');
+          echo('<table>');
+          foreach ($person->get_pins() as $pin) {
+              echo("<tr><td>&nbsp;".$pin->get_pinned_date()." : </td><td>".$pin->get_pin_name()."</td>");
+              if ($_SESSION['access_level']>=2) {
+                  echo('<td><button type="submit" value="'.$pin->get_id().'" name="RemovePin">Remove Pin</button></td>');
+              }
+              echo("</tr>");
+          }
+          if (count($person->get_pins()) == 0) {
+              echo("<tr><td>&nbsp;No Pins</td></tr>");
+          }
+          echo('</table>');
+          
+          
+          
+          
 		  echo('<input type="hidden" name="schedule" value="'.implode(',',$person->get_schedule()).'">');
 		  echo('<input type="hidden" name="history" value="'.implode(',',$person->get_history()).'">');
 		  echo('<input type="hidden" name="password" value="'.$person->get_password().'">');
@@ -283,6 +312,10 @@ $( "#driverTrainingDate" ).datepicker();
 				'<input type="submit" value="Delete" name="Delete Entry"> to delete this volunteer from the database. <br />' .
 				'<input type="checkbox" name="reset_pass" value="RESET"> Check this box and then hit ' .
 				'<input type="submit" value="Reset Password" name="Reset Password"> to reset this volunteer\'s password.</p>');
+            
+            if ($pin_options) {
+                echo('<br/>&nbsp;&nbsp;To award a Pin, select the pin <select name="PinToAdd">'.$pin_options.'</select> and award date <input type="text" tabindex=10 id="AddPinDate" name="AddPinDate"> and press <button type="submit" name="AddPin" value="AddPin">Add Pin</button>');
+            }
 		}
 		?>
 

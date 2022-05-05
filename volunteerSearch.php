@@ -92,7 +92,7 @@
 						echo '<input type="text" name="s_name" value="' . $name . '">';
 					
 						$types = array('driver'=>'Driver', 'helper'=>'Helper', 'teamcaptain'=>'Day Captain', 'sub' => "Sub",
-								'coordinator'=>'Coordinator', 'associate'=>"Associate", 'boardmember'=>"Board Member");
+								'coordinator'=>'Coordinator', 'associate'=>"Associate", 'boardmember'=>"Board Member", 'hpuser' => 'HP User');
                         echo('<p>Role(s):&nbsp;&nbsp;&nbsp;&nbsp;');
                             if( array_key_exists('s_type', $_POST) ){
                                 foreach($types as $type=>$typename){

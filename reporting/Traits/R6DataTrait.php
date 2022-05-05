@@ -27,7 +27,7 @@ trait R6DataTrait {
     
     
     
-        $tmpdate = new DateTime(substr($start_date,0,2).'-01-01');
+        $tmpdate = new DateTime($rpt_date->format('y').'-01-01');
         $ytd_start_date = $tmpdate->format('y-m-d');
     
         $tmpdate->modify('-1 year');

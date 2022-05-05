@@ -125,7 +125,7 @@ if (!array_key_exists('weekDatePicker',$_POST)) {
 		{	
 			//col 2 : status
 		    $status = "No Data";
-            error_log("status='".$route[$weekday]->get_status()."'");
+//            error_log("status='".$route[$weekday]->get_status()."'");
 		    if (false && $route[$weekday]->get_status() == "completed")
 		      $status = "entered";
 		    else {
