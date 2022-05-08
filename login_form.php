@@ -48,6 +48,7 @@
 							//echo "person logged in<br />";
 							if (in_array('boardmember', $person->get_type()) || 
 								in_array('coordinator', $person->get_type()) ||
+                                in_array('hpuser', $person->get_type()) ||
 								in_array('teamcaptain', $person->get_type()))
 									$_SESSION['access_level'] = 2;
 							else if (in_array('driver', $person->get_type()) ||

@@ -23,6 +23,7 @@ include_once('domain/Volunteer.php');
 include_once('database/dbVolunteers.php');
 include_once('domain/Stop.php');
 include_once('database/dbStops.php');
+include_once('database/dbRouteHistory.php');
 //    include_once('database/dbLog.php');
 $routeID = $_GET['routeID'];
 $route = get_route($routeID);
@@ -68,6 +69,13 @@ else {
  */
 function process_form($_POST_PARAM, &$route, $today)
 {
+    // only used to start route_history
+//    if ($_POST['sync_route_history']) {
+//        sync_to_last_trip_dates('22-05-01');
+//        return ("Synced");
+//    }
+    
+    
     // add a new pick up to the route, but don't disturb weights on existing stops
     if ($_POST['add_pickup']) {
         $route->add_pick_up($_POST['add_pickup']);
@@ -101,6 +109,8 @@ function process_form($_POST_PARAM, &$route, $today)
     // update drivers' Trip Count and Last Trip Date
     if ($_POST['onboard']) {
         $routedate =  substr($route->get_id(),0,8);
+        route_history_remove($route->get_id());
+        $vids = [];
         foreach ($route->get_drivers() as $driver_id) {
             $driver = retrieve_dbVolunteers($driver_id);
             $result = false;
@@ -113,12 +123,15 @@ function process_form($_POST_PARAM, &$route, $today)
             }
             else {  // driver is checked -- add this date to his last trips
 //                echo "<br><br>before insert ".$routedate; var_dump($driver->get_lastTripDates(), $driver->get_tripCount());
+                $vids[] = $driver->get_id();
                 $result = $driver->insert_lastTripDates($routedate);
 //                echo "<br>after insert ".$routedate; var_dump($driver->get_lastTripDates(), $driver->get_tripCount());
                 if ($result)
                     update_dbVolunteers($driver); // update only if there is a change
             }
         }
+        
+        route_history_add($route->get_id(),$vids);
         return ("Crew onboard updated");
     }
     if($_POST['deleteMe']=="DELETE"){

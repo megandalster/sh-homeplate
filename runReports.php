@@ -67,6 +67,12 @@ if ($isxlsx) {
             $rpt->run();
             $rpt->output();
             exit();
+        case 'R19':
+            require(dirname(__FILE__) . '/reporting/Reports/XlsxRptR19.php');
+            $rpt = new XlsxRptR19($rpt_date);
+            $rpt->run();
+            $rpt->output();
+            exit();
     }
     $message = print_r($_POST['report_name'], true) . ' has not yet been implemented';
 }
@@ -309,6 +315,7 @@ if (!array_key_exists('report_name',$_POST)) $_POST['report_name'] = '';
                                     <option value="R16" {$fn(selected($_POST['report_name'],'R16'))} >&nbsp;R16 – Rescued Food Distribution - Beaufort</option>
                                     <option value="R17" {$fn(selected($_POST['report_name'],'R17'))} >&nbsp;R17 – Rescued Food Distribution - Bluffton</option>
                                     <option value="R18" {$fn(selected($_POST['report_name'],'R18'))} >&nbsp;R18 – Rescued Food Distribution - Hilton Head</option>
+                                    <option value="R19" {$fn(selected($_POST['report_name'],'R19'))} >&nbsp;R19 – Truck Volunteer Trip Report</option>
                                 </select>
                                 <br/>
                                 <span style="display: inline-block; text-align: right; font-size: 9px; font-style: italic; width: 100%;">&nbsp;</span>

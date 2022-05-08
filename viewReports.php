@@ -141,7 +141,7 @@ Report Type : <select name="report_type">
 	<option value="dropoff" <?php if($_POST['report_type'] == "dropoff"){echo "selected='true'";} ?> >Recipients Rank Report</option>
 	<option value="publixwalmart" <?php if($_POST['report_type'] == "publixwalmart"){echo "selected='true'";} ?> >Breakdowns by Food Type</option>
 	<option value="clientdetail" <?php if($_POST['report_type'] == "clientdetail"){echo "selected='true'";} ?> >Client Detail</option>
-	<option value="volunteerdates" <?php if($_POST['report_type'] == "volunteerdates"){echo "selected='true'";} ?> >Volunteer Dates</option>
+	<option value="volunteerdates" <?php if($_POST['report_type'] == "volunteerdates"){echo "selected='true'";} ?> >Truck Volunteer Info</option>
 </select>
 <?php 
 echo 'Sorted by : <select name="sort_by">';
@@ -194,7 +194,7 @@ if($_POST['submitted'])
 	echo "<div id='dvReport'>";
 	
 	if ($_POST['report_type'] == "volunteerdates") {
-	    $header = array("Second Helpings Active Volunteer Dates Report on ".date('F j, Y', time()). " for ");
+	    $header = array("Second Helpings Active Truck Volunteer Info Report on ".date('F j, Y', time()). " for ");
 	    if ($_POST['report_area']!="") $header[] = " base: ".$bases[$_POST['report_area']];
 	    else $header[] = " all bases ";
 	}
@@ -296,18 +296,37 @@ if($_POST['submitted'])
 	if ($_POST['report_type']=="volunteerdates"){
 	    $allvolunteers = getonlythose_dbVolunteers($_POST['report_area'], array("driver","helper","sub"), "active", "", "", "");
 	    
-	    echo sizeof($allvolunteers). " active volunteers found";
+	    echo sizeof($allvolunteers). " active truck volunteers found";
+        echo '<style>';
+        echo '#tblReport td { border-right: 1px solid #DDDDDD70; }';
+        echo '</style>';
 	    echo '<table id="tblReport">';
-	    echo "<tr><td><b>Name</b></td><td><b>Birth Date</b></td><td><b>Start Date</b></td><td><b>Vol Trn</b></td><td><b>Driver Trn</b></td>".
-	   	    "<td align='right'><b>License #</b></td><td><b>Expire Dt</b></td><td><b>Roles</b></td>";
+	    echo "<tr><td><b>Name</b></td><td><b>Birth Date</b></td><td><b>Start Date</b></td><td><b>Vol Forms Date</b></td><td><b>Vol Trn</b></td><td><b>Driver Trn</b></td>".
+	   	    "<td><b>Status</b></td><td><b>Pin Awards</b></td></td><td align='right'><b>License #</b></td><td><b>Expire Dt</b></td><td><b>Roles</b></td>";
 	    echo "</tr>";
 	    
 	    foreach ($allvolunteers as $volunteer) {
-	        echo '<tr>';
-	        echo '<td>'.$volunteer->get_last_name().", ".$volunteer->get_first_name().'</td><td>'.pretty($volunteer->get_birthday()).'</td><td>'.
-	   	        pretty($volunteer->get_start_date()).'</td><td align="right">'.pretty($volunteer->get_volunteerTrainingDate()).'</td><td align="right">'.pretty($volunteer->get_driverTrainingDate()).'</td>'.'<td align="right">'.
-	   	        $volunteer->get_license_no().'</td><td align="right">'.pretty($volunteer->get_license_expdate()).'</td><td>'.implode(", ",$volunteer->get_type()).'</td>';
-	   	        echo "</tr>";
+	        echo '<tr style="vertical-align: top;">';
+	        echo '<td>'.$volunteer->get_last_name().", ".$volunteer->get_first_name().'</td>'.
+                '<td>'.pretty($volunteer->get_birthday()).'</td>'.
+                '<td>'.pretty($volunteer->get_start_date()).'</td>'.
+                '<td align="right">'.pretty($volunteer->get_volunteerFormsDate()).'</td>'.
+                '<td align="right">'.pretty($volunteer->get_volunteerTrainingDate()).'</td>'.
+                '<td align="right">'.pretty($volunteer->get_driverTrainingDate()).'</td>'.
+                '<td align="right">'.$volunteer->get_status().'</td>'.
+                '<td align="left">';
+            $pins = '';
+            foreach($volunteer->get_pins() as $pin) {
+                $pins .= $pin->get_pinned_date() .' ' . $pin->get_pin_name() . ',</br>';
+            }
+            if ($pins != '') {
+                $pins = substr($pins,0,-6);
+            }
+            echo $pins.'</td>'.
+                '<td align="right">'.$volunteer->get_license_no().'</td>'.
+                '<td align="right">'.pretty($volunteer->get_license_expdate()).'</td>'.
+                '<td>'.implode(", ",$volunteer->get_type()).'</td>';
+            echo "</tr>";
 	    }
 	    echo "</table>";
 	    

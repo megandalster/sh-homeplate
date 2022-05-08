@@ -206,9 +206,12 @@ function process_form($id, $person)	{
 								substr($_POST['driverTrainingDate'],3,2);
 		if (strlen($driverTrainingDate) < 8) $driverTrainingDate = '';
     
-        $volunteerFormsDate = substr($_POST['volunteerFormsDate'],8,2)."-".substr($_POST['volunteerFormsDate'],0,2)."-".
-                                substr($_POST['volunteerFormsDate'],3,2);
-        if (strlen($volunteerFormsDate) < 8) $volunteerFormsDate = '';
+        $volunteerFormsDate = null;
+        if (trim($_POST['volunteerFormsDate']) != '') {
+            $volunteerFormsDate = substr($_POST['volunteerFormsDate'],8,2)."-".substr($_POST['volunteerFormsDate'],0,2)."-".
+                substr($_POST['volunteerFormsDate'],3,2);
+            if (strlen($volunteerFormsDate) < 8 || $volunteerFormsDate=='  -  -  ') $volunteerFormsDate = '';
+        }
     
         $affiliateId = $_POST['affiliateId'];
 		//rebuild birthday and start_date strings

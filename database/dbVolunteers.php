@@ -143,6 +143,9 @@ function getonlythose_dbVolunteers($area, $types, $status, $name, $availability,
 							$result_row['start_date'], $result_row['notes'], $result_row['password'], 
 		                    $result_row['TripCount'], $result_row['LastTripDates'], $result_row['volunteerTrainingDate'],$result_row['driverTrainingDate'],
 							$result_row['ShirtSize'], $result_row['affiliateId'], $result_row['volunteerFormsDate']);
+        $pins = fetch_pins($theVol->get_id());
+        $theVol->set_pins($pins);
+        
 		$theVols[] = $theVol;
 	}
 	mysqli_close($con);

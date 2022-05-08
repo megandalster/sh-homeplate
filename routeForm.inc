@@ -52,6 +52,9 @@ echo ('</td><td>Drop-off <b>stops</b> -- weights');
 echo ('</td></tr>');
 echo "<tr><td valign='top'>";
 
+// currently assigned crew via route_history
+$current_crew = route_history_volunteers_on_route($route->get_id());
+
 $priorcrew = array();
 if (sizeof($route->get_drivers())==0 && $route->get_status()=="completed")
 	echo "no drivers checked in<br>";
@@ -62,9 +65,11 @@ else
 	    $name = $driver->get_first_name() . ' ' . $driver->get_last_name();
     else 
         $name = $driver_id;
+    
     if ($driver && $routedate >= $twoweeksago && $routedate <= $today) {
         echo '<input type="checkbox" name="onboard[]" value=' . $driver_id;
-        if (in_array ($routedate, $driver->get_lastTripDates() )) {
+        //       previous method, in last 5 trips                OR  driver_id in route_history current crew
+        if (in_array ($routedate, $driver->get_lastTripDates() ) || in_array ($driver_id, $current_crew )) {
             echo(' CHECKED');
             $priorcrew[] = $driver->get_id();
         }
@@ -190,6 +195,9 @@ if ($_SESSION['access_level']>=2){
         echo ('<br><input type="checkbox" name="deleteMe" value="DELETE"> Check this box and then hit ' .
     				'<input type="submit" value="Refresh" name="Delete Entry"> to refresh this route in the database. ');
     echo "<br><br><a href='viewRoutes.php?area=".substr($routeID,9)."&date=".substr($routeID,0,8)."'>Return to routes.</a>";
+    
+    // only used to start route_history
+    // echo '<br/><br/><input type="submit" value="sync_route_history" name="sync_route_history">';
 }
 echo('</div></div>');
 	include('footer.inc');
