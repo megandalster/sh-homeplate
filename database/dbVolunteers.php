@@ -230,7 +230,7 @@ function insert_dbVolunteers($volunteer){
 		$affiliateId =$volunteer->get_affiliateId();
 	}
     
-    error_log(print_r($volunteer,true));
+//    error_log(print_r($volunteer,true));
 	$query = "INSERT INTO dbVolunteers VALUES ('".
 				$volunteer->get_id()."','" .
 				mysqli_real_escape_string($con,$volunteer->get_last_name())."','".

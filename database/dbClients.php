@@ -60,7 +60,7 @@ function getall_dbClients(){
 	return $theClients;
 }
 
-function getall_clients($area, $type, $lcfb, $name, $dayHHI,$daySUN,$dayBFT, $deliveryAreaId, $county, $status, $noso) {
+function getall_clients($area, $type, $lcfb, $name, $dayHHI,$daySUN,$dayBFT, $deliveryAreaId, $county, $status, $noso, $week=null) {
 	$con=connect();
 	if ($dayHHI=="") { // query for retrieving clients with search criteria for reporting
         $query = "SELECT * FROM dbClients WHERE area like '%". $area . "%' ";
@@ -74,15 +74,17 @@ function getall_clients($area, $type, $lcfb, $name, $dayHHI,$daySUN,$dayBFT, $de
 	}
 	else {  // query for building a route with clients outside the area
 	    $query = "SELECT * FROM dbClients ";
-        if($area=="HHI")   
-            $query .= "WHERE daysHHI LIKE '%".$dayHHI."%' ";
-        else if ($area=="SUN")
-            $query .= "WHERE daysSUN LIKE '%".$daySUN."%' ";
-        else
-            $query .= "WHERE daysBFT LIKE '%".$dayBFT."%' ";
+        if($area=="HHI") {
+            $query .= "WHERE daysHHI REGEXP '$dayHHI(,|$" . ($week ? "|:$week" : "") . ")'";
+        } else if ($area=="SUN") {
+            $query .= "WHERE daysSUN REGEXP '$daySUN(,|$" . ($week ? "|:$week" : "") . ")'";
+        } else {
+            $query .= "WHERE daysBFT REGEXP '$dayBFT(,|$" . ($week ? "|:$week" : "") . ")'";
+        }
         if($type)           $query .= "AND type = '". $type . "' ";
         if($status)        $query .= "AND status = '". $status . "' ";
         if($noso)        $query .= "AND noso = '". $noso . "' ";
+        
 	}
     $query .= "ORDER BY id";
     $result = mysqli_query ($con,$query);

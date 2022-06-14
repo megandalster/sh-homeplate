@@ -119,7 +119,7 @@ else // $_SESSION['access_level']>=2
 		 $shirtSizes = array("S", "M", "L", "XL", "2XL");
 		 
 		 echo('<select name="shirtSize" tabindex="11">');
-		 echo "<option value='" . $shirtSize . "' ";
+		 echo "<option value='' ";
 		  if($person->get_shirtSize() == '' ) echo("SELECTED");
                 echo ">-- Select Shirt Size --</option>";
 		 
@@ -320,7 +320,7 @@ $( "#driverTrainingDate" ).datepicker();
 		?>
 
 <?PHP
-function &select_date($month, $day, $year, $month_name, $day_name, $year_name,$start_year, $end_year) {
+function select_date($month, $day, $year, $month_name, $day_name, $year_name,$start_year, $end_year) {
 		$months = array('','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
         echo('<select name='.$month_name.'><option value=""></option>');
 		echo('');

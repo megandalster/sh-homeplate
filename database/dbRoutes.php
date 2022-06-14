@@ -18,6 +18,7 @@ include_once(dirname(__FILE__).'/dbStops.php');
 include_once(dirname(__FILE__).'/dbClients.php');
 include_once(dirname(__FILE__).'/dbSchedules.php');
 include_once(dirname(__FILE__).'/dbinfo.php');
+include_once(dirname(__FILE__).'/dbRouteHistory.php');
 
 function create_dbRoutes() {
 	$con=connect();
@@ -269,7 +270,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		$driver_ids = implode(',',get_drivers_scheduled($area, $week, $day));
 
 		// store pickup and dropoff stops for this date and area using the dbClients table
-		$pickup_clients = getall_clients($area, "donor", "", "", $day,$day,$day, "", "","active","");
+		$pickup_clients = getall_clients($area, "donor", "", "", $day,$day,$day, "", "","active","", $week);
 		$pickup_ids = "";
 
 		foreach ($pickup_clients as $client)
@@ -281,7 +282,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		$pickup_ids = substr($pickup_ids,1);
 		
 		
-		$dropoff_clients = getall_clients($area, "recipient", "", "", $day,$day,$day, "", "","active","");
+		$dropoff_clients = getall_clients($area, "recipient", "", "", $day,$day,$day, "", "","active","", $week);
 		$dropoff_ids = "";
 		
 		foreach ($dropoff_clients as $client) 
@@ -326,6 +327,36 @@ function autogenerate_routes () {
 	  }
 	}
 }
+
+function force_route_regen() {
+	$today = new DateTime();
+	$today->modify('+1 day');
+	$tomorrow = $today->format('y-m-d');
+	
+	$con=connect();
+	$query = "SELECT id FROM dbRoutes WHERE id > '". $tomorrow . "' AND status='created'";
+	$result = mysqli_query($con,$query);
+	if ($result==null || mysqli_num_rows($result) == 0) {
+		mysqli_close();
+		return false;
+	}
+	while ($result_row = mysqli_fetch_assoc($result)) {
+		$rid = $result_row['id'];
+
+		$result2=mysqli_query($con,"DELETE FROM dbRoutes WHERE id = '". $rid . "'");
+		// get rid of stops
+		$result3=mysqli_query($con,"DELETE FROM dbStops WHERE route = '". $rid . "'");
+		
+		route_history_remove($rid);
+		
+	}
+	mysqli_close($con);
+	
+	autogenerate_routes();
+	return true;
+	
+}
+
 // for completed routes, the total weights follow the first comma in the pickup/
 // dropoff id.  That is, the route $r is not a properly formed route in this regard,
 // so we inspect the total weights to determine if the route is worth keeping (has any

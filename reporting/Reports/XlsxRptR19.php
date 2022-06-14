@@ -77,7 +77,7 @@ class XlsxRptR19 extends XlsxReport
         parent::__construct($reportDate);
         $this->header['reportName'] = 'R19 - TRUCK VOLUNTEER TRIP REPORT';
         $this->outputFile = $this->report_id.'-TRKVOLTRIP-'.$this->reportDateLabel;
-        $this->header_width = 7;
+        $this->header_width = 8;
     }
     
     function run() {
@@ -99,16 +99,22 @@ class XlsxRptR19 extends XlsxReport
         $this->writeXlsxHeader($this);
         $r = 6;
         $sheet->getColumnDimension('A')->setWidth(23.00);
-        $sheet->getColumnDimension('B')->setWidth(9.00);
-        $sheet->getColumnDimension('C')->setWidth(23.00);
-        $sheet->getColumnDimension('D')->setWidth(9.83);
-        $sheet->getColumnDimension('E')->setWidth(9.83);
-        $sheet->getColumnDimension('F')->setWidth(9.83);
-        $sheet->getColumnDimension('G')->setWidth(9.83);
+        $sheet->getColumnDimension('B')->setWidth(6.00);
+        $sheet->getColumnDimension('C')->setWidth(9.00);
+        $sheet->getColumnDimension('D')->setWidth(25.00);
+        $sheet->getColumnDimension('E')->setWidth(7.83);
+        $sheet->getColumnDimension('F')->setWidth(7.83);
+        $sheet->getColumnDimension('G')->setWidth(7.83);
+        $sheet->getColumnDimension('H')->setWidth(7.83);
     
-        $sheet->setCellValueByColumnAndRow(4,$r,'Trips');
-        $sheet->mergeCells($this->cellName(4,$r).':'.$this->cellName(7,$r));
-        $sheet->getStyleByColumnAndRow(4,$r,7,$r)->applyFromArray($this->borders);
+        $sheet->setCellValueByColumnAndRow(5,$r,'Trips Since 05/01/2022');
+        $sheet->mergeCells($this->cellName(5,$r).':'.$this->cellName(7,$r));
+        $sheet->getStyleByColumnAndRow(5,$r,7,$r)->applyFromArray($this->borders);
+    
+        $sheet->setCellValueByColumnAndRow(8,$r,"All\nTime");
+        $sheet->mergeCells($this->cellName(8,$r).':'.$this->cellName(8,$r+1));
+        $sheet->getStyleByColumnAndRow(8,$r)->getAlignment()->setWrapText(true);
+        $sheet->getStyleByColumnAndRow(8,$r,8,$r+1)->applyFromArray($this->borders);
         $r++;
     
         $sheet->getRowDimension($r)->setRowHeight(28);
@@ -116,40 +122,42 @@ class XlsxRptR19 extends XlsxReport
         $sheet->getStyleByColumnAndRow(1,$r,1,$r)->applyFromArray($this->borders);
         $sheet->setCellValueByColumnAndRow(2,$r,'Base');
         $sheet->getStyleByColumnAndRow(2,$r,2,$r)->applyFromArray($this->borders);
-        $sheet->setCellValueByColumnAndRow(3,$r,'Roles');
+        $sheet->setCellValueByColumnAndRow(3,$r,'Status');
         $sheet->getStyleByColumnAndRow(3,$r,3,$r)->applyFromArray($this->borders);
-        $sheet->setCellValueByColumnAndRow(4,$r,"Current\nYTD");
-        $sheet->getStyleByColumnAndRow(4,$r)->getAlignment()->setWrapText(true);
+        $sheet->setCellValueByColumnAndRow(4,$r,'Roles');
         $sheet->getStyleByColumnAndRow(4,$r,4,$r)->applyFromArray($this->borders);
-        
-        $sheet->setCellValueByColumnAndRow(5,$r,"Prior 3\nMonths");
+        $sheet->setCellValueByColumnAndRow(5,$r,"Current\nYTD");
         $sheet->getStyleByColumnAndRow(5,$r)->getAlignment()->setWrapText(true);
         $sheet->getStyleByColumnAndRow(5,$r,5,$r)->applyFromArray($this->borders);
-        $sheet->setCellValueByColumnAndRow(6,$r,"Prior\nYear");
+        
+        $sheet->setCellValueByColumnAndRow(6,$r,"Prior 3\nMonths");
         $sheet->getStyleByColumnAndRow(6,$r)->getAlignment()->setWrapText(true);
         $sheet->getStyleByColumnAndRow(6,$r,6,$r)->applyFromArray($this->borders);
-        $sheet->setCellValueByColumnAndRow(7,$r,"All\nTime");
+        $sheet->setCellValueByColumnAndRow(7,$r,"Prior\nYear");
         $sheet->getStyleByColumnAndRow(7,$r)->getAlignment()->setWrapText(true);
         $sheet->getStyleByColumnAndRow(7,$r,7,$r)->applyFromArray($this->borders);
         $r++;
+        
+        $sheet->freezePaneByColumnAndRow(1,$r);
         
         $i = 0;
         while ($i < count($data['summary'])) {
             $row = $data['summary'][$i];
     
             $sheet->setCellValueByColumnAndRow(1, $r, $row['last_name'].', '.$row['first_name']);
-            $sheet->setCellValueByColumnAndRow(2, $r, $row['area']);
+            $sheet->setCellValueByColumnAndRow(2, $r, $row['base']);
             $sheet->getStyleByColumnAndRow(2,$r,2,$r)->applyFromArray($this->center);
+            $sheet->setCellValueByColumnAndRow(3, $r, $row['status']);
+            $sheet->getStyleByColumnAndRow(3,$r,3,$r)->applyFromArray($this->center);
     
-            $sheet->setCellValueByColumnAndRow(3, $r, $row['roles']);
-            $sheet->getStyleByColumnAndRow(3,$r)->getAlignment()->setWrapText(true);
+            $sheet->setCellValueByColumnAndRow(4, $r, $row['roles']);
+            $sheet->getStyleByColumnAndRow(4,$r)->getAlignment()->setWrapText(true);
             
-            $sheet->setCellValueByColumnAndRow(4, $r, $row['YTD']);
-            $sheet->setCellValueByColumnAndRow(5, $r, $row['Prior3']);
-            $sheet->setCellValueByColumnAndRow(6, $r, $row['PriorYear']);
-            $sheet->setCellValueByColumnAndRow(7, $r, $row['ALL_TIME']);
+            $sheet->setCellValueByColumnAndRow(5, $r, $row['year_to_date']);
+            $sheet->setCellValueByColumnAndRow(6, $r, $row['prior_3_months']);
+            $sheet->setCellValueByColumnAndRow(7, $r, $row['prior_year']);
+            $sheet->setCellValueByColumnAndRow(8, $r, $row['all_time']);
     
-            error_log(print_r($row,true));
             $i++;
             $r++;
         }
@@ -165,7 +173,61 @@ class XlsxRptR19 extends XlsxReport
         $sheet->getPageMargins()->setRight(0.25);
     
         $this->header['reportName'] = $this->report_id." - Truck Volunteer Detail Trip Report";
+        $this->header_width = 5;
         $this->writeXlsxHeader($this);
+        $r = 6;
+        $sheet->getColumnDimension('A')->setWidth(23.00);
+        $sheet->getColumnDimension('B')->setWidth(7.00);
+        $sheet->getColumnDimension('C')->setWidth(26.00);
+        $sheet->getColumnDimension('D')->setWidth(9.00);
+        $sheet->getColumnDimension('E')->setWidth(20.00);
+    
+//        $sheet->getRowDimension($r)->setRowHeight(28);
+//        $sheet->setCellValueByColumnAndRow(4,$r,$this->reportDateLabel);
+//        $sheet->getStyleByColumnAndRow(4,$r,5,$r)->applyFromArray($this->borders);
+//        $r++;
+    
+        $sheet->setCellValueByColumnAndRow(1,$r,'Truck Volunteer');
+        $sheet->getStyleByColumnAndRow(1,$r,1,$r)->applyFromArray($this->borders);
+        $sheet->setCellValueByColumnAndRow(2,$r,'Base');
+        $sheet->getStyleByColumnAndRow(2,$r,2,$r)->applyFromArray($this->borders);
+        $sheet->setCellValueByColumnAndRow(3,$r,'Roles');
+        $sheet->getStyleByColumnAndRow(3,$r,3,$r)->applyFromArray($this->borders);
+        $sheet->setCellValueByColumnAndRow(4,$r,"Status");
+        $sheet->getStyleByColumnAndRow(4,$r,4,$r)->applyFromArray($this->borders);
+        $sheet->setCellValueByColumnAndRow(5,$r,"Trip Date");
+        $sheet->getStyleByColumnAndRow(5,$r,5,$r)->applyFromArray($this->borders);
+        $r++;
+    
+        $sheet->freezePaneByColumnAndRow(1,$r);
+        $dateformat = \PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_DMYSLASH;
+    
+        $i = 0;
+        while ($i < count($data['detail'])) {
+            $row = $data['detail'][$i];
+        
+            $sheet->setCellValueByColumnAndRow(1, $r, $row['last_name'].', '.$row['first_name']);
+            $sheet->setCellValueByColumnAndRow(2, $r, $row['base']);
+            $sheet->getStyleByColumnAndRow(2,$r,2,$r)->applyFromArray($this->center);
+        
+            $sheet->setCellValueByColumnAndRow(3, $r, $row['roles']);
+            $sheet->getStyleByColumnAndRow(3,$r)->getAlignment()->setWrapText(true);
+    
+            $sheet->setCellValueByColumnAndRow(4, $r, $row['status']);
+    
+            $td = new DateTime($row['trip_date']);
+            $excelTimestamp = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($td);
+            $sheet->setCellValueByColumnAndRow(5, $r,$excelTimestamp);
+        
+            $i++;
+            $r++;
+        }
+        $sheet->getStyleByColumnAndRow(2,7,2,$r)->applyFromArray($this->center);
+        $sheet->getStyleByColumnAndRow(4,7,4,$r)->applyFromArray($this->center);
+        $sheet->getStyleByColumnAndRow(5,7,5,$r)->getNumberFormat()->setFormatCode('d/m/yy');
+        $sheet->setCellValueByColumnAndRow(1, $r, ' ');
+        
+//        $sheet->setAutoFilterByColumnAndRow(1,6,5,$r);
     
     
         $this->spreadsheet->setActiveSheetIndex(0);

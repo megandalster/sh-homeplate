@@ -222,24 +222,53 @@ END;
             </table>
 END;
 
+
+echo "</p><fieldset id='availability'><legend>Schedule:</strong> </legend><table>";
+//    "<tr><td> &nbsp;&nbsp;</td><td>Mon&nbsp;&nbsp;</td><td>Tue&nbsp;&nbsp;</td><td>Wed&nbsp;&nbsp;</td>".
+//    "<td>Thu&nbsp;&nbsp;</td><td>Fri&nbsp;&nbsp;</td><td>Sat&nbsp;&nbsp;</td><td>Sun</td></tr>";
 $areas = array("daysHHI"=>"Hilton Head","daysSUN"=>"Bluffton","daysBFT"=>"Beaufort");
+$weeks = array('1'=>'1st' , '2'=>'2nd', '3'=>'3rd', '4'=>'4th', '5'=>'5th' );
 $days = array('Mon', 'Tue', 'Wed' , 'Thu', 'Fri', 'Sat', 'Sun');
+
+
 echo '<table><tr>';
   foreach($areas as $area=>$areaname) {
     echo '<td><fieldset><legend>'.$areaname.' Pickup/Dropoff:</legend>
-	   <table><tr>';
-        foreach ($days as $day) echo '<td>'.$day.'&nbsp;&nbsp;</td>';
-            echo '</tr>';
-        $client_availability = $client->get_days(substr($area,4));
-        echo ('<tr>');
-        foreach ($days as $day) {
-            echo ("<td><input type='checkbox' name='".$area."[]' value='".$day."'");
-            if (in_array($day, $client_availability)) echo " checked></td>";
-            else echo "></td>";
-        }
-    echo ('</tr></table></fieldset></td>');
+	   <table>';
+            $base = substr($area,4);
+          $client_availability = implode(',', $client->get_days($base));
+//          error_log("Client Avail: $area -> $base: ".$client_availability);
+          echo('<tr><td></td>');
+          foreach ($days as $day) echo("<td>$day</td>");
+          echo('</tr>');
+          foreach ($weeks as $weekno => $weekvalue) {
+              echo('<tr><td>' . $weekvalue . '</td>');
+              foreach ($days as $day) {
+                  $realkey = $day . ":" . $weekno;
+                  echo('<td><input type="checkbox" name="'.$area.'[]" value="' . $realkey.'"');
+                  if (preg_match("/$day(,|$|:$weekno)/", $client_availability) === 1) echo(' CHECKED');
+                  echo('></td>');
+              }
+              echo('</tr>');
+          }
+          echo('</table></fieldset></td>');
   }
-echo "</tr></table>";
+  echo('</tr></table>');
+
+
+//
+//        foreach ($days as $day) echo '<td>'.$day.'&nbsp;&nbsp;</td>';
+//            echo '</tr>';
+//        $client_availability = $client->get_days(substr($area,4));
+//        echo ('<tr>');
+//        foreach ($days as $day) {
+//            echo ("<td><input type='checkbox' name='".$area."[]' value='".$day."'");
+//            if (in_array($day, $client_availability)) echo " checked></td>";
+//            else echo "></td>";
+//        }
+//    echo ('</tr></table></fieldset></td>');
+//  }
+//echo "</tr></table>";
 ?>
 
 <fieldset>

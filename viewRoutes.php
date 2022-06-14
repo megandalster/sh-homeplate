@@ -4,12 +4,20 @@
  *  Our copyright noticerouteid.clientid =
  */
 
+include_once('database/dbVolunteers.php');
+include_once('database/dbRoutes.php');
+
 session_start();
 ////session_cache_expire(30)
 
 if (!array_key_exists('weekDatePicker',$_POST)) {
     $_POST['weekDatePicker'] = '';
 }
+
+if(array_key_exists('regenerate',$_POST)) {
+    force_route_regen();
+}
+
 
 ?>
 <html>
@@ -231,8 +239,18 @@ if (!array_key_exists('weekDatePicker',$_POST)) {
  }
  echo "</tr></table>";
 
+ if ($_SESSION['access_level']>=2) {
+     echo '<br />';
+     echo '<form method = "post" action = "" >';
+     echo '<input type = "submit" id = "regenerate" name = "regenerate" ';
+     echo 'onclick = "return confirm(\'Are you sure you want to regenerate all future routes?\')" ';
+     echo 'value = "Update Future Route Schedules For Any Crew, Donor, Recipient Schedule Changes Just Made" >';
+     echo '</form >';
+}
 ?>
 			</div>
+
+   
 			<?php include('footer.inc');?>
 		</div>
 	</body>

@@ -25,17 +25,17 @@
     
 //    include_once('database/dbLog.php');
 
-    error_log(print_r($_POST,true));
+//    error_log(print_r($_POST,true));
 
     $id = $_GET["id"];
     
     // Remove Any pin and let continue
-    if ($_POST['RemovePin']) {
+    if (array_key_exists('RemovePin', $_POST)) {
         error_log("REMOVE_PIN: ".$_POST['RemovePin']);
         pull_pin(new Pin($_POST['RemovePin'],null,null,null,null));
         $_POST['_form_submit']=0;
     }
-    if ($_POST['AddPin']) {
+    if (array_key_exists('AddPin', $_POST)) {
         $pindate = substr($_POST['AddPinDate'],6,4)."-".substr($_POST['AddPinDate'],0,2)."-".
             substr($_POST['AddPinDate'],3,2);
         error_log("ADD_PIN: ".$_POST['PinToAdd'].' on '.$_POST['AddPinDate'].' -> '.$pindate);
@@ -78,7 +78,7 @@
 	<div id="content">
 <?PHP
 	include('volunteerValidate.inc');
-	if($_POST['_form_submit']!=1)
+	if(!array_key_exists('_form_submit',$_POST) || $_POST['_form_submit']!=1)
 	//in this case, the form has not been submitted, so show it
 		include('volunteerForm.inc');
 	else {

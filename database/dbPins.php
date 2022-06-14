@@ -32,7 +32,6 @@ function fetch_pins($volunteer_id) {
         "SELECT vp.*,p.name FROM volunteer_pins vp
                 JOIN pins p on p.id=vp.pin_id
                 WHERE vp.volunteer_id='" . $volunteer_id . "' ORDER BY vp.pinned_date DESC");
-    error_log("vid='$volunteer_id' : ".print_r($result,true));
     while($row = mysqli_fetch_assoc($result)) {
         $pins[] = new Pin(
             $row['id'],

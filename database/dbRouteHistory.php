@@ -3,7 +3,7 @@
 include_once(dirname(__FILE__).'/dbinfo.php');
 
 function calculate_stats_dates($thru_date) {
-    if ($thru_date instanceof DateTime) {
+    if (!($thru_date instanceof DateTime)) {
         $thru_date = New DateTime($thru_date);
     }
     $end_date = new DateTime($thru_date->format('y-m-d'));
@@ -35,12 +35,14 @@ function row_to_object($row) {
     return array(
         'last_name' => $row['last_name'],
         'first_name' => $row['first_name'],
-        'area' => $row['area'],
+        'status' => $row['status'],
+        'base' => $row['base'],
         'roles' => $row['roles'],
         'year_to_date' => $row['YTD'],
         'prior_3_months' => $row['Prior3'],
         'prior_year' => $row['PriorYear'],
-        'all_time' => $row['ALL_TIME']
+        'all_time' => $row['ALL_TIME'],
+        'since_route_history' => $row['since_rh'],
     );
 }
 
@@ -115,6 +117,43 @@ SQL;
     return $vids;
 }
 
+function route_history_detail($thru_date) {
+    $dates = calculate_stats_dates($thru_date);
+    $con=connect();
+    $query = <<<SQL
+                SELECT v.id
+                  ,v.last_name
+                  ,v.first_name
+                  ,v.status
+                  , CASE WHEN rh.route_base = 'SUN' THEN 'BLU'
+                       WHEN rh.route_base = 'BFT' THEN 'BEA'
+                      ELSE rh.route_base
+                      END as base
+                  , v.type as roles
+                  , rh.route_date
+                FROM route_history rh
+                JOIN dbVolunteers v on v.id = rh.volunteer_id
+                WHERE rh.route_date >= '22-05-01'
+                    AND rh.route_date < '{$dates['end_date']}'
+                order by 2,3,7
+SQL;
+    $stats = [];
+    $result = mysqli_query($con, $query);
+    while ($result_row = mysqli_fetch_assoc($result)) {
+        $stats[] = array(
+            'id' => $result_row['id'],
+            'last_name' => $result_row['last_name'],
+            'first_name' => $result_row['first_name'],
+            'status' => $result_row['status'],
+            'base' => $result_row['base'],
+            'roles' => $result_row['roles'],
+            'trip_date' => $result_row['route_date'],
+        );
+    }
+    mysqli_close($con);
+    return $stats;
+}
+
 
 function route_history_stats($thru_date) {
     $dates = calculate_stats_dates($thru_date);
@@ -123,21 +162,48 @@ function route_history_stats($thru_date) {
                 SELECT
                   v.last_name
                   ,v.first_name
+                  ,v.status
                   , CASE WHEN rh.route_base = 'SUN' THEN 'BLU'
                        WHEN rh.route_base = 'BFT' THEN 'BEA'
                       ELSE rh.route_base
-                      END as area
+                      END as base
                   , v.type as roles
                   ,SUM(IF(rh.route_date >= '{$dates['year_to_date']}',1,0)) as YTD
                   ,SUM(IF(rh.route_date >= '{$dates['prior_3_months']}',1,0)) as Prior3
                   ,SUM(IF(rh.route_date >= '{$dates['prior_year']}' AND rh.route_date < '{$dates['year_to_date']}',1,0)) as PriorYear
-                  ,COUNT(*) as ALL_TIME
+                  ,COUNT(*) as since_rh
+                  ,MAX(v.TripCount) as ALL_TIME
                 FROM route_history rh
                 JOIN dbVolunteers v on v.id = rh.volunteer_id
                 WHERE rh.route_date < '{$dates['end_date']}'
                        group by 1,2,3,4
                 order by 1,2
 SQL;
+    
+    $query = <<<SQL
+                SELECT
+                  v.last_name
+                  ,v.first_name
+                  ,v.status
+                  , CASE WHEN v.area = 'SUN' THEN 'BLU'
+                       WHEN v.area = 'BFT' THEN 'BEA'
+                      ELSE v.area
+                      END as base
+                  , v.type as roles
+                  ,SUM(IF(rh.route_date >= '{$dates['year_to_date']}',1,0)) as YTD
+                  ,SUM(IF(rh.route_date >= '{$dates['prior_3_months']}',1,0)) as Prior3
+                  ,SUM(IF(rh.route_date >= '{$dates['prior_year']}' AND rh.route_date < '{$dates['year_to_date']}',1,0)) as PriorYear
+                  ,COUNT(rh.route_date) as since_rh
+                  ,MAX(v.TripCount) as ALL_TIME
+				FROM dbVolunteers v
+				left JOIN route_history rh
+                   on v.id = rh.volunteer_id
+                    and rh.route_date < '{$dates['end_date']}'
+                group by 1,2,3,4,5
+                order by 1,2
+SQL;
+
+
     $stats = [];
     $result = mysqli_query($con, $query);
     while ($result_row = mysqli_fetch_assoc($result)) {
@@ -155,15 +221,17 @@ function route_history_stats_by_volunteer($vid,$thru_date) {
                 SELECT
                   v.last_name
                   ,v.first_name
+                  ,v.status
                   , CASE WHEN rh.route_base = 'SUN' THEN 'BLU'
                        WHEN rh.route_base = 'BFT' THEN 'BEA'
                       ELSE rh.route_base
-                      END as area
+                      END as base
                   , v.type as roles
                   ,SUM(IF(rh.route_date >= '{$dates['year_to_date']}',1,0)) as YTD
                   ,SUM(IF(rh.route_date >= '{$dates['prior_3_months']}',1,0)) as Prior3
                   ,SUM(IF(rh.route_date >= '{$dates['prior_year']}' AND rh.route_date < '{$dates['year_to_date']}',1,0)) as PriorYear
-                  ,COUNT(*) as ALL_TIME
+                  ,COUNT(*) as since_rh
+                  ,MAX(v.TripCount) as ALL_TIME
                 FROM route_history rh
                 JOIN dbVolunteers v on v.id = rh.volunteer_id
                 WHERE rh.volunteer_id = '{$vid}'
