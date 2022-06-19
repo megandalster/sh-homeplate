@@ -87,6 +87,7 @@ function getall_clients($area, $type, $lcfb, $name, $dayHHI,$daySUN,$dayBFT, $de
         
 	}
     $query .= "ORDER BY id";
+    
     $result = mysqli_query ($con,$query);
     $theClients = array();
     while ($result_row = mysqli_fetch_assoc($result)) {

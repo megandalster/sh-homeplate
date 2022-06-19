@@ -127,7 +127,7 @@ if(array_key_exists('regenerate',$_POST)) {
 		$days[$weekday] = $weekday." ". date('M j', $dayUTC);
 		echo "<td>"."<a href=editRoute.php?routeID=".$routeID.">".$days[$weekday]."</a></td>" ;
 		
-        echo "<!-- status='".$route[$weekday]->get_status()."' -->";
+//        echo "<!-- status='".$route[$weekday]->get_status()."' -->";
 		// if route exists, generate this set of cols
 		if($route[$weekday] != NULL)
 		{	

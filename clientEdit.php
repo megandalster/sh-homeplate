@@ -139,20 +139,20 @@ function process_form($id)	{
 		$seniors_served = $_POST['seniors_served'];
         $type = $_POST['type'];
         $area = $_POST['area'];
-        if ($_POST['daysHHI'])
+
+        $daysHHI="";
+        if (array_key_exists('daysHHI',$_POST))
         	$daysHHI=implode(',', $_POST['daysHHI']);
-        else $daysHHI="";
-        if ($_POST['daysSUN'])
+        $daysSUN="";
+        if (array_key_exists('daysSUN',$_POST))
             $daysSUN=implode(',', $_POST['daysSUN']);
-        else $daysSUN="";
-        if ($_POST['daysBFT'])
+        $daysBFT="";
+        if (array_key_exists('daysBFT',$_POST))
             $daysBFT=implode(',', $_POST['daysBFT']);
-        else $daysBFT="";
+    
+        $weight_type = "pounds";
         if($type == "donor"){
 			$weight_type="foodtype";
-		}
-		else{
-			$weight_type = "pounds"; 
 		}
 		$lcfb = $_POST['lcfb'];
 		$chartrkr = $_POST['chartrkr'];
@@ -163,7 +163,7 @@ function process_form($id)	{
         $target_do = $_POST['target_do'];
 
         //step two: try to make the deletion, addition, or change
-		if($_POST['deleteMe']=="DELETE"){
+		if(array_key_exists('deleteMe',$_POST) && $_POST['deleteMe']=="DELETE"){
 			$result = retrieve_dbClients($id);
 			if (!$result)
 				echo('<p>Unable to delete. ' . $id . ' is not in the database. <br>Please report this error to the Program Coordinator.');
@@ -175,7 +175,7 @@ function process_form($id)	{
 		}
 
 		// try to add a new client to the database
-		else if ($_POST['old_id']=='new') {
+		else if (array_key_exists('old_id',$_POST) && $_POST['old_id']=='new') {
 				//check if there's already an entry
 				$dup = retrieve_dbClients($id);
 				if ($dup)

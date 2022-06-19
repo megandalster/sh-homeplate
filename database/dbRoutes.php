@@ -248,26 +248,37 @@ function mild_update_dbRoutes($r) {
  */
 function make_new_route ($routeID, $teamcaptain_id) {
 	// be sure route doesn't already exist.
+//	error_log("make_new_route: ".$routeID);
 	if (!get_route($routeID))
 	{
 		$area = substr($routeID,9);
 		$date = substr($routeID,0,8);
 		$month_weeks = array(1=>"1st",2=>"2nd", 3=>"3rd", 4=>"4th", 5=>"5th");
-		if ($area=="BFT" || $area=="HHI") {
-			$week = substr($month_weeks[floor((substr($date,6,2)-1) / 7) + 1],0,1);
-			//floor(($dayCount-1) / 7)
-		}
-		else {
+//		if ($area=="BFT" || $area=="HHI") {
+//			$week = substr($month_weeks[floor((substr($date,6,2)-1) / 7) + 1],0,1);
+//			//floor(($dayCount-1) / 7)
+//		}
+//		else {
+//			$week_of_year = date ("W",mktime(0,0,0,substr($date,3,2),substr($date,6,2),substr($date,0,2)));
+//			if ($week_of_year % 2 == 0)
+//				$week = "even";
+//			else $week = "odd";
+//		}
+		$week = substr($month_weeks[floor((substr($date,6,2)-1) / 7) + 1],0,1);
+		$driver_week = $week;
+		if ($area=="SUN") {
 			$week_of_year = date ("W",mktime(0,0,0,substr($date,3,2),substr($date,6,2),substr($date,0,2)));
 			if ($week_of_year % 2 == 0)
-				$week = "even";
-			else $week = "odd";
+				$driver_week = "even";
+			else $driver_week = "odd";
 		}
+
+
 		$day = date('D',mktime(0,0,0,substr($date,3,2),substr($date,6,2),substr($date,0,2)));
 		
 		// find drivers for this date and area (aka base) from the dbSchedules table
 		// calculate the week of the month or year, depending on the area
-		$driver_ids = implode(',',get_drivers_scheduled($area, $week, $day));
+		$driver_ids = implode(',',get_drivers_scheduled($area, $driver_week, $day));
 
 		// store pickup and dropoff stops for this date and area using the dbClients table
 		$pickup_clients = getall_clients($area, "donor", "", "", $day,$day,$day, "", "","active","", $week);
@@ -285,7 +296,7 @@ function make_new_route ($routeID, $teamcaptain_id) {
 		$dropoff_clients = getall_clients($area, "recipient", "", "", $day,$day,$day, "", "","active","", $week);
 		$dropoff_ids = "";
 		
-		foreach ($dropoff_clients as $client) 
+		foreach ($dropoff_clients as $client)
 		{
 			$dropoff_stop = new Stop ($routeID, $client->get_id(), "dropoff", "0", "");
 			$dropoff_ids .= ",".$dropoff_stop->get_id();

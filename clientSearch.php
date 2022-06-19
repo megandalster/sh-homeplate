@@ -57,7 +57,8 @@
 					echo('<p><a href="'.$path.'clientEdit.php?id=new">Add new donor or recipient</a>');	
 					echo('<form method="post">');
 					echo('<p><strong>Search for donors and recipients:</strong>');
-                        
+                    
+                    $area = "";
                     if( array_key_exists('s_area', $_POST) ) 
                     	$area = $_POST['s_area']; //override the GET variable if we just conducted a search
 					echo '<p>Base: <select name="s_area">' .
@@ -67,25 +68,27 @@
                         echo '<option value="BFT"'; if ($area=="BFT") echo " SELECTED"; echo '>Beaufort</option>';
 					echo '</select>';
 					
-					if( !array_key_exists('s_type', $_POST) ) 
-                    	$type = ""; 
-                    else $type = $_POST['s_type'];
+                    $type = "";
+					if( array_key_exists('s_type', $_POST) )
+                    	$type = $_POST['s_type'];
 					echo '&nbsp;&nbsp;Donor/Recipient:<select name="s_type">';
                         echo '<option value=""';            if ($type=="")          echo " SELECTED"; echo '>--all--</option>'; 
                         echo '<option value="donor"';       if ($type=="donor")     echo " SELECTED"; echo '>Donor</option>'; 
                         echo '<option value="recipient"';   if ($type=="recipient") echo " SELECTED"; echo '>Recipient</option>'; 
                     echo '</select>';
+                    
+                    $status = "active";
+                    if( array_key_exists('status', $_POST) )
+                        $status = $_POST['status'];
+                    
+                    echo '&nbsp;&nbsp;Status:<select name="status">';
+                    echo '<option value="active"';       if ($status=="active")     echo " SELECTED"; echo '>active</option>';
+                    echo '<option value="inactive"';       if ($status=="inactive")     echo " SELECTED"; echo '>inactive</option>';
+                    echo '<option value="former"';   if ($status=="former") echo " SELECTED"; echo '>former</option>';
+                    echo '<option value=""';            if ($status=="")          echo " SELECTED"; echo '>--all--</option>';
+                    echo '</select>';
                         
-                    if( !array_key_exists('status', $_POST) )
-                        $status = "active";
-                    else $status = $_POST['status'];
-                        echo '&nbsp;&nbsp;Status:<select name="status">';
-                        echo '<option value="active"';       if ($status=="active")     echo " SELECTED"; echo '>active</option>';
-                        echo '<option value="inactive"';       if ($status=="inactive")     echo " SELECTED"; echo '>inactive</option>';
-                        echo '<option value="former"';   if ($status=="former") echo " SELECTED"; echo '>former</option>';
-                        echo '<option value=""';            if ($status=="")          echo " SELECTED"; echo '>--all--</option>';
-                        echo '</select>';
-                        
+                    $county="";
                     if( array_key_exists('s_county', $_POST) ) 
                     	$county = $_POST['s_county']; //override the GET variable if we just conducted a search
 					echo '<p>County: <select name="s_county">' .
@@ -109,28 +112,30 @@
 							echo('</option>');
 						}
 					echo('</select>');
-											
+                    
+                    $noso = "";
 					if( array_key_exists('noso', $_POST) )
 					    $noso = $_POST['noso']; //override the GET variable if we just conducted a search
-					    echo '&nbsp;&nbsp;No/So: <select name="noso">' .
-									    '<option value="">--all--</option>';
-					    echo '<option value="North"'; if ($noso=="North") echo " SELECTED"; echo '>North of the Broad</option>' ;
-					    echo '<option value="South"'; if ($noso=="South") echo " SELECTED"; echo '>South of the Broad</option>' ;
-					    echo '</select>';    
-					    
-					if( !array_key_exists('s_lcfb', $_POST) ) 
-                    	$lcfb = ""; 
-                    else $lcfb = $_POST['s_lcfb'];
+                    echo '&nbsp;&nbsp;No/So: <select name="noso">' .
+                                    '<option value="">--all--</option>';
+                    echo '<option value="North"'; if ($noso=="North") echo " SELECTED"; echo '>North of the Broad</option>' ;
+                    echo '<option value="South"'; if ($noso=="South") echo " SELECTED"; echo '>South of the Broad</option>' ;
+                    echo '</select>';
+                
+                
+                    $lcfb = "";
+                    if( array_key_exists('s_lcfb', $_POST) )
+                        $lcfb = $_POST['s_lcfb'];
                     
 					echo '&nbsp;&nbsp;LCFB:<select name="s_lcfb">';
                         echo '<option value=""';    if ($lcfb=="")    echo " SELECTED"; echo '>--all--</option>';
                         echo '<option value="yes"'; if ($lcfb=="yes") echo " SELECTED"; echo '>Yes</option>';
                         echo '<option value="no"';  if ($lcfb=="no")  echo " SELECTED"; echo '>No</option>';
                     echo '</select>';
-                        
-                    if( !array_key_exists('s_name', $_POST) )
-                    	$name = ""; 
-                    else $name = $_POST['s_name'];
+                
+                    $name = "";
+                    if( array_key_exists('s_name', $_POST) )
+                       $name = $_POST['s_name'];
 					echo '&nbsp;&nbsp;Name: ' ;
 					echo '<input type="text" name="s_name" value="' . $name . '">';
 					
